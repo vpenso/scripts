@@ -13,6 +13,8 @@ Scripts
 * _git-default-config_ helps users to configure Git. Sets
   user name, mail address, default editor lots of aliases
   and a global gitignore file.
+* _vim-default-config_ helps to install Vundle including
+  a couple of Bundles, and my personal Vim configuration.
 
 License
 =======

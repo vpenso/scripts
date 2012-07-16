@@ -1,0 +1,186 @@
+#!/bin/bash
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Don't overwrite existing configurations
+if [ -e $HOME/.vim ]
+then
+  echo "Vim configuration in $HOME/.vim already exists!"
+  exit 0
+fi
+if [ -e $HOME/.vimrc ]
+then
+  echo "Vim configuration in $HOME/.vimrc already exists!"
+  exit 0
+fi
+
+# Install Vundle
+mkdir $HOME/.vim
+echo "Installing Vundle to $HOME/.vim"
+git clone -q https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+
+# Write the list of Bundles to install
+cat > $HOME/.vimrc <<EOF
+set nocompatible               " be iMproved
+filetype off                   " required!
+filetype plugin indent on      " required!
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle, required! 
+Bundle 'gmarik/vundle' 
+Bundle 'Lokaltog/vim-powerline'           
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'molokai'                         
+Bundle 'tpope/vim-fugitive'             
+Bundle 'sjl/badwolf'                   
+Bundle 'vim-ruby/vim-ruby'
+
+EOF
+
+# Install all bundles
+echo "Installing default bundles, this may take a while."
+`vim +BundleInstall +qall > /dev/null 2>&1`
+
+# default colorsheme 
+_colorsheme="molokai"
+
+# add the color specification to the configuration file
+cat >> $HOME/.vimrc <<EOF
+set background=dark
+if has('gui_running')
+  colorscheme $_colorsheme
+else
+  set t_Co=256
+  colorscheme $_colorsheme
+endif
+
+EOF
+
+if [ "$_colorsheme" == "solarized" ]
+then
+  echo "let g:solarized_termcolors=256" >> $HOME/.vimrc
+fi
+
+# More configuration
+cat >> $HOME/.vimrc <<EOF
+
+" Esc key should be recognized immediatley, instead if after one second
+set timeout timeoutlen=1000 ttimeoutlen=100
+set autoindent
+set autoread        " watch files for changes
+set encoding=utf-8
+set number          " line numbers
+set showbreak=…     " if line numbers are of indicate it
+set ruler           " show the line numbers on the bar
+set showcmd         " display an incomplete command in the lower right corner 
+set expandtab       " no real tabs please!
+set wrap            " wrap lines
+set linebreak       " don't split words
+set shiftwidth=2    " auto-indent amount when using cindent, 
+                    " >>, << and stuff like that
+set softtabstop=2   " when hitting tab or backspace, how many spaces
+                    "should a tab be (see expandtab)
+set guioptions-=m   " don't show menu bar 
+set guioptions-=T
+set showtabline=0   " don't show tab bar 
+set laststatus=2    " always show status line
+set spell           " spell checking on
+set cursorline      " highlight current line
+set showmatch       " show matching brackets/parenthesis
+set incsearch       " find as you type search
+set hlsearch        " highlight search terms
+
+set foldmethod=indent
+set foldnestmax=10
+set nofoldenable    " don't fold by default
+set foldlevel=1
+
+filetype on         " enable file type detection
+filetype indent on  " file type specific indenting
+filetype plugin on  " load file type specific plug-ins
+filetype plugin indent on
+syntax on           " syntax highlighting on
+
+
+" Switch to paste mode, disabling all kinds of smartness
+" and enable just pasting a whole buffer of test. 
+set pastetoggle=<F3>
+" switch between German and English spelling
+map <F5> :setlocal spell! spelllang=de<CR>
+map <F6> :setlocal spell! spelllang=en<CR>
+
+" Switch of normal cursor keys
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+
+" change mapping for cursor movement along display lines
+" in normal and visual mode by CTRL key
+vmap <C-j> gj
+vmap <C-k> gk
+vmap <C-4> g$
+vmap <C-6> g^
+vmap <C-0> g^
+nmap <C-j> gj
+nmap <C-k> gk
+nmap <C-4> g$
+nmap <C-6> g^
+nmap <C-0> g^
+
+" Center screen when scrolling search results
+nmap n nzz
+nmap N Nzz
+
+" To define a mapping which uses the "mapleader" variable, the
+" special string "<Leader>" can be used.  It is replaced with the
+" string value of "mapleader". If "mapleader" is not set or empty,
+" a backslash ('\') is used instead as default.
+"
+let mapleader = ','
+
+" Shortcut to rapidly toggle `set list`
+nmap <leader>l :set list!<CR>
+" Use the symbols from Unicode for tab-stops and end-of-line
+set listchars=tab:▸\ ,eol:¬
+set listchars+=trail:·
+
+" Maps ev and sv keys to edit/reload .vimrc
+nmap <silent> <leader>e :e \$MYVIMRC<CR>
+nmap <silent> <leader>sv :so \$MYVIMRC<CR>
+
+" Clearing highlighted searches
+nmap <silent> <leader>/ :nohlsearch<CR>
+
+" open files from the working directory
+cnoremap %% <C-R>=expand('%:h').'/'<CR>
+map <leader>ew :e %%
+" open in horizontal split pane
+map <leader>es :sp %%
+" open in vertical split
+map <leader>ev :vsp %%
+
+" extra file types
+autocmd BufNewFile,BufRead *.markdown,*.md,*.mdown,*.mkd,*.mkdn set ft=markdown
+
+EOF
+
+echo "Adding default configuration to $HOME/.vimrc"
+echo "$_vimrc_extra" >> $HOME/.vimrc
+
