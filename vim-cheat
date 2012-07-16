@@ -1,0 +1,131 @@
+#!/bin/sh
+
+_black="\033[30m" 
+_red="\033[31m"
+_yellow="\033[33m"
+_blue="\033[34m"   
+_reset="\033[0m"   
+_bold="\033[1m"
+_underline="\033[4m"
+
+M="${_bold}${_blue}"
+R="$_reset"
+B="${_bold}"
+U="${_underline}"
+
+echo "
+
+           ${B}${U}NORMAL MODE${R}
+
+      ${B}(switch to insert mode)${R}
+              ${M}i │ insert before the cursor${R}
+              I │ insert text on all selected lines in visual mode
+            a/A │ append right to cursor/end-of-line
+            o/O │ open new line below/above
+             cw │ delete word and enter insert mode
+              R │ replace mode
+        ${B}(cursor movement)${R}
+            ${M}h/l │ left/right
+            j/k │ down/up${R}
+            {/} │ beginning/end of current paragraph
+            ${M}w/b │ forward/backward one word${R}
+            W/B │ forward/backwards one word (space separated)
+           e/ge │ next/previous end of word
+            $/0 │ end of line/first character in line
+              ^ │ first non-blank character in line
+            ${M}f/F │ search char to the right/left (repeat ;/,)
+            n/N │ find next/previous occurrence${R}
+              / │ search word in file 
+              ? │ search word in file backwards
+              * │ mark word under cursor as search term
+              % │ move to matching parent
+           gg/G │ start/end of file (nG for a specific line)
+          H/M/L │ home/middle/last line on the screen
+  ${M}Ctrl-d/Ctrl-u │ scroll down/up 1/2 page
+  Ctrl-e/Ctrl-y │ scroll down/up one line
+  Ctrl-f/Ctrl-b │ scroll full screen up/down${R}
+             ma │ mark location and jump back with 
+             'a │ jump to last mark
+         ${B}(text handling)${R}
+            ${M}x/X │ delete character under/left to the cursor${R}
+              r │ replace character
+          ${M}dw/yw │ delete/copy word
+            D/C │ delete/change until end of line
+          dd/cc │ delete/change the whole line${R}
+            s/S │ change character/line
+              J │ join two lines (delete line break)
+            ${M}u/U │ undo last edit/undo line${R}
+         Ctrl-r │ redo last edit
+            ${M}y/Y │ copy selection/line
+            p/P │ paste after/below of before/above the cursor${R}
+        \"+y/\"+p │ copy/paste from clipboard
+             gv │ select last block
+             ZZ │ write changes and exit
+         Ctrl-V │ Insert escape sequence ^[
+
+            ${B}${U}VISUAL MODE${R}
+
+              ${M}v │ enter visual selection mode 
+              V │ enter line selection mode 
+              y │ copy selection into buffer${R}
+        ${B}(column selection)${R}
+         Ctrl-v │ enter column selection mode
+              I │ insert in front of cursor (Esc to apply to all lines)
+              A │ ~ append after cursor
+        Ctrl-r\" │ paste from register
+              c │ change selection (delete and switch to insert mode)
+              r │ replace every charater in selections
+              d │ delete selection
+              o │ toggle cursor to opposite corner
+
+            ${B}${U}COMMANDS${R}
+
+        ${M}:e PATH │ open file/directory${R}
+             :w │ save changes
+       :cd PATH │ change working directory 
+           :pwd │ print working directory
+          ${B}(file explorer)${R}
+            ${M}:e. │ open explorer in working directory
+             :E │ open explorer in directory of current file${R}
+           :sp. │ open explorer in horizontal split pane
+           :vs. │ open explorer in horizontal split pane
+         Ctrl-w │ switch between panes
+              - │ on diretory up
+              % │ create new empty file
+              d │ create new directory
+     ${B}(map leader is comma \",\")${R}
+             ,e │ edit configuration file
+            ,sv │ reload configuration file
+             ${M},l │ toggle invisible charaters
+             ,/ │ clear search highlighting${R}
+            ,ew │ open file from the directory of current file
+            ,es │ ^~ in horizontal split pane 
+            ,ev │ ^~ in vertical split pane 
+
+              ${B}${U}KEYS${R}
+
+             ${M}F3 │ enable paste mode (when in insert mode)${R}
+             F5 │ toggle German spell checking 
+             F6 │ toggle English spell checking 
+
+               ${B}${U}GIT${R}
+
+           :Git │ run any Git command 
+         :Gdiff │ open split panes for file comparison local vs. HEAD
+       ${B}(index manipulation)${R}
+       ${M}:Gstatus │ open horizontal pane with status information${R}
+              - │ add/reset file (works in visual mode)
+          Enter │ open current dile in the window below
+              ${M}C │ execute :Gcommit${R}
+    ${B}(examine the repository history)${R}
+          :Glog │ load all previous revisions of the current file ot the 
+                │ quickfix list (limit with -NUM )
+         :Gedit │ get back to working copy
+       :Glog -- │ load all ancestral commit objects int the quickfix list
+     :Glog -- % │ ^~ limited to the current file 
+    ${B}(working the quick fix list)${R}
+         :cnext │ step back in the revision tree 
+         :cprev │ step forward in the revision tree
+        :cfirst │ jump to the latest revision
+         :clast │ jump to the oldest revision
+"
