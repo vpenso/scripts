@@ -10,11 +10,12 @@ repository from time to time.
 Scripts
 -------
 
-* _git-default-config_ helps users to configure Git. Sets
-  user name, mail address, default editor lots of aliases
-  and a global gitignore file.
+* _git-default-config_ sets Git user name, mail address, 
+  default editor lots of aliases and a global gitignore file.
+* _git-repos_ maintains a directory structure and coresponding 
+  Git remote rpositories.
 * _tmux-default-config_ helps to configure Tmux terminal
-  muliplexer.
+  multiplexer.
 * _vim-default-config_ helps to install Vundle including
   a couple of Bundles, and my personal Vim configuration.
 * _vim-cheat_ "What was this key again?" Vim cheat sheat. 

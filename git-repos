@@ -1,0 +1,201 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'json'
+require 'fileutils'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+#{exec_name}: Check the status of Git repositories.
+
+Usage
+-----
+
+#{exec_name} [COMMAND] [OPTIONS]
+
+  COMMAND:
+    show    Show the current configuration.
+    setup   Create missing repositories,
+            including their remote configuration.
+    status  Show local changes.
+
+Reads $PWD/.gitrepos by default, alternativly set
+the path to an configuration file with option -c.
+Configuration file have the form:
+
+/path/to/the/repository
+  origin git://host.org/project.git
+  backup ssh://user@host.org/project.git
+/path/to/another/repository
+  name ~/existing/repo
+~/path/to/yet/another/repo
+  foobar ssh://user@host.org/foobar.git
+realitve/path/to/repository
+  deploy git://fqdn.com/name.git
+
+Options
+-------
+
+  --config, -c FILE
+    Path to configuration file.
+  --help, -h
+    Show this help information.
+  --debug, -d
+    Show stacktraces in case of errors.
+EOF
+
+class GitRepos
+
+  def initialize(config_file)
+    config_file = File.expand_path(config_file)
+    @config = Hash.new
+
+    if File.exists? config_file
+      read_configuration(config_file)
+    else 
+      raise("Configuration not existing: #{config_file}")
+    end 
+  end
+
+  def show()
+    $stdout.puts JSON.pretty_generate @config
+  end
+
+  def setup
+    @config.each_pair do |path,repos|
+      FileUtils.mkdir_p(path)
+      repos.each_pair do |name,uri|
+        FileUtils.cd(path)
+        system('git init') unless File.exists? "#{path}/.git"
+        system("git remote add #{name} #{uri} > /dev/null 2>&1")
+        if $?.exitstatus.eql? 0
+          $stdout.puts "Adding Git remote '#{name}' in #{path}"
+        end
+      end 
+    end
+  end
+
+  def status()
+    @config.each_pair do |path,repos|
+      if File.directory? path
+          FileUtils.cd(path)
+          status = `git status -s`
+          unless status.empty?
+            $stdout.puts "Git in #{path}"
+            system('git status -s')
+          end
+      end
+    end
+  end
+
+  private
+
+  def read_configuration(file)
+    path = String.new
+    File.readlines(file).each do |line|
+      case line
+      # relative paths
+      when /^[\.\w]+\/.*/
+        config_path = File.dirname(File.expand_path(file))
+        path = File.join(config_path,line.chomp)
+        @config[path] = Hash.new
+      # absolute paths
+      when /^[~\/].*/
+        path = line.chomp
+        path = File.expand_path path
+        @config[path] = Hash.new
+      # repositories
+      when /[a-zA-Z]+ .*/
+        line = line.split
+        if line.length.eql? 2
+          # did we see a path configuration before a repository list
+          unless path.empty? 
+            @config[path][line[0]] = line[1].chomp
+          end
+        end
+      end
+    end
+  end
+end
+
+begin
+
+  options = OpenStruct.new
+  options.debug = false
+  options.config = String.new
+  
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--config','-c',GetoptLong::REQUIRED_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--config'
+      if File.exists? arg
+        options.config = File.expand_path(arg)
+      else
+        raise("Configuration file #{arg} not found!")
+      end
+    end
+  end
+
+  command = ARGV[0] || raise('No command given!')
+  if options.config.empty?
+    config = "#{ENV['PWD']}/.gitrepos"
+    if File.exists? config
+      options.config = File.expand_path config
+    else
+      raise('No configuration file defined!')
+    end
+  end
+
+  repos = GitRepos.new(options.config)
+
+  case command
+  when 'show'
+    repos.show
+  when 'setup'
+    repos.setup
+  when 'status'
+    repos.status  
+  end
+
+
+rescue => exc
+  STDERR.puts "ERROR: #{exc.message}"
+  STDERR.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
