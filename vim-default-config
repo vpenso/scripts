@@ -78,6 +78,7 @@ then
 fi
 
 # More configuration
+echo "Adding default configuration to $HOME/.vimrc"
 cat >> $HOME/.vimrc <<EOF
 
 " Esc key should be recognized immediatley, instead if after one second
@@ -181,6 +182,4 @@ autocmd BufNewFile,BufRead *.markdown,*.md,*.mdown,*.mkd,*.mkdn set ft=markdown
 
 EOF
 
-echo "Adding default configuration to $HOME/.vimrc"
-echo "$_vimrc_extra" >> $HOME/.vimrc
 
