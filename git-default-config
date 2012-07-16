@@ -1,0 +1,162 @@
+#!/bin/sh
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Check if the user has provided two arguments
+if [ $# -lt 2 ]
+then
+  echo "ERROR: Not enough arguments."
+  echo "  $(basename $0) \"User Name\" e.mail@domain.org [editor]"
+  exit 1
+fi
+
+_name=$1
+_mail=$2
+_edit=${3:-vim}
+
+git config --global user.name "$_name"
+git config --global user.email $_mail
+git config --global push.default current
+
+# Commands such as commit and tag that lets you edit
+# messages by launching an editor uses the value of 
+# this variable when it is set, and the environment 
+# variable GIT_EDITOR is not set.
+git config --global core.editor $_edit
+
+# Aliases for the git command wrapper
+git config --global alias.st status
+git config --global alias.ad add
+git config --global alias.di diff
+git config --global alias.dc "diff --cached"
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.ca "commit -a"
+git config --global alias.ce "commit --allow-empty"
+git config --global alias.br branch
+git config --global alias.pu push
+git config --global alias.pl pull
+git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
+git config --global alias.lo "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+git config --global alias.tags "tag -n1 -l"
+git config --global alias.amend "commit --amend"
+git config --global alias.undo "reset --hard"
+git config --global alias.uncommit "reset --soft HEAD^"
+git config --global alias.unstage "reset HEAD --"
+git config --global alias.unpushed "log --branches --not --remotes --simplify-by-decoration --decorate --oneline"
+git config --global alias.remotes "remote -v"
+git config --global alias.what whatchanged
+git config --global alias.who "shortlog -s --"
+git config --global alias.last "log -1 --stat"
+git config --global alias.ls-ignored "ls-files --exclude-standard --ignored --others"
+
+# enable colorization 
+git config --global color.branch auto
+git config --global color.interactive auto
+git config --global color.diff auto
+git config --global color.status auto
+git config --global color.ui auto
+
+# define color sets
+git config --global color.branch.current "yellow bold"
+git config --global color.branch.local "green bold"
+git config --global color.branch.remote "green bold"
+git config --global color.diff.meta "yellow bold"
+git config --global color.diff.frag "red bold"
+git config --global color.diff.old "blue bold"
+git config --global color.diff.new "green bold"
+git config --global color.status.added "green bold"
+git config --global color.status.changed "yellow bold"
+git config --global color.status.untracked "red bold"
+
+# Turns off the trailing whitespace warning while 
+# applying patches
+git config --global apply.whitespace nowarn
+
+# Files generally to ignore
+git config --global core.excludesfile ~/.gitignore_global
+
+_gitignore_global="
+# Other VCS #
+#############
+.svn/
+*/CVS/*
+.cvsignore
+*/.cvsignore
+/.hg/*
+*/.hg/*
+.hgignore
+
+# Editors #
+###########
+*.sw[a-z]
+*.un~
+Session.vim
+*~
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.dmg
+*.xpi
+*.gem
+*.egg
+*.deb
+*.rpm
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+._*
+.Trashes
+"
+
+echo "$_gitignore_global" > $HOME/.gitignore_global
+
+exit 0
