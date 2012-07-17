@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+#{exec_name}: Explain in one sentance
+
+Usage
+-----
+
+#{exec_name} [COMMAND] [OPTIONS]
+
+  COMMAND:
+    command text
+
+Options
+-------
+
+  --help, -h
+    Show this help information.
+  --debug, -d
+    Show stacktraces in case of errors.
+EOF
+
+begin
+
+  options = OpenStruct.new
+  options.debug = false
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    end
+  end
+
+  command = ARGV[0] || raise('No command given!')
+
+  
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
