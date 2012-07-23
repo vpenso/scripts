@@ -14,7 +14,6 @@ B="${_bold}"
 U="${_underline}"
 
 echo "
-
            ${B}${U}NORMAL MODE${R}
 
       ${B}(switch to insert mode)${R}
@@ -33,11 +32,6 @@ echo "
            e/ge │ next/previous end of word
             $/0 │ end of line/first character in line
               ^ │ first non-blank character in line
-            ${M}f/F │ search char to the right/left (repeat ;/,)
-            n/N │ find next/previous occurrence${R}
-              / │ search word in file 
-              ? │ search word in file backwards
-              * │ mark word under cursor as search term
               % │ move to matching parent
            gg/G │ start/end of file (nG for a specific line)
           H/M/L │ home/middle/last line on the screen
@@ -101,6 +95,20 @@ echo "
             ,ew │ open file from the directory of current file
             ,es │ ^~ in horizontal split pane 
             ,ev │ ^~ in vertical split pane 
+
+             ${B}${U}SEARCH${R}
+
+            ${M}f/F │ search char to the right/left (repeat ;/,)
+            n/N │ find next/previous occurrence${R}
+              / │ search word in file 
+              ? │ search word in file backwards
+            */# │ search term under cursor (next/previous)
+          ${B}(substitution)${R}
+    :s/pat/rpl/ │ first occurrence single line
+   :s/pat/rpl/g │ all occurrences single line
+   :%s/pat/rpl/ │ first occurrence in file
+  ${M}:%s/pat/rpl/g │ all occurrences in file${R}
+ :%s/pat/rpl/gc │ all occurrences in file with confirmation
 
               ${B}${U}KEYS${R}
 
