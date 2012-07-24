@@ -16,12 +16,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
 require 'ostruct'
 require 'getoptlong' 
 require 'json'
 require 'fileutils'
 
+version = 0.2
+
 exec_name = File.split(__FILE__)[-1]
+
 HELP = <<EOF
 Synopsis
 ========
@@ -34,14 +38,35 @@ Usage
 #{exec_name} [COMMAND] [OPTIONS]
 
   COMMAND:
-    show    Show the current configuration.
     setup   Create missing repositories,
             including their remote configuration.
     status  Show local changes.
 
-Reads $PWD/.gitrepos by default, alternativly set
-the path to an configuration file with option -c.
-Configuration file have the form:
+Options
+-------
+
+  --config, -c PATH
+    Path to configuration file.
+  --version, -V
+    Print script version.
+  --help, -h
+    Show this help information.
+  --debug, -d
+    Include stacktraces in case of errors.
+
+Configuration
+-------------
+
+#{exec_name} expects a list of directories and remote 
+Git repositories. Absolute and relative paths are 
+supported, as well has tilde (~) to refere to the user
+home-directory. 
+
+Lines with at least a single leading white space define
+corresponding Git remote repositories of a directory.
+These lines have the notation <name> followed by <url>.
+
+Examples for the notation of a configuration file:
 
 /path/to/the/repository
   origin git://host.org/project.git
@@ -53,15 +78,11 @@ Configuration file have the form:
 realitve/path/to/repository
   deploy git://fqdn.com/name.git
 
-Options
--------
+Configuration files are read in the following order:
 
-  --config, -c FILE
-    Path to configuration file.
-  --help, -h
-    Show this help information.
-  --debug, -d
-    Show stacktraces in case of errors.
+1. set by option '-c PATH'
+2. $PWD/.gitrepos
+3. $HOME/.gitrepos
 EOF
 
 class GitRepos
@@ -75,10 +96,6 @@ class GitRepos
     else 
       raise("Configuration not existing: #{config_file}")
     end 
-  end
-
-  def show()
-    $stdout.puts JSON.pretty_generate @config
   end
 
   def setup
@@ -96,14 +113,18 @@ class GitRepos
   end
 
   def status()
-    @config.each_pair do |path,repos|
+    @config.keys.sort.each do |path|
+      repos = @config[path]
       if File.directory? path
+          show = false
           FileUtils.cd(path)
-          status = `git status -s`
-          unless status.empty?
-            $stdout.puts "Git in #{path}"
-            system('git status -s')
-          end
+          status = 'git status -s'
+          show = true unless `#{status}`.empty?
+          log = 'git --no-pager log --branches --not --remotes --simplify-by-decoration --decorate --oneline 2> /dev/null'
+          show = true unless `#{log}`.empty?
+          $stdout.puts "Git in \033[1;30m#{path}\033[0m" if show
+          system(status)
+          system(log)
       end
     end
   end
@@ -142,19 +163,28 @@ begin
 
   options = OpenStruct.new
   options.debug = false
+  options.verbose = false
   options.config = String.new
   
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--verbose','-v',GetoptLong::NO_ARGUMENT],
+    ['--version','-V',GetoptLong::NO_ARGUMENT],
     ['--config','-c',GetoptLong::REQUIRED_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--debug'
+      $DEBUG = true
       options.debug = true
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--version'
+      $stdout.puts version
+      exit 0
+    when '--verbose'
+      options.verbose = true
     when '--config'
       if File.exists? arg
         options.config = File.expand_path(arg)
@@ -167,18 +197,19 @@ begin
   command = ARGV[0] || raise('No command given!')
   if options.config.empty?
     config = "#{ENV['PWD']}/.gitrepos"
-    if File.exists? config
-      options.config = File.expand_path config
-    else
-      raise('No configuration file defined!')
+    unless File.exists? config
+      config = "#{ENV['HOME']}/.gitrepos"
+      unless File.exists? config
+        raise('No configuration file defined!')
+      end
     end
+    options.config = File.expand_path config
+    $stdout.puts "Reading configuration from #{options.config}" if options.verbose
   end
 
   repos = GitRepos.new(options.config)
 
   case command
-  when 'show'
-    repos.show
   when 'setup'
     repos.setup
   when 'status'
