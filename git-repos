@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: UTF-8
 #
 # Copyright 2012 Victor Penso
 #
@@ -121,10 +122,13 @@ class GitRepos
           status = 'git status -s'
           show = true unless `#{status}`.empty?
           log = 'git --no-pager log --branches --not --remotes --simplify-by-decoration --decorate --oneline 2> /dev/null'
-          show = true unless `#{log}`.empty?
-          $stdout.puts "Git in \033[1;30m#{path}\033[0m" if show
+          log_empty = `#{log}`.empty?
+          show = true unless log_empty
+          path = "Git in \033[1;30m#{path}\033[0m"
+          path << " \033[31m↑\033[0m" unless log_empty
+          $stdout.puts path if show
           system(status)
-          system(log)
+          system(log) unless log_empty
       end
     end
   end
