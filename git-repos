@@ -39,7 +39,7 @@ Usage
 #{exec_name} [COMMAND] [OPTIONS]
 
   COMMAND:
-    setup   Create missing directories, initialize 
+    init    Create missing directories, initialize 
             an empty Git repository and add all
             defined remote repositories.
     status  Show working tree status (modified and
@@ -123,7 +123,7 @@ class GitRepos
       if File.directory? path
         # change the working directory 
         FileUtils.cd(path)
-        remotes = String.new
+        remotes = Array.new
         # list all remote Git repositories
         `git branch -r`.split.each do |remote|
           # count the commit distance to the HEAD 
@@ -134,8 +134,8 @@ class GitRepos
         status = 'git status -s'
         show = true unless `#{status}`.empty?
         show = true unless remotes.empty?
-        $stdout.puts "Git in \033[1;30m#{path}\033[0m" if show
-        $stdout.puts remotes unless remotes.empty?
+        $stdout.puts "Git in \033[1;30m#{path.gsub(%r[^#{ENV['HOME']}],'~')}\033[0m" if show
+        $stdout.puts remotes.join("\n") unless remotes.empty?
         system(status)
       end
     end
@@ -224,16 +224,17 @@ begin
   repos = GitRepos.new(options.config)
 
   case command
-  when 'setup'
+  when 'init'
     repos.setup
   when 'status'
     repos.status  
+  else
+    raise("#{command} not supported!")
   end
 
-
 rescue => exc
-  STDERR.puts "ERROR: #{exc.message}"
-  STDERR.puts " use -h for detailed instructions"
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
   if options.debug
     $stderr.puts '-- Stack Trace --'
     $stderr.puts exc.backtrace
