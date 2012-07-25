@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Deploy Oh-My-Zsh from GitHub
+if [ ! -d $HOME/.oh-my-zsh ] ; then
+  echo "Installing Oh-My-Zshell to ~/.oh-my-zsh"
+  git clone -q https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
+fi
+
+cat > $HOME/.oh-my-zsh/themes/default-git.zsh-theme <<EOF
+PROMPT='%{\$fg_bold[white]%}\$(git_prompt_info)%{\$fg_bold[black]%}»%{\$reset_color%}%b '
+RPROMPT="%{\$fg_bold[black]%}%n%{\$fg_bold[white]%}\${SSH_TTY:+@%m}%{\$reset_color%}:%{\$fg_bold[black]%}%B%~%{\$reset_color%}%{\$fg[\$FINISH]%}%{\$reset_color%}%b "
+ZSH_THEME_GIT_PROMPT_PREFIX=""
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{\$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{\$fg[red]%}⚡%{\$reset_color%} "
+ZSH_THEME_GIT_PROMPT_CLEAN="%{\$fg[blue]%}"
+EOF
+echo "Installing Zsh prompt theme to ~/.oh-my-zsh/themes/default-git.zsh-theme"
+
+if [ -e $HOME/.zshrc ] ; then
+  echo "Zsh configuration ~/.zshrc exists!"
+  exit 0
+fi
+
+cat >> $HOME/.zshrc <<EOF
+ZSH=$HOME/.oh-my-zsh
+
+ZSH_THEME="default-git"
+
+DISABLE_AUTO_TITLE="true"
+plugins=(git ruby gem knife)
+
+source $HOME/.oh-my-zsh/oh-my-zsh.sh
+
+#
+# Customize to your needs...
+#
+
+export TERM="xterm-256color"
+
+export OH_MY_ZSH_HOME=$ZSH
+
+if [ -f $HOME/.zsh_config_hook ]
+then
+  source $HOME/.zsh_config_hook
+fi
+EOF
+
+echo "Configuration written to \$HOME/.zshrc"
+
+shell=$(getent passwd $USER | cut -d':' -f 7)
+if [ ! "$shell" -eq "/bin/zsh" ] ; then
+  echo -n "Make Zshell your default? (y/n): "
+  read ans
+  if [[ "$ans" == "y" ]]
+  then
+    chsh -s /bin/zsh
+    echo "Re-login to your user account."
+  fi
+fi
+
+
