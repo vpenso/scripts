@@ -40,6 +40,7 @@ git config --global core.editor $_edit
 
 # Aliases for the git command wrapper
 git config --global alias.st status
+git config --global alias.rs "repos status"
 git config --global alias.ad add
 git config --global alias.di diff
 git config --global alias.dc "diff --cached"
@@ -49,7 +50,9 @@ git config --global alias.ca "commit -a"
 git config --global alias.ce "commit --allow-empty"
 git config --global alias.br branch
 git config --global alias.pu push
+git config --global alias.rb rebase
 git config --global alias.pl pull
+git config --global alias.plt "pull --tags"
 git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
 git config --global alias.lo "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 git config --global alias.tags "tag -n1 -l"
