@@ -50,9 +50,6 @@ echo "
               J │ join two lines (delete line break)
             ${M}u/U │ undo last edit/undo line${R}
          Ctrl-r │ redo last edit
-            ${M}y/Y │ copy selection/line
-            p/P │ paste after/below of before/above the cursor${R}
-        \"+y/\"+p │ copy/paste from clipboard
              gv │ select last block
              ZZ │ write changes and exit
          Ctrl-V │ Insert escape sequence ^[
@@ -72,30 +69,6 @@ echo "
               d │ delete selection
               o │ toggle cursor to opposite corner
 
-            ${B}${U}COMMANDS${R}
-
-        ${M}:e PATH │ open file/directory${R}
-             :w │ save changes
-       :cd PATH │ change working directory 
-           :pwd │ print working directory
-          ${B}(file explorer)${R}
-            ${M}:e. │ open explorer in working directory
-             :E │ open explorer in directory of current file${R}
-           :sp. │ open explorer in horizontal split pane
-           :vs. │ open explorer in horizontal split pane
-         Ctrl-w │ switch between panes
-              - │ on diretory up
-              % │ create new empty file
-              d │ create new directory
-     ${B}(map leader is comma \",\")${R}
-             ,e │ edit configuration file
-            ,sv │ reload configuration file
-             ${M},l │ toggle invisible charaters
-             ,/ │ clear search highlighting${R}
-            ,ew │ open file from the directory of current file
-            ,es │ ^~ in horizontal split pane 
-            ,ev │ ^~ in vertical split pane 
-
              ${B}${U}SEARCH${R}
 
             ${M}f/F │ search char to the right/left (repeat ;/,)
@@ -109,6 +82,45 @@ echo "
    :%s/pat/rpl/ │ first occurrence in file
   ${M}:%s/pat/rpl/g │ all occurrences in file${R}
  :%s/pat/rpl/gc │ all occurrences in file with confirmation
+
+          ${B}${U}COPY & PASTE${R}
+
+            ${M}y/Y │ copy selection/line
+            p/P │ paste after/below of before/above the cursor${R}
+        \"+y/\"+p │ copy to/paste from clipboard
+        Ctrl-R\" │ paste from clipboard (and other registers)
+              \" │ default register
+              0 │ yank register
+            1-9 │ shifting delete registers
+              / │ search pattern register
+              : │ last command register
+            a-z │ user registers (A-Z to append onto register)
+           :reg │ show content of all registers
+
+
+            ${B}${U}COMMANDS${R}
+
+        ${M}:e PATH │ open file/directory${R}
+             :w │ save changes
+       :cd PATH │ change working directory 
+           :pwd │ print working directory
+          ${B}(file explorer)${R}
+            ${M}:e. │ open explorer in working directory
+             :E │ open explorer in directory of current file${R}
+           :sp. │ open explorer in horizontal split pane
+           :vs. │ open explorer in horizontal split pane
+  Crtl-w Ctrl-w │ switch between panes
+              - │ on diretory up
+              % │ create new empty file
+              d │ create new directory
+     ${B}(map leader is comma \",\")${R}
+             ,e │ edit configuration file
+            ,sv │ reload configuration file
+             ${M},l │ toggle invisible charaters
+             ,/ │ clear search highlighting${R}
+            ,ew │ open file from the directory of current file
+            ,es │ ^~ in horizontal split pane 
+            ,ev │ ^~ in vertical split pane 
 
               ${B}${U}KEYS${R}
 
