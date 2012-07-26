@@ -132,11 +132,12 @@ class GitRepos
           remotes << "\033[31m#{SYMBOL[:ahead]}\033[0m#{ahead} #{remote}" if ahead > 0
         end
         status = 'git status -s'
-        show = true unless `#{status}`.empty?
+        status_empty = `#{status}`.empty?
+        show = true unless status_empty
         show = true unless remotes.empty?
         $stdout.puts "Git in \033[1;30m#{path.gsub(%r[^#{ENV['HOME']}],'~')}\033[0m" if show
         $stdout.puts remotes.join("\n") unless remotes.empty?
-        system(status)
+        system("#{status} -b") unless status_empty
       end
     end
   end
