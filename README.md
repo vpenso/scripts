@@ -12,14 +12,15 @@ Scripts
 
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
-* **git-repos** - maintains a directory structure and coresponding 
+* **git-repos** - maintains a directory structure and corresponding 
   Git remote repositories.
-* **ruby-skeleton** - Start developeing ruby scripts from here.
+* **ruby-skeleton** - Start developing ruby scripts from here.
+* **tmux-cheat** - Most important Tmux keys.
 * **tmux-default-config** - helps to configure Tmux terminal
   multiplexer.
+* **vim-cheat** - "What was this key again?" Vim cheat sheet. 
 * **vim-default-config** - helps to install Vundle including
   a couple of Bundles, and my personal Vim configuration.
-* **vim-cheat** - "What was this key again?" Vim cheat sheet. 
 * **zsh-default-config** - helps to install Oh-My-Zsh and my
   default Zsh configuration.
 
