@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Action key is Ctrl-a
+Hold Shift to select text with mouse
+
+    Ctrl-a ?       │ show key binding
+    Ctrl-a -       │ new horizontal pane
+    Ctrl-a |       │ new vertical pane  
+    Alt ←/↑/→/↓    │ move between panes
+    Ctrl-a ←/↑/→/↓ │ resize panes
+    Ctrl-a x       │ close pane
+    Ctrl-a c       │ new window
+    Ctrl-a ,       │ rename window
+    Ctrl-a n/p     │ next/previous window
+    Ctrl-a w       │ list windows
+    Ctrl-a d       │ detach from session (run tmux attach)
+    Ctrl-a a       │ send prefix key to program in pane "
