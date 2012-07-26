@@ -1,12 +1,36 @@
 #!/bin/bash
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
-# Deploy Oh-My-Zsh from GitHub
+##
+## Deploy Oh-My-Zsh from GitHub
+##
 if [ ! -d $HOME/.oh-my-zsh ] ; then
-  echo "Installing Oh-My-Zshell to ~/.oh-my-zsh"
+  echo "Installing Oh-My-Zsh to ~/.oh-my-zsh"
   git clone -q https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
 fi
 
-cat > $HOME/.oh-my-zsh/themes/default-git.zsh-theme <<EOF
+##
+## Zsh prompt configuration
+##
+# add prompt to Oh-My-Zshell configuration
+prompt=$HOME/.oh-my-zsh/themes/default-git.zsh-theme
+if [ ! -e $prompt ] ; then
+cat > $prompt <<EOF
 PROMPT='%{\$fg_bold[white]%}\$(git_prompt_info)%{\$fg_bold[black]%}»%{\$reset_color%}%b '
 RPROMPT="%{\$fg_bold[black]%}%n%{\$fg_bold[white]%}\${SSH_TTY:+@%m}%{\$reset_color%}:%{\$fg_bold[black]%}%B%~%{\$reset_color%}%{\$fg[\$FINISH]%}%{\$reset_color%}%b "
 ZSH_THEME_GIT_PROMPT_PREFIX=""
@@ -14,8 +38,74 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{\$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{\$fg[red]%}⚡%{\$reset_color%} "
 ZSH_THEME_GIT_PROMPT_CLEAN="%{\$fg[blue]%}"
 EOF
-echo "Installing Zsh prompt theme to ~/.oh-my-zsh/themes/default-git.zsh-theme"
+# inform the user
+echo "Adding Zsh prompt configuration to Oh-My-Zsh."
+fi
 
+##
+## Configuration for ls colors
+##
+if [ ! -e $HOME/.dircolors/rainbow.colors ] ; then
+# make sure parent directory exists
+mkdir $HOME/.dircolors 2> /dev/null
+# write the colors configuration
+cat > $HOME/.dircolors/rainbow.colors <<EOF
+TERM xterm-256color
+RESET                 0
+FILE                  00;38;5;241
+DIR                   01;38;5;39 
+LINK                  00;38;5;221
+MULTIHARDLINK         00 
+FIFO                  48;5;235;38;5;160 # pipe
+SOCK                  48;5;235;38;5;160 
+DOOR                  48;5;235;38;5;252 
+BLK                   48;5;235;38;5;160 # block device driver
+CHR                   48;5;235;38;5;252 # character device driver
+ORPHAN                48;5;235;38;5;160 # symlink to nonexistent file, or non-stat'able file
+SETUID                38;5;196 # file that is setuid (u+s)
+SETGID                38;5;196 # file that is setgid (g+s)
+CAPABILITY            30;41 # file with capability
+STICKY_OTHER_WRITABLE 04;38;5;27 # dir that is sticky and other-writable (+t,o+w)
+OTHER_WRITABLE        00;38;5;196 # dir that is other-writable (o+w) and not sticky
+STICKY                38;5;196 # dir with the sticky bit set (+t) and not other-writable
+EXEC                  01;38;5;220
+
+.log                  01;38;5;196
+.rb                   00;38;5;228
+.cpp                  00;38;5;228
+.c                    00;38;5;228
+.c++                  00;38;5;228
+.bash                 00;38;5;228
+.sh                   00;38;5;228
+.pl                   00;38;5;228
+.tex                  01;38;5;245
+.torrent              01;38;5;245
+*Makefile             01;38;5;202
+*Rakefile             01;38;5;202
+*build.xml            01;38;5;202
+*rc                   00;38;5;208
+*1                    01;38;5;245
+.md                   01;38;5;255
+.markdown             01;38;5;255
+.txt                  00;38;5;253
+.xhtml                01;38;5;250
+.html                 01;38;5;250
+*README               00;38;5;196
+*README.txt           00;38;5;196
+*readme.txt           00;38;5;196
+*README.md            00;38;5;196
+*README.markdown      00;38;5;196
+*yml                  00;38;5;208
+*cfg                  00;38;5;208
+*conf                 00;38;5;208
+EOF
+# inform the user
+echo "ls colors configuration written to ~/.dircolors/rainbow.colors"
+fi
+
+##
+## Zsh configuration file
+##
 if [ -e $HOME/.zshrc ] ; then
   echo "Zsh configuration ~/.zshrc exists!"
   exit 0
@@ -37,6 +127,9 @@ source $HOME/.oh-my-zsh/oh-my-zsh.sh
 
 export TERM="xterm-256color"
 
+autoload -U colors && colors
+eval \`dircolors \$HOME/.dircolors/rainbow.colors\`
+
 export OH_MY_ZSH_HOME=$ZSH
 
 if [ -f $HOME/.zsh_config_hook ]
@@ -44,12 +137,12 @@ then
   source $HOME/.zsh_config_hook
 fi
 EOF
+echo "Configuration written to ~/.zshrc"
 
-echo "Configuration written to \$HOME/.zshrc"
-
+# make zsh default shell 
 shell=$(getent passwd $USER | cut -d':' -f 7)
-if [ ! "$shell" -eq "/bin/zsh" ] ; then
-  echo -n "Make Zshell your default? (y/n): "
+if [ ! "$shell" == "/bin/zsh" ] ; then
+  echo -n "Make Zsh your default shell? (y/n): "
   read ans
   if [[ "$ans" == "y" ]]
   then
