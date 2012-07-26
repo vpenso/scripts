@@ -20,6 +20,8 @@ Scripts
 * **vim-default-config** - helps to install Vundle including
   a couple of Bundles, and my personal Vim configuration.
 * **vim-cheat** - "What was this key again?" Vim cheat sheet. 
+* **zsh-default-config** - helps to install Oh-My-Zsh and my
+  default Zsh configuration.
 
 License
 =======
