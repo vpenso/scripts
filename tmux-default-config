@@ -19,9 +19,9 @@ setw -g monitor-activity on
 set -g visual-activity on
 setw -g automatic-rename
 
-set-option -g prefix C-a
+set-option -g prefix C-e
 unbind C-b
-bind-key C-a last-window
+bind-key C-e last-window
 
 # force reload of config file
 unbind r
