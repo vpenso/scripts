@@ -14,4 +14,19 @@ Hold Shift to select text with mouse
     Ctrl-a n/p     │ next/previous window
     Ctrl-a w       │ list windows
     Ctrl-a d       │ detach from session (run tmux attach)
-    Ctrl-a a       │ send prefix key to program in pane "
+    Ctrl-a a       │ send prefix key to program in pane 
+    
+Shell key-binding
+
+    Ctrl-r         │ search command history 
+    Ctrl-z         │ suspend process to background 
+    Ctrl-c         │ break current execution
+    Ctrl-t         │ transpose current character
+    Ctrl-e         │ cursor to end of line
+    Ctrl-l         │ clear screen
+    Ctrl-u         │ discard line
+    Ctrl-w         │ remove last word 
+    Ctrl-k         │ remove until end of line 
+    Esc-d          │ remove next word
+    Esc-b          │ cursor on word back 
+    Esc-f          │ cursor on word forward "
