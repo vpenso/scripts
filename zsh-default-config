@@ -142,13 +142,8 @@ echo "Configuration written to ~/.zshrc"
 # make zsh default shell 
 shell=$(getent passwd $USER | cut -d':' -f 7)
 if [ ! "$shell" == "/bin/zsh" ] ; then
-  echo -n "Make Zsh your default shell? (y/n): "
-  read ans
-  if [[ "$ans" == "y" ]]
-  then
-    chsh -s /bin/zsh
-    echo "Re-login to your user account."
-  fi
+  chsh -s /bin/zsh
+  echo "Re-login to your user account."
 fi
 
 
