@@ -50,7 +50,7 @@ if [ ! -e $HOME/.dircolors/rainbow.colors ] ; then
 mkdir $HOME/.dircolors 2> /dev/null
 # write the colors configuration
 cat > $HOME/.dircolors/rainbow.colors <<EOF
-TERM xterm-256color
+TERM screen-256color
 RESET                 0
 FILE                  00;38;5;241
 DIR                   01;38;5;39 
@@ -125,7 +125,7 @@ source $HOME/.oh-my-zsh/oh-my-zsh.sh
 # Customize to your needs...
 #
 
-export TERM="xterm-256color"
+export TERM="screen-256color"
 
 autoload -U colors && colors
 eval \`dircolors \$HOME/.dircolors/rainbow.colors\`
