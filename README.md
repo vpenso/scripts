@@ -14,7 +14,7 @@ Scripts
   default editor lots of aliases and a global gitignore file.
 * **git-repos** - maintains a directory structure and corresponding 
   Git remote repositories.
-* **music** - Controlls the local Music Player Daemon.
+* **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
 * **tmux-cheat** - Most important Tmux keys.
