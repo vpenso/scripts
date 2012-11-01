@@ -1,0 +1,119 @@
+#!/bin/bash
+
+name=$(basename $0)
+
+function _help() {
+echo "Usage: $name [COMMAND] [ARGUMENT]
+
+By default the currently played song is displayed.
+
+$name h|help:
+  Show this text.
+$name config PATH:
+  Creates a configuration file for MPC, where
+  PATH is the directory of your music library.
+$name l|library [PATH]:
+  Show all music directories in PATH of your
+  library.
+$name p|playlist:
+  Show current playlist.
+$name a|add PATH:
+  Adds a direcotry from your music library to
+  the playlist.
+$name c|clear:
+  Remove all songs from playlist.
+$name @|crop:
+  Remove all songs except the current playing 
+  from playlist.
+$name 0:
+  Remove currently played song from playlist.
+$name d|delete NUMS:
+  Remove songs from playlist.
+$name r|play [NUM]:
+  Plays the music from your playlist.
+$name +|next:
+  Plays next song in playlist.
+$name -|prev:
+  Plays previous song in playlist.
+$name 1:
+  Toggles loops over currently played song.
+$name s|stop:
+  Stops playing music.
+$name kill:
+  Kills the MPC daemon."
+}
+
+function _error() {
+local msg=$1
+echo "Error: $1"
+_help
+exit 1
+}
+
+function config() {
+local path=$1
+cat > $HOME/.mpdconf <<-EOF
+bind_to_address         "127.0.0.1"
+port                    "6666"
+music_directory         "$path"
+playlist_directory      "~/.mpd/playlists"
+db_file                 "~/.mpd/mpd.db"
+log_file                "~/.mpd/mpd.log"
+pid_file                "~/.mpd/mpd.pid"
+mixer_type              "software"
+
+audio_output { 
+  type                  "alsa"
+  name                  "My ALSA Device"
+}
+EOF
+mkdir $HOME/.mpd
+echo "MPC configuration written to $HOME/.mpdconf"
+}
+
+function _mpc() {
+  mpc -p 6666 $@
+}
+
+function mpd_start() {
+  if ! mpd_running
+  then
+    mpd $HOME/.mpdconf # start the music daemon in user space
+    _mpc -w update # recreate the music files index
+    sleep 1
+    echo "MPD started"
+  fi
+}
+
+function mpd_running() {
+  pgrep -u $USER mpd 1>-
+  return $?
+}
+
+
+function _mpc_add() {
+  _mpc add $@
+}
+
+mpd_start
+
+command=$1
+case "$command" in
+  "config") config $2 ;;
+  "update") _mpc update ;;
+  "a"|"add") shift ; _mpc_add $@ ;;
+  "c"|"clear") _mpc -q clear ;;
+  "@"|"crop") _mpc crop ;;
+  "0") _mpc del 0 ;; 
+  "d"|"delete") shift ; _mpc del $@ ;; 
+  "r"|"play") shift; _mpc play $1;;
+  "l"|"library") shift ; _mpc ls $@ ;;
+  "p"|"playlist") mpc -p 6666 --format '[%position%] %file%' playlist ;;
+  "-"|"next") _mpc next ;;
+  "+"|"prev") _mpc prev ;;
+  "1") _mpc repeat ;;
+  "s"|"stop") _mpc stop ;;
+  "h"|"help") _help ;;
+  "kill") killall mpd ;;
+  *) _mpc current  ;;
+esac
