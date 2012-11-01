@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+name=$(basename $0)
+function _error() {
+  echo Error: $1
+  echo "Usage: $name add|remove|update hostname"  
+  exit 1
+}
+
+# remove all fingerprints 
+function remove() {
+  local fqdn=$1
+  ssh-keygen -R $fqdn 2>-
+  local name=$(echo $fqdn | cut -d. -f1)
+  ssh-keygen -R $name 2>-
+  local ip=$(host $fqdn | cut -d' ' -f4)
+  ssh-keygen -R $ip 2>-
+}
+
+function add() {
+  local fqdn=$1
+  ssh-keyscan $fqdn >> $HOME/.ssh/known_hosts
+}
+
+
+if [ $# -lt 2 ]
+then
+  _error "Not enough arguments."
+fi
+
+command=$1
+fqdn=$(host $2 | cut -d' ' -f1)
+case "$command" in 
+  "add") 
+    add $fqdn
+    ;;
+  "remove")
+    remove $fqdn
+    ;;
+  "update")
+    remove $fqdn
+    add $fqdn
+    ;;
+  *)
+    _error "Not supported command."
+    ;;
+esac
+
+exit 0

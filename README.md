@@ -15,6 +15,7 @@ Scripts
 * **git-repos** - maintains a directory structure and corresponding 
   Git remote repositories.
 * **ruby-skeleton** - Start developing ruby scripts from here.
+* **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
 * **tmux-cheat** - Most important Tmux keys.
 * **tmux-default-config** - helps to configure Tmux terminal
   multiplexer.
