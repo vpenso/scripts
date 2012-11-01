@@ -23,7 +23,6 @@ The output of the Ruby script [git-repos][1] I have implemented to solve this lo
 
 _git-repos_ looks for a repository list in <tt>$PWD/.gitrepos</tt>, <tt>$HOME/.gitrepos</tt> or it expects a parameter <tt>--config PATH</tt>. It supports two commands **init** and **status**. _Init_ creates all missing directories defined in the repository list by running <tt>git init</tt> to create an empty repository, followed by executing <tt>git remote add</tt> to configure all defined remote repositories. _Status_ runs <tt>git status -s</tt> on all repositories. Additionally it checks if the local repositories are ahead of their remotes with <tt>git rev-list</tt>. A list of repositories is defined like:
 
-    --bash
     /path/to/the/repository
       origin git://host.org/project.git
       backup ssh://user@host.org/project.git
@@ -37,7 +36,6 @@ _git-repos_ looks for a repository list in <tt>$PWD/.gitrepos</tt>, <tt>$HOME/.g
 Each directory is followed by a list of remotes using the notation of <tt>git remote add</tt>. First the name of the remote, second the URI to the remote repository. 
 
 There are plenty of alternative approaches to work with many Git repositories like [gits][2] or [git-repo][3]. You will find a lot of blog posts, many with scripts for similar problems like I have described here. Since this is depending on your working habits and your environment take this article as another source of inspiration to develop a custom solution for managing multiple git repositories.
-
 
 
 [1]: https://github.com/vpenso/scripts/blob/master/git-repos

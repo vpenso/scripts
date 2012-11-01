@@ -12,7 +12,7 @@ Scripts
 
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
-* **git-repos** - Maintains a list of Git remote repositories and showsthe status. (Read [Managing Git Repositories](git-repos.markdown) for details).
+* **git-repos** - Maintains a list of Git remote repositories and showsthe status.
 * **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
