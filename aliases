@@ -46,3 +46,38 @@ alias epoch="date +%s"
 alias get="curl -C - -O"
 alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
 
+function uri-encode() { echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; }
+
+# aliases and functions preceded by an @ sign redirect to web page
+
+export BROWSER=${BROWSER:-"chromium-browser"}
+
+function @google-translate() { 
+  local lang=${1:-"en/de"}
+  shift 2>-
+  $BROWSER "http://translate.google.com/#$lang/$(uri-encode $@)" 
+}
+
+alias @g.t="@google-translate de/en"
+
+function @google() { 
+  local lang=${1:-"en"}
+  shift 2>-
+  $BROWSER "http://www.google.com/search?h1=$lang#q=$(uri-encode $@)"
+}
+
+alias @g="@google en"
+alias @g.de="@google de"
+
+function @wikipedia() {
+  local lang=${1:-"en"}
+  shift 2>-
+  $BROWSER "http://$lang.wikipedia.org/w/index.php?search=$(uri-encode $@)"
+}
+
+alias @w="@wikipedia en"
+alias @w.de="@wikipedia de"
+
+function @stackexchange() { $BROWSER "http://stackexchange.com/search?q=$(uri-encode $@)" ; }
+
+# vim: set syntax=sh:
