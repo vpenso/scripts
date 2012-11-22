@@ -1,0 +1,48 @@
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+alias a+x="chmod a+x"
+alias go-="chmod go-rwx"
+
+alias 0=clear
+alias x=exit
+alias v=vim
+alias m=music
+alias s=" sudo"
+alias l="ls -1"
+alias l.='ls -lAh -d .* --color=auto'
+alias f="find . -type f -exec grep -l \"$1\" {} \;;"
+alias g="egrep --color"
+alias t=tmux
+alias tl="tmux list-sessions"
+alias ta-"tmux attach-session"
+
+alias man="MANWIDTH=80 MANPAGER=less man"
+alias scp"noglob scp"
+
+alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
+alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
+
+alias rsync='rsync -avzrtp'
+
+alias path='echo -e ${PATH//:/\\n}'
+alias cpu=lscpu
+alias ports='netstat -tulanp'
+alias epoch="date +%s"
+alias get="curl -C - -O"
+alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
+

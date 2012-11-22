@@ -10,9 +10,10 @@ repository from time to time.
 Scripts
 -------
 
+* **aliases** for the shell.
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
-* **git-repos** - Maintains a list of Git remote repositories and showsthe status.
+* **git-repos** - Maintains a list of Git remote repositories and shows the status.
 * **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
