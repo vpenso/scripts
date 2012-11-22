@@ -23,16 +23,18 @@ alias x=exit
 alias v=vim
 alias m=music
 alias s=" sudo"
-alias l="ls -1"
-alias l.='ls -lAh -d .* --color=auto'
+alias ls='ls -Fh --color=always'
+alias l='ls -1'
+alias ll='ls -l'
+alias l.='ls -lA -d .*'
 alias f="find . -type f -exec grep -l \"$1\" {} \;;"
-alias g="egrep --color"
+alias g=git
 alias t=tmux
 alias tl="tmux list-sessions"
-alias ta-"tmux attach-session"
+alias ta="tmux attach-session"
 
 alias man="MANWIDTH=80 MANPAGER=less man"
-alias scp"noglob scp"
+alias scp="noglob scp"
 
 alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
 alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
@@ -46,9 +48,12 @@ alias epoch="date +%s"
 alias get="curl -C - -O"
 alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
 
-function uri-encode() { echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; }
+function exp() { read n; export $1=$n }
 
-# aliases and functions preceded by an @ sign redirect to web page
+alias -g NS='| exp NODES'
+alias rush='clush -l root -w $NODES'
+
+function uri-encode() { echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; }
 
 export BROWSER=${BROWSER:-"chromium-browser"}
 
