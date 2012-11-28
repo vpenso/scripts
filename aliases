@@ -15,6 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# move cursor one word left/right using Ctrl instead of Esc
+bindkey '^B' backward-word
+bindkey '^F' forward-word
+
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
 
@@ -35,6 +39,8 @@ alias ta="tmux attach-session"
 
 alias man="MANWIDTH=80 MANPAGER=less man"
 alias scp="noglob scp"
+alias npm="nocorrect npm"
+alias vm="nocorrect vm"
 
 alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
 alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"

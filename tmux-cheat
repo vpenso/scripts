@@ -22,11 +22,11 @@ Shell key-binding
     Ctrl-z         │ suspend process to background 
     Ctrl-c         │ break current execution
     Ctrl-t         │ transpose current character
+    Ctrl-a         │ cursor to beginning of line
     Ctrl-e         │ cursor to end of line
     Ctrl-l         │ clear screen
     Ctrl-u         │ discard line
     Ctrl-w         │ remove last word 
     Ctrl-k         │ remove until end of line 
-    Esc-d          │ remove next word
-    Esc-b          │ cursor on word back 
-    Esc-f          │ cursor on word forward "
+    Ctrl-b         │ cursor one word left 
+    Ctrl-f         │ cursor one word right "
