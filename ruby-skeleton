@@ -45,6 +45,8 @@ EOF
 
 begin
 
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
   options = OpenStruct.new
   options.debug = false
 
