@@ -39,6 +39,7 @@ git config --global push.default current
 git config --global core.editor $_edit
 
 # Aliases for the git command wrapper
+git config --global alias.aliases "!git config -l | grep alias | cut -c 7-"
 git config --global alias.s status
 git config --global alias.rs "repos status"
 git config --global alias.a add
@@ -55,6 +56,7 @@ git config --global alias.pl pull
 git config --global alias.plt "pull --tags"
 git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
 git config --global alias.l "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+git config --global alias.changes 'log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue [%cn]" --decorate --numstat'
 git config --global alias.tags "tag -n1 -l"
 git config --global alias.amend "commit --amend"
 git config --global alias.undo "reset --hard"
