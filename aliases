@@ -53,6 +53,8 @@ alias ports='netstat -tulanp'
 alias epoch="date +%s"
 alias get="curl -C - -O"
 alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
+alias mute="amixer --quiet set Master toggle"
+alias volume="amixer --quiet set Master"
 
 function exp() { read n; export $1=$n }
 
