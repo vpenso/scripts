@@ -19,6 +19,7 @@ Hold Shift to select text with mouse
 Shell key-binding
 
     Ctrl-r         │ search command history 
+    Ctrl-p         │ last command
     Ctrl-z         │ suspend process to background 
     Ctrl-c         │ break current execution
     Ctrl-t         │ transpose current character
