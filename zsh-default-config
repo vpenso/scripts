@@ -31,12 +31,16 @@ fi
 prompt=$HOME/.oh-my-zsh/themes/default-git.zsh-theme
 if [ ! -e $prompt ] ; then
 cat > $prompt <<EOF
-PROMPT='%{\$fg_bold[white]%}\$(git_prompt_info)%{\$fg_bold[black]%}»%{\$reset_color%}%b '
-RPROMPT="%{\$fg_bold[black]%}%n%{\$fg_bold[white]%}\${SSH_TTY:+@%m}%{\$reset_color%}:%{\$fg_bold[black]%}%B%~%{\$reset_color%}%{\$fg[\$FINISH]%}%{\$reset_color%}%b "
-ZSH_THEME_GIT_PROMPT_PREFIX=""
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{\$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{\$fg[red]%}⚡%{\$reset_color%} "
-ZSH_THEME_GIT_PROMPT_CLEAN="%{\$fg[blue]%}"
+G=$'\u2b80'
+P=$'\u2b82'
+ZSH_THEME_GIT_PROMPT_PREFIX="%B%K{232}%F{240} "
+ZSH_THEME_GIT_PROMPT_SUFFIX=" %K{130}%F{232}$G%f%b"
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{160}⚡%f"
+ZSH_THEME_GIT_PROMPT_ADDED="%F{082}✚%f"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="…"
+ZSH_THEME_GIT_PROMPT_SEPARATOR=$G
+PROMPT='$(git_prompt_info)%K{130} %k%F{130}$G%f '
+RPROMPT='%F{236}$P$f%K{236}%F{245} %n %F{233}$P%K{233}%F{245} %~ %k%F{233}$G%f'
 EOF
 # inform the user
 echo "Adding Zsh prompt configuration to Oh-My-Zsh."
