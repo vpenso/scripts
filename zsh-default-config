@@ -40,7 +40,7 @@ ZSH_THEME_GIT_PROMPT_ADDED="%F{082}✚%f"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="…"
 ZSH_THEME_GIT_PROMPT_SEPARATOR=$G
 PROMPT='$(git_prompt_info)%K{130} %k%F{130}$G%f '
-RPROMPT='%F{236}$P$f%K{236}%F{245} %n %F{233}$P%K{233}%F{245} %~ %k%F{233}$G%f'
+RPROMPT='%F{236}$P%f%K{236}%F{245} %n %F{233}$P%K{233}%F{245} %~ %k%F{233}$G%f'
 EOF
 # inform the user
 echo "Adding Zsh prompt configuration to Oh-My-Zsh."
