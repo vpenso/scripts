@@ -151,8 +151,8 @@ ZSH_HIGHLIGHT_STYLES+=(
   builtin                       'fg=27,bold'
   function                      'fg=39,bold'
   path                          'fg=250,bg=234'
-  single-quoted-argument        'fg=220'
-  double-quoted-argument        'fg=220'
+  single-quoted-argument        'fg=220,bold'
+  double-quoted-argument        'fg=220,bold'
 )
 
 if [ -f $HOME/.zsh_config_hook ]
