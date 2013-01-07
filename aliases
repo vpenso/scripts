@@ -42,6 +42,10 @@ alias scp="noglob scp"
 alias npm="nocorrect npm"
 alias vm="nocorrect vm"
 
+# colorize matched patterns when using `grep` by default
+export GREP_OPTIONS='--color=auto'
+export GREP_COLOR='1;38;5;52;48;5;166'
+
 alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
 alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
 
