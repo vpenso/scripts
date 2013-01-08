@@ -60,6 +60,13 @@ alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
 alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
 
+# connect to a service module using IPMI serial over lan
+function sol() { 
+  local host=$1
+  local user=$2
+  ipmitool -I lanplus -H $host -U $user -a sol activate 
+}
+
 function exp() { read n; export $1=$n }
 
 alias -g NS='| exp NODES'
