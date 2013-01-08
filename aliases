@@ -69,10 +69,21 @@ function sol() {
   ipmitool -I lanplus -H $host -U $user -a sol activate 
 }
 
+# stdin is exported as environment variable
 function exp() { read n; export $1=$n }
-
+# pipe into the NODES environment variable
 alias -g NS='| exp NODES'
+# run Clustershell using the NODES environment variable
 alias rush='clush -l root -w $NODES'
+# quick export NODES environment variable
+function NODES() {
+  if [ $# -lt 1 ]
+  then
+    echo $NODES
+  else
+    export NODES=$@
+  fi
+}
 
 function uri-encode() { echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; }
 
