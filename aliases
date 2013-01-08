@@ -26,7 +26,8 @@ alias 0=clear
 alias x=exit
 alias v=vim
 alias m=music
-alias s=" sudo"
+alias _=" sudo"
+alias _!=" sudo !!"
 alias ls='ls -Fh --color=always'
 alias l='ls -1'
 alias ll='ls -l'
@@ -57,6 +58,7 @@ alias ports='netstat -tulanp'
 alias epoch="date +%s"
 alias get="curl -C - -O"
 alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
+alias ascii="man ascii"
 alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
 
