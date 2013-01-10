@@ -1,0 +1,50 @@
+#!/bin/bash
+
+echo "
+  '\\e[<NUM>m' or '\\e[<NUM>;<NUM>;...;<NUM>m'
+  
+  Text modifiers
+    0 (off) 1 (bold) 4 (underscore) 5 (blink) 7 (reverse) 8 (concealed)  
+  8 colors (Bold)
+   [30m 30 [31m 31 [32m 32 [33m 33 [34m 34 [35m 35 [36m 36 [37m 37 [0m
+  [1m [30m 30 [31m 31 [32m 32 [33m 33 [34m 34 [35m 35 [36m 36 [37m 37 [0m
+
+  '\\e[38;5;<NUM>m' foreground and '\e[48;5;<N>m' background 256 colors 
+  '\e[38;2;<r>;<g>;<b>m' foreground and '\\e[48;2;<r>;<g>;<b>m' background 24bit colors
+
+  256 colors
+"
+
+echo -n "[38;5;16m    "
+
+steps=0
+for i in {16..99}
+do 
+  echo -n "[48;5;${i}m ${i}  "
+  if [ "$steps" == "5" ] 
+  then
+    steps=0
+    echo 
+    echo -n "[0m    [30m"
+  else
+    steps=$[steps+1]
+  fi
+done 
+
+steps=0
+for i in {100..255}
+do 
+  echo -n "[48;5;${i}m ${i} "
+  if [ "$steps" == "5" ] 
+  then
+    steps=0
+    echo 
+    echo -n "[0m    [30m"
+  else
+    steps=$[steps+1]
+  fi
+done 
+
+echo "[0m"
+
+exit 0

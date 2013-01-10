@@ -11,6 +11,7 @@ Scripts
 -------
 
 * **aliases** for the shell.
+* **ansi-color** show ANSI color escaping.
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
 * **git-repos** - Maintains a list of Git remote repositories and shows the status.
