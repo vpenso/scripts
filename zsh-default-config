@@ -1,55 +1,28 @@
-#!/bin/bash
+#!/bin/zsh
 #
-# Copyright 2012 Victor Penso
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+## Copyright 2012 Victor Penso
+##
+## This program is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+##
 
-##
-## Deploy Oh-My-Zsh from GitHub
-##
-if [ ! -d $HOME/.oh-my-zsh ] ; then
-  echo "Installing Oh-My-Zsh to ~/.oh-my-zsh"
-  git clone -q https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
-fi
+mkdir ~/.zsh 2>-
 
-if [ ! -d $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ] ; then
-  mkdir -p $HOME/.oh-my-zsh/custom/plugins
-  echo "Installing Zsh-Syntax-Highlighting to ~/.oh-my-zsh/custom/plugins"
-  git clone -q git://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-fi
-
-##
-## Zsh prompt configuration
-##
-# add prompt to Oh-My-Zshell configuration
-prompt=$HOME/.oh-my-zsh/themes/default-git.zsh-theme
-if [ ! -e $prompt ] ; then
-cat > $prompt <<EOF
-G=$'\u2b80'
-P=$'\u2b82'
-ZSH_THEME_GIT_PROMPT_PREFIX="%B%K{232}%F{240} "
-ZSH_THEME_GIT_PROMPT_SUFFIX=" %K{130}%F{232}$G%f%b"
-ZSH_THEME_GIT_PROMPT_DIRTY="%F{160}⚡%f"
-ZSH_THEME_GIT_PROMPT_ADDED="%F{082}✚%f"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="…"
-ZSH_THEME_GIT_PROMPT_SEPARATOR=$G
-PROMPT='$(git_prompt_info)%K{130} %k%F{130}$G%f '
-RPROMPT='%F{236}$P%f%K{236}%F{245} %n %F{233}$P%K{233}%F{245} %~ %k%F{233}$G%f'
-EOF
-# inform the user
-echo "Adding Zsh prompt configuration to Oh-My-Zsh."
+# Antigen package management for zsh plug-ins
+ANTIGEN=https://raw.github.com/zsh-users/antigen/master/antigen.zsh
+if [ ! -e ~/.zsh/antigen.zsh ] ; then
+  curl --silent $ANTIGEN > ~/.zsh/antigen.zsh
+  echo "ZSH anitgen installed to ~/.zsh/"
 fi
 
 ##
@@ -109,7 +82,6 @@ EXEC                  01;38;5;220
 *cfg                  00;38;5;208
 *conf                 00;38;5;208
 EOF
-# inform the user
 echo "ls colors configuration written to ~/.dircolors/rainbow.colors"
 fi
 
@@ -117,56 +89,71 @@ fi
 ## Zsh configuration file
 ##
 if [ -e $HOME/.zshrc ] ; then
-  echo "Zsh configuration ~/.zshrc exists!"
+echo "Zsh configuration ~/.zshrc exists!"
   exit 0
 fi
 
-cat >> $HOME/.zshrc <<EOF
-ZSH=$HOME/.oh-my-zsh
+cat > $HOME/.zshrc <<'EOF'
+export ADOTDIR=~/.zsh
+source ~/.zsh/antigen.zsh
 
-ZSH_THEME="default-git"
+antigen-bundle git
+antigen-bundle oscarschneider/knife-completion
 
-DISABLE_AUTO_TITLE="true"
-plugins=(git ruby gem knife zsh-syntax-highlighting)
-
-source $HOME/.oh-my-zsh/oh-my-zsh.sh
-
-#
-# Customize to your needs...
-#
-
-export TERM="screen-256color"
-
-autoload -U colors && colors
-eval \`dircolors \$HOME/.dircolors/rainbow.colors\`
-
-export OH_MY_ZSH_HOME=$ZSH
+antigen-bundle zsh-users/zsh-syntax-highlighting
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 ZSH_HIGHLIGHT_STYLES+=(
-  reserved-word                 'fg=27,bold'
-  command                       'fg=27,bold'
-  hashed-command                'fg=27,bold'
-  alias                         'fg=39,bold'
-  builtin                       'fg=27,bold'
-  function                      'fg=39,bold'
-  path                          'fg=250,bg=234'
-  single-quoted-argument        'fg=220,bold'
-  double-quoted-argument        'fg=220,bold'
+  reserved-word          'fg=27,bold'
+  command                'fg=27,bold'
+  hashed-command         'fg=27,bold'
+  alias                  'fg=39,bold'
+  builtin                'fg=27,bold'
+  function               'fg=39,bold'
+  path                   'fg=250,bg=234'
+  single-quoted-argument 'fg=220,bold'
+  double-quoted-argument 'fg=220,bold'
 )
+
+U_AR=$'\u2b80'
+U_AL=$'\u2b82'
+
+antigen-bundle olivierverdier/zsh-git-prompt
+
+__GIT_PROMPT_DIR=~/.zsh/repos/https-COLON--SLASH--SLASH-github.com-SLASH-olivierverdier-SLASH-zsh-git-prompt.git/
+
+export __GIT_PROMPT_DIR
+
+ZSH_THEME_GIT_PROMPT_PREFIX="%B%K{232}%F{240}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%K{232}%K{234}%F{232}$U_AR%f%b"
+ZSH_THEME_GIT_PROMPT_SEPARATOR=""
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+ZSH_THEME_GIT_PROMPT_STAGED="%K{232}%F{166}●"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="%K{232}%F{166}✖"
+ZSH_THEME_GIT_PROMPT_CHANGED="%K{232}%F{26}✚"
+ZSH_THEME_GIT_PROMPT_BRANCH="%K{232}%F{240}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%K{232}%F{166}…"
+
+antigen-apply
+
+PROMPT='$(git_super_status)%K{234}%k%F{234}$U_AR%f '
+RPROMPT='%F{236}$U_AL%f%K{236}%F{245} %n %F{233}$U_AL%K{233}%F{245} %~ %k%F{233}$U_AR%f'
+
+autoload -U colors && colors
+eval $(dircolors ~/.dircolors/rainbow.colors)
 
 if [ -f $HOME/.zsh_config_hook ]
 then
   source $HOME/.zsh_config_hook
 fi
+
+export TERM="screen-256color"
 EOF
 echo "Configuration written to ~/.zshrc"
 
-# make zsh default shell 
+# make zsh default shell
 shell=$(getent passwd $USER | cut -d':' -f 7)
-if [ ! "$shell" == "/bin/zsh" ] ; then
+if [ ! "$shell" = "/bin/zsh" ] ; then
   chsh -s /bin/zsh
   echo "Re-login to your user account."
 fi
-
-
