@@ -52,14 +52,14 @@ set -g status-fg colour244
 set -g status-bg colour232
 set -g window-status-activity-attr bold
 set -g pane-border-fg colour245
-set -g pane-active-border-fg colour39
+set -g pane-active-border-fg colour250
 set -g message-fg colour16
 set -g message-bg colour221
 set -g message-attr bold
 set -g status-left '#[fg=colour234,bg=colour240,bold] ❐ #S #[fg=colour240,bg=colour233,bold]⮀'
 set -g status-right "#[fg=colour234,bg=colour232]⮂#[fg=colour239,bg=colour234] VM #(virsh list | grep running | wc -l) ⮃ MF #(free | grep Mem | awk '{print $4/$2 * 100.0}'| cut -c -5)% ⮃ LD#(uptime | cut -d, -f 4- | cut -d: -f2)"
-set -g window-status-format "#[fg=52,bg=colour166] #I #W "
-set -g window-status-current-format "#[fg=colour52,bg=colour166,noreverse,bold] #I #W #[fg=colour240,bg=colour232,nobold]"
+set -g window-status-format "#[fg=colour252,bg=colour232] #I #W "
+set -g window-status-current-format "#[fg=colour252,bg=colour234,noreverse,bold] #I #W #[fg=colour240,bg=colour232,nobold]"
 
 ##
 ## Custom configuration...
