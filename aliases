@@ -62,6 +62,13 @@ alias ascii="man ascii"
 alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
 
+# (re)set git mail address environment variable
+function git-mail() {
+  local mail=${1:-"user@localhost"}
+  export GIT_AUTHOR_EMAIL=$mail
+  echo "GIT_AUTHOR_EMAIL=$GIT_AUTHOR_EMAIL"
+}
+
 # connect to a service module using IPMI serial over lan
 function sol() { 
   local host=$1
