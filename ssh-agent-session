@@ -1,0 +1,89 @@
+#!/bin/bash
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# SSH agent configuration is saved to file:
+export SSH_ENV=$HOME/.ssh/agent-session
+
+# check if an SSH agent is running
+function __ssh_agent_running() {
+  if [ -f $SSH_ENV ]; then
+    source $SSH_ENV
+    ps $SSH_AGENT_PID > /dev/null
+    return $?
+  else
+    return 1
+  fi
+}
+
+# If an SSH agent is running attach new shells
+function __ssh_agent_load() {
+  if __ssh_agent_running
+  then
+    source $SSH_ENV
+    echo "Using existing SSH agent!"
+  else
+    echo "SSH agent not running!"
+  fi
+}
+
+# remove any trace of existing SSH agents
+function __ssh_agent_stop() {
+  if __ssh_agent_running 
+  then
+    ssh-add -D
+    ssh-agent -k > /dev/null 2>&1
+    rm $SSH_ENV
+  fi
+  # just to be sure!
+  killall -u $USER ssh-agent
+  # removes un-managed SSH agents too!
+}
+
+function __ssh_agent_start() {
+  if ! __ssh_agent_running 
+  then
+    __ssh_agent_stop # be absolutely sure!
+    # kills also agents spawned by other entities
+    ssh-agent | sed 's/^echo/#echo/' > $SSH_ENV
+    # restrict permissions
+    chmod 600 $SSH_ENV
+    source $SSH_ENV
+    echo "Agent started, session in $SSH_ENV"
+  else
+    echo "Running with process ID $SSH_AGENT_PID"
+  fi
+}
+
+# start SSH agent if missing
+__ssh_agent_start
+# load existing sessions by default
+command=${1:-"load"}
+case "$command" in
+  load)
+    __ssh_agent_load
+    ;;
+  stop)
+    __ssh_agent_stop
+    echo "Killed"
+    ;;
+  *)
+    echo "Usage: $(basename $0) [load|stop]"
+    ;;
+esac
+
+# vim: set syntax=sh:

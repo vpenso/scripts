@@ -17,6 +17,7 @@ Scripts
 * **git-repos** - Maintains a list of Git remote repositories and shows the status.
 * **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
+* **ssh-agent-session** - Use the same SSH agent across multiple shells.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
 * **tmux-cheat** - Most important Tmux keys.
 * **tmux-default-config** - helps to configure Tmux terminal
