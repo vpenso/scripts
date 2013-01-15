@@ -39,9 +39,27 @@ alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
 
 alias man="MANWIDTH=80 MANPAGER=less man"
-alias scp="noglob scp"
 alias npm="nocorrect npm"
 alias vm="nocorrect vm"
+
+#
+#         ----( Remote Login, Keys and Encryption )----
+#
+alias scp="noglob scp"
+# use archive mode by default
+alias rsync='rsync -avzrtp'
+# remote login as root
+alias rssh='ssh -l root'
+# less secure but faster
+alias fssh='ssh -C4c arcfour,blowfish-cbc'
+# spy on the SSH traffic
+alias sshdump='tcpdump -lnn -i any port ssh and tcp-syn'
+# compression by default for remote mounts
+alias sshfs='sshfs -C'
+# generating key-pairs, use `-f <PATH>` to provide the location
+alias ssh-keygen-ecdsa="ssh-keygen -t ecdsa -b 521 "
+alias ssh-keygen-rsa='ssh-keygen -t rsa -b 4096'
+alias ssh-keygen-no-password="ssh-keygen -q -t rsa -b 2048 -N ''"
 
 # colorize matched patterns when using `grep` by default
 export GREP_OPTIONS='--color=auto'
@@ -50,7 +68,6 @@ export GREP_COLOR='1;38;5;52;48;5;166'
 alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
 alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
 
-alias rsync='rsync -avzrtp'
 
 alias path='echo -e ${PATH//:/\\n}'
 alias cpu=lscpu
