@@ -51,6 +51,8 @@ alias rsync='rsync -avzrtp'
 alias rssh='ssh -l root'
 # less secure but faster
 alias fssh='ssh -C4c arcfour,blowfish-cbc'
+# agent forwarding
+alias ssha='ssh -A'
 # spy on the SSH traffic
 alias sshdump='tcpdump -lnn -i any port ssh and tcp-syn'
 # compression by default for remote mounts

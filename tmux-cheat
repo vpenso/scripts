@@ -35,4 +35,8 @@ Shell key-binding
 Simultaneous keyboard input on all panes:
 
     Ctrl-a :setw synchronize-panes [on|off]
+
+Reload the configuration file
+
+    Ctrl-a :source-file ~/.tmux.conf
 "
