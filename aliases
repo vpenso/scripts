@@ -32,7 +32,6 @@ alias ls='ls -Fh --color=always'
 alias l='ls -1'
 alias ll='ls -l'
 alias l.='ls -lA -d .*'
-alias f="find . -type f -exec grep -l \"$1\" {} \;;"
 alias g=git
 alias t=tmux
 alias tl="tmux list-sessions"
@@ -43,7 +42,7 @@ alias npm="nocorrect npm"
 alias vm="nocorrect vm"
 
 #
-#         ----( Remote Login, Keys and Encryption )----
+#  ----( Remote Login, Keys and Encryption )----
 #
 alias scp="noglob scp"
 # use archive mode by default
@@ -61,9 +60,27 @@ alias ssh-keygen-ecdsa="ssh-keygen -t ecdsa -b 521 "
 alias ssh-keygen-rsa='ssh-keygen -t rsa -b 4096'
 alias ssh-keygen-no-password="ssh-keygen -q -t rsa -b 2048 -N ''"
 
+#
+#  ----( Searching )-----       
+#
+
+alias f="find . -type f -exec grep -l \"$1\" {} \;;"
+
 # colorize matched patterns when using `grep` by default
 export GREP_OPTIONS='--color=auto'
+# exclude version control repositories from search
+for PATTERN in .cvs .git .hg .svn; do
+   GREP_OPTIONS="$GREP_OPTIONS --exclude-dir=$PATTERN"
+done
 export GREP_COLOR='1;38;5;52;48;5;166'
+
+export ACK_PAGER_COLOR="less -x4SRFX"
+alias ack='ack-grep -a'
+
+
+
+
+
 
 alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
 alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
