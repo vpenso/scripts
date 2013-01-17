@@ -30,4 +30,9 @@ Shell key-binding
     Ctrl-w         │ remove last word 
     Ctrl-k         │ remove until end of line 
     Ctrl-b         │ cursor one word left 
-    Ctrl-f         │ cursor one word right "
+    Ctrl-f         │ cursor one word right 
+
+Simultaneous keyboard input on all panes:
+
+    Ctrl-a :setw synchronize-panes [on|off]
+"
