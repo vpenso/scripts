@@ -52,7 +52,6 @@ echo "
          Ctrl-r │ redo last edit
              gv │ select last block
              ZZ │ write changes and exit
-         Ctrl-V │ Insert escape sequence ^[
 
             ${B}${U}VISUAL MODE${R}
 
@@ -89,12 +88,15 @@ echo "
             p/P │ paste after/below of before/above the cursor${R}
         \"+y/\"+p │ copy to/paste from clipboard
         Ctrl-R\" │ paste from clipboard (and other registers)
-              \" │ default register
-              0 │ yank register
-            1-9 │ shifting delete registers
-              / │ search pattern register
-              : │ last command register
-            a-z │ user registers (A-Z to append onto register)
+             \"\" │ default register
+             \"0 │ yank register
+           \"1-9 │ shifting delete registers
+           \"a-z │ user registers (A-Z to append onto register)
+       Ctrl-R / │ search pattern register
+             \": │ last command register
+             \"_ │ black hole register
+             \"% │ last file name register
+             \", │ last inserted text register
            :reg │ show content of all registers
 
 
@@ -148,4 +150,12 @@ echo "
          :cprev │ step forward in the revision tree
         :cfirst │ jump to the latest revision
          :clast │ jump to the oldest revision
+
+               ${B}${U}DIGRAPHS${R}
+         
+      :digraphs │ list a characters
+     Ctrl-k = e │ € (Euro) 
+   Ctrl-k aou : │ äöü (German umlaut)
+     Ctrl-v Esc │ Insert escape sequence ^[ 
+  Ctrl-v u 00a9 │ © (character by unicode number)
 "
