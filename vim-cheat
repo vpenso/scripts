@@ -112,17 +112,21 @@ echo "
            :sp. │ open explorer in horizontal split pane
            :vs. │ open explorer in horizontal split pane
   Crtl-w Ctrl-w │ switch between panes
-              - │ on diretory up
+              - │ on directory up
               % │ create new empty file
               d │ create new directory
      ${B}(map leader is comma \",\")${R}
              ,e │ edit configuration file
             ,sv │ reload configuration file
-             ${M},l │ toggle invisible charaters
+             ${M},l │ toggle invisible characters
              ,/ │ clear search highlighting${R}
             ,ew │ open file from the directory of current file
             ,es │ ^~ in horizontal split pane 
             ,ev │ ^~ in vertical split pane 
+             q: │ open command line window 
+             q? │ open search history window 
+       Ctrl-w c │ close window 
+      
 
               ${B}${U}KEYS${R}
 
