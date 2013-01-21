@@ -38,51 +38,47 @@ git config --global push.default current
 # variable GIT_EDITOR is not set.
 git config --global core.editor $_edit
 
-# Aliases for the git command wrapper
 git config --global alias.aliases "!git config -l | grep alias | cut -c 7-"
-git config --global alias.s status
+
+git config --global alias.r "remote -v"
 git config --global alias.rs "repos status"
+git config --global alias.rls "ls-remote"
+git config --global alias.rlst "ls-remote --tags"
+
+git config --global alias.pl pull
+git config --global alias.plt "pull --tags"
+
+git config --global alias.s status
 git config --global alias.a add
-# show changes in the patch file
-git config --global alias.as 'apply --stat' # <PATCH_FILE>
-# dry run patch, and watch for errors
-git config --global alias.ac 'apply --check' # <PATCH_FILE>
-# commit the patch with original author information
-git config --global alias.ams 'am --signoff' # <PATCH_FILE>
+git config --global alias.as 'apply --stat'
+git config --global alias.ac 'apply --check'
+git config --global alias.ams 'am --signoff' 
 git config --global alias.di diff
 git config --global alias.dc "diff --cached"
 git config --global alias.co checkout
-# commit added changes
 git config --global alias.ci commit
-# commit all modifications
 git config --global alias.ca "commit -a"
-# don't use this; commit without message
 git config --global alias.ce "commit --allow-empty"
+
 git config --global alias.b branch
-# show all branches
 git config --global alias.ba "branch -a"
-git config --global alias.pu push
+git config --global alias.bd "branch -D"
+git config --global alias.bc "checkout -b" 
+
 git config --global alias.rb rebase
-git config --global alias.pl pull
-git config --global alias.plt "pull --tags"
-git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
-# show last commit
-git config --global alias.last "log -1 --stat"
-# comprehensive log information
+
+git config --global alias.pu push
 git config --global alias.l "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
+git config --global alias.last "log -1 --stat"
 git config --global alias.changes 'log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue [%cn]" --decorate --numstat'
-# show patches introduced at each commit
 git config --global alias.patches 'git log -p --no-merges'
-# list all tags
 git config --global alias.tags "tag -n1 -l"
-# append to last commit
 git config --global alias.amend "commit --amend"
 git config --global alias.undo "reset --hard"
 git config --global alias.uncommit "reset --soft HEAD^"
 git config --global alias.unstage "reset HEAD --"
 git config --global alias.unpushed "log --branches --not --remotes --simplify-by-decoration --decorate --oneline"
-# list all remote repositories
-git config --global alias.r "remote -v"
 git config --global alias.what whatchanged
 git config --global alias.who "shortlog -s --"
 git config --global alias.ls-ignored "ls-files --exclude-standard --ignored --others"
