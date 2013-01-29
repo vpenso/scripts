@@ -41,6 +41,8 @@ alias man="MANWIDTH=80 MANPAGER=less man"
 alias npm="nocorrect npm"
 alias vm="nocorrect vm"
 
+alias less="less -R"
+
 #
 #  ----( Remote Login, Keys and Encryption )----
 #

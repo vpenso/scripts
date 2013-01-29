@@ -162,4 +162,9 @@ echo "
    Ctrl-k aou : │ äöü (German umlaut)
      Ctrl-v Esc │ Insert escape sequence ^[ 
   Ctrl-v u 00a9 │ © (character by unicode number)
+
+               ${B}${U}SPELLING${R}
+         
+             z= │ list alternatives if word is incorrect
+             zG │ add the word to the spelling file
 "
