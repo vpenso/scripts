@@ -68,6 +68,9 @@ if has('gui_running')
 else
   set t_Co=256
   colorscheme $_colorsheme
+  " always use underline for bad spelling
+  hi clear SpellBad
+  hi SpellBad cterm=underline,bold
 endif
 
 EOF
