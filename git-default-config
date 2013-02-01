@@ -60,12 +60,16 @@ git config --global alias.ci commit
 git config --global alias.ca "commit -a"
 git config --global alias.ce "commit --allow-empty"
 
-git config --global alias.b branch
+git config --global alias.b  "branch"
 git config --global alias.ba "branch -a"
 git config --global alias.bd "branch -D"
 git config --global alias.bc "checkout -b" 
 
+git config --global alias.m  "merge"
+git config --global alias.ms "merge --squash"
+
 git config --global alias.rb rebase
+git config --global alias.rbi "rebase --interactive"
 
 git config --global alias.pu push
 git config --global alias.l "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
