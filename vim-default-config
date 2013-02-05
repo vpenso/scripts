@@ -214,8 +214,18 @@ hi rubyRegexpBrackets             ctermfg=240 cterm=bold
 hi rubyRegexpEscape               ctermfg=160 cterm=bold
 hi rubyRegexpCharClass            ctermfg=240 cterm=bold
 
-
-
+hi markdownH1                     ctermfg=27 cterm=bold
+hi markdownHeadingDelimiter       ctermfg=27
+hi markdownLinkText               ctermfg=34
+hi markdownLinkDelimiter          ctermfg=250
+hi markdownLinkTextDelimiter      ctermfg=250
+hi markdownUrl                    ctermfg=248
+hi markdownCode                   ctermfg=240
+hi markdownCodeBlock              ctermfg=240 ctermbg=255
+hi markdownCodeDelimiter          ctermfg=250
+hi markdownLineBreak              ctermbg=254
+hi markdownId                     ctermfg=202
+hi markdownIdDeclaration          ctermfg=202
 EOF
 
 
