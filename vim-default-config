@@ -57,29 +57,6 @@ EOF
 echo "Installing default bundles, this may take a while."
 `vim +BundleInstall +qall > /dev/null 2>&1`
 
-# default colorsheme 
-_colorsheme="molokai"
-
-# add the color specification to the configuration file
-cat >> $HOME/.vimrc <<EOF
-set background=dark
-if has('gui_running')
-  colorscheme $_colorsheme
-else
-  set t_Co=256
-  colorscheme $_colorsheme
-  " always use underline for bad spelling
-  hi clear SpellBad
-  hi SpellBad cterm=underline,bold
-endif
-
-EOF
-
-if [ "$_colorsheme" == "solarized" ]
-then
-  echo "let g:solarized_termcolors=256" >> $HOME/.vimrc
-fi
-
 # More configuration
 echo "Adding default configuration to $HOME/.vimrc"
 cat >> $HOME/.vimrc <<EOF
@@ -193,6 +170,51 @@ au FocusGained * :set rnu
 
 " extra file types
 autocmd BufNewFile,BufRead *.markdown,*.md,*.mdown,*.mkd,*.mkdn set ft=markdown
+
+" Show syntax highlighting groups for word under cursor
+nmap <C-S-P> :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+set t_Co=256
+set background=light
+" always use underline for bad spelling
+hi clear
+if exists("syntax on")
+  syntax reset
+endif
+hi SpellBad     ctermbg=none cterm=underline,bold
+hi CursorLine   ctermbg=253 cterm=none
+hi LineNr       ctermfg=236 ctermbg=254
+hi Comment      ctermfg=239
+hi Number       ctermfg=202
+hi String       ctermfg=248
+hi Boolean      ctermfg=39
+hi Constant     ctermfg=70
+hi Identifier   ctermfg=166 
+hi Function     ctermfg=27
+hi Statement    ctermfg=27 cterm=bold
+hi PreProc      ctermfg=27 cterm=bold
+hi Type         ctermfg=160
+
+hi shQuote        ctermfg=235
+hi shDerefSimple  ctermfg=34
+
+hi rubySymbol                     ctermfg=208 cterm=bold
+hi rubyStringDelimiter            ctermfg=235
+hi rubyInterpolationDelimiter     ctermfg=254 cterm=bold
+hi rubyStringEscape               ctermfg=240 cterm=bold
+hi rubyRegexpDelimiter            ctermfg=251  ctermbg=255 cterm=bold
+hi rubyRegexpAnchor               ctermfg=240 cterm=bold
+hi rubyRegexpBrackets             ctermfg=240 cterm=bold
+hi rubyRegexpEscape               ctermfg=160 cterm=bold
+hi rubyRegexpCharClass            ctermfg=240 cterm=bold
+
+
 
 EOF
 
