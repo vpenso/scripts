@@ -126,6 +126,7 @@ echo "
              q: │ open command line window 
              q? │ open search history window 
        Ctrl-w c │ close window 
+   Ctrl-Shift-P │ Show highlighting group 
       
 
               ${B}${U}KEYS${R}
