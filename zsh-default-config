@@ -110,13 +110,10 @@ ZSH_HIGHLIGHT_STYLES+=(
   alias                  'fg=39,bold'
   builtin                'fg=27,bold'
   function               'fg=39,bold'
-  path                   'fg=250,bg=234'
+  path                   'fg=246'
   single-quoted-argument 'fg=220,bold'
   double-quoted-argument 'fg=220,bold'
 )
-
-U_AR=$'\u2b80'
-U_AL=$'\u2b82'
 
 antigen-bundle olivierverdier/zsh-git-prompt
 
@@ -136,7 +133,7 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%F{166}…"
 
 antigen-apply
 
-PROMPT='$(git_super_status)%F{255}»%f '
+PROMPT='$(git_super_status)%F{253}»%f '
 RPROMPT='%F{234}%n%F{253}:%F{243}%~%k%f'
 
 autoload -U colors && colors
