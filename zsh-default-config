@@ -25,65 +25,6 @@ if [ ! -e ~/.zsh/antigen.zsh ] ; then
   echo "ZSH anitgen installed to ~/.zsh/"
 fi
 
-##
-## Configuration for ls colors
-##
-if [ ! -e $HOME/.dircolors/rainbow.colors ] ; then
-# make sure parent directory exists
-mkdir $HOME/.dircolors 2> /dev/null
-# write the colors configuration
-cat > $HOME/.dircolors/rainbow.colors <<EOF
-TERM screen-256color
-RESET                 0
-FILE                  00;38;5;241
-DIR                   01;38;5;39 
-LINK                  00;38;5;221
-MULTIHARDLINK         00 
-FIFO                  48;5;235;38;5;160 # pipe
-SOCK                  48;5;235;38;5;160 
-DOOR                  48;5;235;38;5;252 
-BLK                   48;5;235;38;5;160 # block device driver
-CHR                   48;5;235;38;5;252 # character device driver
-ORPHAN                48;5;235;38;5;160 # symlink to nonexistent file, or non-stat'able file
-SETUID                38;5;196 # file that is setuid (u+s)
-SETGID                38;5;196 # file that is setgid (g+s)
-CAPABILITY            30;41 # file with capability
-STICKY_OTHER_WRITABLE 04;38;5;27 # dir that is sticky and other-writable (+t,o+w)
-OTHER_WRITABLE        00;38;5;196 # dir that is other-writable (o+w) and not sticky
-STICKY                38;5;196 # dir with the sticky bit set (+t) and not other-writable
-EXEC                  01;38;5;220
-
-.log                  01;38;5;196
-.rb                   00;38;5;228
-.cpp                  00;38;5;228
-.c                    00;38;5;228
-.c++                  00;38;5;228
-.bash                 00;38;5;228
-.sh                   00;38;5;228
-.pl                   00;38;5;228
-.tex                  01;38;5;245
-.torrent              01;38;5;245
-*Makefile             01;38;5;202
-*Rakefile             01;38;5;202
-*build.xml            01;38;5;202
-*rc                   00;38;5;208
-*1                    01;38;5;245
-.md                   01;38;5;255
-.markdown             01;38;5;255
-.txt                  00;38;5;253
-.xhtml                01;38;5;250
-.html                 01;38;5;250
-*README               00;38;5;196
-*README.txt           00;38;5;196
-*readme.txt           00;38;5;196
-*README.md            00;38;5;196
-*README.markdown      00;38;5;196
-*yml                  00;38;5;208
-*cfg                  00;38;5;208
-*conf                 00;38;5;208
-EOF
-echo "ls colors configuration written to ~/.dircolors/rainbow.colors"
-fi
 
 ##
 ## Zsh configuration file
@@ -137,7 +78,9 @@ PROMPT='$(git_super_status)%F{253}»%f '
 RPROMPT='%F{234}%n%F{253}:%F{243}%~%k%f'
 
 autoload -U colors && colors
-eval $(dircolors ~/.dircolors/rainbow.colors)
+if [ -e $HOME/.dir_colors/rainbow ] ; then
+  eval $(dircolors $HOME/.dir_colors/rainbow)
+fi
 
 if [ -f $HOME/.zsh_config_hook ]
 then
