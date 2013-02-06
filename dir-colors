@@ -29,16 +29,16 @@ EXEC                  01;38
 .pdf                  00;38;5;40
 .ps                   00;38;5;40
 .odf                  00;38;5;40
-.md                   00;38;5;166
-.markdown             00;38;5;166
-.txt                  00;38;5;166
-.html                 01;38;5;27
-.erb                  01;38;5;27
-*README               00;38;5;196
+.md                   00;38;5;124
+.markdown             00;38;5;124
+.txt                  00;38;5;124
+.html                 00;38;5;27
+.erb                  00;38;5;27
+*README               01;38;5;196
 *README.txt           00;38;5;196
 *readme.txt           00;38;5;196
-*README.md            00;38;5;196
-*README.markdown      00;38;5;196
+*README.md            01;38;5;196
+*README.markdown      01;38;5;196
 # Media
 .png                  00;38;5;28
 .jpg                  00;38;5;28
@@ -68,6 +68,7 @@ EXEC                  01;38
 *conf                 00;38;5;27
 *cnf                  00;38;5;27
 .log                  01;38;5;196
+
 EOF
 
 # vim: set syntax=sh:
