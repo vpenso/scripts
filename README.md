@@ -11,11 +11,12 @@ Scripts
 -------
 
 * **aliases** for the shell.
-* **ansi-color** show ANSI color escaping.
-* **dir-colors** deploys a simple coloring configuration.
+* **ansi-color** - Show ANSI color escaping.
+* **dir-colors** - Deploys a simple coloring configuration.
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
 * **git-repos** - Maintains a list of Git remote repositories and shows the status.
+* **mpd-default-config** - Writes a personal MPD configuration.
 * **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
 * **ssh-agent-session** - Use the same SSH agent across multiple shells.
