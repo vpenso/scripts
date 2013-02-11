@@ -20,7 +20,7 @@ mkdir ~/.zsh 2>-
 
 # Antigen package management for zsh plug-ins
 ANTIGEN=https://raw.github.com/zsh-users/antigen/master/antigen.zsh
-if [ ! -e ~/.zsh/antigen.zsh ] ; then
+if [ ! -f ~/.zsh/antigen.zsh ] ; then
   curl --silent $ANTIGEN > ~/.zsh/antigen.zsh
   echo "ZSH anitgen installed to ~/.zsh/"
 fi
@@ -78,7 +78,7 @@ PROMPT='$(git_super_status)%F{253}»%f '
 RPROMPT='%F{234}%n%F{253}:%F{243}%~%k%f'
 
 autoload -U colors && colors
-if [ -e $HOME/.dir_colors/rainbow ] ; then
+if [ -f $HOME/.dir_colors/rainbow ] ; then
   eval $(dircolors $HOME/.dir_colors/rainbow)
 fi
 
