@@ -204,27 +204,35 @@ hi Type         ctermfg=160
 hi shQuote        ctermfg=235
 hi shDerefSimple  ctermfg=34
 
-hi rubySymbol                     ctermfg=208 cterm=bold
-hi rubyStringDelimiter            ctermfg=235
-hi rubyInterpolationDelimiter     ctermfg=254 cterm=bold
+hi rubySymbol                     ctermfg=208
+hi rubyBlockParameter             ctermfg=40
+hi rubyStringDelimiter            ctermfg=27
+hi rubyInterpolationDelimiter     ctermfg=203
 hi rubyStringEscape               ctermfg=240 cterm=bold
-hi rubyRegexpDelimiter            ctermfg=251  ctermbg=255 cterm=bold
-hi rubyRegexpAnchor               ctermfg=240 cterm=bold
+hi rubyRegexpDelimiter            ctermfg=251 ctermbg=255 cterm=bold
+hi rubyRegexpAnchor               ctermfg=203 cterm=bold
 hi rubyRegexpBrackets             ctermfg=240 cterm=bold
-hi rubyRegexpEscape               ctermfg=160 cterm=bold
-hi rubyRegexpCharClass            ctermfg=240 cterm=bold
+hi rubyRegexpEscape               ctermfg=26  cterm=bold
+hi rubyRegexpDot                  ctermfg=124 cterm=bold
+hi rubyRegexpCharClass            ctermfg=234 
+hi rubyRegexpQuantifier           ctermfg=234
 
 hi markdownH1                     ctermfg=27 cterm=bold
+hi markdownH2                     ctermfg=27
+hi markdownH3                     ctermfg=27
+hi markdownItalic                 ctermfg=235 cterm=bold
+hi markdownBold                   ctermfg=232 cterm=bold
+hi markdownListMarker             ctermfg=124  cterm=bold
 hi markdownHeadingDelimiter       ctermfg=27
-hi markdownLinkText               ctermfg=34
+hi markdownLinkText               ctermfg=233
 hi markdownLinkDelimiter          ctermfg=250
 hi markdownLinkTextDelimiter      ctermfg=250
-hi markdownUrl                    ctermfg=248
+hi markdownUrl                    ctermfg=240
 hi markdownCode                   ctermfg=240
 hi markdownCodeBlock              ctermfg=240 ctermbg=255
 hi markdownCodeDelimiter          ctermfg=250
 hi markdownLineBreak              ctermbg=254
-hi markdownId                     ctermfg=202
+hi markdownId                     ctermfg=244
 hi markdownIdDeclaration          ctermfg=202
 EOF
 
