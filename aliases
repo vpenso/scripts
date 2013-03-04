@@ -19,9 +19,11 @@
 bindkey '^B' backward-word
 bindkey '^F' forward-word
 
+#
+#  ----( Random Stuff)----
+#
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
-
 alias 0=clear
 alias x=exit
 alias v=vim
@@ -36,12 +38,24 @@ alias g=git
 alias t=tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
-
 alias man="MANWIDTH=80 MANPAGER=less man"
 alias npm="nocorrect npm"
 alias vm="nocorrect vm"
-
 alias less="less -R"
+# List all directories in path
+alias path='echo -e ${PATH//:/\\n}'
+# Show CPU info
+alias cpu=lscpu
+# List all ports
+alias ports='netstat -tulanp'
+# Print seconds since epoch
+alias epoch="date +%s"
+# Download a file
+alias get="curl -C - -O"
+alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
+alias ascii="man ascii"
+alias mute="amixer --quiet set Master toggle"
+alias volume="amixer --quiet set Master"
 
 #
 #  ----( Remote Login, Keys and Encryption )----
@@ -63,6 +77,8 @@ alias sshfs='sshfs -C'
 alias ssh-keygen-ecdsa="ssh-keygen -t ecdsa -b 521 "
 alias ssh-keygen-rsa='ssh-keygen -t rsa -b 4096'
 alias ssh-keygen-no-password="ssh-keygen -q -t rsa -b 2048 -N ''"
+# Launch SSH proxy
+function shuttle() { sshuttle -r --dns $1 0/0 }
 
 #
 #  ----( Searching )-----       
@@ -81,24 +97,18 @@ export GREP_COLOR='1;38;5;52;48;5;166'
 export ACK_PAGER_COLOR="less -x4SRFX"
 alias ack='ack-grep -a'
 
-
-
-
-
-
+#
+#  ----( Processes )----
+#
+# List of all processes including their hierarchy
+alias psa=ps -AfH
+# Comprehensive inspection of the process tree
+alias pstree=pstree -lpu
+# Print a sorted list of all processes by CPU utilization
 alias pscpu="ps -A -o ruser,pcpu,time,state,args --sort pcpu"
-alias psrun="ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
+# Continuously updated list of all running processes
+alias runs="watch -n1 ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
 
-
-alias path='echo -e ${PATH//:/\\n}'
-alias cpu=lscpu
-alias ports='netstat -tulanp'
-alias epoch="date +%s"
-alias get="curl -C - -O"
-alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
-alias ascii="man ascii"
-alias mute="amixer --quiet set Master toggle"
-alias volume="amixer --quiet set Master"
 
 # (re)set git mail address environment variable
 function git-mail() {
