@@ -187,9 +187,11 @@ hi clear
 if exists("syntax on")
   syntax reset
 endif
+
+hi Visual       ctermfg=27   ctermbg=146
 hi SpellBad     ctermbg=none cterm=underline,bold
-hi CursorLine   ctermbg=253 cterm=none
-hi LineNr       ctermfg=236 ctermbg=254
+hi CursorLine   ctermbg=233  cterm=none
+hi LineNr       ctermfg=240  ctermbg=233
 hi Comment      ctermfg=239
 hi Number       ctermfg=202
 hi String       ctermfg=248
@@ -197,12 +199,13 @@ hi Boolean      ctermfg=39
 hi Constant     ctermfg=70
 hi Identifier   ctermfg=166 
 hi Function     ctermfg=27
-hi Statement    ctermfg=27 cterm=bold
-hi PreProc      ctermfg=27 cterm=bold
+hi Statement    ctermfg=27   cterm=bold
+hi PreProc      ctermfg=27   cterm=bold
 hi Type         ctermfg=160
 
-hi shQuote        ctermfg=235
+hi shQuote        ctermfg=239
 hi shDerefSimple  ctermfg=34
+hi shCommandSub   ctermfg=166 cterm=bold
 
 hi rubySymbol                     ctermfg=208
 hi rubyBlockParameter             ctermfg=40
@@ -217,20 +220,20 @@ hi rubyRegexpDot                  ctermfg=124 cterm=bold
 hi rubyRegexpCharClass            ctermfg=234 
 hi rubyRegexpQuantifier           ctermfg=234
 
-hi markdownH1                     ctermfg=27 cterm=bold
-hi markdownH2                     ctermfg=27
-hi markdownH3                     ctermfg=27
-hi markdownItalic                 ctermfg=235 cterm=bold
-hi markdownBold                   ctermfg=232 cterm=bold
-hi markdownListMarker             ctermfg=124  cterm=bold
-hi markdownHeadingDelimiter       ctermfg=27
-hi markdownLinkText               ctermfg=233
-hi markdownLinkDelimiter          ctermfg=250
-hi markdownLinkTextDelimiter      ctermfg=250
+hi markdownH1                     ctermfg=33 cterm=bold
+hi markdownH2                     ctermfg=33
+hi markdownH3                     ctermfg=33
+hi markdownItalic                 ctermfg=248 
+hi markdownBold                   ctermfg=248 cterm=bold
+hi markdownListMarker             ctermfg=160 cterm=bold
+hi markdownHeadingDelimiter       ctermfg=33
+hi markdownLinkText               ctermfg=252
+hi markdownLinkDelimiter          ctermfg=236
+hi markdownLinkTextDelimiter      ctermfg=236
 hi markdownUrl                    ctermfg=240
-hi markdownCode                   ctermfg=240
-hi markdownCodeBlock              ctermfg=240 ctermbg=255
-hi markdownCodeDelimiter          ctermfg=250
+hi markdownCode                   ctermfg=196
+hi markdownCodeBlock              ctermfg=250 ctermbg=234
+hi markdownCodeDelimiter          ctermfg=202 cterm=bold
 hi markdownLineBreak              ctermbg=254
 hi markdownId                     ctermfg=244
 hi markdownIdDeclaration          ctermfg=202
