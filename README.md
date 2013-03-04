@@ -12,6 +12,7 @@ Scripts
 
 * **aliases** for the shell.
 * **ansi-color** - Show ANSI color escaping.
+* **debian-default-config** - Install Debian dependencies.
 * **dir-colors** - Deploys a simple coloring configuration.
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
