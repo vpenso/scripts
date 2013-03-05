@@ -125,11 +125,12 @@ class GitRepos
         FileUtils.cd(path)
         remotes = Array.new
         # list all remote Git repositories
-        `git branch -r`.split.each do |remote|
-          # count the commit distance to the HEAD 
-          ahead = `git rev-list #{remote}..HEAD`.split.length
+        `git branch -r`.split("\n").each do |remote|
+          remote = remote.split(' ')[0]
+          ahead = `git rev-list #{remote}..HEAD`
+          ahead = ahead.empty? ? 0 : ahead.split.length 
           # if local HEAD is ahead of a remote branch
-          remotes << "\033[31m#{SYMBOL[:ahead]}\033[0m#{ahead} #{remote}" if ahead > 0
+          remotes << "\033[31m#{SYMBOL[:ahead]}\033[0m#{ahead} #{remote}" if ahead.to_i > 0
         end
         status = 'git status -s'
         status_empty = `#{status}`.empty?
