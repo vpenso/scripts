@@ -19,5 +19,5 @@
 sudo apt-get update
 
 # Install basic software use on a workstation
-sudo apt-get -y install vim zsh tmux git-core chef ruby-full python-pygments curl psmisc htop ack-grep sysstat procps iptraf tcpdump nmap clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs
+sudo apt-get -y install vim zsh tmux git-core chef ruby-full python-pygments curl psmisc htop ack-grep sysstat procps iptraf tcpdump nmap clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs ccrypt xclip
 
