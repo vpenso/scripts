@@ -48,3 +48,7 @@ The clush option `-w $NODES` consumes the node-set. Different node-sets can be s
 
 At this point there is still to remember that **`$NODES` can be consumed by Knife itself**, also. 
 
+[clustershell]: http://cea-hpc.github.com/clustershell/
+[chef]: http://wiki.opscode.com
+[nodeset_rb]: https://github.com/vpenso/knife-plugins/blob/master/plugins/nodeset.rb
+
