@@ -7,20 +7,25 @@ library of such scripts since years. Some of them may be of
 use for others, therefore I plan to add more scripts to this
 repository from time to time. 
 
+Use `source_me.sh` to add aliases and scripts to your environment.
+
 Scripts
 -------
 
-* **aliases** for the shell.
+In the `bin/` sub-directory
+
 * **ansi-color** - Show ANSI color escaping.
 * **debian-default-config** - Install Debian dependencies.
 * **dir-colors** - Deploys a simple coloring configuration.
 * **git-default-config** - sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
-* **git-repos** - Maintains a list of Git remote repositories and shows the status.
+* **git-repos** - Maintains a list of Git remote repositories and 
+shows the status.
 * **mpd-default-config** - Writes a personal MPD configuration.
 * **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
-* **ssh-agent-session** - Use the same SSH agent across multiple shells.
+* **ssh-agent-session** - Use the same SSH agent across multiple 
+shells.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
 * **tmux-cheat** - Most important Tmux keys.
 * **tmux-default-config** - helps to configure Tmux terminal
@@ -34,7 +39,7 @@ Scripts
 License
 =======
 
-Copyright 2012 Victor Penso
+Copyright 2012-2013 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public

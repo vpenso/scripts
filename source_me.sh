@@ -36,3 +36,4 @@ do
   source $file
 done
 
+export PATH=$SCRIPTS/bin:$PATH
