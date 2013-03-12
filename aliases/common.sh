@@ -35,6 +35,7 @@ export BROWSER=${BROWSER:-"chromium-browser"}
 function NODES() {
   if [ $# -lt 1 ]
   then
+    : ${NODES:?}
     echo $NODES
   else
     export NODES=$@

@@ -1,4 +1,7 @@
 
+↪ `aliases/common.sh`  
+↪ `aliases/clustershell.sh`
+
 [Clustershell][clustershell] is a open-source Python library for highly parallel execution of remote commands over SSH. Even if you are operating an infrastructure with a configuration management system like [Chef][chef] (Puppet, or CfEngine) numerous situations demand interactive remote login to many nodes. Among the tools developed to help cluster administrators a common shorthand notation for defining groups of hosts is widely used. **Clustershell contains a tool called `nodeset` to transform lists of nodes into this host-list shorthand notation.**
 
     » echo "node1 node2 node3 node10" | nodeset -f
