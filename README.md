@@ -1,16 +1,10 @@
 Description
 ===========
 
-This repository contains lots of scripts for various purposes
-developed to make my life easier. I do maintain a personal 
-library of such scripts since years. Some of them may be of
-use for others, therefore I plan to add more scripts to this
-repository from time to time. 
+This repository contains lots of scripts for various purposes 
+developed to make my life easier.
 
 Use `source_me.sh` to add aliases and scripts to your environment.
-
-Scripts
--------
 
 In the `bin/` sub-directory
 
@@ -35,6 +29,10 @@ shells.
   a couple of Bundles, and my personal Vim configuration.
 * **zsh-default-config** - helps to install antigen and my
   default Zsh configuration.
+
+In the `notes/` sub-directory you will find some random topics
+I have collected information on, either to give them to users
+or just as a reminder for myself.
 
 License
 =======
