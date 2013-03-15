@@ -57,4 +57,12 @@ via VNC.
     [...SNIP...]
     » onevm delete $VM_ID
 
+Instead of directly instantiating a virtual machine it is possible
+to persistently register a virtual machine definition to be reused.
+
+    » onetemplate create vm_instance.one
+    » onetemplate list
+    [...SNIP...] 
+    » onetemplate instantiate $TEMPLATE_ID -n $NAME
+
 [one]: http://opennebula.org

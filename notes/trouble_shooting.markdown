@@ -107,7 +107,7 @@ Memory consumption on the system
 
 Top 10 memory consumers:
 
-    ps -A -o rsy,%mem,pid,cmd --sort -rss | head
+    ps -A -o pid,user,rss,%mem --sort -rss | head
 
 Search for processes killed by the kernel:
 
