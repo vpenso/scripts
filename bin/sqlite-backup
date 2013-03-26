@@ -1,0 +1,157 @@
+#!/bin/bash
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+function _error() {
+  echo 1>&2 "ERROR: $@"
+}
+
+# Check for all commands this script depends on.
+for command in git sqlite3 ; do
+  if ! hash $command 2>/dev/null ; then
+    _error "Couldn't find \`$command\` executable in path!"
+    exit 1
+  fi
+done 
+
+# Comprehensive help text
+_script=$(basename $0)
+_help="Usage: $_script [OPTIONS] COMMAND [ARGUMENTS]
+
+Commands:
+
+$_script help
+  Show this text.
+$_script create DATABASE BACKUP
+  Create a SQL clear text backup of a DATABASE 
+  file called BACKUP. On change commit it to 
+  a Git repository and publish the change to a
+  defined remote repository.
+$_script restore DATABASE BACKUP
+  Retrieve the latest BACKUP version from the
+  Git remote repository and deploy it to the
+  DATABASE.
+
+Options:
+
+-g, --git-remote URI
+  Define the URI of a Git remote repository used
+  to store the backup of the database."
+
+# DEfaults for command-line options
+_git_remote=""
+# Parse the command line options
+ARGS=$(getopt -o g: -l "git-remote:" -- "$@")
+eval set -- "$ARGS"
+while true; do
+  case "$1" in
+    -g|--git-remote) 
+      shift
+      _git_remote=$1
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+  esac
+done
+
+# Read the command-line arguments
+_command=${1:-help}
+# If no command was given show the help text
+# At least 2 additional arguments are required
+if [ "$_command" != "help" ] && [ $# -lt 3 ] ; then
+  _error "Not enough arguments"
+  exit 1
+elif [ "$_command" == "help" ] ; then
+  echo "$_help"
+  exit 0
+fi
+# Source sqlite database for backup 
+_database=$2
+if [ ! -f $_database ] ; then
+  _error "File missing $_database"
+  exit 1
+fi
+# Path to the backup 
+_backup=$3
+_path=${_backup%/*}
+_file=${_backup##*/}
+
+# Make sure the right path is used with Git
+GIT_DIR=$_path/.git
+GIT_WORK_TREE=$_path
+export GIT_DIR GIT_WORK_TREE 
+
+# Stop if destination directory can't be created
+mkdir -p $GIT_WORK_TREE || exit 1
+# Initialize Git repository if it is missing.
+test -d "$GIT_DIR" || git init $GIT_WORK_TREE
+# Author and mail address
+GIT_AUTHOR_NAME=${USER:-author}
+GIT_AUTHOR_EMAIL=$GIT_AUTHOR_NAME@$(hostname -f | tr -d '\n')
+git config user.name $GIT_AUTHOR_NAME
+git config user.email $GIT_AUTHOR_EMAIL
+# Add the remote repository if missing
+git config --get remote.origin.url 1>/dev/null
+if [[ $? != 0 ]] ; then
+  if [ -z "$_git_remote" ] ; then
+    _error "Please use the --git-remote option with a GIT remote URI!"
+    exit 1
+  fi
+  git remote add origin $_git_remote
+fi
+
+function __onedb_backup_create() {
+  local database=$1
+  local backup=$2
+  # Backup OpenNebula database 
+  sqlite3 $database .dump > $backup
+  # Is the backup file added already?
+  git ls-files $backup --error-unmatch 1>/dev/null 2>/dev/null
+  if [[ $? != 0 ]] ; then 
+    git add ${backup##*/}
+    git commit -m "$(hostname -f):$database"
+  fi
+  # Did the backup changed?
+  if [[ $(git ls-files -m | wc -l) -gt 0 ]] ; then
+    # Commit latest version of the backup.
+    git commit -a -m "$(hostname -f):$database"
+    git push origin master
+  fi
+}
+
+function __onedb_backup_restore() {
+  local database=$1
+  local backup=$2
+  git pull origin master
+  # Make a copy of the original database
+  cp $database $database.$(date +%s)
+  cat $backup | sqlite3 $database 2>/dev/null
+}
+
+case "$_command" in
+create) shift ; __onedb_backup_create $_database $_backup ;;
+restore) shift ; __onedb_backup_restore $_database $_backup ;; 
+*) echo "$_help" ;;
+esac
+
+exit 0
+
+
+

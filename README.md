@@ -21,6 +21,8 @@ shows the status. [Read more...](docs/git-repos.markdown)
 * **ssh-agent-session** - Use the same SSH agent across multiple 
 shells.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
+* **sqlite-backup** - Backup SQLite database files into a Git 
+remote repository.
 * **tmux-cheat** - Most important Tmux keys.
 * **tmux-default-config** - helps to configure Tmux terminal
   multiplexer.
