@@ -117,10 +117,10 @@ if [[ $? != 0 ]] ; then
   git remote add origin $_git_remote
 fi
 
-function __onedb_backup_create() {
+function create() {
   local database=$1
   local backup=$2
-  # Backup OpenNebula database 
+  # Backup database 
   sqlite3 $database .dump > $backup
   # Is the backup file added already?
   git ls-files $backup --error-unmatch 1>/dev/null 2>/dev/null
@@ -136,7 +136,7 @@ function __onedb_backup_create() {
   fi
 }
 
-function __onedb_backup_restore() {
+function restore() {
   local database=$1
   local backup=$2
   git pull origin master
@@ -146,8 +146,8 @@ function __onedb_backup_restore() {
 }
 
 case "$_command" in
-create) shift ; __onedb_backup_create $_database $_backup ;;
-restore) shift ; __onedb_backup_restore $_database $_backup ;; 
+create) shift ; create $_database $_backup ;;
+restore) shift ; restore $_database $_backup ;; 
 *) echo "$_help" ;;
 esac
 
