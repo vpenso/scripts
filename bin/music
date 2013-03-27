@@ -102,7 +102,7 @@ function mpd_start() {
 }
 
 function mpd_running() {
-  pgrep -u $USER mpd 1>-
+  pgrep -u $USER mpd 1>/dev/null
   return $?
 }
 

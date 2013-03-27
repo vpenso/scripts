@@ -16,7 +16,7 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 ##
 
-mkdir ~/.zsh 2>-
+mkdir ~/.zsh 2>/dev/null
 
 # Antigen package management for zsh plug-ins
 ANTIGEN=https://raw.github.com/zsh-users/antigen/master/antigen.zsh

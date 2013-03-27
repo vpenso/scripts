@@ -26,11 +26,11 @@ function _error() {
 # remove all fingerprints 
 function remove() {
   local fqdn=$1
-  ssh-keygen -R $fqdn 2>-
+  ssh-keygen -R $fqdn 2>/dev/null
   local name=$(echo $fqdn | cut -d. -f1)
-  ssh-keygen -R $name 2>-
+  ssh-keygen -R $name 2>/dev/null
   local ip=$(host $fqdn | cut -d' ' -f4)
-  ssh-keygen -R $ip 2>-
+  ssh-keygen -R $ip 2>/dev/null
 }
 
 function add() {

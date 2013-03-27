@@ -2,7 +2,7 @@
 
 path=$HOME/.dir_colors
 
-mkdir $path 2>-
+mkdir $path 2>/dev/null
 
 cat > $path/rainbow <<EOF
 TERM screen-256color
