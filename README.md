@@ -18,6 +18,7 @@ shows the status. [Read more...](docs/git-repos.markdown)
 * **mpd-default-config** - Writes a personal MPD configuration.
 * **music** - Controls the local Music Player Daemon.
 * **ruby-skeleton** - Start developing ruby scripts from here.
+* **shell-skeleton** - Start developing shell script from here.
 * **ssh-agent-session** - Use the same SSH agent across multiple 
 shells.
 * **ssh-known-hosts** - Remove/add/update SSH host fingerprints.
