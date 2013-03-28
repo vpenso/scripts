@@ -31,7 +31,7 @@ echo "Usage: $_script [COMMAND] [ARGUMENTS]
   $_script clean VERISON
     Remove all build artifacts
   $_script deploy VERSION [PATH].
-    Install OpenNebula to /srv/one by default."
+    Install OpenNebula on the node, to PATH if provided."
 }
 
 # enable line numbers for debug output
@@ -40,18 +40,23 @@ if [ "$_DEBUG" = "true" ] ; then
 fi
 function _debug() {
   if [ "$_DEBUG" = "true" ]; then
-    echo 1>&2 "Debug: $@"
+    echo 1>&2 "DEBUG $@"
   fi
 }
 
 function _error() {
-  echo 1>&2 "Error: $@"
+  echo 1>&2 "ERROR $@"
 }
 
 # Parse the command line options
-ARGS=$(getopt -o h -l "help" -- "$@")
+ARGS=$(getopt -o hd -l "help,debug" -- "$@")
+eval set -- "$ARGS"
 while true; do
   case "$1" in
+    -d|--debug)
+      _DEBUG=true
+      shift
+      ;;
     -h|--help)
       _help
       exit 0
@@ -64,23 +69,31 @@ done
 function prerequisits() {
   local version=$1
   # Build dependencies
-  apt-get -qqy install g++ libxmlrpc-c3-dev scons libsqlite3-dev libmysqlclient-dev libxml2-dev libssl-dev ruby-dev git-core libxslt1-dev make rake sqlite3 libcurl4-openssl-dev gcc
+  _debug "Installing build dependencies"
+  apt-get -qqy install g++ libxmlrpc-c3-dev scons libsqlite3-dev libmysqlclient-dev libxml2-dev libssl-dev ruby-dev git-core libxslt1-dev make rake sqlite3 libcurl4-openssl-dev gcc 1>/dev/null 2>&1
   # Create a system account for OpenNebula 
+  _debug "Add group [cloud]"
   groupadd --force cloud
+  _debug "Add user [oneadmin]"
   useradd oneadmin --home /var/lib/one --gid cloud --create-home --system --shell /bin/bash 2>/dev/null
   # Insecure connection credential
   mkdir -p -m 770 ~oneadmin/.one || exit 1
   chown oneadmin:cloud ~oneadmin/.one
   su -c 'echo "oneadmin:sfR32fdv78SlT23sE94D" > ~oneadmin/.one/one_auth' - oneadmin
   chmod 600 ~oneadmin/.one/one_auth
+  if [ ! ~oneadmin/.ssh/id_rsa ] ; then 
+    _debug "Creating SSH key-pair fro user [oneadmin]"
+    su -c 'ssh-keygen -q -t rsa -b 2048 -N "" -f ~oneadmin/.ssh/id_rsa' - oneadmin
+  fi
   # Prepare the build directory
-  build_directory=/usr/local/srv/one/$version
+  build_directory=/usr/local/src/one/$version
   GIT_DIR=$build_directory/.git
   GIT_WORK_TREE=$build_directory
   export GIT_DIR GIT_WORK_TREE
 }
 
 function clone() {
+  _debug "Build directory $GIT_WORK_TREE"
   mkdir -p $GIT_WORK_TREE || exit 1
   # Initialize Git repository if it is missing.
   test -d "$GIT_DIR" || git init $GIT_WORK_TREE
@@ -88,56 +101,71 @@ function clone() {
   git config --get remote.origin.url 1>/dev/null
   if [[ $? != 0 ]] ; then
     git remote add origin git://git.opennebula.org/one.git
+    _debug "Adding Git remote git://git.opennebula.org/one.git"
   fi
-  git fetch origin
-  git checkout release-$1
+  _debug "Fetching remote Git repository"
+  git fetch origin 1>/dev/null 2>/dev/null
+  _debug "Checkout version $1"
+  git checkout release-$1 1>/dev/null 2>/dev/null
 }
 
 function build() {
   cd $GIT_WORK_TREE
-  scons mysql=no 2>&1 | tee build.log
-  cd -
+  _debug "Build process logging to $GIT_WORK_TREE/build.log"
+  scons mysql=no 1> build.log 2>&1
+  cd - 1>/dev/null
 }
 
 function deploy() {
   local path=$1
+  # enable self-contained deployment optionally
+  local options=
   cd $GIT_WORK_TREE
-  ./install.sh -u oneadmin -g cloud -d $path 2>&1 | tee install.log  
-  cp *.log $path
+  _debug "Install process logging to $GIT_WORK_TREE/install.log"
+  if [ -n "$path" ] ; then
+    options="on"
+    _debug "Install OpenNebula to $path"
+    ./install.sh -u oneadmin -g cloud -d $path > install.log 2>&1
+  else
+    _debug "Global installation of OpenNebula"
+    ./install.sh -u oneadmin -g cloud > install.log 2>&1
+  fi
   cd - 1>/dev/null
-  # Add all executables to the PATH
-  echo "export PATH=$path/bin:\$PATH" > $path/source.me
-  # OpenNebula base directory
-  echo "export ONE_LOCATION=$path" >> $path/source.me
-  # Client RPC interface
-  echo "export ONE_XMLRPC=http://localhost:2633/RPC2" >> $path/source.me
-  # Run the shipped extensions deployment script
-  $path/share/install_gems sunstone cloud
+  # only in case of a self-contained installation
+  if [ -n "$options" ] ; then
+    # Add all executables to the PATH
+    echo "export PATH=$path/bin:\$PATH" > $path/source.me
+    # OpenNebula base directory
+    echo "export ONE_LOCATION=$path" >> $path/source.me
+    # Client RPC interface
+    echo "export ONE_XMLRPC=http://localhost:2633/RPC2" >> $path/source.me
+    # Run the shipped extensions deployment script
+    $path/share/install_gems sunstone cloud
+  else
+    /usr/share/one/install_gems sunstone cloud
+  fi
 }
 
 # Read the command-line arguments
-_command=${1:-help}
-
+_command=${1:-help} ; shift
 if [ "$_command" == "help" ] ; then
   _help
   exit 0
 fi
 
 # Does the caller provided a version?
-_version=$2
+_version=$1 ; shift
 if [ -f $_version ] ; then
  _error "No version defined"
  exit 1
 fi
-
-_path=${3:-/srv/one/$_version}
 
 prerequisits $_version
 
 case "$_command" in 
   build) clone $_version; build ;;
   clean) rm -rf $GIT_WORK_TREE ;;
-  deploy) deploy $_path ;;
+  deploy) deploy "$@" ;;
   *) _error "Command not supported"; exit 1 ;;
 esac
 
