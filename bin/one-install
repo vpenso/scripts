@@ -1,0 +1,146 @@
+#!/bin/bash
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION=0.1
+
+# Filename of this script
+_script=$(basename $0)
+
+# Help text for this script
+function _help() {
+echo "Usage: $_script [COMMAND] [ARGUMENTS]
+  
+  $_script build VERSION
+    Clone the developer source code to /usr/local/srv/one
+    and execute the build process.
+  $_script clean VERISON
+    Remove all build artifacts
+  $_script deploy VERSION [PATH].
+    Install OpenNebula to /srv/one by default."
+}
+
+# enable line numbers for debug output
+if [ "$_DEBUG" = "true" ] ; then
+  export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
+fi
+function _debug() {
+  if [ "$_DEBUG" = "true" ]; then
+    echo 1>&2 "Debug: $@"
+  fi
+}
+
+function _error() {
+  echo 1>&2 "Error: $@"
+}
+
+# Parse the command line options
+ARGS=$(getopt -o h -l "help" -- "$@")
+while true; do
+  case "$1" in
+    -h|--help)
+      _help
+      exit 0
+      ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
+
+function prerequisits() {
+  local version=$1
+  # Build dependencies
+  apt-get -qqy install g++ libxmlrpc-c3-dev scons libsqlite3-dev libmysqlclient-dev libxml2-dev libssl-dev ruby-dev git-core libxslt1-dev make rake sqlite3 libcurl4-openssl-dev gcc
+  # Create a system account for OpenNebula 
+  groupadd --force cloud
+  useradd oneadmin --home /var/lib/one --gid cloud --create-home --system --shell /bin/bash 2>/dev/null
+  # Insecure connection credential
+  mkdir -p -m 770 ~oneadmin/.one || exit 1
+  chown oneadmin:cloud ~oneadmin/.one
+  su -c 'echo "oneadmin:sfR32fdv78SlT23sE94D" > ~oneadmin/.one/one_auth' - oneadmin
+  chmod 600 ~oneadmin/.one/one_auth
+  # Prepare the build directory
+  build_directory=/usr/local/srv/one/$version
+  GIT_DIR=$build_directory/.git
+  GIT_WORK_TREE=$build_directory
+  export GIT_DIR GIT_WORK_TREE
+}
+
+function clone() {
+  mkdir -p $GIT_WORK_TREE || exit 1
+  # Initialize Git repository if it is missing.
+  test -d "$GIT_DIR" || git init $GIT_WORK_TREE
+  # Add the remote repository if missing
+  git config --get remote.origin.url 1>/dev/null
+  if [[ $? != 0 ]] ; then
+    git remote add origin git://git.opennebula.org/one.git
+  fi
+  git fetch origin
+  git checkout release-$1
+}
+
+function build() {
+  cd $GIT_WORK_TREE
+  scons mysql=no 2>&1 | tee build.log
+  cd -
+}
+
+function deploy() {
+  local path=$1
+  cd $GIT_WORK_TREE
+  ./install.sh -u oneadmin -g cloud -d $path 2>&1 | tee install.log  
+  cp *.log $path
+  cd - 1>/dev/null
+  # Add all executables to the PATH
+  echo "export PATH=$path/bin:\$PATH" > $path/source.me
+  # OpenNebula base directory
+  echo "export ONE_LOCATION=$path" >> $path/source.me
+  # Client RPC interface
+  echo "export ONE_XMLRPC=http://localhost:2633/RPC2" >> $path/source.me
+  # Run the shipped extensions deployment script
+  $path/share/install_gems sunstone cloud
+}
+
+# Read the command-line arguments
+_command=${1:-help}
+
+if [ "$_command" == "help" ] ; then
+  _help
+  exit 0
+fi
+
+# Does the caller provided a version?
+_version=$2
+if [ -f $_version ] ; then
+ _error "No version defined"
+ exit 1
+fi
+
+_path=${3:-/srv/one/$_version}
+
+prerequisits $_version
+
+case "$_command" in 
+  build) clone $_version; build ;;
+  clean) rm -rf $GIT_WORK_TREE ;;
+  deploy) deploy $_path ;;
+  *) _error "Command not supported"; exit 1 ;;
+esac
+
+exit 0
+
+
