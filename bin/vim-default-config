@@ -45,11 +45,11 @@ call vundle#rc()
 " let Vundle manage Vundle, required! 
 Bundle 'gmarik/vundle' 
 Bundle 'Lokaltog/vim-powerline'           
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'molokai'                         
-Bundle 'tpope/vim-fugitive'             
-Bundle 'sjl/badwolf'                   
-Bundle 'vim-ruby/vim-ruby'
+"Bundle 'altercation/vim-colors-solarized'
+"Bundle 'molokai'                         
+"Bundle 'tpope/vim-fugitive'             
+"Bundle 'sjl/badwolf'                   
+"Bundle 'vim-ruby/vim-ruby'
 
 EOF
 
@@ -198,14 +198,16 @@ hi String       ctermfg=248
 hi Boolean      ctermfg=39
 hi Constant     ctermfg=70
 hi Identifier   ctermfg=166 
-hi Function     ctermfg=27
-hi Statement    ctermfg=27   cterm=bold
-hi PreProc      ctermfg=27   cterm=bold
+hi Function     ctermfg=33
+hi Statement    ctermfg=33
+hi PreProc      ctermfg=33   cterm=bold
 hi Type         ctermfg=160
+hi Error        ctermfg=none ctermbg=none
 
 hi shQuote        ctermfg=239
 hi shDerefSimple  ctermfg=34
-hi shCommandSub   ctermfg=166 cterm=bold
+hi shCommandSub   ctermfg=220 ctermbg=none
+hi shSpecial      ctermfg=124
 
 hi rubySymbol                     ctermfg=208
 hi rubyBlockParameter             ctermfg=40
