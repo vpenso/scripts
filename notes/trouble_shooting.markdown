@@ -59,6 +59,10 @@ Get an overview of the resources and system state:
 Follow the execution flow of a process:
 
     strace -f -p PID
+    gdb attach PID
+    (gdb) bt
+    (gdb) detach
+    (gdb) quit
 
 Open file handles of a process:
 
