@@ -6,7 +6,7 @@ Special Characters
     \              escape character (preserves the literal value)
     $              expansion character
     :              nil-statement returns 0
-    |              pipeline (input-output-connection)
+    !!             repeat last command
     's'            preserves literal value of characters in string s
     "s"            preserves literal value of characters in string s except $ \ ,
     V=v            assign value v to variable V (no spaces allowed)
@@ -17,9 +17,11 @@ Special Characters
     !e             true if expression e is false
     e1 && e2       true if both expressions e1 and e2 are true (alternative e1 -a e2)
     e1 || e2       true if either expression e1 or e2 is true (alternative e1 -o e2)
+    a[i]=v         store value v as element i in array a
     ${a[i]}        use element i from array a
     ${a}           use element 0 from array a
     ${a[*]}        use all elements from array a
+    ${#a[*]}       length of array a
     {c;}           block of code anonymous subroutine
     f() {c;}       named subroutine (key-word `function` optional)
 
@@ -33,11 +35,14 @@ Input/Output (descriptors stdin 0, stdout 1, stderr 2)
     c 2> f         stderr of c to file f
     c > f 2>&1     stdout/stderr fo command c to file f
     C &> f         same as above
-    c | tee f      stdout of command c to screen and file f
-    c 2>&1 | tee f stdout/stderr of command c to screen and file f
     c1 <(c2)       stdout of command c2 to stdin of command c1
     c1 >(c2)       stdout of command c1 to stdin of command c2
     c < f1 > f2    content of file f1 to stdin of command c, stdout to file f2  
+    (c1 ; c2) > f  redirect stdout of multiple commands to file f (sub-shell)
+    {c1 ; c2} > f  same as above in current shell
+    c1 | c2        pipe stdout of command c1 to stdin of command c2
+    c1 |& c2       pipe stdout and stderr of command c1 to stdin of command c2
+    c | tee f      stdout of command c to screen and file f
 
 Command Execution
 
@@ -152,7 +157,7 @@ Control Structures
 
     if [ e1 ] ; then ; elif [ e2 ] ; then ; else ; fi
     case e in ; c1) ;; c2 | c3) ;; *) ;; esac 
-    for i in \$( list ) ; do ; done
+    for i in $(e) ; do ; done
     for (( e1; e2; e3 )); do ; done 
     while [ e ] ; do ; done
     until [ e ] ; do ; done
@@ -181,4 +186,6 @@ Buildin Commands
     fg j           resume job j to foreground
     stop j         stops background job j
     trap c s       execute command c when catching signal s
+
+
 

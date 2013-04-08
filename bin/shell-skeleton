@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright 2013 Victor Penso
 #
@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+# exit if an uninitialised variable is used
+set -o nonunset
+# exit of statement returns a non-true return value
+#set -o errexit
 
 _version=0.1
 
