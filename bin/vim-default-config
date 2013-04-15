@@ -214,13 +214,13 @@ hi rubyBlockParameter             ctermfg=40
 hi rubyStringDelimiter            ctermfg=27
 hi rubyInterpolationDelimiter     ctermfg=203
 hi rubyStringEscape               ctermfg=240 cterm=bold
-hi rubyRegexpDelimiter            ctermfg=251 ctermbg=255 cterm=bold
+hi rubyRegexpDelimiter            ctermfg=237 ctermbg=none cterm=bold
 hi rubyRegexpAnchor               ctermfg=203 cterm=bold
 hi rubyRegexpBrackets             ctermfg=240 cterm=bold
 hi rubyRegexpEscape               ctermfg=26  cterm=bold
 hi rubyRegexpDot                  ctermfg=124 cterm=bold
-hi rubyRegexpCharClass            ctermfg=234 
-hi rubyRegexpQuantifier           ctermfg=234
+hi rubyRegexpCharClass            ctermfg=214 
+hi rubyRegexpQuantifier           ctermfg=220
 
 hi markdownH1                     ctermfg=33 cterm=bold
 hi markdownH2                     ctermfg=33
