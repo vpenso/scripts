@@ -1,3 +1,15 @@
+Rarely known but very useful commands:
+
+    nl             number lines of file
+    hd             convert to hexadecimal
+    bc             calculator
+    xargs          use input as argument to command (rather then stdin)
+    rehash         re-index executables in $PATH
+    reset          reset terminal
+    pv             pipe monitor
+    rename         rename multiple files
+    fc             invoke editor to write an command
+
 ## Shells
 
 Special Characters 
@@ -7,7 +19,9 @@ Special Characters
     \              escape character (preserves the literal value)
     $              expansion character
     :              nil-statement returns 0
-    !!             repeat last command
+    !!             last command
+    !*             last argument list
+    !:-            last command without last argument
     's'            preserves literal value of characters in string s
     "s"            preserves literal value of characters in string s except $ \ ,
     V=v            assign value v to variable V (no spaces allowed)
@@ -35,7 +49,7 @@ Input/Output (descriptors stdin 0, stdout 1, stderr 2)
     c 1>&-         close stdout of command c
     c 2> f         stderr of c to file f
     c > f 2>&1     stdout/stderr fo command c to file f
-    C &> f         same as above
+    c &> f         same as above
     c1 <(c2)       stdout of command c2 to stdin of command c1
     c1 >(c2)       stdout of command c1 to stdin of command c2
     c < f1 > f2    content of file f1 to stdin of command c, stdout to file f2  
@@ -44,6 +58,7 @@ Input/Output (descriptors stdin 0, stdout 1, stderr 2)
     c1 | c2        pipe stdout of command c1 to stdin of command c2
     c1 |& c2       pipe stdout and stderr of command c1 to stdin of command c2
     c | tee f      stdout of command c to screen and file f
+    c |:           pipeline sink (like >/dev/null)
 
 Command Execution
 
@@ -212,5 +227,5 @@ print command:
 
 
 Edit commands can use an alternative separator e.g. `sed "s'P'S'g"`
-or `sed "s|P|S|g".
+or `sed "s|P|S|g"`.
 

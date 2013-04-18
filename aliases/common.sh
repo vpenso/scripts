@@ -79,3 +79,5 @@ alias ascii="man ascii"
 alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
 
+calc() { echo "$*" | bc -l ; }
+

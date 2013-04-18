@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>~/projects/scripts/notes/shell.markdown.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v10">
+<meta name="syntax" content="markdown">
+<meta name="settings" content="use_css,pre_wrap,expand_tabs">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.markdownCodeDelimiter { color: #ff5f00; font-weight: bold; }
+.markdownListMarker { color: #d70000; font-weight: bold; }
+.markdownH2 { color: #0087ff; }
+.markdownHeadingDelimiter { color: #0087ff; }
+.markdownCodeBlock { color: #bcbcbc; background-color: #1c1c1c; }
+-->
+</style>
+</head>
+<body>
+<pre>
+Rarely known but very useful commands:
+
+<span class="markdownCodeBlock">    nl             number lines of file</span>
+<span class="markdownCodeBlock">    hd             convert to hexadecimal</span>
+<span class="markdownCodeBlock">    bc             calculator</span>
+<span class="markdownCodeBlock">    xargs          use input as argument to command (rather then stdin)</span>
+<span class="markdownCodeBlock">    rehash         re-index executables in $PATH</span>
+<span class="markdownCodeBlock">    reset          reset terminal</span>
+<span class="markdownCodeBlock">    pv             pipe monitor</span>
+<span class="markdownCodeBlock">    rename         rename multiple files</span>
+
+<span class="markdownHeadingDelimiter">##</span><span class="markdownH2"> Shells</span>
+
+Special Characters
+
+<span class="markdownCodeBlock">    #              mark line as comment</span>
+<span class="markdownCodeBlock">    ;              statement (command) separator</span>
+<span class="markdownCodeBlock">    \              escape character (preserves the literal value)</span>
+<span class="markdownCodeBlock">    $              expansion character</span>
+<span class="markdownCodeBlock">    :              nil-statement returns 0</span>
+<span class="markdownCodeBlock">    !!             last command</span>
+<span class="markdownCodeBlock">    !*             last argument list</span>
+<span class="markdownCodeBlock">    !:-            last command without last argument</span>
+<span class="markdownCodeBlock">    's'            preserves literal value of characters in string s</span>
+<span class="markdownCodeBlock">    &quot;s&quot;            preserves literal value of characters in string s except $ \ ,</span>
+<span class="markdownCodeBlock">    V=v            assign value v to variable V (no spaces allowed)</span>
+<span class="markdownCodeBlock">    $[e]           evaluate integer expression</span>
+<span class="markdownCodeBlock">    ((e))          expand and evaluate of integer expression e</span>
+<span class="markdownCodeBlock">    $((e))         expand, evaluate and substitute integer expression e</span>
+<span class="markdownCodeBlock">    [[e]]          returns bool after evaluation of the conditional expression e</span>
+<span class="markdownCodeBlock">    !e             true if expression e is false</span>
+<span class="markdownCodeBlock">    e1 &amp;&amp; e2       true if both expressions e1 and e2 are true (alternative e1 -a e2)</span>
+<span class="markdownCodeBlock">    e1 || e2       true if either expression e1 or e2 is true (alternative e1 -o e2)</span>
+<span class="markdownCodeBlock">    a[i]=v         store value v as element i in array a</span>
+<span class="markdownCodeBlock">    ${a[i]}        use element i from array a</span>
+<span class="markdownCodeBlock">    ${a}           use element 0 from array a</span>
+<span class="markdownCodeBlock">    ${a[*]}        use all elements from array a</span>
+<span class="markdownCodeBlock">    ${#a[*]}       length of array a</span>
+<span class="markdownCodeBlock">    {c;}           block of code anonymous subroutine</span>
+<span class="markdownCodeBlock">    f() {c;}       named subroutine (key-word `function` optional)</span>
+
+Input/Output (descriptors stdin 0, stdout 1, stderr 2)
+
+<span class="markdownCodeBlock">    &gt; f            create empty file f (same as : &gt; f)</span>
+<span class="markdownCodeBlock">    c &gt; f          stdout of command c to file f (same as c 1&gt; f)</span>
+<span class="markdownCodeBlock">    c &gt;&gt; f         append stdout of c to f</span>
+<span class="markdownCodeBlock">    c &lt; f          content of file f to stdin of c (same as c 0&lt; f)</span>
+<span class="markdownCodeBlock">    c 1&gt;&amp;-         close stdout of command c</span>
+<span class="markdownCodeBlock">    c 2&gt; f         stderr of c to file f</span>
+<span class="markdownCodeBlock">    c &gt; f 2&gt;&amp;1     stdout/stderr fo command c to file f</span>
+<span class="markdownCodeBlock">    c &amp;&gt; f         same as above</span>
+<span class="markdownCodeBlock">    c1 &lt;(c2)       stdout of command c2 to stdin of command c1</span>
+<span class="markdownCodeBlock">    c1 &gt;(c2)       stdout of command c1 to stdin of command c2</span>
+<span class="markdownCodeBlock">    c &lt; f1 &gt; f2    content of file f1 to stdin of command c, stdout to file f2  </span>
+<span class="markdownCodeBlock">    (c1 ; c2) &gt; f  redirect stdout of multiple commands to file f (sub-shell)</span>
+<span class="markdownCodeBlock">    {c1 ; c2} &gt; f  same as above in current shell</span>
+<span class="markdownCodeBlock">    c1 | c2        pipe stdout of command c1 to stdin of command c2</span>
+<span class="markdownCodeBlock">    c1 |&amp; c2       pipe stdout and stderr of command c1 to stdin of command c2</span>
+<span class="markdownCodeBlock">    c | tee f      stdout of command c to screen and file f</span>
+<span class="markdownCodeBlock">    c |:           pipeline sink (like &gt;/dev/null)</span>
+
+Command Execution
+
+<span class="markdownCodeBlock">    $(c)           execute command c in sub-shell (alternative `c`)</span>
+<span class="markdownCodeBlock">    c &amp;            execute command c in background</span>
+<span class="markdownCodeBlock">    c1 &amp;&amp; c2       if command c1 runs successful execute c2</span>
+<span class="markdownCodeBlock">    c1 || c2       if command c1 runs not successful execute c2</span>
+<span class="markdownCodeBlock">    c1 &amp; c2        run commands c1 and c2 in parallel</span>
+<span class="markdownCodeBlock">    c1; c2         execute command c1 before c2</span>
+<span class="markdownCodeBlock">    {c1; c2}       execute commands in current shell environment</span>
+<span class="markdownCodeBlock">    (c1; c2)       execute the commands inside a sub-shell environment</span>
+<span class="markdownCodeBlock">    c1 $(c2)        command c1 uses output of c2 as parameters</span>
+
+Special Variables
+
+<span class="markdownCodeBlock">    $1...$n        direct access to parameters n</span>
+<span class="markdownCodeBlock">    $@             all parameters</span>
+<span class="markdownCodeBlock">    &quot;$@&quot;           each parameter in double-quotes (&quot;$1&quot; &quot;$2&quot;...)</span>
+<span class="markdownCodeBlock">    &quot;$*&quot;           all parameters in double-quotes (&quot;$1 $2...&quot;)</span>
+<span class="markdownCodeBlock">    $#             number of parameters</span>
+<span class="markdownCodeBlock">    $?             most recent exit status</span>
+<span class="markdownCodeBlock">    $$             current shell process ID</span>
+<span class="markdownCodeBlock">    $!             most recent process ID</span>
+<span class="markdownCodeBlock">    $0             name of executed script</span>
+<span class="markdownCodeBlock">    $_             absolute path to executed script</span>
+<span class="markdownCodeBlock">    ~              current user home directory (like $HOME)</span>
+<span class="markdownCodeBlock">    ~user          a users home directory</span>
+<span class="markdownCodeBlock">    ~+             current directory (like $PWD)</span>
+<span class="markdownCodeBlock">    ~-             previous working directory </span>
+<span class="markdownCodeBlock">    $IFS           list of field separators</span>
+<span class="markdownCodeBlock">    $PATH          search path for executables (; seperated)</span>
+
+Expansion
+
+<span class="markdownCodeBlock">    {a,b,c}        brace expansion</span>
+<span class="markdownCodeBlock">    {a..z}         extened brace expansion </span>
+<span class="markdownCodeBlock">    ${V}           expand variable V (curly braces optional)</span>
+<span class="markdownCodeBlock">    $'s'           expands string s with backslash-escaped characters replaced</span>
+<span class="markdownCodeBlock">    ${V:-v}        use variable V if set, otherwise use value v</span>
+<span class="markdownCodeBlock">    ${V:=v}        use variable V if set, otherwise set V to value v</span>
+<span class="markdownCodeBlock">    ${V:+v}        use value v if variable V is set</span>
+<span class="markdownCodeBlock">    ${V:?M}        print message M unless variable V is set</span>
+<span class="markdownCodeBlock">    ${#V}          length of variable V</span>
+<span class="markdownCodeBlock">    ${v%P}         remove shortest match of pattern P from the end  </span>
+<span class="markdownCodeBlock">    ${v%%P}        remove longest match of pattern P from the end</span>
+<span class="markdownCodeBlock">    ${v#P}         remove shortest match of pattern P from the beginning</span>
+<span class="markdownCodeBlock">    ${v##P}        remove longest match of pattern P from the beginning</span>
+<span class="markdownCodeBlock">    ${v/p/s}       replace first match of pattern p with string s</span>
+<span class="markdownCodeBlock">    ${v//p/s}      replace every match of pattern p with string s </span>
+<span class="markdownCodeBlock">    ${p##*/}       extract filename of path p</span>
+<span class="markdownCodeBlock">    ${p%/*}        extract directory name of path p</span>
+<span class="markdownCodeBlock">    ${f%.*}        remove last suffix of file f</span>
+<span class="markdownCodeBlock">    ${f%%.*}       remove all suffixe of file f</span>
+<span class="markdownCodeBlock">    ${f#*.}        extract file extension (suffix) of file f</span>
+<span class="markdownCodeBlock">    ${0##*/}       name of executed file</span>
+<span class="markdownCodeBlock">    ${s%?}         remove last character of string s</span>
+<span class="markdownCodeBlock">    ${s^}          first character of string s to uppercase</span>
+<span class="markdownCodeBlock">    ${s,}          first character of string s to lowercase</span>
+<span class="markdownCodeBlock">    ${s^^}         all characters of string s to uppercase</span>
+<span class="markdownCodeBlock">    ${s,,}         all characters of string s to lowercase</span>
+
+Primary Expressions
+
+<span class="markdownCodeBlock">    n1 -lt n2       true if integer n1 less then n2</span>
+<span class="markdownCodeBlock">    n1 -gt n2       true if n1 greater then n2</span>
+<span class="markdownCodeBlock">    n1 -le n2       true if n1 less or equal n2</span>
+<span class="markdownCodeBlock">    n1 -ge n2       true if n1 greater or equal n2</span>
+<span class="markdownCodeBlock">    n1 -eq n2       true if n1 equals n2</span>
+<span class="markdownCodeBlock">    n1 -ne n2       true if n1 not equal n2</span>
+<span class="markdownCodeBlock">    s1 = s2         true if strings s1 equals s2 </span>
+<span class="markdownCodeBlock">    s1 != s2        true if strings s1 not equal s2</span>
+<span class="markdownCodeBlock">    -n s            true if string s is not empty</span>
+<span class="markdownCodeBlock">    -z s            true if string s is empty</span>
+<span class="markdownCodeBlock">    -c f            true if f is a special character file</span>
+<span class="markdownCodeBlock">    -d p            true if p is the path to an existing directory</span>
+<span class="markdownCodeBlock">    -e f            true if f is an existing file</span>
+<span class="markdownCodeBlock">    -f f            true if f is an existing file but not an directory</span>
+<span class="markdownCodeBlock">    -G f            true if f exists and is owned by effective group-id</span>
+<span class="markdownCodeBlock">    -g f            true if f exists and is set-group-id.</span>
+<span class="markdownCodeBlock">    -k f            true if f has sticky bit</span>
+<span class="markdownCodeBlock">    -L f            true if f is a symbolic link</span>
+<span class="markdownCodeBlock">    -O f            true if f exists and is owned by the effective user-id.</span>
+<span class="markdownCodeBlock">    -r f            true if f is readable</span>
+<span class="markdownCodeBlock">    -S f            true if f is socket</span>
+<span class="markdownCodeBlock">    -s f            true if f nonzero size</span>
+<span class="markdownCodeBlock">    -u f            true if f set-user-id bit is set</span>
+<span class="markdownCodeBlock">    -w f            true if f is writable</span>
+<span class="markdownCodeBlock">    -x f            true if f is executable</span>
+<span class="markdownCodeBlock">    f1 -nt f2       true if file f1 is newer the f2</span>
+<span class="markdownCodeBlock">    f1 -ot f2       true if file f1 os older then f2</span>
+
+Pattern Matching
+
+<span class="markdownCodeBlock">    =~              pattern match operator</span>
+<span class="markdownCodeBlock">    \               escape, match special character literaly</span>
+<span class="markdownCodeBlock">    .               matches one </span>
+<span class="markdownCodeBlock">    ?               matches zero or one </span>
+<span class="markdownListMarker">    +</span>               matches one or more
+<span class="markdownListMarker">    *</span>               matches any number
+<span class="markdownCodeBlock">    ^               matches the beginning of a line</span>
+<span class="markdownCodeBlock">    $               matches the end of a line</span>
+<span class="markdownCodeBlock">    [a-z0-9]        matches any single lowercase letter or any digit</span>
+<span class="markdownCodeBlock">    [^b-d]          matches any character except those in the range b to d</span>
+<span class="markdownCodeBlock">    (a|e)           matches a or e</span>
+<span class="markdownCodeBlock">    [:alnum:]       equivalent to [A-Za-z0-9]</span>
+<span class="markdownCodeBlock">    [:alpha:]       equivalent to [A-Za-z]</span>
+<span class="markdownCodeBlock">    [:digit:]       equivalent to [0-9]</span>
+<span class="markdownCodeBlock">    [:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]</span>
+<span class="markdownCodeBlock">    [:blank:]       matches a space or a tab</span>
+<span class="markdownCodeBlock">    [:space:]       all whitespace characters [ \t\v\f]</span>
+
+Control Structures
+
+<span class="markdownCodeBlock">    if [ e1 ] ; then ; elif [ e2 ] ; then ; else ; fi</span>
+<span class="markdownCodeBlock">    case e in ; c1) ;; c2 | c3) ;; *) ;; esac </span>
+<span class="markdownCodeBlock">    for i in $(e) ; do ; done</span>
+<span class="markdownCodeBlock">    for (( e1; e2; e3 )); do ; done </span>
+<span class="markdownCodeBlock">    while [ e ] ; do ; done</span>
+<span class="markdownCodeBlock">    until [ e ] ; do ; done</span>
+
+Buildin Commands
+
+<span class="markdownCodeBlock">    set -v         print shell input lines as they are read</span>
+<span class="markdownCodeBlock">    set -x         print commands and their arguments when executed</span>
+<span class="markdownCodeBlock">    set -f         disable globbing</span>
+<span class="markdownCodeBlock">    source f       execute file f in current shell environment</span>
+<span class="markdownCodeBlock">    echo &quot;s&quot;       prints string s to screen</span>
+<span class="markdownCodeBlock">    echo -n &quot;s&quot;    prints string s to screen without linefeed</span>
+<span class="markdownCodeBlock">    export V=v     set global variable V to value v</span>
+<span class="markdownCodeBlock">    local V=v      set variable V to value v locally in function         </span>
+<span class="markdownCodeBlock">    dirs           show all directories in stack</span>
+<span class="markdownCodeBlock">    cd ~n          go to nth directory in stack</span>
+<span class="markdownCodeBlock">    pushd d        add directory d to stack</span>
+<span class="markdownCodeBlock">    popd           remove directory from stack</span>
+<span class="markdownCodeBlock">    eval `c`       execute command c in sub-shell and evaluate</span>
+<span class="markdownCodeBlock">    read v         read value into v</span>
+<span class="markdownCodeBlock">    shift          remove leading positional parameter</span>
+<span class="markdownCodeBlock">    jobs           list active jobs associated with current shell</span>
+<span class="markdownCodeBlock">    disown         detach jobs from current shell</span>
+<span class="markdownCodeBlock">    nohup          continue job after logout</span>
+<span class="markdownCodeBlock">    bg             move job to background </span>
+<span class="markdownCodeBlock">    fg j           resume job j to foreground</span>
+<span class="markdownCodeBlock">    stop j         stops background job j</span>
+<span class="markdownCodeBlock">    trap c s       execute command c when catching signal s</span>
+
+<span class="markdownHeadingDelimiter">##</span><span class="markdownH2"> Sed stream editor</span>
+
+List of edit commands E, execute with <span class="markdownCodeDelimiter">`</span>sed 'E[;E]'<span class="markdownCodeDelimiter">`</span>:
+
+<span class="markdownCodeBlock">    s/P/S/             substitute first match of pattern P with S</span>
+<span class="markdownCodeBlock">    s/P/S/g            substitute all matches of pattern P with S</span>
+<span class="markdownCodeBlock">    /M/s/P/S/g         like above but only lines matching pattern M</span>
+<span class="markdownCodeBlock">    s/^[ \t]*//        delete leading white spaces</span>
+<span class="markdownCodeBlock">    s/[ \t]*$//        delete trailing white spaces</span>
+<span class="markdownCodeBlock">    /^$/d              delete blank lines</span>
+<span class="markdownCodeBlock">    s/^/ /             insert leading space </span>
+
+Use with option <span class="markdownCodeDelimiter">`</span>-n<span class="markdownCodeDelimiter">`</span> to suppress unselected input when using the
+print command:
+
+<span class="markdownCodeBlock">    /P/p               print lines matching pattern P </span>
+<span class="markdownCodeBlock">    /P/!p              print lines not matching pattern P</span>
+<span class="markdownCodeBlock">    N,Mp               print lines with numbers from N to M</span>
+<span class="markdownCodeBlock">    /P1/,/P2/p         print lines between pattern P1 and P2</span>
+<span class="markdownCodeBlock">    /P/{p;q;}          print first line matching pattern P</span>
+
+
+Edit commands can use an alternative separator e.g. <span class="markdownCodeDelimiter">`</span>sed &quot;s'P'S'g&quot;<span class="markdownCodeDelimiter">`</span>
+or <span class="markdownCodeDelimiter">`</span>sed &quot;s|P|S|g&quot;<span class="markdownCodeDelimiter">`</span>.
+
+</pre>
+</body>
+</html>

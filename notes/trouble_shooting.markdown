@@ -19,10 +19,11 @@ Some text based monitoring tools:
     atop
     htop
     iftop
-    iptraf
+    iptraf           # monitor network traffic by IPs
     iotop
     top
-    powertop
+    powertop         # monitor energy consumption
+    nethoqs          # monitor traffic by process IDs
 
 Log files:
 
