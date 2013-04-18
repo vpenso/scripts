@@ -17,7 +17,9 @@ In the `bin/` sub-directory
 shows the status. [Read more...](docs/git-repos.markdown)
 * **mpd-default-config** - Writes a personal MPD configuration.
 * **music** - Controls the local Music Player Daemon.
+* **pingable** - Wait until a host is pingable.
 * **ruby-skeleton** - Start developing ruby scripts from here.
+* **segfaulter** - Create a small executable dieing with segfault.
 * **shell-skeleton** - Start developing shell script from here.
 * **ssh-agent-session** - Use the same SSH agent across multiple 
 shells.
