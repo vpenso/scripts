@@ -1,3 +1,4 @@
+## Shells
 
 Special Characters 
 
@@ -147,11 +148,12 @@ Pattern Matching
     [a-z0-9]        matches any single lowercase letter or any digit
     [^b-d]          matches any character except those in the range b to d
     (a|e)           matches a or e
-    [:alnum:]       equivalent to A-Za-z0-9
-    [:alpha:]       equivalent to A-Za-z
-    [:digit:]       equivalent to 0-9
-    [:xdigit:]      matches hexadecimal digits, equivalent to 0-9A-Fa-f
+    [:alnum:]       equivalent to [A-Za-z0-9]
+    [:alpha:]       equivalent to [A-Za-z]
+    [:digit:]       equivalent to [0-9]
+    [:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]
     [:blank:]       matches a space or a tab
+    [:space:]       all whitespace characters [ \t\v\f]
 
 Control Structures
 
@@ -187,5 +189,28 @@ Buildin Commands
     stop j         stops background job j
     trap c s       execute command c when catching signal s
 
+## Sed stream editor
 
+List of edit commands E, execute with `sed 'E[;E]'`:
+
+    s/P/S/             substitute first match of pattern P with S
+    s/P/S/g            substitute all matches of pattern P with S
+    /M/s/P/S/g         like above but only lines matching pattern M
+    s/^[ \t]*//        delete leading white spaces
+    s/[ \t]*$//        delete trailing white spaces
+    /^$/d              delete blank lines
+    s/^/ /             insert leading space 
+
+Use with option `-n` to suppress unselected input when using the 
+print command:
+
+    /P/p               print lines matching pattern P 
+    /P/!p              print lines not matching pattern P
+    N,Mp               print lines with numbers from N to M
+    /P1/,/P2/p         print lines between pattern P1 and P2
+    /P/{p;q;}          print first line matching pattern P
+
+
+Edit commands can use an alternative separator e.g. `sed "s'P'S'g"`
+or `sed "s|P|S|g".
 
