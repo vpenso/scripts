@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+target_file=${1:-/tmp/segfaulter}
+tmp_file="$(mktemp).c"
+
+cat > $tmp_file <<EOF
+int main(void)
+{
+    char *s = "hello world";
+    *s = 'H';
+}
+EOF
+
+gcc $tmp_file -g -o $target_file
+
+echo "Written to $target_file"
+
+rm $tmp_file
