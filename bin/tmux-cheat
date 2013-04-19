@@ -15,6 +15,7 @@ Hold Shift to select text with mouse
     Ctrl-a w       │ list windows
     Ctrl-a d       │ detach from session (run tmux attach)
     Ctrl-a a       │ send prefix key to program in pane 
+    Ctrl-a [       │ enter scroll mode (press q to exit) 
     
 Shell key-binding
 
