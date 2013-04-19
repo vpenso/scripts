@@ -10,9 +10,9 @@ Rarely known but very useful commands:
     rename         rename multiple files
     fc             invoke editor to write an command
 
-## Shells
+## Advanced Shell Cheat Sheet
 
-Special Characters 
+### Special Characters 
 
     #              mark line as comment
     ;              statement (command) separator
@@ -40,7 +40,9 @@ Special Characters
     {c;}           block of code anonymous subroutine
     f() {c;}       named subroutine (key-word `function` optional)
 
-Input/Output (descriptors stdin 0, stdout 1, stderr 2)
+## Input/Output Redirection
+
+Descriptors stdin 0, stdout 1, stderr 2:
 
     > f            create empty file f (same as : > f)
     c > f          stdout of command c to file f (same as c 1> f)
@@ -60,7 +62,7 @@ Input/Output (descriptors stdin 0, stdout 1, stderr 2)
     c | tee f      stdout of command c to screen and file f
     c |:           pipeline sink (like >/dev/null)
 
-Command Execution
+### Command Execution
 
     $(c)           execute command c in sub-shell (alternative `c`)
     c &            execute command c in background
@@ -72,7 +74,7 @@ Command Execution
     (c1; c2)       execute the commands inside a sub-shell environment
     c1 $(c2)        command c1 uses output of c2 as parameters
 
-Special Variables
+### Special Variables
 
     $1...$n        direct access to parameters n
     $@             all parameters
@@ -91,7 +93,7 @@ Special Variables
     $IFS           list of field separators
     $PATH          search path for executables (; seperated)
 
-Expansion
+### Expansion
  
     {a,b,c}        brace expansion
     {a..z}         extened brace expansion 
@@ -120,7 +122,7 @@ Expansion
     ${s^^}         all characters of string s to uppercase
     ${s,,}         all characters of string s to lowercase
 
-Primary Expressions
+### Primary Expressions
 
     n1 -lt n2       true if integer n1 less then n2
     n1 -gt n2       true if n1 greater then n2
@@ -150,7 +152,7 @@ Primary Expressions
     f1 -nt f2       true if file f1 is newer the f2
     f1 -ot f2       true if file f1 os older then f2
 
-Pattern Matching
+### Pattern Matching
 
     =~              pattern match operator
     \               escape, match special character literaly
@@ -170,7 +172,7 @@ Pattern Matching
     [:blank:]       matches a space or a tab
     [:space:]       all whitespace characters [ \t\v\f]
 
-Control Structures
+### Control Structures
 
     if [ e1 ] ; then ; elif [ e2 ] ; then ; else ; fi
     case e in ; c1) ;; c2 | c3) ;; *) ;; esac 
@@ -179,7 +181,7 @@ Control Structures
     while [ e ] ; do ; done
     until [ e ] ; do ; done
 
-Buildin Commands 
+### Buildin Commands 
 
     set -v         print shell input lines as they are read
     set -x         print commands and their arguments when executed
@@ -203,6 +205,40 @@ Buildin Commands
     fg j           resume job j to foreground
     stop j         stops background job j
     trap c s       execute command c when catching signal s
+
+### Here-Documents
+
+Write here-documents to a file:
+
+    cat > /path/to/file <<EOF
+      [...SNIP...]
+    EOF
+
+Store here-document in a variable:
+
+    var=$(cat <<EOF
+      [...SNIP...]
+    EOF
+    )
+
+Using `<<-` suppresses leading tabs. Avoid substitution 
+and expansion by quoting the tag (here EOF):
+
+    cat <<"EOF"
+      [...SNIP...]
+    EOF
+
+Note that the closing tag can not be indented.
+
+### Error Handling
+
+Read about the available signals with `man 7 signal`. Get a short 
+signal listing with `kill -l`.
+
+Exit and error in a sub-shell
+
+    (c)                execute command c in sub-shell, ignore errors
+    (c) || exit $?     same as above but propagate signal code
 
 ## Sed stream editor
 
@@ -228,4 +264,8 @@ print command:
 
 Edit commands can use an alternative separator e.g. `sed "s'P'S'g"`
 or `sed "s|P|S|g"`.
+
+
+
+
 
