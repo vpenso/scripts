@@ -8,9 +8,45 @@ Rarely known but very useful commands:
     reset          reset terminal
     pv             pipe monitor
     rename         rename multiple files
-    fc             invoke editor to write an command
 
-## Advanced Shell Cheat Sheet
+## Command History
+
+    history        show command history
+    fc             invoke editor to edit last command
+    fc n           edit command n in history
+
+History event designators:
+
+    !              start to reference history event
+    !!             previous command
+    !*             last argument list
+    !n             command n in history
+    !-n            the n preceding commands
+    !s             most recent command starting with string s
+    !?s            most recent command containing string s
+
+Event modifier appended to an event, e.g. `!3:*` (use
+multiple modifiers like `!!:-4:p`:
+
+    :              modifier prefix
+    :n             nth word (word 0 is the command)
+    :^             first word
+    :$             last word
+    :-             all words until the last
+    :-n            all words including the nth
+    :m-n           words from m to n
+    :n*            wall words from n to the last
+    :*             all words except the command
+    :p             print, but not execute
+    :r             remove the filename extension
+    :e             remove all but the file name extension
+    :h             remove last part from a path
+    :s/P/S/        replace first match of pattern P with string S
+    :gs/P/S/       like above, but replace all matches
+
+Quick substitute `^P^S^` similar to `!!:s/P/S/`. 
+
+## Shell Scripting
 
 ### Special Characters 
 
@@ -18,10 +54,7 @@ Rarely known but very useful commands:
     ;              statement (command) separator
     \              escape character (preserves the literal value)
     $              expansion character
-    :              nil-statement returns 0
-    !!             last command
-    !*             last argument list
-    !:-            last command without last argument
+    :              null-statement (returns 0)
     's'            preserves literal value of characters in string s
     "s"            preserves literal value of characters in string s except $ \ ,
     V=v            assign value v to variable V (no spaces allowed)
@@ -40,7 +73,7 @@ Rarely known but very useful commands:
     {c;}           block of code anonymous subroutine
     f() {c;}       named subroutine (key-word `function` optional)
 
-## Input/Output Redirection
+### Input/Output Redirection
 
 Descriptors stdin 0, stdout 1, stderr 2:
 
@@ -72,7 +105,7 @@ Descriptors stdin 0, stdout 1, stderr 2:
     c1; c2         execute command c1 before c2
     {c1; c2}       execute commands in current shell environment
     (c1; c2)       execute the commands inside a sub-shell environment
-    c1 $(c2)        command c1 uses output of c2 as parameters
+    c1 $(c2)       command c1 uses output of c2 as parameters
 
 ### Special Variables
 
@@ -221,14 +254,14 @@ Store here-document in a variable:
     EOF
     )
 
-Using `<<-` suppresses leading tabs. Avoid substitution 
-and expansion by quoting the tag (here EOF):
+Avoid substitution and expansion by quoting the tag (here EOF):
 
     cat <<"EOF"
       [...SNIP...]
     EOF
 
-Note that the closing tag can not be indented.
+Using `<<-` suppresses leading tabs. Note that the closing tag
+needs to be indented by tabs (not spaces).
 
 ### Error Handling
 
