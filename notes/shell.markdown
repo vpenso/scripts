@@ -9,7 +9,34 @@ Rarely known but very useful commands:
     pv             pipe monitor
     rename         rename multiple files
 
+Build-in Commands: 
+
+    set -v         print shell input lines as they are read
+    set -x         print commands and their arguments when executed
+    set -f         disable globbing
+    source f       execute file f in current shell environment
+    echo "s"       prints string s to screen
+    echo -n "s"    prints string s to screen without linefeed
+    export V=v     set global variable V to value v
+    local V=v      set variable V to value v locally in function         
+    dirs           show all directories in stack
+    cd ~n          go to nth directory in stack
+    pushd d        add directory d to stack
+    popd           remove directory from stack
+    eval `c`       execute command c in sub-shell and evaluate
+    read v         read value into v
+    shift          remove leading positional parameter
+    jobs           list active jobs associated with current shell
+    disown         detach jobs from current shell
+    nohup          continue job after logout
+    bg             move job to background 
+    fg j           resume job j to foreground
+    stop j         stops background job j
+    trap c s       execute command c when catching signal s
+
 ## Command History
+
+The shell maintains a list of **recently executed commands**, so called events.
 
     history        show command history
     fc             invoke editor to edit last command
@@ -48,28 +75,17 @@ Quick substitute `^P^S^` similar to `!!:s/P/S/`.
 
 ## Shell Scripting
 
-### Special Characters 
-
     #              mark line as comment
     ;              statement (command) separator
     \              escape character (preserves the literal value)
-    $              expansion character
     :              null-statement (returns 0)
     's'            preserves literal value of characters in string s
     "s"            preserves literal value of characters in string s except $ \ ,
     V=v            assign value v to variable V (no spaces allowed)
-    $[e]           evaluate integer expression
-    ((e))          expand and evaluate of integer expression e
-    $((e))         expand, evaluate and substitute integer expression e
-    [[e]]          returns bool after evaluation of the conditional expression e
     !e             true if expression e is false
     e1 && e2       true if both expressions e1 and e2 are true (alternative e1 -a e2)
     e1 || e2       true if either expression e1 or e2 is true (alternative e1 -o e2)
     a[i]=v         store value v as element i in array a
-    ${a[i]}        use element i from array a
-    ${a}           use element 0 from array a
-    ${a[*]}        use all elements from array a
-    ${#a[*]}       length of array a
     {c;}           block of code anonymous subroutine
     f() {c;}       named subroutine (key-word `function` optional)
 
@@ -119,17 +135,23 @@ Descriptors stdin 0, stdout 1, stderr 2:
     $!             most recent process ID
     $0             name of executed script
     $_             absolute path to executed script
-    ~              current user home directory (like $HOME)
-    ~user          a users home directory
-    ~+             current directory (like $PWD)
-    ~-             previous working directory 
     $IFS           list of field separators
     $PATH          search path for executables (; seperated)
 
-### Expansion
- 
+### Command-line Expansion
+
+    $              expansion character
+    $[e]           evaluate integer expression
+    ((e))          expand and evaluate of integer expression e
+    $((e))         expand, evaluate and substitute integer expression e
+    [[e]]          returns bool after evaluation of the conditional expression e
     {a,b,c}        brace expansion
     {a..z}         extened brace expansion 
+    ~              current user home directory (like $HOME)
+    ~/path         path in home directory 
+    ~user          a users home directory
+    ~+             current directory (like $PWD)
+    ~-             previous working directory 
     ${V}           expand variable V (curly braces optional)
     $'s'           expands string s with backslash-escaped characters replaced
     ${V:-v}        use variable V if set, otherwise use value v
@@ -154,6 +176,10 @@ Descriptors stdin 0, stdout 1, stderr 2:
     ${s,}          first character of string s to lowercase
     ${s^^}         all characters of string s to uppercase
     ${s,,}         all characters of string s to lowercase
+    ${a[i]}        use element i from array a
+    ${a}           use element 0 from array a
+    ${a[*]}        use all elements from array a
+    ${#a[*]}       length of array a
 
 ### Primary Expressions
 
@@ -214,30 +240,6 @@ Descriptors stdin 0, stdout 1, stderr 2:
     while [ e ] ; do ; done
     until [ e ] ; do ; done
 
-### Buildin Commands 
-
-    set -v         print shell input lines as they are read
-    set -x         print commands and their arguments when executed
-    set -f         disable globbing
-    source f       execute file f in current shell environment
-    echo "s"       prints string s to screen
-    echo -n "s"    prints string s to screen without linefeed
-    export V=v     set global variable V to value v
-    local V=v      set variable V to value v locally in function         
-    dirs           show all directories in stack
-    cd ~n          go to nth directory in stack
-    pushd d        add directory d to stack
-    popd           remove directory from stack
-    eval `c`       execute command c in sub-shell and evaluate
-    read v         read value into v
-    shift          remove leading positional parameter
-    jobs           list active jobs associated with current shell
-    disown         detach jobs from current shell
-    nohup          continue job after logout
-    bg             move job to background 
-    fg j           resume job j to foreground
-    stop j         stops background job j
-    trap c s       execute command c when catching signal s
 
 ### Here-Documents
 
