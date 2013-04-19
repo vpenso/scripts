@@ -79,6 +79,11 @@ Quick substitute `^P^S^` similar to `!!:s/P/S/`.
     ;              statement (command) separator
     \              escape character (preserves the literal value)
     :              null-statement (returns 0)
+    $              expansion character
+    $[e]           evaluate integer expression
+    ((e))          expand and evaluate of integer expression e
+    $((e))         expand, evaluate and substitute integer expression e
+    [[e]]          returns bool after evaluation of the conditional expression e
     's'            preserves literal value of characters in string s
     "s"            preserves literal value of characters in string s except $ \ ,
     V=v            assign value v to variable V (no spaces allowed)
@@ -140,11 +145,6 @@ Descriptors stdin 0, stdout 1, stderr 2:
 
 ### Command-line Expansion
 
-    $              expansion character
-    $[e]           evaluate integer expression
-    ((e))          expand and evaluate of integer expression e
-    $((e))         expand, evaluate and substitute integer expression e
-    [[e]]          returns bool after evaluation of the conditional expression e
     {a,b,c}        brace expansion
     {a..z}         extened brace expansion 
     ~              current user home directory (like $HOME)
@@ -176,6 +176,10 @@ Descriptors stdin 0, stdout 1, stderr 2:
     ${s,}          first character of string s to lowercase
     ${s^^}         all characters of string s to uppercase
     ${s,,}         all characters of string s to lowercase
+
+Arrays:
+
+    a=(e1 e2 ...)  assign list of elements e1,e2,... to variable a
     ${a[i]}        use element i from array a
     ${a}           use element 0 from array a
     ${a[*]}        use all elements from array a
@@ -268,12 +272,40 @@ needs to be indented by tabs (not spaces).
 ### Error Handling
 
 Read about the available signals with `man 7 signal`. Get a short 
-signal listing with `kill -l`.
+signal listing with `kill -l`. 
 
-Exit and error in a sub-shell
+    EXIT     0         end of program reached
+    HUP      1         disconnect 
+    INT      2         Interrupt (usally Ctrl-C)
+    KILL     9         Stop execution immediatly (can not be trapped)
+    TERM     15        default shutdown
+
+Exit and error in a sub-shell, simple cases:
 
     (c)                execute command c in sub-shell, ignore errors
     (c) || exit $?     same as above but propagate signal code
+
+**Catching Signals**
+
+Execute commands COMMAND on signal SIG
+
+    trap 'COMMAND' SIG [SIG,..]
+
+Trap breaking child processes
+
+    set -m
+    # rescue function executed by trap
+    ensure() {
+      echo "Clean up after child process died with signal $?."
+    }
+    # catch errors
+    trap ensure ERR
+    # execute child process
+    segfaulter &    
+    # wait for the child process to finish
+    wait $!
+
+
 
 ## Sed stream editor
 
