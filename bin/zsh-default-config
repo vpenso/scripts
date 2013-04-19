@@ -40,8 +40,19 @@ source ~/.zsh/antigen.zsh
 
 antigen-bundle git
 antigen-bundle oscarschneider/knife-completion
-
 antigen-bundle zsh-users/zsh-syntax-highlighting
+
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTFILE=~/.zsh_history
+
+setopt append_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 ZSH_HIGHLIGHT_STYLES+=(
