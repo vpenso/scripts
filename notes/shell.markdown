@@ -307,30 +307,6 @@ Trap breaking child processes
 
 
 
-## Sed stream editor
-
-List of edit commands E, execute with `sed 'E[;E]'`:
-
-    s/P/S/             substitute first match of pattern P with S
-    s/P/S/g            substitute all matches of pattern P with S
-    /M/s/P/S/g         like above but only lines matching pattern M
-    s/^[ \t]*//        delete leading white spaces
-    s/[ \t]*$//        delete trailing white spaces
-    /^$/d              delete blank lines
-    s/^/ /             insert leading space 
-
-Use with option `-n` to suppress unselected input when using the 
-print command:
-
-    /P/p               print lines matching pattern P 
-    /P/!p              print lines not matching pattern P
-    N,Mp               print lines with numbers from N to M
-    /P1/,/P2/p         print lines between pattern P1 and P2
-    /P/{p;q;}          print first line matching pattern P
-
-
-Edit commands can use an alternative separator e.g. `sed "s'P'S'g"`
-or `sed "s|P|S|g"`.
 
 
 
