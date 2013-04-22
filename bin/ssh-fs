@@ -16,31 +16,53 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-_version=0.1
+VERSION=0.1
 
-_error() { echo 1>&2 "Error: $@"; }
 
-_script=${0##*/}
+SCRIPT=${0##*/}
+
+_error() { 
+  echo 1>&2 "Error: $@"
+  echo "See \`$SCRIPT help\` for usage."
+  exit 1
+}
 
 HELP=\
-"Usage: $_script COMMAND [ARGUMENTS]"
+"Usage: $SCRIPT command [arguments]
+
+Commands:
+
+  list 
+    List all mounted directories.
+
+  mount [user@]host:[path] [path] [options]
+    Mount a remote directory to a local path.
+  
+  umount path
+    Unmount remote directories."
+
 
 # Check for dependencies
 for cmd in sshfs ; do
   # If missing alert and exit
-  type -p $cmd &>/dev/null || { _error "Please install command [$cmd]." ; exit 1 ; }
+  type -p $cmd &>/dev/null || _error "Please install command [$cmd]." 
 done
 
 ssh_mount() {
+  # at least to parameters are required
+  test $# -lt 2 && _error "Missing arguments!" 
   local remote=$1 ; shift
   local path=$1 ; shift
-  # create mount if missing, or exit on error
+  # create mount point  if missing, or exit on error
   ( test -d $path || mkdir -p $path ) || exit 1
-  sshfs $remote $path -C -o reconnect,auto_cache,follow_symlinks
+  sshfs $remote $path -C -o reconnect,auto_cache,follow_symlinks "$@"
 }
 
 ssh_umount() {
   local path=$1
+  # exit if user did not provide a mount point to umount
+  test -z "$path" && _error "Missing path to mount point!" 
+  # if mounted, umount
   ( mount | grep $path &>/dev/null ) && fusermount -u $path
 }
 
@@ -50,7 +72,7 @@ case "$_command" in
   "list") mount | grep fuse.sshfs | cut -d' ' -f-3 ;;
   "mount") ssh_mount "$@" ;;
   "umount") ssh_umount "$@" ;;
-  *) echo $HELP ;;
+  *) echo "$HELP" ;;
 esac
 
 exit 0
