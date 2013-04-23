@@ -26,6 +26,7 @@ shells.
 * **ssh-fs** — Wrapper around `sshfs` for mounting remote paths
 over SSH.
 * **ssh-known-hosts** — Remove/add/update SSH host fingerprints.
+* **ssh-tunnel** — Easy access to remote networks with `sshuttle`.
 * **sqlite-backup** — Backup SQLite database files into a Git 
 remote repository.
 * **tmux-cheat** — Most important Tmux keys.

@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION=0.1
+
+
+SCRIPT=${0##*/}
+
+_error() {
+  echo 1>&2 "Error: $@"
+  echo "See \`$SCRIPT help\` for usage."
+  exit 1
+}
+
+HELP=\
+"Usage: $SCRIPT command [arguments]
+
+The \`$SCRIPT\` script is a wrapper for \`sshuttle\`, and
+enables access to remote networks over SSH. 
+
+Commands:
+
+  co|connect [user@]host[:port] [range] 
+    Hook into a remote network.
+
+  st|status
+    Show Shuttle PID if running.  
+
+  di|disconnect
+    Close connection to remote network.
+
+Environment:
+
+  SSHUTTLE_PID_FILE 
+    Stores the process ID of the shuttle daemon.
+    Default \`/tmp/sshuttle.pid\`."
+
+SSHUTTLE_PID_FILE=${SSHUTTLE_PID_FILE:-/tmp/sshuttle.pid}
+
+connect() {
+  remote=$1
+  range=${2:-'0/0'}
+  sshuttle --remote $remote --dns --daemon --pidfile=$SSHUTTLE_PID_FILE $range
+}
+
+_status() {
+  if [ -e $SSHUTTLE_PID_FILE ] ; then
+    ps $(cat $SSHUTTLE_PID_FILE) >/dev/null
+    if [[ $? -eq 0 ]] ; then
+      echo "Sshuttle running with PID $(cat $SSHUTTLE_PID_FILE)."
+      exit 0
+    fi
+  fi
+  echo "Sshuttle not connected." 
+}
+
+disconnect() {
+  test -e $SSHUTTLE_PID_FILE || _error "Shuttle PID file missing $SSHUTTLE_PID_FILE!" 
+  kill -TERM $(cat $SSHUTTLE_PID_FILE)
+}
+
+# Read the command-line arguments
+_command=$1 ; shift
+case "$_command" in
+  "co"|"connect") connect "$@" ;;
+  "st"|"status") _status ;; 
+  "di"|"disconnect") disconnect ;;
+  *) echo "$HELP" ;;
+esac
+
+exit 0
+
+
