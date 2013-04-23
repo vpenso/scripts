@@ -1,15 +1,15 @@
 
 
-## Connection from a Public place
+## SSH Tunnel from a Public Place or at Home
 
-**[Sshuttle][10] enable access to a remote network over SSH.**
+**[Sshuttle][10] enables access to a remote network over SSH.**
 Technically it is part transparent proxy, part Virtual Private
 Network (VPN), and part SSH forwarding. Since it is based on 
 SSH, traffic is encrypted, and it is installed on the client 
 side only. Basically if SSH access to a remote network is 
 available, _sshuttle_ can hook the client into the remote network.
 
-On Debian Wheezy install shuttle with:
+On Debian (>= 7) and Ubuntu (>= 11.10) install _shuttle_ with:
 
     » sudo apt-get install sshuttle
 
@@ -44,6 +44,12 @@ _sshuttle_, or alternatively us the wrapper script [`ssh-tunnel`][11].
     » ssh-tunnel status
     Sshuttle not connected.
 
+Depending on the circumstances it is possible to limit 
+tunneling to a range of IP addresses (default 0/0), or to exclude 
+(option `-x range` certain IP ranges.
+
+    » ssh-tunnel co example.org 203.0.113.0/24
+    » ssh-tunnel co example.org -x 192.0.2.0/24 -x 198.51.100.0/24
 
 [10]: https://github.com/apenwarr/sshuttle
 [11]: ../bin/ssh-tunnel
