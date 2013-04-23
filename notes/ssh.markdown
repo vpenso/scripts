@@ -61,6 +61,17 @@ a remote path over SSH. With it clients get read and write
 access to data on a remote host via a path in the local
 file-system.
 
+Install _sshfs_ on Debian (>= 7):
+
+    » sudo apt-get install sshfs
+    » sudo adduser $USER fuse
+    » sudo tail -4 /etc/fuse.conf
+    # Allow non-root users to specify the 'allow_other' or 'allow_root'
+    # mount options.
+    #
+    user_allow_other
+    » sudo /etc/init.d/udev restart
+
 The basic command to mount a remote path is:
 
     » sshfs [user@]host[:port] /mnt/path -C -o reconnect,auto_cache,follow_symlinks
