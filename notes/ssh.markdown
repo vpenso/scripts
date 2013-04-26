@@ -124,11 +124,6 @@ file-system.
 
 Install _sshfs_ on Debian (>= 7) doing the following steps:
 
-- Install the `sshfs` package with APT
-- Add your user account to the group fuse.
-- Uncomment `user_allow_other` in the file `/etc/fuse.conf`.
-- Restart the udev mapper.
-
     » sudo apt-get install sshfs
     » sudo adduser $USER fuse
     » sudo tail -4 /etc/fuse.conf
@@ -137,6 +132,11 @@ Install _sshfs_ on Debian (>= 7) doing the following steps:
     #
     user_allow_other
     » sudo /etc/init.d/udev restart
+
+- Install the `sshfs` package with APT
+- Add your user account to the group fuse.
+- Uncomment `user_allow_other` in the file `/etc/fuse.conf`.
+- Restart the udev mapper.
 
 In Ubuntu it is enough to install the `sshfs` package.
 
@@ -157,6 +157,9 @@ Mount several remote paths with the wrapper script [`ssh-fs`][14]:
     example.org:/data on /data
     » ssh-fs umount /data
     » ssh-fs umount ~/docs
+
+
+
 
 
 [1] [Public-key cryptography][01]  
