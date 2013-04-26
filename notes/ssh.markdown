@@ -1,4 +1,65 @@
+## Remote Login with Authentication Key
 
+Using an authentication key for login (usually) offers additional 
+security, and simplifies multiple connections to servers. A key
+comes in a public-private pair, where the private part is kept
+secret while the public part is distributed for remote login [1].
+
+Generate an authentication key pair with the `ssh-keygen` utility. 
+
+    » ssh-keygen -t rsa -f ~/.ssh/id_rsa 
+    [...SNIP...]
+
+The option `-f file` specifies the location where to store the
+private key. **Make sure to use a non-trivial password to secure 
+your private key.** Change the password of a private key with
+the option `-p`.
+
+    » ssh-keygen -p -f ~/.ssh/id_rsa
+
+SSH supports different types of encryption, in the example above
+an RSA [2] key was created using the option `-t algorithm`. Besides 
+the choice between different encryption algorithms, it is possible
+to define the key (bit) length with option `-b size`. 
+
+Common key types and key length:
+
+* The default is `-t rsa -b 2048` for an RSA 2048bit key.
+* Depending on the application use RSA with `-b 4096`.
+* Recent versions of SSH support the ECDSA [3] algorithm
+  `-t ecdsa -b 512`.
+
+### Public Key Deployment on Remote Servers
+
+The utility `ssh-copy-id` transfers and installs a public key
+on a remote node:
+
+    » ssh-copy-id -i ~/.ssh/id_rsa.pub jdoe@lx-pool.gsi.de
+
+The public keys usually uses the file name suffix `.pub` and
+are created in the same path as the private key.
+
+### Using an Authentication Agent
+
+Since the authentication keys are protected by a pass phrase, 
+each remote login will require typing it in. An SSH agent will 
+cache the private key and will provide it for remote login. 
+Thus typing of the pass phrase will be required only once.
+
+Start an SSH agent and add an authentication key:
+
+    » eval $(ssh-agent)
+    Agent pid 2157
+    » ssh-add ~/.ssh/id_rsa 
+    Enter passphrase for /home/jdoe/.ssh/id_rsa:
+    Identity added: /home/jdoe/.ssh/id_rsa (/home/user/.ssh/id_rsa)
+
+Multiple keys can be added with `ssh-add`. Using the option `-l`
+will list cached private keys.
+
+    » ssh-add -l 
+    2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
+    4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce project/id_rsa (RSA)
 
 ## Network Tunnel from a Public Place or at Home
 
@@ -61,7 +122,12 @@ a remote path over SSH. With it clients get read and write
 access to data on a remote host via a path in the local
 file-system.
 
-Install _sshfs_ on Debian (>= 7):
+Install _sshfs_ on Debian (>= 7) doing the following steps:
+
+- Install the `sshfs` package with APT
+- Add your user account to the group fuse.
+- Uncomment `user_allow_other` in the file `/etc/fuse.conf`.
+- Restart the udev mapper.
 
     » sudo apt-get install sshfs
     » sudo adduser $USER fuse
@@ -71,6 +137,8 @@ Install _sshfs_ on Debian (>= 7):
     #
     user_allow_other
     » sudo /etc/init.d/udev restart
+
+In Ubuntu it is enough to install the `sshfs` package.
 
 The basic command to mount a remote path is:
 
@@ -95,3 +163,9 @@ Mount several remote paths with the wrapper script [`ssh-fs`][14]:
 [12]: http://fuse.sourceforge.net/sshfs.html
 [14]: ../bin/ssh-fs
 
+[1] [Public-key cryptography][1]
+[1]: http://en.wikipedia.org/wiki/Public-key_cryptography
+[2] [RSA algorithm for public-key cryptography][2]
+[2]: http://en.wikipedia.org/wiki/RSA_%28algorithm%29
+[3] [Elliptic Curve Digital Signature Algorithm (ECDSA)][3]
+[3]: http://en.wikipedia.org/wiki/Elliptic_Curve_DSA
