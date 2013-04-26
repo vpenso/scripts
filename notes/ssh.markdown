@@ -158,14 +158,15 @@ Mount several remote paths with the wrapper script [`ssh-fs`][14]:
     » ssh-fs umount /data
     » ssh-fs umount ~/docs
 
+
+[1] [Public-key cryptography][01]  
+[2] [RSA algorithm for public-key cryptography][02]  
+[3] [Elliptic Curve Digital Signature Algorithm (ECDSA)][03]  
+
+[01]: http://en.wikipedia.org/wiki/Public-key_cryptography
+[02]: http://en.wikipedia.org/wiki/RSA_%28algorithm%29
+[03]: http://en.wikipedia.org/wiki/Elliptic_Curve_DSA
 [10]: https://github.com/apenwarr/sshuttle
 [11]: ../bin/ssh-tunnel
 [12]: http://fuse.sourceforge.net/sshfs.html
 [14]: ../bin/ssh-fs
-
-[1] [Public-key cryptography][1]
-[1]: http://en.wikipedia.org/wiki/Public-key_cryptography
-[2] [RSA algorithm for public-key cryptography][2]
-[2]: http://en.wikipedia.org/wiki/RSA_%28algorithm%29
-[3] [Elliptic Curve Digital Signature Algorithm (ECDSA)][3]
-[3]: http://en.wikipedia.org/wiki/Elliptic_Curve_DSA
