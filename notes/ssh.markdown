@@ -3,7 +3,7 @@
 Using an authentication key for login (usually) offers additional 
 security, and simplifies multiple connections to servers. A key
 comes in a public-private pair, where the private part is kept
-secret while the public part is distributed for remote login [1].
+secret while the public part is distributed for remote login¹.
 
 Generate an authentication key pair with the `ssh-keygen` utility. 
 
@@ -18,7 +18,7 @@ the option `-p`.
     » ssh-keygen -p -f ~/.ssh/id_rsa
 
 SSH supports different types of encryption, in the example above
-an RSA [2] key was created using the option `-t algorithm`. Besides 
+an RSA² key was created using the option `-t algorithm`. Besides 
 the choice between different encryption algorithms, it is possible
 to define the key (bit) length with option `-b size`. 
 
@@ -26,7 +26,7 @@ Common key types and key length:
 
 * The default is `-t rsa -b 2048` for an RSA 2048bit key.
 * Depending on the application use RSA with `-b 4096`.
-* Recent versions of SSH support the ECDSA [3] algorithm
+* Recent versions of SSH support the ECDSA³ algorithm
   `-t ecdsa -b 512`.
 
 ### Public Key Deployment on Remote Servers
@@ -162,13 +162,13 @@ Mount several remote paths with the wrapper script [`ssh-fs`][14]:
 
 
 
-[1] [Public-key cryptography][01]  
-[2] [RSA algorithm for public-key cryptography][02]  
-[3] [Elliptic Curve Digital Signature Algorithm (ECDSA)][03]  
+¹ Public-key cryptography  
+  <http://en.wikipedia.org/wiki/Public-key_cryptography>
+² RSA algorithm for public-key cryptography  
+  <http://en.wikipedia.org/wiki/RSA_%28algorithm%29>
+³ Elliptic Curve Digital Signature Algorithm (ECDSA)  
+  <http://en.wikipedia.org/wiki/Elliptic_Curve_DSA>
 
-[01]: http://en.wikipedia.org/wiki/Public-key_cryptography
-[02]: http://en.wikipedia.org/wiki/RSA_%28algorithm%29
-[03]: http://en.wikipedia.org/wiki/Elliptic_Curve_DSA
 [10]: https://github.com/apenwarr/sshuttle
 [11]: ../bin/ssh-tunnel
 [12]: http://fuse.sourceforge.net/sshfs.html
