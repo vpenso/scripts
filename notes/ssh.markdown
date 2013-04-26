@@ -77,7 +77,7 @@ agent is create:
     Agent started, session in /home/jdoe/.ssh/agent-session
     Using existing SSH agent!
     » ssh-add ~/.ssh/id_rsa 
-    [...sNIP...]
+    [...SNIP...]
 
 Inside a second shell bind to the running SSH agent:
 
@@ -200,6 +200,7 @@ Mount several remote paths with the wrapper script [ssh-fs][14]:
 
 
 [10]: https://github.com/apenwarr/sshuttle
-[11]: ../bin/ssh-tunnel
+[11]: https://raw.github.com/vpenso/scripts/master/bin/ssh-tunnel
 [12]: http://fuse.sourceforge.net/sshfs.html
-[14]: ../bin/ssh-fs
+[14]: https://raw.github.com/vpenso/scripts/master/bin/ssh-fs 
+
