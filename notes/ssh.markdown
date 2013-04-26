@@ -1,4 +1,4 @@
-## Remote Login with Authentication Key
+# Remote Login with Key
 
 Using an authentication key for login (usually) offers additional 
 security, and simplifies multiple connections to servers. A key
@@ -29,7 +29,7 @@ Common key types and key length:
 * Recent versions of SSH support the ECDSA algorithm
   `-t ecdsa -b 512`.
 
-### Public Key Deployment on Remote Servers
+## Public Key Deployment on Remote Servers
 
 The utility `ssh-copy-id` transfers and installs a public key
 on a remote node:
@@ -39,7 +39,7 @@ on a remote node:
 The public keys usually uses the file name suffix `.pub` and
 are created in the same path as the private key.
 
-### Using an Authentication Agent
+## Using an Authentication Agent
 
 Since the authentication keys are protected by a pass phrase, 
 each remote login will require typing it in. An SSH agent will 
@@ -52,7 +52,7 @@ Start an SSH agent and add an authentication key:
     Agent pid 2157
     » ssh-add ~/.ssh/id_rsa 
     Enter passphrase for /home/jdoe/.ssh/id_rsa:
-    Identity added: /home/jdoe/.ssh/id_rsa (/home/user/.ssh/id_rsa)
+    Identity added: /home/jdoe/.ssh/id_rsa (/home/jdoe/.ssh/id_rsa)
 
 Multiple keys can be added with `ssh-add`. Using the option `-l`
 will list cached private keys.
@@ -61,7 +61,47 @@ will list cached private keys.
     2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
     4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce project/id_rsa (RSA)
 
-## Network Tunnel from a Public Place or at Home
+## Sharing an Authentication Agent
+
+It is possible to use a single SSH agent across multiple shells. 
+The script `ssh-agent-session` starts an instance of `ssh-agent`
+and writes its connection information to `~/.ssh/agent-session`.
+Any shell can use this information to bind with the already
+running SSH agent.
+
+Download the [ssh-agent-session][sas] script and save it to a location
+of your choice. Use `source` to load the SSH agent environment. A new
+agent is create:
+
+    » source ssh-agent-session
+    Agent started, session in /home/jdoe/.ssh/agent-session
+    Using existing SSH agent!
+    » ssh-add ~/.ssh/id_rsa 
+    [...sNIP...]
+
+Inside a second shell bind to the running SSH agent:
+
+    » source ssh-agent-session
+    Running with process ID 19264
+    Using existing SSH agent!
+    » ssh-add -l 
+    [...SNIP...]
+
+In order to automatically use a single SSH agent across all new
+shells you can add it to your shell profile. For example in 
+Bash:
+
+    » echo "source /path/to/ssh-agent-session" >> ~/.bashrc
+
+Similar in ZSH add the same line to `~/.zshrc`. If you want to
+make sure to remove all cached keys from SSH agent use `ssh-agent-stop`.
+
+    » ssh-agent-stop
+    All identities removed.
+
+[sas]: https://raw.github.com/vpenso/scripts/master/bin/ssh-agent-session
+
+# Network Tunnel with Proxy
 
 **[Sshuttle][10] enables access to a remote network over SSH.**
 Technically it is part transparent proxy, part Virtual Private
@@ -91,7 +131,7 @@ a cooperate network implies that all outgoing traffic from the
 login node _sshuttle_ is connected to can be monitored.)
 
 It is possible to define aliases for convenient use of 
-_sshuttle_, or alternatively us the wrapper script [`ssh-tunnel`][11].
+_sshuttle_, or alternatively us the wrapper script [ssh-tunnel][11].
 
     » ssh-tunnel help
     [...SNIP...]
@@ -115,7 +155,7 @@ tunneling to a range of IP addresses, or to exclude
 
 Read the _sshuttle_ manual for more details.
 
-## Mount Remote File-Systems
+# Mount Remote File-Systems
 
 [SshFS][12] is a client side file-system capable to mount
 a remote path over SSH. With it clients get read and write
@@ -148,7 +188,7 @@ Unmount the file-system with:
 
     » fusermount -u /mnt/path
 
-Mount several remote paths with the wrapper script [`ssh-fs`][14]:
+Mount several remote paths with the wrapper script [ssh-fs][14]:
 
     » ssh-fs mount example.org:docs ~/docs
     » ssh-fs mount jdoe@example.org:/data /data

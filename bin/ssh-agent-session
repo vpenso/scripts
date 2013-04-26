@@ -40,6 +40,7 @@ function __ssh_agent_load() {
   fi
 }
 
+
 # remove any trace of existing SSH agents
 function __ssh_agent_stop() {
   if __ssh_agent_running 
@@ -52,6 +53,8 @@ function __ssh_agent_stop() {
   killall -u $USER ssh-agent
   # removes un-managed SSH agents too!
 }
+
+alias ssh-agent-stop=__ssh_agent_stop
 
 function __ssh_agent_start() {
   if ! __ssh_agent_running 
