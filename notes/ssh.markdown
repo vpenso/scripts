@@ -160,14 +160,9 @@ Mount several remote paths with the wrapper script [`ssh-fs`][14]:
 
 
 
-
-
-¹ Public-key cryptography  
-  <http://en.wikipedia.org/wiki/Public-key_cryptography>
-² RSA algorithm for public-key cryptography  
-  <http://en.wikipedia.org/wiki/RSA_%28algorithm%29>
-³ Elliptic Curve Digital Signature Algorithm (ECDSA)  
-  <http://en.wikipedia.org/wiki/Elliptic_Curve_DSA>
+¹ [Public-key cryptography](http://en.wikipedia.org/wiki/Public-key_cryptography)  
+² [RSA algorithm for public-key cryptography](<http://en.wikipedia.org/wiki/RSA_%28algorithm%29)  
+³ [Elliptic Curve Digital Signature Algorithm](http://en.wikipedia.org/wiki/Elliptic_Curve_DSA)  
 
 [10]: https://github.com/apenwarr/sshuttle
 [11]: ../bin/ssh-tunnel
