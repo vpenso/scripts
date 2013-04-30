@@ -17,26 +17,26 @@
 #
 
 # exit if an uninitialised variable is used
-set -o nonunset
+#set -o nonunset
 # exit of statement returns a non-true return value
 #set -o errexit
 
-_version=0.1
+VERSION=0.1
 
 # Filename of this script
-_script=$(basename $0)
+SCRIPT=${0##*/}
 
 # Help text for this script
-function _help() {
-  echo "Usage: $_script [COMMAND] [ARGUMENTS]
+HELP=\
+"Usage: $SCRIPT [COMMAND] [ARGUMENTS]
   
-  Add more text here"
-}
+Add more text here"
 
 # enable line numbers for debug output
 if [ "$_DEBUG" = "true" ] ; then
   export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
 fi
+
 function _debug() {
   if [ "$_DEBUG" = "true" ]; then
     echo 1>&2 "Debug: $@"
@@ -45,6 +45,7 @@ function _debug() {
 
 function _error() {
   echo 1>&2 "Error: $@"
+  echo "See \`$SCRIPT help\` for usage."
 }
 
 # Parse the command line options
@@ -61,14 +62,14 @@ while true; do
   esac
 done
 
-# Read the command-line arguments
-_command=${1:-help}
 
 ### HERE COME THE APPLICATION FUNCTIONS
 
+# Read the command-line arguments
+_command=$1 ; shift
 case "$_command" in 
   # call functions for each command
-  *) _help ;;
+  *) echo "$HELP" ;;
 esac
 
 exit 0
