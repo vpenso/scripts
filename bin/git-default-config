@@ -45,7 +45,8 @@ git config --global alias.rs "repos status"
 git config --global alias.rls "ls-remote"
 git config --global alias.rlst "ls-remote --tags"
 
-git config --global alias.pl pull
+git config --global alias.pl "pull --ff-only"
+git config --global alias.plr "pull --rebase"
 git config --global alias.plt "pull --tags"
 
 git config --global alias.s status
