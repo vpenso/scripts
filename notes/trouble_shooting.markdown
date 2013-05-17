@@ -18,12 +18,13 @@ Some text based monitoring tools:
     nmon
     atop
     htop
-    iftop
-    iptraf           # monitor network traffic by IPs
     iotop
     top
-    powertop         # monitor energy consumption
-    nethoqs          # monitor traffic by process IDs
+    powertop         # energy consumption
+    nload            # network traffic by interface
+    iftop
+    iptraf           # network traffic by IPs
+    nethoqs          # traffic by process IDs
 
 Log files:
 
