@@ -1,8 +1,15 @@
 
-    t := new(T)                      allocate a zeroed T value and return a pointer
+    ;                                 terminate statement (mostly automatically added by the lexer)
+    //                                line comment
+    /* */                             block comment
+    var v T                           new variable of type T
+    v := new(T)                       allocate a zeroed T value and return a pointer
 
 ## Control Structures
 
+    if C { }                          execute block if condition c evaluates to true    
+    for { }                           endless loop
+    for c { }                         execute block as long as condition c is true
     switch v { case a: ; case f(): }  evaluate from top to buttom, stopping on success
     default:                          as default case
     fallthrouh                        prevent automaticall break
@@ -47,6 +54,7 @@
     func f(a,b T) R {}                function f with arguments a,b of type T and return type R
     func f(a T, b S) R {}             individual types T,S for arguments a,b
     func f(a T) r R {}                name return value r of type R
+    func f() (T,R) { return x,y }     mutliple return values x,y of type T,R
     f := func(a T) R {}               function value f with argument a of type T with return type R
     func c() func(T) R {}             function c returns closure with argument of type T and return type R
     type C T                          define type C of type T in your package
