@@ -1,0 +1,237 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'rubygems'
+require 'ostruct'
+require 'getoptlong' 
+require 'yaml'
+require 'redis'
+require 'socket'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Send basic monitoring metrics to Redis store. All keys 
+will be prefixed with the FQDN of the executing node.
+
+Usage
+-----
+
+#{exec_name} [HOST] [OPTIONS]
+
+   HOST: Hostname of the Redis server.
+
+Options
+-------
+
+  --port, -p NUM:
+    Port number of the Redis server (defaults to 6379)
+  --pid-file PATH:
+    Path to a file storing the process ID when executed as 
+    daemon (default to /var/run/#{exec_name}.pid.
+  --log-file PATH:
+    Path to the log file when executed as daemon (defaults
+    to /var/log/#{exec_name}.log).
+  --daemonize:
+    Execute this process ass daemon.
+  --dump:
+    Show monitoring metrics to be send.
+  --help, -h
+    Show this help information.
+  --debug, -d
+    Show stacktraces in case of errors.
+EOF
+
+
+# Calculate Ethernet network traffic in bytes per second
+# for all network interfaces.
+#
+# Returns a Hash with a key per network interface and
+# an array with to values: received bytes and transmitted
+# bytes.
+def ethernet_traffic
+  data = Hash.new
+  1.upto(2) do
+    # Read the /proc file-system to gather network counters,
+    # and iterate over all active network interfaces
+    `cat /proc/net/dev | sed -n '3,$p'`.split("\n").each do |line|
+      dev,stats = line.split(':')
+      dev = dev.strip # network interface name
+      stats = stats.split(' ') # all network counters
+      rx_bytes = stats[0].to_i # received bytes 
+      tx_bytes = stats[8].to_i # transmitted bytes
+      # if this loop is executed the second time
+      if data.has_key? dev
+        # get traffic from a time frame of the last second
+        data[dev][0] = rx_bytes - data[dev][0]
+        data[dev][1] = tx_bytes - data[dev][1]
+      else
+        # remember last values
+        data[dev] = [rx_bytes,tx_bytes]
+      end
+    end
+    # accumulate counters for one second
+    sleep 1
+  end
+  return data
+end
+
+def host_metrics
+  # All data to be synced with the server
+  data = Hash.new
+  # Time stamp of last data sync 
+  data['heartbeat'] = Time.now.to_i
+  # System load
+  data['load'] = File.open('/proc/loadavg', &:readline).chomp
+  # Memory utilization
+  data['memory'] = `free -t | tail -1`.split(':')[-1].split(' ').join(' ')
+  # Overran CPU utilization
+  data['cpu/stats'] = `iostat -c 2>/dev/null | sed -n '4p'`.split(' ').join(' ')
+  # Ethernet network traffic
+  ethernet_traffic.each do |dev,stats|
+    data["network/#{dev}/traffic"] = stats.join(' ')
+  end
+  # Disk utilization
+  `iostat -d 2>/dev/null | sed -n '4,$p'`.split("\n").each do |dev|
+    name,*stats = dev.split(' ')
+    data["device/#{name}/stats"] = stats.join(' ')
+  end
+  return data
+end
+
+def next_sync(interval)
+  Time.now.to_i + interval
+end
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.debug = false
+  options.hostname = `hostname -f`.chomp
+  options.redis_port = 6379
+  options.redis_server = 'localhost'
+  options.interval = 3
+  options.daemonize = false
+  options.pid_file = "/var/run/#{exec_name}.pid"
+  options.log_file = "/var/log/#{exec_name}.log"
+
+  GetoptLong.new(
+    ['--port','-p',GetoptLong::REQUIRED_ARGUMENT],
+    ['--daemonize',GetoptLong::NO_ARGUMENT],
+    ['--pid-file',GetoptLong::REQUIRED_ARGUMENT],
+    ['--log-file',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT],
+    ['--dump',GetoptLong::NO_ARGUMENT],
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--port'
+      options.redis_port = arg
+    when '--pid-file'
+      options.pid_file = arg
+    when '--log-file'
+      options.log_file = arg
+    when '--daemonize'
+      options.daemonize = true
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    when '--dump'
+      $stdout.puts host_metrics.to_yaml
+      exit 0
+    when '--debug'
+      options.debug = true
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    end
+  end
+
+  options.redis_server = ARGV[0] || raise('Please specify the hostname of a Redis database!')
+
+  shutdown = false
+
+  Signal.trap('TERM') do
+    $stdout.puts "Service terminated."
+    exit 0
+  end
+  Signal.trap('INT') do
+    $stdout.puts "Wait for shutdown..."
+    $stdout.flush
+    shutdown = true
+  end
+ 
+  if options.daemonize
+    if RUBY_VERSION < '1.9'
+      exit if fork
+      Process.setsid
+      exit if fork
+      Dir.chdir '/'
+    else
+      Process.daemon
+    end
+    # Write the process ID to a file
+    File.open(options.pid_file,'w') { |file| file.write "#{$$}\n"}
+    # Bind output to a log file
+    $stdin.reopen '/dev/null'
+    $stdout.reopen(options.log_file,'w')
+    $stdout.sync = true
+    $stderr.reopen($stdout)
+  end
+
+  # It would be better to use a generic interface here, like Moneta. But
+  # support for this is non existent until Debian 7, and there it is broken.
+  redis = Redis.new(:host => options.redis_server, :port => options.redis_port)
+  $stdout.puts("Sync to #{options.redis_server}:#{options.redis_port} with #{options.interval} seconds interval.")
+ 
+  sync_at = Time.now.to_i
+  while(true)
+    break if shutdown
+    if sync_at >= Time.now.to_i
+      redis.multi do
+        host_metrics.each do |key,value|
+          redis.set("#{options.hostname}/#{key}",value)
+        end
+      end
+      $stdout.puts "#{host_metrics.length} values send." if options.debug
+      sync_at = next_sync(options.interval)
+    end
+  end
+
+  $stdout.puts "Service stopped!"
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0

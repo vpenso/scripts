@@ -1,4 +1,6 @@
 
+# Go Syntax
+
     ;                                 terminate statement (mostly automatically added by the lexer)
     //                                line comment
     /* */                             block comment
