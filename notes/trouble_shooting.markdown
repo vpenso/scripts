@@ -123,7 +123,7 @@ Memory mapping of a single process:
 
     pmap PID
 
-### Network
+## Network
 
 Hardware identification:
 
@@ -184,5 +184,50 @@ Listen to network traffic:
     tcpdump -i eth0 arp
     tcpdump -i eth0 port 22
     tcpdump -i eth0 dst W.X.Y.Z and port 22
+
+### Infiniband
+
+Identify the hardware:
+
+    lspci | grep Infini
+    ibstat     # State of the host channel adapters
+    /sys/class/infiniband/*/hca_type
+    ibstatus   # Show the link rates
+    /sys/class/infiniband/*/ports/*/rate   
+    /sys/class/infiniband/*/fw_ver  
+
+Is there network traffic? 
+
+    watch perfquery
+
+Increasing error counters indicate cable issues: 
+
+    ibqueryerrors -c -s XmtWait 
+    ibcheckerrors
+
+Modules and drivers loaded?
+
+    lsmod | egrep "^ib|*_ib|rdma"
+
+Where is the subnet manager daemon? Is the client running everywhere?
+
+    sminfo
+    ps -f -C opensm
+
+Does the RDMA group has permissions to the IB device interface:
+
+    find /dev/infiniband -group rdma
+
+Can users pin memory?
+
+    grep memlock /etc/security/limits.conf
+
+Are IB users members of the RDMA group?
+
+    grep rdma /etc/group
+
+Is the Infiniband host description set?
+
+    /sys/class/infiniband/*/node_desc
 
 
