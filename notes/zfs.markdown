@@ -49,9 +49,60 @@
     Filesystem      Size  Used Avail Use% Mounted on
     storage/data     20G  2.0G   19G  10% /data
 
-### RAIDZ
+### RAID
 
-RAIDZ-1 single parity. Minimum 3 disks. Two disk failures results in data loss. 
+In order of performance:
+
+* `mirror` – More disks, more reliability, same capacity. (RAID 1)
+* `raidz1` – Single parity, minimum 3 disks. Two disk failures results in data loss. 
+* `raidz2` – Dual parity, minimum 4 disks. Allows for two disk failures.
+* `raidz3` – Triple parity, minimum 5 disks. Allows for three disk failures.
+
+Create a mirror with two disks, break it, and replace a disk:
+
+    » zpool create -f storage mirror sdb sdc
+    » zpool status storage
+      pool: storage
+     state: ONLINE
+      scan: none requested
+    config:
+            NAME        STATE     READ WRITE CKSUM
+            storage     ONLINE       0     0     0
+              mirror-0  ONLINE       0     0     0
+                sdb     ONLINE       0     0     0
+                sdc     ONLINE       0     0     0
+    » dd if=/dev/urandom of=/dev/sdb1 bs=1024k seek=10 count=1
+    » zpool scrub storage
+    » zpool status storage                                                                                   
+      pool: storage
+     state: ONLINE
+    status: One or more devices could not be used because the label is missing or
+            invalid.  Sufficient replicas exist for the pool to continue
+            functioning in a degraded state.
+    action: Replace the device using 'zpool replace'.
+       see: http://zfsonlinux.org/msg/ZFS-8000-4J
+      scan: scrub repaired 0 in 0h0m with 0 errors on Wed Jun  5 11:26:44 2013
+    config:
+            NAME        STATE     READ WRITE CKSUM
+            storage     ONLINE       0     0     0
+              mirror-0  ONLINE       0     0     0
+                sdb     UNAVAIL      0     0     0  corrupted data
+                sdc     ONLINE       0     0     0
+    » zpool replace -f storage sdb sdd
+    » zpool status storage
+      pool: storage
+     state: ONLINE
+      scan: resilvered 10.1M in 0h0m with 0 errors on Wed Jun  5 11:29:56 2013
+    config:
+            NAME        STATE     READ WRITE CKSUM
+            storage     ONLINE       0     0     0
+              mirror-0  ONLINE       0     0     0
+                sdd     ONLINE       0     0     0
+                sdc     ONLINE       0     0     0
+
+The state can be one of the following: ONLINE, FAULTED, DEGRADED, UNAVAILABLE, or OFFLINE. 
+
+Example for a RAIDZ-1 configuration with three disks:
 
     » zpool create -f storage raidz1 sdb sdc sdd
     » zpool status storage
@@ -59,7 +110,7 @@ RAIDZ-1 single parity. Minimum 3 disks. Two disk failures results in data loss.
      state: ONLINE
       scan: none requested
     config:
-
+    
             NAME        STATE     READ WRITE CKSUM
             storage     ONLINE       0     0     0
               raidz1-0  ONLINE       0     0     0
@@ -72,9 +123,5 @@ RAIDZ-1 single parity. Minimum 3 disks. Two disk failures results in data loss.
     » df -h /storage
     Filesystem      Size  Used Avail Use% Mounted on
     storage         391G  128K  391G   1% /storage
-
-RAIDZ-2 dual parity. Minimum 4 disks. Allows for two disk failures.  
-RAIDZ-3 triple parity. Minimum 5 disks. Allows for three disk failures.
-
 
 
