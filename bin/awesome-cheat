@@ -11,4 +11,5 @@ echo \
  ⇧ 1-9     │ send window to tag  
  k j       │ toggle window focus next/previous
  w         │ access awesome menu
+ ⌃ l       │ lock screen
  ⌃ r       │ reload awesome configuration"

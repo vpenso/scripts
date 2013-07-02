@@ -14,7 +14,7 @@ In the `bin/` sub-directory
 * **git-default-config** — sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
 * **git-repos** — Maintains a list of Git remote repositories and 
-shows the status. [Read more...](docs/git-repos.markdown)
+shows the status.
 * **mpd-default-config** — Writes a personal MPD configuration.
 * **music** — Controls the local Music Player Daemon.
 * **pingable** — Wait until a host is pingable.
@@ -37,10 +37,6 @@ remote repository.
   a couple of Bundles, and my personal Vim configuration.
 * **zsh-default-config** — helps to install antigen and my
   default Zsh configuration.
-
-In the `notes/` sub-directory you will find some random topics
-I have collected information on, either to give them to users
-or just as a reminder for myself.
 
 License
 =======
