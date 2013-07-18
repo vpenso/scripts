@@ -1,0 +1,150 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'json'
+require 'yaml'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Merges hashes from a list of files into a single object.
+
+Usage
+-----
+
+#{exec_name} [OPTIONS] FILES
+
+  Merge a list of JSON/YAML hashes from FILES into a single
+  hash and print to stdout.
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --input-format, -I json|yaml
+    Format of the input data (default 'json').
+  --output-format, -O json|yaml
+    Format of the output send to stdout (default 'json').
+  --version, -v
+    Print version information.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.output_format = 'json'
+  $options.input_format = 'json'
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--input-format','-I',GetoptLong::REQUIRED_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--output-format','-O',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--input-format'
+      $options.input_format = arg if %w(json yaml).include? arg
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--output-format'
+      $options.output_format = arg if %w(json yaml).include? arg
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+  $logger.debug("Options -- #{$options}")
+  
+
+  path = ARGV[0] || raise('Expecting source path!')
+
+  hash = Hash.new
+
+  Dir[path].each do |file|
+    case $options.input_format
+    when 'json'
+      JSON.parse(File.read(file)).each do |k,v|
+        hash[k] = v
+      end
+    when 'yaml'
+      YAML.load_file(file).each do |k,v|
+        hash[k] = v
+      end
+    end
+  end
+
+  output = case $options.output_format
+           when 'json'
+             JSON.pretty_generate(hash) 
+           when 'yaml'
+             hash.to_yaml
+           end
+
+  $stdout.puts output
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
