@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+VERSION = 0.1
+
 require 'ostruct'
 require 'getoptlong' 
 require 'logger'
@@ -25,23 +27,25 @@ HELP = <<EOF
 Synopsis
 ========
 
-#{exec_name}: Explain in one sentance
+Explain in one sentance whta this cript does.
 
 Usage
 -----
 
-#{exec_name} [COMMAND] [OPTIONS]
+#{exec_name} [OPTIONS] ARGUMENT 
 
-  COMMAND:
-    command text
+  ARGUMENT
+    Describe what this parameter does.
 
 Options
 -------
 
-  --help, -h
-    Show this help information.
   --debug, -d
     Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --version, -v
+    Print version number.
 EOF
 
 begin
@@ -51,7 +55,7 @@ begin
   options = OpenStruct.new
   options.debug = false
 
-  $logger = Logger.new(STDOUT)
+  $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
   $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
   $logger.formatter = proc do |severity, datetime, progname, message|
@@ -62,11 +66,13 @@ begin
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
-    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT]
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT],
   ).each do |opt,arg|
     case opt
     when '--debug'
       options.debug = true
+      $logger.level = Logger::DEBUG
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -81,6 +87,9 @@ begin
       else
         Logger::INFO
        end
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
     end
   end
 
