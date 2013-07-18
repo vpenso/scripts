@@ -17,6 +17,8 @@ In the `bin/` sub-directory
 shows the status.
 * **mpd-default-config** — Writes a personal MPD configuration.
 * **music** — Controls the local Music Player Daemon.
+* **node-state** – Collect host monitoring information and 
+  serialize the data into JSON.   
 * **pingable** — Wait until a host is pingable.
 * **ruby-skeleton** — Start developing ruby scripts from here.
 * **segfaulter** — Create a small executable dieing with segfault.

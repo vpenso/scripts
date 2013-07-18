@@ -1,0 +1,443 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'json'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Gather monitor data from a node and serialize it into JSON.
+
+Usage
+-----
+
+#{exec_name} [OPTIONS]
+
+Options
+-------
+
+  --command-prefix COMMAND:
+    Execute all monitoring command with a prefix command.
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --log-level, -L debug|info|warn|fatal
+    Verbosity of the logging output.
+  --list-plugins, -P
+    Show all available monitoring plugins.
+  --plugins, -P name[,name,...]
+    Enable additional plugins.
+  --version, -v
+    Print version number.
+EOF
+
+PLUGINS = <<-EOF
+NAME      FUNCTION
+
+cpu       CPU shares from `iostat`.
+dev       Lists all local devices using `iostat` and their
+          mount points using `df`.
+libvirt   Uses `virsh` to collect a list of all virtual
+          machines managed by libvirtd.
+net       Network statistics collected from `ip` and the file
+          /proc/net/dev.
+mem       Memory utilization from the `free` command.
+ports     Uses `sockstat` to collect a list of all ports
+          in state LISTEN or ESTABLISHED.
+EOF
+
+class Hash
+  def self.autonew(*args)
+    new(*args){|hsh, key| hsh[key] = Hash.new(&hsh.default_proc) }
+  end
+end
+
+class Array
+  def to_hash(keys)
+    Hash[*keys.zip(self).flatten]
+  end
+end
+
+
+class System 
+  
+  def self.exec(command)
+    command + ' 2>&1'
+    unless $options.command_prefix.nil?
+      command = %Q[#{$options.command_prefix} #{command}]
+    end
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+      pipe = IO.popen(command)
+      # Get the process ID from the child
+      pid = pipe.pid
+      # Read the output from the stream
+      output = pipe.read
+      # Wait for successful return and pass back the code to the caller
+      Process.wait(pid)
+      state=$?
+      $logger.debug "Returned with #{state}"
+      if state == 0
+        return output
+      else
+        $logger.warn "Failed to execute [#{command}]"
+        return nil
+      end
+  end
+
+
+end
+
+class Cpu
+
+  def self.to_mash
+    mash = Hash.autonew
+    mash['cpu'] = processes
+    mash['cpu']['shares'] = shares
+    mash
+  end
+  
+  def self.processes
+    array = System::exec("cat /proc/loadavg").chomp.split
+    { 'load' => array[0..2].join(' '), 'running' => array[-2], 'last' => array[-1].to_i }
+  end
+
+  def self.shares
+    keys = %w(user nice system iowait steal idle)
+    System::exec("iostat -c 2>/dev/null | sed -n '4p'").chomp.split(' ').to_hash(keys)
+  end
+
+end
+
+class Memory
+
+  def self.to_mash
+    mash = Hash.autonew
+    mash['memory'] = memory
+    mash
+  end
+
+  def self.memory
+    mem = System::exec("free -tb | tail -1").split(':')[-1].split(' ')
+    return (mem.map { |v| v.to_i }).to_hash(%w(total used free))
+  end
+
+end
+
+class Devices
+ 
+  def self.to_mash
+    mash = Hash.autonew
+    mash['devices'] = utilization
+    mash['mount'] = mount
+    mash
+  end
+
+  def self.utilization
+    mash = Hash.autonew 
+    System::exec("iostat -d 2>/dev/null | sed -n '4,$p'").split("\n").each do |device|
+      name, tps, rsec, wsec, kread, kwrite = device.split(' ')
+      mash[name]['requests'] = tps
+      mash[name]['bytes']['read'] = rsec.to_i*1024
+      mash[name]['bytes']['write'] = wsec.to_i*1024 
+    end
+    mash
+  end
+
+  def self.mount
+    mash = Hash.autonew 
+    System::exec('df -lP').split("\n")[1..-1].each do |device|
+      name, total, used, free, percent, mount = device.split(' ')
+      # Omit local pseudo file-systems
+      next if %w(none tmpfs udev).include? name
+      next if name =~ /^\/dev\/disk/
+      # remove device prefix
+      name = name.gsub(%r{/dev/},'') if name =~ /^\/dev\//
+      mash[name]['path'] = mount
+      mash[name]['space']['available'] = total.to_i*1024
+      mash[name]['space']['used'] = used.to_i*1024
+      mash[name]['space']['used%'] = percent
+    end
+    mash
+  end
+
+end
+
+class Network
+
+  def self.to_mash
+    mash = Hash.autonew
+    mash['network']['gateway']['default'] = default_gateway
+    mash['network']['interfaces'] = interfaces
+    mash
+  end
+
+  def self.default_gateway
+    gateway = System::exec("ip r | grep ^default").chomp.split
+    { 'ip' => gateway[2], 'device' => gateway[4] }
+  end
+
+  # Calculate Ethernet network traffic in bytes per second
+  # for all network interfaces.
+  #
+  # Returns a Hash with a key per network interface and
+  # an array with to values: received bytes and transmitted
+  # bytes.
+  def self.interfaces
+    mash = Hash.autonew
+    1.upto(2) do
+      # Read the /proc file-system to gather network counters,
+      # and iterate over all active network interfaces
+      System::exec("cat /proc/net/dev | sed -n '3,$p'").split("\n").each do |line|
+        dev,stats = line.split(':')
+        dev = dev.strip # network interface name
+        stats = stats.split(' ') # all network counters
+        rx_bytes = stats[0].to_i # received bytes 
+        tx_bytes = stats[8].to_i # transmitted bytes
+        # if this loop is executed the second time
+        if mash.has_key? dev
+          # get traffic from a time frame of the last second
+          mash[dev]['bytes']['receive'] = rx_bytes - mash[dev]['bytes']['receive']
+          mash[dev]['bytes']['transmit'] = tx_bytes - mash[dev]['bytes']['transmit']
+          mash[dev]['counter']['packets']['receive'] = stats[1].to_i
+          mash[dev]['counter']['drop']['recive'] = stats[2].to_i
+          mash[dev]['counter']['packets']['transmit'] = stats[9].to_i
+          mash[dev]['counter']['drop']['transmit'] = stats[2].to_i
+        else
+          # remember last values
+          mash[dev]['bytes'] = { 'receive' => rx_bytes, 'transmit' => tx_bytes }
+        end
+      end
+      # accumulate counters for one second
+      sleep 1
+    end
+    mash
+  end
+
+end
+
+# Collects information from the local Libvirt instance
+# using the command line interface `virsh`
+#
+class LibVirt
+
+  # Returns a nested Hash containing a list of local domains
+  # including their configuration.
+  def self.to_mash
+    mash = Hash.autonew
+    list.each do |domain|
+      # fill the tree with state information
+      dominfo(domain).each do |key,value|
+        mash['libvirt']['domains'][domain][key] = value
+      end
+      domiflist(domain).each do |key,value|
+        mash['libvirt']['domains'][domain]['network']['interfaces'][key] = value
+      end
+    end
+    mash
+  end
+
+  # List of all domains
+  def self.list 
+    array = Array.new
+    System::exec("virsh list --all").split("\n")[2..-1].each do |line|
+      array << line.split[1]
+    end
+    array
+  end
+
+  # Gather information about a specific domains
+  def self.dominfo(name)
+    hash = self.to_hash(System::exec "virsh dominfo #{name}")
+    if hash['state'] == 'running'
+      # Filter for some unnecessary values
+      %w( name id uuid os_type security_doi security_label security_model managed_save).each do |key|
+        hash.delete key
+      end
+      hash
+    # Unless the domain is running
+    else
+      { 'state' => hash['state'] }
+    end
+  end
+
+  def self.domiflist(name)
+    mash = Hash.autonew
+    list = System::exec("virsh domiflist #{name}")
+    return Hash.new if list.nil?
+    list.split("\n")[2..-1].each do |line|
+      iface, type, source, mode, mac = line.split
+      next if iface == '-'
+      mash[iface]['mac'] = mac
+      mash[iface]['bridge'] = source  if type == 'bridge'
+    end
+    mash
+  end
+
+  def self.to_hash(string)
+    hash = Hash.new
+    string.split("\n").each do |line|
+      key,value = line.split(':')
+      key = key.downcase.gsub(/ /,'_').gsub(/\(|\)/,'')
+      value = value.lstrip.chomp
+      hash[key] = value
+    end
+    return hash
+  end
+
+end
+
+class Ports
+
+  def self.to_mash
+    mash = Hash.autonew
+    mash['ports']['active'] = ports
+    mash
+  end
+
+  def self.ports
+    mash = Hash.autonew
+    ports = System::exec("sockstat | egrep 'LISTEN|ESTAB'")
+    return Hash.new if ports.nil?
+    ports.split("\n").each do |line|
+      user, process, pid, proto, source, peer, state = line.split
+      mash[pid.to_i] = {
+       'user' => user,
+       'process' => process,
+       'proto' => proto,
+       'source' => source,
+       'peer' => peer,
+       'state' => state.downcase
+      }
+    end
+    mash
+  end
+
+end
+
+#-----------------------------------------------------------------------
+# Main program starts here!
+#-----------------------------------------------------------------------
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.command_prefix = nil
+  $options.debug = false
+  $options.plugins = Array.new
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--command-prefix','-C',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--enable-plugins', '-p', GetoptLong::REQUIRED_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--list-plugins','-P',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT],
+  ).each do |opt,arg|
+    case opt
+    when '--command-prefix'
+      $options.command_prefix = arg
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--list-plugins'
+      $stdout.puts PLUGINS
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+      end
+    when '--enable-plugins'
+      arg.split(',').each do |plugin|
+        case plugin
+        when 'cpu'
+          $options.plugins << Cpu
+        when 'dev'
+          $options.plugins << Devices
+        when 'libvirt'
+          $options.plugins << LibVirt
+        when 'mem'
+          $options.plugins << Memory
+        when 'net'
+          $options.plugins << Network
+        when 'ports'
+          $options.plugins << Ports
+        else
+          raise("Plugin #{plugin} not supported")
+        end
+      end
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+
+  # store all data as flat key-value space 
+  hash = { 'timestamp' => Time.now.to_i }
+  # fill the data store by flattening all nested hashes
+  $options.plugins.each do |plugin|
+    hash.merge! plugin.send(:to_mash)
+  end
+  
+  hostname = System::exec('hostname -f').chomp
+  hash = { hostname => hash }
+
+  $stdout.puts JSON.pretty_generate(hash) unless $options.debug
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
