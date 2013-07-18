@@ -24,6 +24,7 @@ In the `bin/` sub-directory
 * **node-state** — Collect host monitoring information and 
   serialize the data into JSON.   
 * **pingable** — Wait until a host is pingable.
+* **redis-values** — Store and load hash tables from a Redis database.
 * **ruby-skeleton** — Start developing ruby scripts from here.
 * **segfaulter** — Create a small executable dieing with segfault.
 * **shell-skeleton** — Start developing shell script from here.

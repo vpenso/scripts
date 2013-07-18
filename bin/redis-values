@@ -1,0 +1,204 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'json'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Store and load hash tables from a Redis database.
+
+Usage
+-----
+
+[INPUT |] #{exec_name} [OPTIONS] SERVER [PATTERN]
+
+  INPUT 
+    Write a flat (not nested) JSON hash to the Redis
+    database.
+  SERVER
+    Hostname of the Redis server.
+  PATTERN
+    Load all values of keys matching the pattern from
+    the Redis database.
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --port, -p NUM
+    Port of the Redis database server.
+  --version, -v
+    Print version number.
+EOF
+
+class System 
+  
+  def self.exec(command)
+    command + ' 2>&1'
+    unless $options.command_prefix.nil?
+      command = %Q[#{$options.command_prefix} #{command}]
+    end
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+      pipe = IO.popen(command)
+      # Get the process ID from the child
+      pid = pipe.pid
+      # Read the output from the stream
+      output = pipe.read
+      # Wait for successful return and pass back the code to the caller
+      Process.wait(pid)
+      state=$?
+      $logger.debug "Returned with #{state}"
+      if state == 0
+        return output
+      else
+        $logger.warn "Failed to execute [#{command}]"
+        return nil
+      end
+  end
+
+end
+
+class Redis
+
+  def initialize(server = 'localhost', port = 6379)
+    @server = server
+    @port = port
+    $logger.info("Redis database at #{server}:#{port}")
+  end
+  
+  def keys(pattern)
+    redis(%Q[KEYS "#{pattern}"]).split("\n")
+  end
+
+  def get(key)
+    redis("GET '#{key}'")
+  end
+
+  def set(key,value)
+    redis(%Q[SET "#{key}" "#{value}"])
+  end
+
+  private
+
+  def redis(string)
+    System::exec(%Q[redis-cli -h #{@server} -p #{6379} #{string}])
+  end
+
+end
+
+begin
+
+  stdin = $stdin.tty? ? nil : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.port = 6379
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--port','-p',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--port'
+      $options.port = arg
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+
+
+  input = unless stdin.nil?
+            stdin
+          else
+            nil
+          end
+
+  server = ARGV[0] || raise('Redis server name expected!')
+
+  redis = Redis.new(server,$options.port)
+
+  # It is assumed that the user wants to retrive data from Redis
+  if input.nil?
+    pattern = ARGV[1] || raise('Search pattern expected!')
+    hash = Hash.new
+    redis.keys("*#{pattern}*").each do |key|
+     hash[key] = redis.get(key).chomp
+    end
+    $stdout.puts JSON.pretty_generate(hash)
+  # Store key-value pairs to a Redis instance
+  else
+    input = JSON.parse(input) 
+    input.each do |k,v|
+      redis.set k,v
+    end
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
