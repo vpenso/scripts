@@ -1,0 +1,281 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'json'
+require 'yaml'
+
+VERSION = 0.1
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Converts hash objects between YAML and JSON. Implode
+and explode all keys to generate lists with custom
+field separators.
+
+Usage
+-----
+
+[INPUT |] #{exec_name} [OPTIONS] [FILE]
+
+  #{exec_name} expects input data by stdin or reads it 
+  from a defined file. By default the input data is parsed 
+  as JSON (or YAML with option `-I yaml`). Ouput is send 
+  to stdout as JSON by default (or YAML with option 
+  `-O yaml`). Transform a nested hash tree into flat key
+  value pairs with option `-i` (implode). The nested keys
+  are merged using the divider '\' by default (alter with
+  option `-D`. Similar explode keys into a nested hash
+  with option `-e`.
+
+Options
+-------
+
+  --debug, -d
+    Verbose debugging output.
+  --divider, -D CHAR
+    Define a divider used when imploding or exploding
+    nested hash keys (default '\').
+  --explode, -e
+    Explode keys into a nested hash using a divider
+    as seperator.
+  --help, -h
+    Show this help information.
+  --implode, -i
+    Implode keys into a flat hash mergeing using a
+    divider as seperator.
+  --input-format, -I json|yaml
+    Format of the input data (default 'json').
+  --log-level, -L fatal|warn|info|debug
+    Define logging verbosity.
+  --output-format, -O json|yaml|csv
+    Format of the output send to stdout (default 'json').
+  --separator, -S CHAR
+    Key-value seperator used to print the 'csv' output
+    format (default ',').
+  --version, -v
+    Print version number.
+
+Examples
+--------
+
+Transform a JSON file to YAML and vise versa: 
+
+  #{exec_name} -O yaml /path/to/input.json
+  ...SNIP...
+  #{exec_name} -I yaml /path/to/input.yaml
+  ...SNIP...
+
+Transfrom a nested JSON hash to YAML and implode all keys 
+using dash as devider:
+
+  echo '{"a":{"b":1}}' | #{exec_name} -i -O yaml -D -
+  
+Explode all keys in nested JSON hash:
+
+  echo '{"a/b/c":1,"a/c":2}' | #{exec_name} -e
+
+Transform a nested hash into a comma separated list:
+
+  echo '{"a":{"b":3}}' | hash-transform -O csv -S ', '
+EOF
+
+
+class Object
+  # expects [ [ symbol, *args ], ... ]
+  def recursive_send(*args)
+    args.inject(self) { |obj, m| obj.send(m.shift, *m) }
+  end
+end
+
+class Hash
+
+  def implode(divider = '/')
+    h = Hash.new
+    self.dup.each_path(divider) do |path, value|
+      h[path] = value
+    end
+    h
+  end
+
+  def explode(divider = '/')
+    h = Hash.autonew
+    for k,v in self.dup
+      tree = k.split(divider).map { |x| [ :[], x ] }
+      tree.push([ :[]=, tree.pop[1], v ])
+      h.recursive_send(*tree)
+    end
+    h
+  end
+
+  def self.autonew(*args)
+    new(*args){|hsh, key| hsh[key] = Hash.new(&hsh.default_proc) }
+  end
+
+  def each_path(divider = '.')
+    raise ArgumentError unless block_given?
+    self.class.each_path(self, '', divider) { |path, object| yield path, object }
+  end
+
+  protected
+
+  def self.each_path(object, path = '', divider = '.', &block)
+     if object.is_a?(Hash)
+       object.each do |key, value|
+         self.each_path value, "#{path}#{path.empty? ? '' : divider}#{key}", divider, &block
+       end
+     else
+       yield path, object
+     end
+  end
+
+end
+
+begin
+
+  stdin = $stdin.tty? ? nil : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.output_format = 'json'
+  $options.input_format = 'json'
+  $options.transform = String.new
+  $options.divider = '/'
+  $options.separator = ','
+
+  $logger = Logger.new(STDOUT)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--divider','-D',GetoptLong::REQUIRED_ARGUMENT],
+    ['--explode','-e',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--implode','-i',GetoptLong::NO_ARGUMENT],
+    ['--input-format','-I',GetoptLong::REQUIRED_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--output-format','-O',GetoptLong::REQUIRED_ARGUMENT],
+    ['--separator','-S',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--divider'
+      $options.divider = arg
+    when '--explode'
+      $options.transform = 'explode'
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--implode'
+      $options.transform = 'implode'
+    when '--input-format'
+      $options.input_format = arg if %w(json yaml).include? arg
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+      end
+    when '--output-format'
+      $options.output_format = arg if %w(json yaml csv).include? arg
+      $options.transform = 'implode' if arg == 'csv'
+    when '--separator'
+      $options.separator = arg
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+  $logger.debug("User options: #{$options.marshal_dump}")
+
+  # Optional path to input file
+  input_file = ARGV.length > 0 ? ARGV[0] : nil
+  input = File.read(input_file) unless input_file.nil?
+
+  # Input file arguments takes precedents over stdin
+  if input.nil?
+    if stdin.nil?
+      raise("Expecting input data!")
+    else
+      input = stdin
+    end
+  end
+
+  # Parse the input data depending its format
+  input = case $options.input_format
+          when 'json'
+            JSON.parse(input)
+          when 'yaml'
+            YAML::parse(input) 
+          end
+  # Transform the keys if enabled by option
+  output = case $options.transform
+           when 'implode'
+             input.implode($options.divider)
+           when 'explode'
+             input.explode($options.divider)
+           else
+             input
+           end
+  # Generate output format
+  output = case $options.output_format
+           when 'json'
+             JSON.pretty_generate(output)
+           when 'yaml'
+             output.to_yaml
+           when 'csv'
+             csv = Array.new
+             output.keys.each do |key|
+               csv << "#{key}#{$options.separator}#{output[key]}"
+             end
+             csv.join("\n")
+           end
+  
+  $stdout.puts output
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0

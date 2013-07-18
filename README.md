@@ -14,7 +14,10 @@ In the `bin/` sub-directory
 * **git-default-config** — sets Git user name, mail address, 
   default editor lots of aliases and a global gitignore file.
 * **git-repos** — Maintains a list of Git remote repositories and 
-shows the status.
+  shows the status.
+* **hash-transform** – Converts hash objects between JASON and YAML.
+  Implode and explode all keys to generate lists with custom field
+  separators.
 * **mpd-default-config** — Writes a personal MPD configuration.
 * **music** — Controls the local Music Player Daemon.
 * **node-state** – Collect host monitoring information and 
