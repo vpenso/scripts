@@ -33,7 +33,7 @@ Store and load hash tables from a Redis database.
 Usage
 -----
 
-[INPUT |] #{exec_name} [OPTIONS] SERVER [PATTERN]
+[INPUT |] #{exec_name} [OPTIONS] SERVER [PATTERN,[PATTERN,..]]
 
   INPUT 
     Write a flat (not nested) JSON hash to the Redis
@@ -56,6 +56,15 @@ Options
   --version, -v
     Print version number.
 EOF
+
+class Hash
+  def rmerge(other_hash)
+    r = {}
+    merge(other_hash) do |key, oldval, newval|
+      r[key] = oldval.class == self.class ? oldval.rmerge(newval) : newval
+    end
+  end
+end
 
 class System 
   
@@ -127,7 +136,7 @@ begin
   $logger.formatter = proc do |severity, datetime, progname, message|
     "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
   end
-  $logger.level = Logger::INFO
+  $logger.level = Logger::WARN
 
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
@@ -175,10 +184,16 @@ begin
 
   # It is assumed that the user wants to retrive data from Redis
   if input.nil?
-    pattern = ARGV[1] || raise('Search pattern expected!')
+    if ARGV.length > 1
+      patterns = ARGV[1..-1] 
+    else
+      raise('Search pattern expected!')
+    end
     hash = Hash.new
-    redis.keys("*#{pattern}*").each do |key|
-     hash[key] = redis.get(key).chomp
+    patterns.each do |pattern|
+      redis.keys("*#{pattern}*").each do |key|
+        hash[key] = redis.get(key).chomp
+      end
     end
     $stdout.puts JSON.pretty_generate(hash)
   # Store key-value pairs to a Redis instance
