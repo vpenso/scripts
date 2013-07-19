@@ -253,8 +253,8 @@ class LibVirt
       dominfo(domain).each do |key,value|
         mash['libvirt']['domains'][domain][key] = value
       end
-      domiflist(domain).each do |key,value|
-        mash['libvirt']['domains'][domain]['network']['interfaces'][key] = value
+      dumpxml(domain).each do |key,value|
+        mash['libvirt']['domains'][domain]['network'][key] = value
       end
     end
     mash
@@ -284,16 +284,12 @@ class LibVirt
     end
   end
 
-  def self.domiflist(name)
+  def self.dumpxml(name)
     mash = Hash.autonew
-    list = System::exec("virsh domiflist #{name}")
-    return Hash.new if list.nil?
-    list.split("\n")[2..-1].each do |line|
-      iface, type, source, mode, mac = line.split
-      next if iface == '-'
-      mash[iface]['mac'] = mac
-      mash[iface]['bridge'] = source  if type == 'bridge'
-    end
+    bridge = System::exec("virsh dumpxml #{name} | grep '^ *<source bridge='")
+    mash['bridge'] = bridge.split("'")[1] unless bridge.nil?
+    mac = System::exec("virsh dumpxml #{name} | grep '^ *<mac address='")
+    mash['mac'] = mac.split("'")[1] unless mac.nil?
     mash
   end
 
