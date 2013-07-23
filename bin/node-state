@@ -67,6 +67,7 @@ net       Network statistics collected from `ip` and the file
 mem       Memory utilization from the `free` command.
 ports     Uses `sockstat` to collect a list of all ports
           in state LISTEN or ESTABLISHED.
+procs     List all running processes.
 EOF
 
 class Hash
@@ -143,6 +144,34 @@ class Memory
   def self.memory
     mem = System::exec("free -tb | tail -1").split(':')[-1].split(' ')
     return (mem.map { |v| v.to_i }).to_hash(%w(total used free))
+  end
+
+end
+
+class Processes
+
+  def self.to_mash
+    mash = Hash.autonew
+    mash['processes']['running'] = running
+    mash
+  end
+
+  def self.running
+    mash = Hash.autonew
+    array = System::exec('ps r -AL -o stat,pid,user,pcpu,pmem,args').split("\n")[1..-1]
+    array.each do |line|
+      state, pid, user, cpu, mem , *command = line.split
+      next if user == 'root'
+      mash[pid] = {
+        'user' => user,
+        'percent' => { 
+          'cpu' => cpu.to_f,
+          'mem' => mem.to_f
+        },
+        'command' => command[0].split('/')[-1]
+      }
+    end
+    mash
   end
 
 end
@@ -274,9 +303,14 @@ class LibVirt
     hash = self.to_hash(System::exec "virsh dominfo #{name}")
     if hash['state'] == 'running'
       # Filter for some unnecessary values
-      %w( name id uuid os_type security_doi security_label security_model managed_save).each do |key|
+      %w(name id uuid os_type security_doi security_label security_model managed_save).each do |key|
         hash.delete key
       end
+      %w(max_memory used_memory).each do |key|
+        hash[key] = hash[key].split[0].to_i*1024
+      end
+      hash['cpu_time'] = hash['cpu_time'].split('.')[0].to_i
+      hash['cpus'] = hash['cpus'].to_i
       hash
     # Unless the domain is running
     else
@@ -402,6 +436,8 @@ begin
           $options.plugins << Network
         when 'ports'
           $options.plugins << Ports
+        when 'procs'
+          $options.plugins << Processes
         else
           raise("Plugin #{plugin} not supported")
         end
