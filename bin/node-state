@@ -158,12 +158,15 @@ class Processes
 
   def self.running
     mash = Hash.autonew
-    array = System::exec('ps r -AL -o stat,pid,user,pcpu,pmem,args').split("\n")[1..-1]
+    array = System::exec('ps r -AL -o stat,pid,user,group,pcpu,cputime,pmem,rss,args').split("\n")[1..-1]
     array.each do |line|
-      state, pid, user, cpu, mem , *command = line.split
+      state, pid, user, group, cpu, cputime, mem, rss , *command = line.split
       next if user == 'root'
       mash[pid] = {
         'user' => user,
+        'group' => group,
+        'cpu' => cputime,
+        'mem' => rss.to_i*1024,
         'percent' => { 
           'cpu' => cpu.to_f,
           'mem' => mem.to_f
@@ -206,9 +209,9 @@ class Devices
       # remove device prefix
       name = name.gsub(%r{/dev/},'') if name =~ /^\/dev\//
       mash[name]['path'] = mount
-      mash[name]['space']['available'] = total.to_i*1024
-      mash[name]['space']['used'] = used.to_i*1024
-      mash[name]['space']['used%'] = percent
+      mash[name]['bytes']['available'] = total.to_i*1024
+      mash[name]['bytes']['used'] = used.to_i*1024
+      mash[name]['percent']['used'] = percent.to_f
     end
     mash
   end
