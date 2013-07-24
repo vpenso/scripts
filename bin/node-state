@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.1
+version = 0.1
 
 require 'ostruct'
 require 'getoptlong' 
@@ -377,8 +377,6 @@ end
 
 begin
 
-  stdin = $stdin.tty? ? String.new : $stdin.read
-
   $options = OpenStruct.new
   $options.command_prefix = nil
   $options.debug = false
@@ -399,7 +397,7 @@ begin
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--list-plugins','-P',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version','-v',GetoptLong::NO_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--command-prefix'
@@ -446,7 +444,7 @@ begin
         end
       end
     when '--version'
-      $stdout.puts VERSION
+      $stdout.puts version
       exit 0
     end
   end
