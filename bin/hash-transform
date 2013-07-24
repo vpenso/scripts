@@ -197,7 +197,7 @@ begin
     when '--implode'
       $options.transform = 'implode'
     when '--input-format'
-      $options.input_format = arg if %w(json yaml).include? arg
+      $options.input_format = arg if %w(json yaml csv).include? arg
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -240,6 +240,16 @@ begin
             JSON.parse(input)
           when 'yaml'
             YAML::parse(input) 
+          when 'csv'
+            hash = Hash.new
+            # iterate by line
+            input.split("\n").each do |line|
+              # split line by separator, and use the first field as key
+              key, *value = line.split("#{$options.separator}")
+              # values can contain separator chracters
+              hash[key] = value.join("#{$options.separator}")
+            end
+            hash
           end
   # Transform the keys if enabled by option
   output = case $options.transform
