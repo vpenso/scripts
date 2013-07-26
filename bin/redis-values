@@ -47,7 +47,7 @@ Usage
 Options
 -------
 
-  --debug, -d
+  --debug, -D
     Show stacktraces in case of errors.
   --help, -h
     Show this help information.
@@ -114,6 +114,10 @@ class Redis
     redis(%Q[SET "#{key}" "#{value}"])
   end
 
+  def del(*keys)
+    redis(%Q[DEL "#{keys.join('" "')}"])
+  end
+
   private
 
   def redis(string)
@@ -129,6 +133,7 @@ begin
   $options = OpenStruct.new
   $options.debug = false
   $options.port = 6379
+  $options.delete = nil
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -139,7 +144,8 @@ begin
   $logger.level = Logger::WARN
 
   GetoptLong.new(
-    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--delete','-d',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--port','-p',GetoptLong::REQUIRED_ARGUMENT],
@@ -149,6 +155,8 @@ begin
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
+    when '--delete'
+      $options.delete = arg
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -171,7 +179,6 @@ begin
     end
   end
 
-
   input = unless stdin.nil?
             stdin
           else
@@ -179,10 +186,14 @@ begin
           end
 
   server = ARGV[0] || raise('Redis server name expected!')
-
   redis = Redis.new(server,$options.port)
 
-  # It is assumed that the user wants to retrive data from Redis
+  unless $options.delete.nil?
+    redis.del(redis.keys("#{$options.delete}*"))
+    exit 0
+  end
+
+  # It is assumed that the user wants to retrieve data from Redis
   if input.nil?
     if ARGV.length > 1
       patterns = ARGV[1..-1] 
