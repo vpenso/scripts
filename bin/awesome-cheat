@@ -1,15 +1,19 @@
 #!/bin/bash
 
 echo \
-" ↲         │ launch terminal
- ⇧ c       │ close terminal
- r         │ prompt in status bar  
- ␣         │ cycle tiling modes  
- [⇧] h l   │ resize window left/right  
- 1-9       │ switch tag  
- ⇧ ← →     │ switch to next/previous tag 
- ⇧ 1-9     │ send window to tag  
- k j       │ toggle window focus next/previous
- w         │ access awesome menu
- ⌃ l       │ lock screen
- ⌃ r       │ reload awesome configuration"
+"◆ ↲        │ launch terminal
+◆ ⇧ c      │ close window
+◆ r        │ prompt in status bar  
+◆ ␣        │ cycle tiling modes  
+◆ 1-9      │ switch tag  
+◆ →        │ switch to next tag 
+◆ ←        │ switch to previous tag 
+◆ ⇧ 1-9    │ send window to tag  
+◆ k        │ toggle focus with next window
+◆ j        │ toggle focus with previous window
+◆ ⇧ k      │ switch position with next window
+◆ ⇧ j      │ switch position with previous window
+◆ w        │ access awesome menu
+◆ ⌃ r      │ reload awesome configuration
+ ␣ space, ◆ windows key, ⇧ shift, ⌃ CTRL, ↲ enter"
+
