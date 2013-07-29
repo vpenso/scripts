@@ -29,7 +29,7 @@ function uri-encode() {
   echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; 
 }
 
-export BROWSER=${BROWSER:-"chromium-browser"}
+export BROWSER=${BROWSER:-"firefox"}
 
 # quick export NODES environment variable
 function NODES() {
@@ -78,6 +78,8 @@ alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
 alias ascii="man ascii"
 alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
+alias suspend="sudo true ; xscreensaver-command -lock ; sudo pm-suspend"
+
 
 calc() { echo "$*" | bc -l ; }
 
