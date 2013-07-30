@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+echo "f         open link in current tab
+F         open link in new tab
+gt/^n     next tab
+gT/^p     previous tab
+g0        first tab
+g$        last tab
+d         close tab
+^o        back in history
+^i        forward in history "
