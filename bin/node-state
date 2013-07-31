@@ -459,7 +459,7 @@ begin
   hostname = System::exec('hostname -f').chomp
   hash = { hostname => hash }
 
-  $stdout.puts JSON.pretty_generate(hash) unless $options.debug
+  $stdout.puts JSON.pretty_generate(hash)
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
