@@ -142,7 +142,7 @@ class Memory
   end
 
   def self.memory
-    mem = System::exec("free -tb | tail -1").split(':')[-1].split(' ')
+    mem = System::exec("free -tb | sed -n 2p").split(':')[-1].split(' ')[0..2]
     return (mem.map { |v| v.to_i }).to_hash(%w(total used free))
   end
 
