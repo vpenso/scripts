@@ -125,7 +125,8 @@ class Redis
   end
 
   def gets(keys)
-    keys = keys.map { |key| "GET #{key}" }
+    commands = Array.new
+    keys.map { |key| commands << "GET #{key}" }
     values = pipe(keys.join("\n")).split("\n")
     return Hash[*keys.zip(values).flatten]
   end
@@ -190,7 +191,7 @@ begin
     when '--port'
       $options.port = arg
     when '--version'
-      $stdout.puts 0.2
+      $stdout.puts 0.3
       exit 0
     end
   end
