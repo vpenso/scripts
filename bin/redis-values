@@ -126,8 +126,8 @@ class Redis
 
   def gets(keys)
     commands = Array.new
-    keys.map { |key| commands << "GET #{key}" }
-    values = pipe(keys.join("\n")).split("\n")
+    keys.each { |key| commands << "GET #{key}" }
+    values = pipe(commands.join("\n")).split("\n")
     return Hash[*keys.zip(values).flatten]
   end
 
