@@ -20,6 +20,7 @@ require 'ostruct'
 require 'getoptlong' 
 require 'logger'
 require 'json'
+require 'tempfile'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
@@ -73,21 +74,21 @@ class System
     end
     $logger.debug "Exec [#{command}]"
     # Execute command as subprocess and return the exit code
-      pipe = IO.popen(command)
-      # Get the process ID from the child
-      pid = pipe.pid
-      # Read the output from the stream
-      output = pipe.read
-      # Wait for successful return and pass back the code to the caller
-      Process.wait(pid)
-      state=$?
-      $logger.debug "Returned with #{state}"
-      if state == 0
-        return output
-      else
-        $logger.warn "Failed to execute [#{command}]"
-        return nil
-      end
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
   end
 
 end
@@ -134,7 +135,15 @@ class Redis
   private
 
   def pipe(stdin)
-    System::exec(%Q[echo '#{stdin}' | redis-cli -h #{@server} -p #{@port}])
+    # Don't use string interpolation for the input pipe, since it is limited in size
+    tmpfile = System::exec('tempfile').chomp
+    # Write the input Redis commands to a temporary file 
+    File.open(tmpfile,'w') { |f| f.write stdin }
+    begin
+      System::exec(%Q[cat #{tmpfile} | redis-cli -h #{@server} -p #{@port} ])
+    ensure
+      System::exec("rm #{tmpfile}")
+    end
   end
 
   def command(string)
