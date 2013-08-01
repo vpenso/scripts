@@ -103,25 +103,35 @@ class Redis
   end
   
   def keys(pattern)
-    redis(%Q[KEYS "#{pattern}"]).split("\n")
+    command(%Q[KEYS "#{pattern}"]).split("\n")
   end
 
   def get(key)
-    redis("GET '#{key}'")
+    command("GET '#{key}'")
   end
 
   def set(key,value)
-    redis(%Q[SET "#{key}" "#{value}"])
+    command(%Q[SET "#{key}" "#{value}"])
   end
 
   def del(*keys)
-    redis(%Q[DEL "#{keys.join('" "')}"])
+    command(%Q[DEL "#{keys.join('" "')}"])
+  end
+
+  def gets(keys)
+    keys = keys.map { |key| "GET #{key}" }
+    values = pipe(keys.join("\n")).split("\n")
+    return Hash[*keys.zip(values).flatten]
   end
 
   private
 
-  def redis(string)
-    System::exec(%Q[redis-cli -h #{@server} -p #{6379} #{string}])
+  def pipe(stdin)
+    System::exec(%Q[echo "#{stdin}" | redis-cli -h #{@server} -p #{@port}])
+  end
+
+  def command(string)
+    System::exec(%Q[redis-cli -h #{@server} -p #{@port} #{string}])
   end
 
 end
@@ -200,13 +210,11 @@ begin
     else
       raise('Search pattern expected!')
     end
-    hash = Hash.new
-    patterns.each do |pattern|
-      redis.keys("*#{pattern}*").each do |key|
-        hash[key] = redis.get(key).chomp
-      end
-    end
-    $stdout.puts JSON.pretty_generate(hash)
+    # aggregate all keys
+    keys = Array.new
+    patterns.each { |pattern| keys += redis.keys("*#{pattern}*") }
+    # retrieve all values and generate a JSON object
+    $stdout.puts JSON.pretty_generate(redis.gets(keys))
   # Store key-value pairs to a Redis instance
   else
     input = JSON.parse(input) 

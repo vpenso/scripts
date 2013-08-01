@@ -3,6 +3,7 @@
 
 echo "f         open link in current tab
 F         open link in new tab
+B         list tabs
 gt/^n     next tab
 gT/^p     previous tab
 g0        first tab
