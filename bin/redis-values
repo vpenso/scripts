@@ -114,6 +114,14 @@ class Redis
     command(%Q[SET "#{key}" "#{value}"])
   end
 
+  def sets(hash)
+    commands = Array.new
+    hash.each do |key,value|
+      commands << %Q[SET "#{key}" "#{value}"]
+    end
+    pipe(commands.join("\n"))
+  end
+
   def del(*keys)
     command(%Q[DEL "#{keys.join('" "')}"])
   end
@@ -217,10 +225,7 @@ begin
     $stdout.puts JSON.pretty_generate(redis.gets(keys))
   # Store key-value pairs to a Redis instance
   else
-    input = JSON.parse(input) 
-    input.each do |k,v|
-      redis.set k,v
-    end
+    redis.sets(JSON.parse(input)) 
   end
 
 rescue => exc
