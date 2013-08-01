@@ -16,8 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.1
-
 require 'ostruct'
 require 'getoptlong' 
 require 'logger'
@@ -135,7 +133,7 @@ class Redis
   private
 
   def pipe(stdin)
-    System::exec(%Q[echo "#{stdin}" | redis-cli -h #{@server} -p #{@port}])
+    System::exec(%Q[echo '#{stdin}' | redis-cli -h #{@server} -p #{@port}])
   end
 
   def command(string)
@@ -192,7 +190,7 @@ begin
     when '--port'
       $options.port = arg
     when '--version'
-      $stdout.puts VERSION
+      $stdout.puts 0.2
       exit 0
     end
   end

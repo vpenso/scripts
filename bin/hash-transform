@@ -22,7 +22,6 @@ require 'logger'
 require 'json'
 require 'yaml'
 
-VERSION = 0.1
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
@@ -215,7 +214,7 @@ begin
     when '--separator'
       $options.separator = arg
     when '--version'
-      $stdout.puts VERSION
+      $stdout.puts 0.1
       exit 0
     end
   end
