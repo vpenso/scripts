@@ -1,0 +1,137 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Usage:
+
+  #{exec_name} [-hD] [-u user] [-i identity-file] host [path]
+
+Creates a SSH configuration file called ssh_config with
+a single defined Host called instance.
+
+   host: IP-address or hostname of the remote instance.
+   path: Target directroy to write the configuration file
+         (default is the working directory).
+
+Options:
+
+  -D,--debug
+    Show stacktraces in case of errors.
+  -h,--help
+    Show this help information.
+  -i,--identity-file path
+    SSH identity key to use for the connection.
+  -O,--overwrite
+    Always overwrite existing configuration files.
+  -u,--user name
+    User name for the connection.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.path = ENV['PWD']
+  options.debug = false
+  options.user = 'devops'
+  options.id_file = String.new
+  options.overwrite = false
+
+  if ENV.has_key? '_DEBUG'
+    options.debug = true if ENV['_DEBUG']
+  end
+
+  GetoptLong.new(
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--identity-file','-i',GetoptLong::REQUIRED_ARGUMENT],
+    ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--user','-u',GetoptLong::REQUIRED_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--identity-file'
+      options.id_file = arg
+    when '--overwrite'
+      options.overwrite = true
+    when '--user'
+      options.user = arg
+    end
+  end
+
+  hostname = ARGV[0] || $stdout.puts('No hostname of IP defined!')
+  if ARGV.length > 1
+    options.path = ARGV[1]
+    raise("#{options.path} not existing ") unless File.directory? options.path
+  end
+  config_file = "#{options.path}/ssh_config"
+  
+  if File.exists? config_file and not options.overwrite
+    $stdout.print "Overwrite #{config_file}? (Enter/Y/y to continue) "
+    answer = $stdin.gets.chomp
+    exit 0 unless answer.empty? or "Y" == answer.upcase
+  end
+
+  config = <<-EOF
+    Host instance
+      User #{options.user}
+      HostName #{hostname}
+      UserKnownHostsFile /dev/null
+      StrictHostKeyChecking no
+  EOF
+ 
+  if options.id_file.empty?
+    default_id_file = "#{options.path}/keys/id_rsa"
+    if File.exists? default_id_file
+      config << "  IdentityFile #{default_id_file}"
+    end
+  else 
+    if File.exists? options.id_file
+      config << "  IdentityFile #{options.id_file}"
+    else
+      raise("SSH identity file missing #{options.id_file}")
+    end
+  end
+
+  File.open(config_file,'w') do |f|
+    f.puts config.gsub(/^    /,'')
+  end
+  $stdout.puts "#{config_file} written."
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
