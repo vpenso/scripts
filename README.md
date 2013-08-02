@@ -11,14 +11,11 @@ In the `bin/` sub-directory
 * **ansi-color** — Show ANSI color escaping.
 * **debian-default-config** — Install Debian dependencies.
 * **dir-colors** — Deploys a simple coloring configuration.
-* **git-default-config** — sets Git user name, mail address, 
-  default editor lots of aliases and a global gitignore file.
+* **git-default-config** — My custom Git configuration.
 * **git-repos** — Maintains a list of Git remote repositories and 
   shows the status.
 * **hash-merge** — Merge multiple hash objects into one.
-* **hash-transform** — Converts hash objects between JASON and YAML.
-  Implode and explode all keys to generate lists with custom field
-  separators.
+* **hash-transform** — Converts hash objects between JSON, YAML and CSV.
 * **mpd-default-config** — Writes a personal MPD configuration.
 * **music** — Controls the local Music Player Daemon.
 * **node-state** — Collect host monitoring information and 
@@ -41,10 +38,10 @@ remote repository.
 * **tmux-default-config** — helps to configure Tmux terminal
   multiplexer.
 * **vim-cheat** — "What was this key again?" Vim cheat sheet. 
-* **vim-default-config** — helps to install Vundle including
-  a couple of Bundles, and my personal Vim configuration.
-* **zsh-default-config** — helps to install antigen and my
-  default Zsh configuration.
+* **vim-default-config** — Install Vundle and my personal Vim configuration.
+* **virsh-network** — Configure a bridged Libvirt network.
+* **zsh-default-config** — Install antigen and my default Zsh 
+  configuration.
 
 License
 =======

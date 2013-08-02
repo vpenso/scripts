@@ -1,0 +1,228 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'erb'
+require 'tempfile'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Usage:
+
+  #{exec_name} [-DhO] [-b bridge] [-d domain] 
+    [-m mac-addresses] [-N network] 
+    [-n node[,node,..]] command
+
+Configures and deploys a network configuration for LibVirt
+called 'nat_bridge', Lookup of IP- and MAC-addresses for a
+given hostname.
+
+Commands:
+
+  list 
+    List all available FQDNs and IP-addresses.
+  lo,lookup hostname|ip|mac
+    Show the configuration for a given MAC-, IP-address
+    and hostname.
+  st,status
+    Show the state of the network.
+  start
+    Add the configuration to LibVirt and start the network.
+  stop
+    Stop the network and remove the configuration from 
+    LibVirt.
+
+Options:
+
+  -b,--bridge name
+    Network bridge used as NAT gateway (default nbr0).
+  -D,--debug
+    Show stacktraces in case of errors.
+  -d,--domain name
+    Domain name used for the hosts in the defined
+    network (default 'devops.test').
+  -h,--help
+    Show this help information.
+  -m,--mac-addresses prefix
+    Mac-address prefix used for the virtual machines
+    (default 02:FF:0A:0A:06)
+  -N,--network prefix
+    IP-address prefix used for the virtual machines
+    (default 10.1.1)
+  -O,--no-default-nodes
+    Don't add the list of default host names to the 
+    DNS configuration. Use option -n instead
+  -n,--nodes name[,name,...]
+    List of host names to added to the DNS.
+EOF
+
+def config
+  # First used IP address in network
+  ip = 5 
+  # hostname lookup
+  hosts = Array.new
+  $options.nodes.each do |node|
+    hosts << %Q[<host ip="#{$options.network}.#{ip}"><hostname>#{node}</hostname></host>]
+    ip += 1
+    next if ip > 100
+  end
+  # resolve IP
+  ip = 5
+  ips = Array.new
+  $options.nodes.each do |node|
+    bytes = "%02X" % ip
+    mac = "#{$options.mac}:#{bytes}"
+    ips << %Q[<host mac="#{mac}" ip="#{$options.network}.#{ip}" name="#{node}.#{$options.domain}"/>]
+    ip += 1
+    next if ip > 100
+  end
+  config = ERB.new(<<-EOF
+  <network> 
+    <name><%= $options.name  %></name>
+    <bridge name="<%= $options.bridge %>" />
+    <forward mode="nat"/>
+    <domain name="<%= $options.domain %>"/>
+    <dns>
+      <%= hosts.join("\n      ") %>
+    </dns>
+    <ip address="<%= $options.network %>.1" netmask="<%= $options.netmask %>">
+      <dhcp>
+        <range start="<%= $options.network %>.100" end="<%= $options.network %>.254" />
+        <%= ips.join("\n        ")%>
+      </dhcp>
+    </ip>
+  </network>
+  EOF
+  ).result(binding)
+  return config.gsub(/^  /,'')
+end
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.name = 'nat_bridge'
+  $options.bridge = 'nbr0'
+  $options.domain = 'devops.test'
+  $options.network = '10.1.1'
+  $options.netmask = '255.255.255.0'
+  $options.mac = '02:FF:0A:0A:06'
+  $options.nodes = %w( 
+    lxdns01 lxdns02
+    lxcm01 lxcm02 
+    lxcc01 lxcc02
+    lxrm01 lxrm02
+    lxb001 lxb002 lxb003 lxb004 lxb005 lxb006 lxb007 lxb008 lxb009
+    lxmon01 lxmon02
+    lxdev01 lxdev02 lxdev03 lxdev04
+    lxfs01 lxfs02 lxfs03 lxfs04 lxfs05
+    lxhvs01 lxhvs02 lxhvs03 lxhvs04
+  )
+
+  nodes = String.new
+
+  GetoptLong.new(
+    ['--bridge','-b',GetoptLong::REQUIRED_ARGUMENT],
+    ['--domain','-d',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--mac-addresses','-m',GetoptLong::REQUIRED_ARGUMENT],
+    ['--network','-N',GetoptLong::REQUIRED_ARGUMENT],
+    ['--no-default-nodes','-O',GetoptLong::NO_ARGUMENT],
+    ['--nodes','-n',GetoptLong::REQUIRED_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--bridge'
+      $options.bridge = arg
+    when '--debug'
+      $options.debug = true
+    when '--domain'
+      $options.domain = arg
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--mac-addresses'
+      $options.mac = arg
+    when '--network'
+      $options.network = arg
+    when '--no-default-nodes'
+      $options.nodes = Array.new
+    when '--nodes'
+      nodes = arg
+    end
+  end
+
+  # Add the nodes defined by optional parameters
+  nodes.split(',').each do |node|
+    $options.nodes << node
+  end
+
+  if $options.debug
+    $stdout.puts config
+  end
+
+  command = ARGV[0] || raise('No command given!')
+  case command
+  when 'st','status'
+    system("virsh net-info #{$options.name}")
+  when 'start'
+    path = "/tmp/libvirt_network.xml.#{Time.now.to_i}"
+    File.open(path,'w') do |file|
+      file.puts config
+    end
+    system("virsh net-define #{path}")
+    system("virsh net-start #{$options.name}")
+    system("virsh net-autostart #{$options.name}")
+  when 'stop'
+    system("virsh net-destroy #{$options.name}")
+    system("virsh net-undefine #{$options.name}")
+  when 'list'
+    config = `virsh net-dumpxml #{$options.name} | grep 'host mac'`
+    config.split("\n").each do |line|
+      mac,name,ip = line.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' \/>/,'').split
+      $stdout.puts "#{name} #{ip}"
+    end
+  when 'lo','lookup'
+    node = ARGV[1] || raise('No IP or hostname given!')
+    config = `virsh net-dumpxml #{$options.name} | grep -o '^ *<host mac=.*#{node}.*/>$'`
+    if config.empty?
+      $stderr.puts "#{node} not defined!"
+      exit 1
+    end
+    mac,name,ip = config.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' \/>/,'').split
+    $stdout.puts "#{name} #{ip} #{mac}"
+  else
+    raise("Command #{command} not supported!")
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
