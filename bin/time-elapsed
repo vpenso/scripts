@@ -53,7 +53,7 @@ class Seconds
     hours =   @seconds/3600
     minutes = (@seconds/60 - hours*60).to_i
     seconds = (@seconds - (minutes*60 + hours*3600))
-    return printf("%02d:%02d:%02d hours", hours, minutes, seconds)
+    return printf("%02d:%02d:%02d hours (%s)", hours, minutes, seconds, "#{hours},#{((100.0/60)*minutes).to_i}")
   end
 end
 
