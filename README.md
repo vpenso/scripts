@@ -36,6 +36,7 @@ over SSH.
 * **ssh-tunnel** — Easy access to remote networks with `sshuttle`.
 * **sqlite-backup** — Backup SQLite database files into a Git 
 remote repository.
+* **time-elapsed** — Calculates elapsed time between two dates.
 * **tmux-cheat** — Most important Tmux keys.
 * **tmux-default-config** — helps to configure Tmux terminal
   multiplexer.

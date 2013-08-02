@@ -1,0 +1,130 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'time'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Calculates elapsed time between two dates.
+
+  #{exec_name} [-dhv] START [END]
+
+Hours elapsed from START date to END date. 
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --version, -v
+    Print version number.
+EOF
+
+class Seconds
+  def initialize(seconds)
+    @seconds=seconds.to_i
+  end
+  def to_hours
+    hours =   @seconds/3600
+    minutes = (@seconds/60 - hours*60).to_i
+    seconds = (@seconds - (minutes*60 + hours*3600))
+    return printf("%02d:%02d:%02d hours", hours, minutes, seconds)
+  end
+end
+
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.debug = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO 
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT],
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+
+  case ARGV.length
+  when 1
+    from = Time.parse(ARGV[0])
+    to = Time.now
+  when 2
+    from = Time.parse(ARGV[0])
+    to = Time.parse(ARGV[1]) 
+  end
+  $stdout.print "#{from} - #{to} = "
+
+  $stdout.puts Seconds.new(to.to_i-from.to_i).to_hours
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
