@@ -52,6 +52,7 @@ alias v=vim
 alias m=music
 alias _=" sudo"
 alias _!=" sudo !!"
+alias __=noglob
 alias ls='ls -Fh --color=always'
 alias l='ls -1'
 alias ll='ls -l'
@@ -80,6 +81,9 @@ alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
 alias suspend="sudo true ; xscreensaver-command -lock ; sudo pm-suspend"
 
+function exwd() {
+  export PATH=$PATH:$PWD
+}
 
 calc() { echo "$*" | bc -l ; }
 
