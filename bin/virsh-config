@@ -1,0 +1,216 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'erb'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Usage:
+
+Creates a LibVirt configuration file used to start a
+virtuel machine instance.
+
+  #{exec_name} [-DhON] [-b bridge] [-c vcpus] 
+               [-m mac-addess] [-M memory] 
+               [-n name] [-p vnc-port] file
+
+Options:
+
+  -b,--bridge name
+    Network birdge used by the virtual machine 
+    instance (default nbr0).
+  -c,--vcpu num
+    Number of virtual CPUs (default 1).
+  -D,--debug
+    Show stacktraces in case of errors.
+  -d, --disks path[,path,...]
+    Add disk image files to the configuration.
+    Uses files called `disk*.img` in the working
+    directory by default.
+  -h,--help
+    Show this help information.
+  -m,--mac-address mac
+    MAC-address used by the virtual machine
+    (default 02:FF:0A:0A:06:00)
+  -M,--memory bytes
+    Memory to be allocated to the virtual machine
+    (default 1048576)
+  -n,--name name
+    Name of the virtual machine (default is the 
+    enclosing directory name).
+  -N,--net-boot
+    Enable PXE boot.
+  -O,--overwrite
+    Overwrite target configuration file if existing.
+  -p,--vnc-port num
+    VNC connection port.
+  -v,--version
+    Print program version.
+EOF
+
+def config
+  unless $options.overwrite 
+    if File.exists? $options.file
+      $stdout.print "Overwrite #{$options.file}? (Enter/Y/y to continue) "
+      answer = $stdin.gets.chomp
+      exit 0 unless answer.empty? or "Y" == answer.upcase
+    end
+  end
+  
+  name = if $options.name.nil?
+           $options.path.split('/')[-1]
+         else
+           $options.name
+         end
+
+  disks_list = if $options.disks.empty?
+                 Dir.glob("#{$options.path}/disk*.img")
+               else
+                 $options.disks
+               end
+
+  raise('NO disk(s) defined!') if disks_list.empty?
+
+  id = 'a'
+  disks = Array.new
+  disks_list.sort.map do |disk|
+    disks << %Q[<disk type="file" device="disk">
+        <driver name="qemu" type="qcow2"/>
+        <target dev="vd#{id}"/>
+        <source file="#{disk}"/>
+      </disk>]
+    id = id.next
+  end
+
+  xml = ERB.new(<<-EOF
+  <?xml version="1.0"?>
+  <domain type="kvm">
+    <name><%= name %></name>
+    <memory><%= $options.memory %></memory>
+    <vcpu><%= $options.vcpu %></vcpu>
+    <os>
+      <type arch="x86_64">hvm</type>
+      <% if $options.netboot %><boot dev='network'/><%end %>
+    </os>
+    <clock sync="localtime"/>
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+    <features><acpi/></features>
+    <devices>
+      <emulator>/usr/bin/kvm</emulator>
+      <% unless $options.vnc.nil? %><graphics type="vnc" port="<%= $options.vnc %>"/><% end%>
+      <interface type="bridge">
+        <source bridge="<%= $options.bridge %>"/>
+        <mac address="<%= $options.mac %>"/>
+        <modul type="virtio"/>
+      </interface>
+      <%= disks.join("\n      ") %>
+    </devices>
+  </domain>
+  EOF
+  ).result(binding)
+  File.open($options.file,'w') do |f|
+    f.puts xml.gsub(/^  /,'')
+  end
+end
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.file = nil
+  $options.bridge = 'nbr0'
+  $options.mac = '02:FF:0A:0A:06:00'
+  $options.memory = 1048576
+  $options.vcpu = 1
+  $options.vnc = nil
+  $options.overwrite = false
+  $options.name = nil
+  $options.netboot = false
+  $options.disks = Array.new
+
+  GetoptLong.new(
+    ['--bridge','-b',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--disks','-d',GetoptLong::REQUIRED_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--mac-address','-m',GetoptLong::REQUIRED_ARGUMENT],
+    ['--name','-n',GetoptLong::REQUIRED_ARGUMENT],
+    ['--net-boot','-N',GetoptLong::NO_ARGUMENT],
+    ['--memory','-M',GetoptLong::REQUIRED_ARGUMENT],
+    ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--vcpu','-c',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT],
+    ['--vnc-port','-p',GetoptLong::REQUIRED_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--bridge'
+      $options.bridge = arg
+    when '--debug'
+      $options.debug = true
+    when '--disks'
+      arg.split(',').each do |disk|
+        $options.disks << disk
+      end
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--mac-address'
+      $options.mac = arg
+    when '--memory'
+      $options.memory = arg
+    when '--name'
+      $options.name = arg
+    when '--net-boot'
+      $options.netboot = arg
+    when '--overwrite'
+      $options.overwrite = true
+    when '--vcpu'
+      $options.vcpu = arg
+    when '--version'
+      $stdout.puts '0.2'
+      exit 0
+    when '--vnc-port'
+      $options.vnc = arg
+    end
+  end
+
+  $options.file = File.expand_path ARGV[0] || raise('No target file defined!')
+  $options.path = File.dirname $options.file
+
+  config
+  $stdout.puts "#{$options.file} written."
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-D\''
+  end
+  exit 1
+end
+
+exit 0

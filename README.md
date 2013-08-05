@@ -43,6 +43,7 @@ remote repository.
   multiplexer.
 * **vim-cheat** — "What was this key again?" Vim cheat sheet. 
 * **vim-default-config** — Install Vundle and my personal Vim configuration.
+* **virsh-config** — Create XML configuration files. 
 * **virsh-network** — Configure a bridged Libvirt network.
 * **zsh-default-config** — Install antigen and my default Zsh 
   configuration.
