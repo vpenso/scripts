@@ -9,6 +9,7 @@ Use `source_me.sh` to add aliases and scripts to your environment.
 In the `bin/` sub-directory
 
 * **ansi-color** — Show ANSI color escaping.
+* **chef-remote** —  Execute `chef-solo` on a remote node.
 * **debian-default-config** — Install Debian dependencies.
 * **dir-colors** — Deploys a simple coloring configuration.
 * **git-default-config** — My custom Git configuration.
@@ -30,7 +31,7 @@ shells.
 * **ssh-exec** — Wraps `ssh` to be used with `ssh-instance`.
 * **ssh-fs** — Wrapper around `sshfs` for mounting remote paths
 over SSH.
-* **ssh-instance** — Create custom SSH configuration files/
+* **ssh-instance** — Create custom SSH configuration files `ssh_config`.
 * **ssh-known-hosts** — Remove/add/update SSH host fingerprints.
 * **ssh-sync** — Wraps `rsync` to be used with `ssh-instance`.
 * **ssh-tunnel** — Easy access to remote networks with `sshuttle`.
