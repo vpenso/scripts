@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# exit if an uninitialised variable is used
+#set -o nonunset
+# exit of statement returns a non-true return value
+#set -o errexit
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"Usage: 
+
+  $SCRIPT [-sh] [user@hostname] \"command\" 
+
+Execute a command on a remote node. Uses a ./ssh_config in
+the working directory by default if it exists.
+
+Options:
+  -s,--sudo
+    Remote execute a command with Sudo.
+  -h,--help
+    Show this information."
+
+# enable line numbers for debug output
+if [ "$_DEBUG" = "true" ] ; then
+  export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
+fi
+
+function _debug() {
+  if [ "$_DEBUG" = "true" ]; then
+    echo 1>&2 "Debug: $@"
+  fi
+}
+
+function _error() {
+  echo 1>&2 "Error: $@"
+  echo "See \`$SCRIPT --help\` for usage."
+}
+
+sudo=
+# Parse the command line options
+ARGS=$(getopt -o hs -l "help,sudo" -- "$@")
+eval set -- "$ARGS"
+while true; do
+  case "$1" in
+    -h|--help)
+      echo "$HELP"
+      exit 0
+      ;;
+    -s|--sudo)
+      sudo="sudo "
+      shift
+      ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
+
+options=
+if [ -e "$PWD/ssh_config" ]
+then
+  options="-F $PWD/ssh_config"
+fi
+
+if [ $# -eq 0 ]
+then
+  _error "Not enough arguments!"
+  exit 1
+fi
+
+if [ $# -ge 3 ]
+then
+  _error "To many arguments!"
+  exit 1
+fi
+
+
+host=
+if [ $# -eq 1 ]
+then
+  host=instance
+else
+  host=$1
+  shift
+fi
+
+command="$sudo$@"
+_debug "Execute command [$command]"
+ssh -gt $options $host $command 2>/dev/null
+if [ $? -ne 0 ]
+then
+  _error "Host [$host] failed to execute [$@]!"
+fi
+
+exit 0
+
+
