@@ -27,10 +27,12 @@ In the `bin/` sub-directory
 * **shell-skeleton** — Start developing shell script from here.
 * **ssh-agent-session** — Use the same SSH agent across multiple 
 shells.
+* **ssh-exec** — Wraps `ssh` to be used with `ssh-instance`.
 * **ssh-fs** — Wrapper around `sshfs` for mounting remote paths
 over SSH.
 * **ssh-instance** — Create custom SSH configuration files/
 * **ssh-known-hosts** — Remove/add/update SSH host fingerprints.
+* **ssh-sync** — Wraps `rsync` to be used with `ssh-instance`.
 * **ssh-tunnel** — Easy access to remote networks with `sshuttle`.
 * **sqlite-backup** — Backup SQLite database files into a Git 
 remote repository.
