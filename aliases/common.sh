@@ -20,14 +20,11 @@ bindkey '^B' backward-word
 bindkey '^F' forward-word
 
 # stdin is exported as environment variable
-function exp() { 
-  read n; export $1=$n 
-}
-
+function exp() { read n; export $1=$n }
+# export working directory to path
+function exwd() { export PATH=$PATH:$PWD }
 # Encode URLs before using them with a browser
-function uri-encode() { 
-  echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; 
-}
+function uri-encode() { echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g' ; }
 
 export BROWSER=${BROWSER:-"firefox"}
 
@@ -81,9 +78,6 @@ alias mute="amixer --quiet set Master toggle"
 alias volume="amixer --quiet set Master"
 alias suspend="sudo true ; xscreensaver-command -lock ; sudo pm-suspend"
 
-function exwd() {
-  export PATH=$PATH:$PWD
-}
 
 calc() { echo "$*" | bc -l ; }
 
