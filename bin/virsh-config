@@ -24,12 +24,12 @@ exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 Usage:
 
-Creates a LibVirt configuration file used to start a
-virtuel machine instance.
-
   #{exec_name} [-DhON] [-b bridge] [-c vcpus] 
                [-m mac-addess] [-M memory] 
-               [-n name] [-p vnc-port] file
+               [-n name] [-p vnc-port] path
+
+Creates a LibVirt configuration file used to start a
+virtuel machine instance.
 
 Options:
 
@@ -65,70 +65,77 @@ Options:
     Print program version.
 EOF
 
-def config
-  unless $options.overwrite 
-    if File.exists? $options.file
-      $stdout.print "Overwrite #{$options.file}? (Enter/Y/y to continue) "
-      answer = $stdin.gets.chomp
-      exit 0 unless answer.empty? or "Y" == answer.upcase
-    end
-  end
+class Virsh
   
-  name = if $options.name.nil?
-           $options.path.split('/')[-1]
-         else
-           $options.name
-         end
+  def self.config(path)
 
-  disks_list = if $options.disks.empty?
-                 Dir.glob("#{$options.path}/disk*.img")
-               else
-                 $options.disks
-               end
+    dir = File.dirname(path)
 
-  raise('NO disk(s) defined!') if disks_list.empty?
+    unless $options.overwrite 
+      if File.exists? path
+        $stdout.print "Overwrite #{path}? (Enter/Y/y to continue) "
+        answer = $stdin.gets.chomp
+        exit 0 unless answer.empty? or "Y" == answer.upcase
+      end
+    end
+    
+    name = if $options.name.nil?
+             dir.split('/')[-1]
+           else
+             $options.name
+           end
 
-  id = 'a'
-  disks = Array.new
-  disks_list.sort.map do |disk|
-    disks << %Q[<disk type="file" device="disk">
-        <driver name="qemu" type="qcow2"/>
-        <target dev="vd#{id}"/>
-        <source file="#{disk}"/>
-      </disk>]
-    id = id.next
-  end
+    disks_list = if $options.disks.empty?
+                   Dir.glob("#{dir}/disk*.img")
+                 else
+                   $options.disks
+                 end
 
-  xml = ERB.new(<<-EOF
-  <?xml version="1.0"?>
-  <domain type="kvm">
-    <name><%= name %></name>
-    <memory><%= $options.memory %></memory>
-    <vcpu><%= $options.vcpu %></vcpu>
-    <os>
-      <type arch="x86_64">hvm</type>
-      <% if $options.netboot %><boot dev='network'/><%end %>
-    </os>
-    <clock sync="localtime"/>
-    <on_poweroff>destroy</on_poweroff>
-    <on_reboot>restart</on_reboot>
-    <on_crash>restart</on_crash>
-    <features><acpi/></features>
-    <devices>
-      <emulator>/usr/bin/kvm</emulator>
-      <% unless $options.vnc.nil? %><graphics type="vnc" port="<%= $options.vnc %>"/><% end%>
-      <interface type="bridge">
-        <source bridge="<%= $options.bridge %>"/>
-        <mac address="<%= $options.mac %>"/>
-        <modul type="virtio"/>
-      </interface>
-      <%= disks.join("\n      ") %>
-    </devices>
-  </domain>
-  EOF
-  ).result(binding)
-  File.open($options.file,'w') do |f|
-    f.puts xml.gsub(/^  /,'')
+    raise('NO disk(s) defined!') if disks_list.empty?
+
+    id = 'a'
+    disks = Array.new
+    disks_list.sort.map do |disk|
+      disks << %Q[<disk type="file" device="disk">
+          <driver name="qemu" type="qcow2"/>
+          <target dev="vd#{id}"/>
+          <source file="#{disk}"/>
+        </disk>]
+      id = id.next
+    end
+
+    xml = ERB.new(<<-EOF
+    <?xml version="1.0"?>
+    <domain type="kvm">
+      <name><%= name %></name>
+      <memory><%= $options.memory %></memory>
+      <vcpu><%= $options.vcpu %></vcpu>
+      <os>
+        <type arch="x86_64">hvm</type>
+        <% if $options.netboot %><boot dev='network'/><%end %>
+      </os>
+      <clock sync="localtime"/>
+      <on_poweroff>destroy</on_poweroff>
+      <on_reboot>restart</on_reboot>
+      <on_crash>restart</on_crash>
+      <features><acpi/></features>
+      <devices>
+        <emulator>/usr/bin/kvm</emulator>
+        <% unless $options.vnc.nil? %><graphics type="vnc" port="<%= $options.vnc %>"/><% end%>
+        <interface type="bridge">
+          <source bridge="<%= $options.bridge %>"/>
+          <mac address="<%= $options.mac %>"/>
+          <modul type="virtio"/>
+        </interface>
+        <%= disks.join("\n      ") %>
+      </devices>
+    </domain>
+    EOF
+    ).result(binding)
+    File.open(path,'w') do |f|
+      f.puts xml.gsub(/^  /,'')
+    end
+    $stdout.puts "#{path} written."
   end
 end
 
@@ -188,18 +195,18 @@ begin
     when '--vcpu'
       $options.vcpu = arg
     when '--version'
-      $stdout.puts '0.2'
+      $stdout.puts 0.3
       exit 0
     when '--vnc-port'
       $options.vnc = arg
     end
   end
 
-  $options.file = File.expand_path ARGV[0] || raise('No target file defined!')
-  $options.path = File.dirname $options.file
 
-  config
-  $stdout.puts "#{$options.file} written."
+  path = ARGV.shift || raise('No target file defined!')
+
+  Virsh::config(File.expand_path(path))
+
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
