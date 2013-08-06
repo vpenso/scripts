@@ -1,0 +1,240 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+
+  #{exec_name} [-Dhv] COMMAND [ARGUMENTS]
+
+Clone virtuel machine images and their configuration.
+
+Command
+-------
+
+  list
+    List available images in image.
+  create PATH
+    Create a new disk image in PATH.
+  clone IMAGE PATH
+    Copy source IMAGE to PATH directory including
+    its configuration.
+  shadow IMAGE PATH
+    Make a shadow copy of the source IMAGE in PATH.
+
+Options
+-------
+
+  --debug, -D
+    Show stacktraces in case of errors.
+  --disk-size, -s SIZE
+    Image size when creating new images with the 
+    command "create" (default 40G).
+  --help, -h
+    Show this help information.
+  --image-path, -i PATH
+    Location of the source images (default /srv/vm/images)
+ --overwrite, -O
+    Overwrite target images if existing.
+  --version
+    Print version number.
+
+Environment
+-----------
+
+  VM_IMAGE_PATH 
+    Defines default source image path like option -i.
+EOF
+
+class System 
+  def self.exec(command)
+    command + ' 2>&1'
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
+  end
+  def self.run(command)
+    $logger.debug "Run [#{command}]"
+    system(command)
+  end
+end
+
+module CLI
+  def self.ask?(question)
+    $stdout.print "#{question} (Enter/Y/y to continue) "
+    answer = $stdin.gets.chomp
+    if answer.empty? or "Y" == answer.upcase
+      true
+    else
+      false
+    end
+  end
+end
+
+class Virsh
+  class Image
+
+    def self.create(path)
+      if File.exists?(path) and not $options.overwrite
+        return unless CLI.ask?("Overwrite #{path}?")
+      end
+      System::exec("kvm-img create -f qcow2 #{path} #{$options.disk_size}")
+    end
+
+    def self.list
+      $stdout.puts "Images in #{$options.image_path}:"
+      Dir.glob("#{$options.image_path}/**/*.img").each do |image|
+        $stdout.puts image.gsub(%r{#{$options.image_path}/},'  ').split('/')[0]
+      end
+    end
+
+    def self.clone(image,path)
+      image_path = "#{$options.image_path}/#{image}"
+      if File.directory? image_path
+        if File.directory? path and not $options.overwrite
+          if CLI.ask?("Overwrite #{path}?")
+            System::exec("rm #{path}/*.img")
+          else
+            return
+          end
+        else
+          System::exec("mkdir -p #{path}")
+        end
+        if $options.shadow
+          Dir.glob("#{image_path}/*.img").each do |image|
+            name = File.basename(image)
+            System::run("qemu-img create -b #{image} -f qcow2 #{path}/#{name}")
+          end
+        end
+        System::run("cp --recursive --no-clobber #{image_path}/* #{path} --verbose") 
+      else
+        raise("Image #{image} not existing in #{$options.image_path}")
+      end
+    end
+
+  end
+end
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.disk_size = '40G'
+  $options.overwrite = false
+  $options.image_path = '/srv/vm/images'
+  $options.shadow = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--disk-size','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--image-path','-i',GetoptLong::REQUIRED_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--disk-size'
+      $options.disk_size =arg
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--image-path'
+      $options.image_path = arg
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--overwrite'
+      $options.overwrite = true
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+
+  $options.image_path = ENV['VM_IMAGE_PATH'] if ENV.has_key? 'VM_IMAGE_PATH'
+
+  command = ARGV.shift || raise('Expecting command argument!')
+  case command
+  when 'create'
+    path = ARGV.shift || raise('Expecting path to disk image as argument!')
+    Virsh::Image.create(path)
+  when 'list'
+    Virsh::Image.list
+  when 'clone','shadow'
+    $options.shadow = true if command == 'shadow'
+    image = ARGV.shift || raise('Expecting image name as argument!')
+    path = ARGV.shift || raise('Expecting target path as argument')
+    Virsh::Image.clone(image,path)
+  else
+    raise("Command #{command} unknown!")
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
