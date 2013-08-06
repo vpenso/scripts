@@ -24,7 +24,7 @@ exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 Usage:
 
-  #{exec_name} [-DhON] [-b bridge] [-c vcpus] 
+  #{exec_name} [-DhONv] [-b bridge] [-c vcpus] 
                [-m mac-addess] [-M memory] 
                [-n name] [-p vnc-port] path
 
@@ -61,7 +61,9 @@ Options:
     Overwrite target configuration file if existing.
   -p,--vnc-port num
     VNC connection port.
-  -v,--version
+  -v,--vnc 
+    Enable VNC with automatic port allocation.
+  --version
     Print program version.
 EOF
 
@@ -121,7 +123,7 @@ class Virsh
       <features><acpi/></features>
       <devices>
         <emulator>/usr/bin/kvm</emulator>
-        <% unless $options.vnc.nil? %><graphics type="vnc" port="<%= $options.vnc %>"/><% end%>
+        <%= self.vnc %>
         <interface type="bridge">
           <source bridge="<%= $options.bridge %>"/>
           <mac address="<%= $options.mac %>"/>
@@ -133,10 +135,21 @@ class Virsh
     EOF
     ).result(binding)
     File.open(path,'w') do |f|
-      f.puts xml.gsub(/^  /,'')
+      f.puts xml.gsub(/^ */,'').gsub(/^$\n/,'')
     end
     $stdout.puts "#{path} written."
   end
+
+  def self.vnc
+    if not $options.vnc_port.nil?
+      %Q[<graphics type="vnc" port="#{$options.vnc_port}"/>]
+    elsif $options.vnc
+      "<graphics type='vnc' port='-1' autoport='yes'/>"
+    else
+      ""
+    end
+  end
+
 end
 
 begin
@@ -150,7 +163,8 @@ begin
   $options.mac = '02:FF:0A:0A:06:00'
   $options.memory = 1048576
   $options.vcpu = 1
-  $options.vnc = nil
+  $options.vns = false
+  $options.vnc_port = nil
   $options.overwrite = false
   $options.name = nil
   $options.netboot = false
@@ -167,7 +181,8 @@ begin
     ['--memory','-M',GetoptLong::REQUIRED_ARGUMENT],
     ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
     ['--vcpu','-c',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version','-v',GetoptLong::NO_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT],
+    ['--vnc','-v',GetoptLong::NO_ARGUMENT],
     ['--vnc-port','-p',GetoptLong::REQUIRED_ARGUMENT]
   ).each do |opt,arg|
     case opt
@@ -197,16 +212,16 @@ begin
     when '--version'
       $stdout.puts 0.3
       exit 0
+    when '--vnc'
+      $options.vnc = true
     when '--vnc-port'
-      $options.vnc = arg
+      $options.vnc_port = arg
     end
   end
 
 
-  path = ARGV.shift || raise('No target file defined!')
-
+  path = ARGV.shift || raise('No target path defined!')
   Virsh::config(File.expand_path(path))
-
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
