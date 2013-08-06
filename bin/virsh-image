@@ -117,7 +117,10 @@ class Virsh
 
     def self.list
       $stdout.puts "Images in #{$options.image_path}:"
-      Dir.glob("#{$options.image_path}/**/*.img").each do |image|
+      images = Dir.glob("#{$options.image_path}/**/*.img").map do |image|
+        image = image.gsub(%r{#{$options.image_path}/},'  ').split('/')[0]
+      end
+      images.uniq.each do |image|
         $stdout.puts image.gsub(%r{#{$options.image_path}/},'  ').split('/')[0]
       end
     end
