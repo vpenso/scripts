@@ -34,8 +34,6 @@ Command
 
   list
     List available images in image.
-  create PATH
-    Create a new disk image in PATH.
   clone IMAGE PATH
     Copy source IMAGE to PATH directory including
     its configuration.
@@ -135,9 +133,20 @@ class Virsh
       args[:overwrite] = false unless args.has_key? :overwrite
       raise("Image #{image} not existing") unless File.directory? image
       if File.directory? instance
+        name = instance.split('/')[-1]
+        if Virsh.running?(name)
+          if CLI.ask?("Remove instance #{name}?")
+            Virsh.remove(name)
+            sleep 5
+          else
+            exit 0
+          end
+        end
         if not args[:overwrite]
           if CLI.ask?("Overwrite #{instance}?")
             System::exec("rm --force #{instance}/*.img")
+          else
+            exit 0
           end
         end
       else
@@ -148,13 +157,18 @@ class Virsh
         Dir.glob("#{image}/*.img").each do |disk|
           name = File.basename(disk)
           target = "#{instance}/#{name}"
-          $logger.info("Create shadow of #{disk}")
+          $logger.info("Create shadow disk #{target}")
           System::run("qemu-img create -b #{disk} -f qcow2 #{target} >/dev/null")
         end
       end
       System::run("cp --recursive --no-clobber #{image}/* #{instance}") 
     end
 
+  end
+
+  def initialize(image_path,instance_path)
+    @image_path = image_path
+    @instance_path = instance_path
   end
 
   def self.install(name,path,args = {})
@@ -173,6 +187,7 @@ class Virsh
     name, ip, mac = output.split
     options = "--name #{name} --mac-address #{mac}"
     System::run("cd #{path} ; virsh-config #{options} libvirt_instance.xml")
+    System::run("ssh-instance #{ip} --user devops --identity-file #{path}/keys/id_rsa #{path}")
   end
 
   def self.start(path)
@@ -183,11 +198,25 @@ class Virsh
     System::run("virsh start #{name} | sed '/^$/d'")
   end
 
-  def self.remove(instance)
-    name = instance.split('/')[-1]
-    raise("Instance #{name} not existing!") unless File.directory? instance
+  def self.remove(name)
+    name = self.nat_config(name)[0]  
     System::run("virsh shutdown #{name} | sed '/^$/d'")
     System::run("virsh undefine #{name} | sed '/^$/d'")
+  end
+
+  def self.running?(name)
+    output = System::exec("virsh list | grep #{name} >/dev/null 2>&1")
+    if output.nil?
+      false
+    else
+      true
+    end
+  end
+
+  def self.nat_config(name)
+    output = System::exec("virsh-nat-bridge lookup #{name}")  
+    raise("Couldn't read network configuration for #{name}") if output.nil?
+    return output.split
   end
 
 end
@@ -262,21 +291,26 @@ begin
     end
   end
 
-  $options.image_path = ENV['VM_IMAGE_PATH'] if ENV.has_key? 'VM_IMAGE_PATH'
-
   command = ARGV.shift || raise('Expecting command argument!')
+
+  $options.image_path = ENV['VM_IMAGE_PATH'] if ENV.has_key? 'VM_IMAGE_PATH'
+  $options.instance_path = ENV['VM_INSTANCE_PATH'] if ENV.has_key? 'VM_INSTANCE_PATH'
+
+
   case command
   when 'clone','shadow'
+    # check user arguments
+    image = ARGV.shift || raise('Expecting image name as argument!')
+    image = "#{$options.image_path}/#{image}"
+    instance = ARGV.shift || raise('Expecting instance name as argument')
+    instance = "#{$options.instance_path}/#{instance}"
+    # clone options
     options = Hash.new
     options[:shadow] = true if command == 'shadow'
-    image = ARGV.shift || raise('Expecting image name as argument!')
-    instance = ARGV.shift || raise('Expecting instance name as argument')
-    image = "#{$options.image_path}/#{image}"
-    instance = "#{$options.instance_path}/#{instance}"
     Virsh::Image.clone(image,instance,options)
-    $stdout.puts "#{command.capitalize} create in #{instance}"
     Virsh.config(instance)
     Virsh.start(instance)
+    $stdout.puts "#{command.capitalize} create in #{instance}"
   when 'install'
     name = ARGV.shift || raise('Expecting name as argument!')
     path = ARGV.shift || raise('Expecting disk image path as argument!')
@@ -290,9 +324,12 @@ begin
   when 'list'
     Virsh::Image.list($options.image_path)
   when 'remove'
-    instance = ARGV.shift || raise('Expecting name as argument!')
-    instance = "#{$options.instance_path}/#{instance}"
-    Virsh.remove(instance)
+    name = ARGV.shift || raise('Expecting name as argument!')
+    if Virsh.running?(name)
+      Virsh.remove(name)
+    else
+      $stdout.puts("Instance #{name} not running.")
+    end
   else
     raise("Command #{command} unknown!")
   end
