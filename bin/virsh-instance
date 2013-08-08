@@ -32,17 +32,24 @@ Clone virtuel machine images and their configuration.
 Command
 -------
 
+  clone IMAGE NAME
+    Clone source IMAGE and start an virtual machine
+    instance called NAME.
+  install NAME PATH
+    Install a new virtual machine image.
   list
-    List available images in image.
-  clone IMAGE PATH
-    Copy source IMAGE to PATH directory including
-    its configuration.
-  shadow IMAGE PATH
-    Make a shadow copy of the source IMAGE in PATH.
+    List available images.
+  remove NAME
+    Shutdown and undefine instance.
+  shadow IMAGE NAME
+    Make shadow disks of IMAGE and start a virtual
+    machine called NAME.
 
 Options
 -------
 
+  --cdrom PATH
+    Location of the CDROM ISO for installation.
   --debug, -D
     Show stacktraces in case of errors.
   --disk-size, -s SIZE
@@ -51,9 +58,12 @@ Options
   --help, -h
     Show this help information.
   --image-path, -i PATH
-    Location of the source images (default /srv/vm/images)
- --overwrite, -O
-    Overwrite target images if existing.
+    Location of the source images (default /srv/vms/images)
+  --instance-path, -p PATH
+    Location of the virtual machine instances (default
+    /srv/vms/instances)
+  --location, -l URL
+    URL for installation sources (default Debian stable).
   --version
     Print version number.
 
@@ -61,7 +71,9 @@ Environment
 -----------
 
   VM_IMAGE_PATH 
-    Defines default source image path like option -i.
+    Defines default source image path (like option -i).
+  VM_INSTANCE_PATH
+    Defines default instance path (like option -p).
 EOF
 
 class System 
