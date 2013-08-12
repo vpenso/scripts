@@ -75,7 +75,7 @@ begin
       $stdout.puts HELP
       exit 0
     when '--identity-file'
-      options.id_file = arg
+      options.id_file = File.expand_path(arg)
     when '--overwrite'
       options.overwrite = true
     when '--user'
