@@ -17,7 +17,9 @@
 
 # (re)set git mail address environment variable
 function git-mail() {
-  local mail=${1:-"user@localhost"}
+  local mail=${1:-"$USER@localhost"}
   export GIT_AUTHOR_EMAIL=$mail
+  export GIT_COMMITTER_EMAIL=$mail
   echo "GIT_AUTHOR_EMAIL=$GIT_AUTHOR_EMAIL"
+  echo "GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL"
 }
