@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright 2013 Victor Penso
 #
@@ -9,15 +9,96 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-sudo apt-get update
+# exit if an uninitialised variable is used
+#set -o nonunset
+# exit of statement returns a non-true return value
+#set -o errexit
 
-# Install basic software use on a workstation
-sudo apt-get -y install vim zsh tmux git-core chef ruby-full python-pygments curl psmisc htop ack-grep sysstat procps iptraf tcpdump nmap clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs ccrypt xclip
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"Usage: $SCRIPT [COMMAND] [ARGUMENTS]
+  
+Add more text here"
+
+# enable line numbers for debug output
+if [ "$_DEBUG" = "true" ] ; then
+  export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
+fi
+
+function _debug() {
+  if [ "$_DEBUG" = "true" ]; then
+    echo 1>&2 "Debug: $@"
+  fi
+}
+
+function _error() {
+  echo 1>&2 "Error: $@"
+  echo "See \`$SCRIPT help\` for usage."
+}
+
+# Parse the command line options
+ARGS=$(getopt -o h -l "help" -- "$@")
+eval set -- "$ARGS"
+while true; do
+  case "$1" in
+    -h|--help)
+      _help
+      exit 0
+      ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
+
+SCRIPTS=~/projects/scripts
+
+function basic() {
+  # install all dependency packages in Debian
+  sudo apt-get --quiet=2 --assume-yes install curl git-core vim zsh python ruby
+  if [ -d $SCRIPTS ] ; then
+    echo "Scripts directory ~/projects/scripts exists!"
+  else
+    mkdir ~/projects 2>/dev/null
+    # Get all my scripts from GitHub
+    git clone --origin github https://github.com/vpenso/scripts.git $SCRIPTS
+  fi
+  # Configure the ZSH shell
+  $SCRIPTS/bin/zsh-default-config
+  # Configure the Vim editor
+  $SCRIPTS/bin/vim-default-config
+  # Install my ls color schema
+  $SCRIPTS/bin/dir-colors
+  # Load scripts & aliases to the shell environment
+  [[ -L ~/.zsh_config_hook  ]] || ln -s $SCRIPTS/source_me.sh ~/.zsh_config_hook
+}
+
+function desktop() {
+  basic
+  sudo apt-get --quiet=2 --assume-yes install htop ack-grep sysstat procps iptraf tcpdump tmux psmisc clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs ccrypt xclip nmap ruby-full nethogs
+  $SCRIPTS/bin/tmux-default-config
+}
+
+
+# Read the command-line arguments
+_command=$1 ; shift
+case "$_command" in 
+  basic) basic ;;
+  desktop) desktop ;;  
+  *) echo "$HELP" ;;
+esac
+
+exit 0
+
 
