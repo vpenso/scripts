@@ -86,7 +86,7 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%F{166}…"
 antigen-apply
 
 PROMPT='$(git_super_status)%F{253}»%f '
-RPROMPT='%F{234}%n%F{253}:%F{243}%~%k%f'
+RPROMPT='%F{239}%n@%m%F{253}:%F{243}%~%k%f'
 
 autoload -U colors && colors
 if [ -f $HOME/.dir_colors/rainbow ] ; then
