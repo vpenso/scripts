@@ -60,7 +60,6 @@ alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
 alias man="MANWIDTH=80 MANPAGER=less man"
 alias npm="nocorrect npm"
-alias vm="nocorrect vm"
 alias less="less -R"
 # List all directories in path
 alias path='echo -e ${PATH//:/\\n}'
