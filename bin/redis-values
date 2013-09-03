@@ -48,6 +48,8 @@ Options
 
   --debug, -D
     Show stacktraces in case of errors.
+  --delete PATTERN
+    Remove keys with PATTERN.
   --help, -h
     Show this help information.
   --port, -p NUM
@@ -200,7 +202,7 @@ begin
     when '--port'
       $options.port = arg
     when '--version'
-      $stdout.puts 0.3
+      $stdout.puts 0.4
       exit 0
     end
   end
@@ -216,7 +218,6 @@ begin
 
   unless $options.delete.nil?
     redis.del(redis.keys("#{$options.delete}*"))
-    exit 0
   end
 
   # It is assumed that the user wants to retrieve data from Redis
