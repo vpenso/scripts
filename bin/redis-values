@@ -224,14 +224,14 @@ begin
   if input.nil?
     if ARGV.length > 1
       patterns = ARGV[1..-1] 
+      # aggregate all keys
+      keys = Array.new
+      patterns.each { |pattern| keys += redis.keys("*#{pattern}*") }
+      # retrieve all values and generate a JSON object
+      $stdout.puts JSON.pretty_generate(redis.gets(keys))
     else
-      raise('Search pattern expected!')
+      $stderr.puts('Search pattern expected!')
     end
-    # aggregate all keys
-    keys = Array.new
-    patterns.each { |pattern| keys += redis.keys("*#{pattern}*") }
-    # retrieve all values and generate a JSON object
-    $stdout.puts JSON.pretty_generate(redis.gets(keys))
   # Store key-value pairs to a Redis instance
   else
     redis.sets(JSON.parse(input)) 
