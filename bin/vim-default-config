@@ -209,6 +209,15 @@ hi shDerefSimple  ctermfg=34
 hi shCommandSub   ctermfg=220 ctermbg=none
 hi shSpecial      ctermfg=124
 
+hi htmlTag                        ctermfg=241
+hi htmlEndTag                     ctermfg=241
+
+hi javaScript                     ctermfg=255
+hi javaScriptFunction             ctermfg=39 cterm=bold
+hi javaScriptIdentifier           ctermfg=208 cterm=bold
+hi javaScriptType                 ctermfg=160 cterm=bold
+hi javaScriptBoolean              ctermfg=70 cterm=bold
+
 hi rubySymbol                     ctermfg=208
 hi rubyBlockParameter             ctermfg=40
 hi rubyStringDelimiter            ctermfg=27
