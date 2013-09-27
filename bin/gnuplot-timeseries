@@ -1,0 +1,213 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION = 0.1
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Create SVG plots from time-series data tables.
+
+#{exec_name} [--debug] [--version] 
+  [--column NAME[:NAME]] [--color RGB[:RGB]] 
+  [--size WIDTH,HEIGHT] [TABLE]
+
+  STDIN|TABLE
+    Path to a file containing the input data TABLE.
+    Alternativly use STDIN, to create a temporary
+    file holding the input data table.
+
+#{exec_name} expects the first column of the 
+input data table with a timestamp (default %Y-%m-%d) 
+and subsequent columns with the data to plot. The 
+frist row is exepceted to containe the names of the 
+columns, to be selected with the option --column.
+
+  --color, -C RGB[:RGB:RGB]
+    Colors used to plot the columns.
+  --column, -c NAME[:NAME:NAME]
+    Columns to plot from the input table.
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --print, -p
+    Print Gnuplot commands to STDOUT, instead
+    of piping it thru Gnuplot to create an SVG.
+  --size, -s WIDTH,HEIGHT
+    Dimensions of the plot (default 400,200).
+  --time-format, -t 
+    Time format of the first column in the input
+    data table (default %Y-%m-%d).
+  --version, -v
+    Print version number.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.colors = [
+    '#0000FF', # blue
+    '#ADD8E6', # light blue
+    '#008000', # green
+    '#9ACD32', # yellow green
+    '#FF0000', # red 
+    '#FF7F50', # coral
+    '#800080', # purple
+    '#FF00FF', # magenta
+    '#FFA500', # orange
+    '#FFD700', # gold
+    '#556B2F', # dark olive
+    '#808000', # olive
+    '#8B4513', # saddle brown
+    '#CD853F', # peru
+    '#000000', # black
+    '#808080'  # gray
+  ]
+  options.debug = false
+  options.size = '400,200'
+  options.time_format = '%Y-%m-%d'
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--color', '-C',GetoptLong::REQUIRED_ARGUMENT],
+    ['--column','-c',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--print','-p',GetoptLong::NO_ARGUMENT],
+    ['--size','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--time-format','-t',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--color'
+      options.colors = arg.split(':')
+    when '--column'
+      options.columns = arg.split(':').sort
+    when '--debug'
+      options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--print'
+      options.print = true
+    when '--size'
+      raise("Broken size [#{arg}]") unless arg =~ /[0-9]*,[0-9]/
+      options.size = arg
+    when '--time-format'
+      options.time_format = arg
+    when '--version'
+      $stdout.puts VERSION
+      exit 0
+    end
+  end
+
+  file = ARGV[0] 
+  unless file.nil?
+    raise("File [#{file}] missing!") unless File.exists?(file)
+    file = File.expand_path file
+  else
+    unless stdin.empty?
+      file = `mktemp`.chop
+      File.open(file,'w') { |file| file.write stdin }
+      $logger.debug "Input stream written to file [#{file}]"
+    else
+      raise("Expecting input data as an argument or by stdin!")
+    end
+  end
+
+  plot = <<-END_OF_FILE
+    set terminal svg size #{options.size} enhanced font 'Monaco,8'
+    set key below
+    set border linewidth 0.8 
+    set style line 11 lc rgb '#000000' lt 1
+    set border 3 back ls 11
+    set tics nomirror out scale 0.75
+    set xdata time
+    set timefmt '#{options.time_format}'
+    set ytics format '%.0s%c'
+    set yrange [1:*]
+  END_OF_FILE
+  plot = plot.gsub(/^ */,'')
+
+  index = `cat #{file} | head -1`.split.unshift('THIS SHOULD NEVER BE USED')
+  index = index.map { |col| col = col.downcase }
+  index = Hash[index.map.with_index.to_a]
+
+  commands = Array.new
+  colors = options.colors
+  
+  if options.columns.nil?
+    index.keys[2..-1].each do |column|
+      color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+      commands << %Q[using 1:#{index[column]}:(1.0) smooth acsplines title '#{column}' #{color} linewidth 1.2]
+    end
+  else
+    options.columns.map! do |column|
+      raise("Missing column called [#{column}]!") unless index.has_key?(column)
+      color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+      commands << %Q[using 1:#{index[column]}:(1.0) smooth acsplines title '#{column}' #{color} linewidth 1.2]
+    end
+  end
+  
+  plot << "plot '#{file}' " << commands.join(", '' ")
+
+  if options.print
+    $stdout.puts plot
+  else
+    system(%Q[echo "#{plot}" | gnuplot])
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0

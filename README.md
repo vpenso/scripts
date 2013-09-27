@@ -15,6 +15,7 @@ In the `bin/` sub-directory
 * **git-default-config** — My custom Git configuration.
 * **git-repos** — Maintains a list of Git remote repositories and 
   shows the status.
+* **gnuplot-timeseries** – Create SVG plots from time-series data with Gnuplot.
 * **hash-merge** — Merge multiple hash objects into one.
 * **hash-transform** — Converts hash objects between JSON, YAML and CSV.
 * **mpd-default-config** — Writes a personal MPD configuration.
