@@ -211,6 +211,23 @@ hi shSpecial      ctermfg=124
 
 hi htmlTag                        ctermfg=241
 hi htmlEndTag                     ctermfg=241
+hi htmlH3                         ctermfg=243 cterm=bold
+
+hi cssStyle                       ctermfg=241
+hi cssBraces                      ctermfg=241
+hi cssTagName                     ctermfg=36
+hi cssIdentifier                  ctermfg=36 cterm=bold
+hi cssTextProp                    ctermfg=221
+hi cssFontProp                    ctermfg=221
+hi cssBoxProp                     ctermfg=221
+hi cssRenderProp                  ctermfg=187
+hi cssTextAttr                    ctermfg=187
+hi cssBoxAttr                     ctermfg=187
+hi cssUIAttr                      ctermfg=187
+hi cssColor                       ctermfg=43
+
+hi erubyDelimiter                 ctermfg=214 cterm=bold
+hi erubyExpression                ctermfg=237 ctermbg=none cterm=bold
 
 hi javaScript                     ctermfg=255
 hi javaScriptFunction             ctermfg=39 cterm=bold
