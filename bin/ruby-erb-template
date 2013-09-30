@@ -19,21 +19,16 @@
 require 'ostruct'
 require 'getoptlong' 
 require 'logger'
+require 'erb'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-Synopsis
-========
 
-Explain in one sentance whta this cript does.
+Render ERB template files.
 
-Usage
------
+#{exec_name} PATH 
 
-#{exec_name} [OPTIONS] ARGUMENT 
-
-  ARGUMENT
-    Describe what this parameter does.
+Expeects a PATH to an ERB template file as argument. 
 
 Options
 -------
@@ -91,7 +86,12 @@ begin
     end
   end
 
-  command = ARGV[0] || raise('No command given!')
+  file = ARGV.shift || raise('Expecting path ot ERB template file!')
+  raise("File [#{file}] missing!") unless File.exists?(file)
+  file = File.expand_path(file)
+
+  # Read the ERB template and render the content before printing
+  $stdout.puts ERB.new(File.read(file)).result(binding)
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
