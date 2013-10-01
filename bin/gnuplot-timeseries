@@ -16,8 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.1
-
 require 'ostruct'
 require 'getoptlong' 
 require 'logger'
@@ -47,6 +45,9 @@ columns, to be selected with the option --column.
     Columns to plot from the input table.
   --debug, -d
     Show stacktraces in case of errors.
+  --ignore-missing-columns, -I
+    Ignore missing columns slected with option
+    --columns.
   --help, -h
     Show this help information.
   --print, -p
@@ -101,6 +102,7 @@ begin
     ['--column','-c',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--ignore-missing-columns','-I',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--print','-p',GetoptLong::NO_ARGUMENT],
     ['--size','-s',GetoptLong::REQUIRED_ARGUMENT],
@@ -118,6 +120,8 @@ begin
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--ignore-missing-columns'
+      options.ignore_missing_columns = true
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -137,7 +141,7 @@ begin
     when '--time-format'
       options.time_format = arg
     when '--version'
-      $stdout.puts VERSION
+      $stdout.puts 0.3
       exit 0
     end
   end
@@ -176,16 +180,22 @@ begin
 
   commands = Array.new
   colors = options.colors
-  
+ 
+  # By default all columns are plotted in the graph
   if options.columns.nil?
     index.keys[2..-1].each do |column|
       color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
       commands << %Q[using 1:#{index[column]}:(1.0) smooth acsplines title '#{column}' #{color} linewidth 1.2]
     end
+  # If the user selected specific columns to plot by command options 
   else
     options.columns.map! do |column|
-      raise("Missing column called [#{column}]!") unless index.has_key?(column)
+      # keep the order of colors as defined by the users
       color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+      unless index.has_key?(column)
+        next if options.ignore_missing_columns
+        raise("Missing column called [#{column}]!") 
+      end
       commands << %Q[using 1:#{index[column]}:(1.0) smooth acsplines title '#{column}' #{color} linewidth 1.2]
     end
   end
