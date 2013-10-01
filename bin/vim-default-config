@@ -212,6 +212,8 @@ hi shSpecial      ctermfg=124
 hi htmlTag                        ctermfg=241
 hi htmlEndTag                     ctermfg=241
 hi htmlH3                         ctermfg=243 cterm=bold
+hi htmlLink                       ctermfg=255 cterm=bold
+hi htmlSpecialChar                ctermfg=166
 
 hi cssStyle                       ctermfg=241
 hi cssDefinition                  ctermfg=248
@@ -232,7 +234,6 @@ hi cssUIAttr                      ctermfg=187
 hi cssColor                       ctermfg=43
 
 hi erubyDelimiter                 ctermfg=214 cterm=bold
-hi erubyExpression                ctermfg=237 ctermbg=none cterm=bold
 
 hi javaScript                     ctermfg=255
 hi javaScriptFunction             ctermfg=39 cterm=bold
