@@ -214,13 +214,18 @@ hi htmlEndTag                     ctermfg=241
 hi htmlH3                         ctermfg=243 cterm=bold
 
 hi cssStyle                       ctermfg=241
+hi cssDefinition                  ctermfg=248
 hi cssBraces                      ctermfg=241
 hi cssTagName                     ctermfg=36
 hi cssIdentifier                  ctermfg=36 cterm=bold
+hi cssClassName                   ctermfg=36 cterm=bold
+hi cssPseudoClassId               ctermfg=23
 hi cssTextProp                    ctermfg=221
 hi cssFontProp                    ctermfg=221
 hi cssBoxProp                     ctermfg=221
 hi cssRenderProp                  ctermfg=187
+hi cssColorProp                   ctermfg=221 cterm=bold
+hi cssCommonAttr                  ctermfg=187 cterm=bold
 hi cssTextAttr                    ctermfg=187
 hi cssBoxAttr                     ctermfg=187
 hi cssUIAttr                      ctermfg=187
