@@ -32,6 +32,9 @@ git config --global user.name "$_name"
 git config --global user.email $_mail
 git config --global push.default current
 
+# Automatic garbage collection
+git config --global gc.auto 1
+
 # Commands such as commit and tag that lets you edit
 # messages by launching an editor uses the value of 
 # this variable when it is set, and the environment 
