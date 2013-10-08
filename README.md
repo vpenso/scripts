@@ -14,7 +14,7 @@ In the `bin/` sub-directory
 * **dir-colors** — Deploys a simple coloring configuration.
 * **git-default-config** — My custom Git configuration.
 * **git-repos** — Maintains a list of Git remote repositories and 
-  shows the status.
+  shows the status[…][git]
 * **gnuplot-timeseries** – Create SVG plots from time-series data with Gnuplot.
 * **hash-merge** — Merge multiple hash objects into one.
 * **hash-transform** — Converts hash objects between JSON, YAML and CSV.
@@ -51,8 +51,8 @@ remote repository.
 * **zsh-default-config** — Install antigen and my default Zsh 
   configuration.
 
+[git]: docs/git.markdown
 [virsh]: docs/virsh.markdown
-
 
 License
 =======
