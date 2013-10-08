@@ -24,7 +24,7 @@ In the `bin/` sub-directory
   serialize the data into JSON.   
 * **pingable** — Wait until a host is pingable.
 * **redis-values** — Store and load hash tables from a Redis database.
-* **ruby-erb-template** – Render REB templates.
+* **ruby-erb-template** – Render Erb templates.
 * **ruby-skeleton** — Start developing ruby scripts from here.
 * **segfaulter** — Create a small executable dieing with segfault.
 * **shell-skeleton** — Start developing shell script from here.
@@ -45,11 +45,14 @@ remote repository.
   multiplexer.
 * **vim-cheat** — "What was this key again?" Vim cheat sheet. 
 * **vim-default-config** — Install Vundle and my personal Vim configuration.
-* **virsh-config** — Create XML configuration files. 
-* **virsh-instance** — Manage local virtual machines.
-* **virsh-nat-bridge** — Configure a bridged NATed network for libvirt.
+* **virsh-config** — Create XML configuration files[…][virsh]
+* **virsh-instance** — Manage local virtual machines[…][virsh]
+* **virsh-nat-bridge** — Configure a bridged NATed network for libvirt[…][virsh]
 * **zsh-default-config** — Install antigen and my default Zsh 
   configuration.
+
+[virsh]: docs/virsh.markdown
+
 
 License
 =======
