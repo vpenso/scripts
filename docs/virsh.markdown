@@ -103,7 +103,7 @@ The commands **clone** and **shadow** use an existing virtual machine image to d
     Domain lxdev01.devops.test is being shutdown
     Domain lxdev01.devops.test has been undefined
 
-Virtual machine instances will be located in a path defined by the environment variable **VM_INSTANCE_PATH**. Both commands deploy the virtual machine persistently and create a XML configuration file using [virsh-nat-bridge][11] and [virsh-config][12]. Furthermore a default SSH configuration is created using [ssh-instance][15] (more details in the documentation for the [SSH tools][16] ). 
+Virtual machine instances will be located in a path defined by the environment variable **VM_INSTANCE_PATH**. Both commands deploy the virtual machine persistently and create a XML configuration file using [virsh-nat-bridge][11] and [virsh-config][12]. Furthermore a default SSH configuration is created using [ssh-instance][15] (more details in the documentation for the [SSH tools][16]). 
 
 
 
