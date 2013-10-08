@@ -93,10 +93,10 @@ if [ -f $HOME/.dir_colors/rainbow ] ; then
   eval $(dircolors $HOME/.dir_colors/rainbow)
 fi
 
-if [ -f $HOME/.zsh_config_hook ]
-then
-  source $HOME/.zsh_config_hook
-fi
+for file in `\ls ~/.zshrc.d/*`
+do 
+  source $file
+done
 
 export TERM="screen-256color"
 EOF
