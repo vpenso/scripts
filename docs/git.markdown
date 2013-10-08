@@ -34,4 +34,4 @@ _git-repos_ looks for a repository list in `$PWD/.gitrepos`, `~/.gitrepos` or it
 Each directory is followed by a list of remotes using the notation of <tt>git remote add</tt>. First the name of the remote, second the URI to the remote repository. 
 
 
-[git-repos] ../bin/git-repos
+[git-repos]: ../bin/git-repos
