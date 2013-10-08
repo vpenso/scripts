@@ -6,6 +6,8 @@
 2. Indicate the local status for a list of repositories.
 3. Indicate the state of remotes for a list of local repositories.
 
+Example output:
+
     » git repos status -v       
     Reading configuration from ~/.gitrepos
     Git in ~/projects/dummy
@@ -17,7 +19,7 @@
     Git in ~/projects/site
     AM posts/git_repos.markdown
 
-_git-repos_ looks for a repository list in <tt>$PWD/.gitrepos</tt>, <tt>$HOME/.gitrepos</tt> or it expects a parameter <tt>--config PATH</tt>. It supports two commands **init** and **status**. _Init_ creates all missing directories defined in the repository list by running <tt>git init</tt> to create an empty repository, followed by executing <tt>git remote add</tt> to configure all defined remote repositories. _Status_ runs <tt>git status -s</tt> on all repositories. Additionally it checks if the local repositories are ahead of their remotes with <tt>git rev-list</tt>. A list of repositories is defined like:
+_git-repos_ looks for a repository list in `$PWD/.gitrepos`, `~/.gitrepos` or it expects a parameter `--config PATH`. It supports two commands **init** and **status**. Init creates all missing directories defined in the repository list by running `git init` to create an empty repository, followed by executing `git remote add` to configure all defined remote repositories. Status runs `git status -s` on all repositories. Additionally it checks if the local repositories are ahead of their remotes with `git rev-list`. A list of repositories is defined like:
 
     /path/to/the/repository
       origin git://host.org/project.git
