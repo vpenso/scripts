@@ -31,7 +31,7 @@ export SCRIPTS=$__dir
 unset __dir
 unset __source
 
-for file in `\ls $SCRIPTS/aliases/*.sh`
+for file in `\ls $SCRIPTS/var/aliases/*.sh`
 do 
   source $file
 done
