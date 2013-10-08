@@ -83,7 +83,7 @@ begin
     end
   end
 
-  hostname = ARGV[0] || $stdout.puts('No hostname of IP defined!')
+  hostname = ARGV[0] || raise('No hostname or IP defined!')
   if ARGV.length > 1
     options.path = ARGV[1]
     raise("#{options.path} not existing ") unless File.directory? options.path
