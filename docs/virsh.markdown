@@ -112,5 +112,5 @@ Virtual machine instances will be located in a path defined by the environment v
 [12]: ../bin/virsh-config
 [13]: http://libvirt.org/formatdomain.html
 [14]: ../bin/virsh-instance
-[15]: ../ssh-instance
+[15]: ../bin/ssh-instance
 [16]: ssh.markdown
