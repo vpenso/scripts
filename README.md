@@ -28,12 +28,10 @@ In the `bin/` sub-directory
 * **ruby-skeleton** — Start developing ruby scripts from here.
 * **segfaulter** — Create a small executable dieing with segfault.
 * **shell-skeleton** — Start developing shell script from here.
-* **ssh-agent-session** — Use the same SSH agent across multiple 
-shells.
+* **ssh-agent-session** — Use the same SSH agent across multiple shells[…][ssh]
 * **ssh-exec** — Wraps `ssh` to be used with `ssh-instance`.
-* **ssh-fs** — Wrapper around `sshfs` for mounting remote paths
-over SSH.
-* **ssh-instance** — Create custom SSH configuration files `ssh_config`.
+* **ssh-fs** — Wrapper around `sshfs` for mounting remote directories over SSH[…][ssh]
+* **ssh-instance** — Create custom SSH configuration files `ssh_config`[…][ssh]
 * **ssh-known-hosts** — Remove/add/update SSH host fingerprints.
 * **ssh-sync** — Wraps `rsync` to be used with `ssh-instance`.
 * **ssh-tunnel** — Easy access to remote networks with `sshuttle`.
@@ -52,6 +50,7 @@ remote repository.
   configuration.
 
 [git]: docs/git.markdown
+[ssh]: docs/ssh.markdown
 [virsh]: docs/virsh.markdown
 
 License

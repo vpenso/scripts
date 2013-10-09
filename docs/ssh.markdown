@@ -1,5 +1,3 @@
-
-
 ## ssh-agent-session
 
 Usually users start an SSH agent the following way:
@@ -32,6 +30,39 @@ It is convenient to source this script within the shell profile, in order to bin
 
     » echo "source /path/to/ssh-agent-session" >> ~/.zshrc
 
+## ssh-fs
+
+Install _sshfs_ on Debian (>= 7):
+
+    » sudo apt-get install sshfs
+    » sudo adduser $USER fuse
+    » sudo tail -4 /etc/fuse.conf
+    # Allow non-root users to specify the 'allow_other' or 'allow_root'
+    # mount options.
+    #
+    user_allow_other
+    » sudo /etc/init.d/udev restart
+
+1. Install the `sshfs` package with APT.
+2. Add your user account to the group _fuse_.
+3. Uncomment `user_allow_other` in the file `/etc/fuse.conf`.
+4. Restart the udev mapper.
+
+Mount a directory from a remote host:
+
+    » sshfs [user@]host[:port] /mnt/path -C -o reconnect,auto_cache,follow_symlinks
+    » fusermount -u /mnt/pat
+
+The script [ssh-fs][06] simplifies this process:
+
+    » ssh-fs mount example.org:docs ~/docs
+    » ssh-fs mount jdoe@example.org:/data /data
+    » ssh-fs list 
+    example.org:docs on /home/jdoe/docs
+    example.org:/data on /data
+    » ssh-fs umount /data
+    » ssh-fs umount ~/docs
+
 ## ssh-instance
 
 The script [ssh-instance][10] generates an `ssh_config` file used to address a specific host.
@@ -50,6 +81,7 @@ The script [ssh-instance][10] generates an `ssh_config` file used to address a s
 
 
 [05]: ../bin/ssh-agent-session
+[06]: ../bin/ssh-fs
 [10]: ../bin/ssh-instance
 [11]: ../bin/ssh-exec
 [12]: ../bin/ssh-sync
