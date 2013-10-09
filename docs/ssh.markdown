@@ -17,16 +17,14 @@ Keys are added with `ssh-add`. The script [ssh-agent-session][05] helps to use a
 It will start a new agent and store the connection information to `~/.ssh/agent-session`. 
 
     » source ssh-agent-session
-    Agent started, session in /home/jdoe/.ssh/agent-session
-    Using existing SSH agent!
+    ssh-agent started, session in /home/jdoe/.ssh/agent-session
     » ssh-add ~/.ssh/id_rsa 
     […]
 
-Anther shell can bind to the same agent:
+Another shell can bind to the same agent:
 
     » source ssh-agent-session
-    Running with process ID 19264
-    Using existing SSH agent!
+    ssh-agent running with process ID 19264
     » ssh-add -l 
     […]
 
