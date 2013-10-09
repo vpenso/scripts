@@ -34,9 +34,6 @@ function __ssh_agent_load() {
   if __ssh_agent_running
   then
     source $SSH_ENV
-    echo "Using existing SSH agent!"
-  else
-    echo "SSH agent not running!"
   fi
 }
 
@@ -65,9 +62,9 @@ function __ssh_agent_start() {
     # restrict permissions
     chmod 600 $SSH_ENV
     source $SSH_ENV
-    echo "Agent started, session in $SSH_ENV"
+    echo "ssh-agent started, session in $SSH_ENV"
   else
-    echo "Running with process ID $SSH_AGENT_PID"
+    echo "ssh-agent running with process ID $SSH_AGENT_PID"
   fi
 }
 
