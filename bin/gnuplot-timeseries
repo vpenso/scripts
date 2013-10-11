@@ -153,7 +153,7 @@ begin
   else
     unless stdin.empty?
       file = `mktemp`.chop
-      File.open(file,'w') { |file| file.write stdin }
+      File.open(file,'w') { |f| f.write stdin }
       $logger.debug "Input stream written to file [#{file}]"
     else
       raise("Expecting input data as an argument or by stdin!")
