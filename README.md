@@ -9,6 +9,7 @@ Use `source_me.sh` to add aliases and scripts to your environment.
 In the `bin/` sub-directory
 
 * **ansi-color** — Show ANSI color escaping.
+* **binary-prefix** – Add binary prefixes (e.g. K,G,M) to numbers.
 * **chef-remote** —  Execute `chef-solo` on a remote node.
 * **debian-default-config** — Install Debian dependencies.
 * **dir-colors** — Deploys a simple coloring configuration.

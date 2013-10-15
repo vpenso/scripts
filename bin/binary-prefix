@@ -1,0 +1,206 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Add a prefix to a number using the power-of-ten mulitplier.
+
+#{exec_name} [-2] NUMBER
+
+Quantities or phenomena in which power-of-ten prefix are used:
+
+  binary data speeds, frequency, physical mass, power, energy, 
+  electrical voltage, electrical current
+
+Power-of-two prefixes are used for data storage and enabled
+woth option --power-of-two. 
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --power-of-two, -2
+    Use power of two multiplier.
+  --version, -v
+    Print version number.
+EOF
+
+module Power10
+
+   K  = 10**3
+   M  = 10**6
+   G  = 10**9
+   T  = 10**12
+   P  = 10**15
+   E  = 10**18
+   Z  = 10**21
+   Y  = 10**24
+
+   def self.convert(number,max_digits=3)
+     raise('Expecting a numeric input') unless number.kind_of? Numeric
+     value, suffix, precision = 
+       case number
+       when 0..K ; [number,'',0]
+       else
+         value, suffix = 
+           case number
+           when K...M ; [number/K,'k']
+           when M...G ; [number/M,'M']
+           when G...T ; [number/G,'G']
+           when T...P ; [number/T,'T']
+           when P...E ; [number/P,'P']
+           when E...Z ; [number/E,'E']
+           when Z...Y ; [number/Z,'Z']
+           else         [number/Y,'Y']
+           end
+         digits = 
+           case value
+           when   0...10   ; 1
+           when  10...100  ; 2
+           when 100...1000 ; 3    
+           else              4
+           end
+         digits = max_digits - digits
+         digits = digits > 0 ? digits : 0
+         [value,suffix,digits]
+       end
+     return "%.#{precision}f#{suffix}" % value
+   end
+
+end
+
+module Power2
+   
+  K = 2.0**10
+  M = 2.0**20
+  G = 2.0**30
+  T = 2.0**40
+  P = 2.0**50
+  E = 2.0**60
+  Z = 2.0**70
+  Y = 2.0**80
+  
+  def self.convert(number,max_digits=3)
+    raise('Expecting a numeric input') unless number.kind_of? Numeric
+    value, suffix, precision = 
+      case number
+      when 0..K ; [number,'',0]
+      else
+        value, suffix = 
+          case number
+          when K...M ; [number/K,'K']
+          when M...G ; [number/M,'M']
+          when G...T ; [number/G,'G']
+          when T...P ; [number/T,'T']
+          when P...E ; [number/P,'P']
+          when E...Z ; [number/E,'E']
+          when Z...Y ; [number/Z,'Z']
+          else         [number/Y,'Y']
+          end
+        digits = 
+          case value
+          when   0...10   ; 1
+          when  10...100  ; 2
+          when 100...1000 ; 3    
+          else              4
+          end
+        digits = max_digits - digits
+        digits = digits > 0 ? digits : 0
+        [value,suffix,digits]
+      end
+    return "%.#{precision}f#{suffix}" % value
+  end
+end
+
+begin
+
+  #stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.debug = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--power-of-two','-2',GetoptLong::NO_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+      end
+    when '--power-of-two'
+      options.power_of_two = true
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  number = ARGV[0] || raise('Expecting number as first argument!')
+  number = number.to_f
+
+  if options.power_of_two
+    $stdout.puts Power2::convert(number)
+  else
+    $stdout.puts Power10::convert(number)
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
