@@ -21,7 +21,7 @@
 # exit of statement returns a non-true return value
 #set -o errexit
 
-VERSION=0.1
+VERSION=0.2
 
 # Filename of this script
 SCRIPT=${0##*/}
@@ -30,12 +30,15 @@ SCRIPT=${0##*/}
 HELP=\
 "Usage: 
 
-  $SCRIPT [-sh] [user@hostname] \"command\" 
+  $SCRIPT [-rsh] [user@hostname] [command] 
 
 Execute a command on a remote node. Uses a ./ssh_config in
-the working directory by default if it exists.
+the working directory by default if it exists. If now 
+command is passed as argument /bin/bash will be spawned.
 
 Options:
+  -r,--root
+    Login as root.
   -s,--sudo
     Remote execute a command with Sudo.
   -h,--help
@@ -58,8 +61,9 @@ function _error() {
 }
 
 sudo=
+options=
 # Parse the command line options
-ARGS=$(getopt -o hs -l "help,sudo" -- "$@")
+ARGS=$(getopt -o hsr -l "help,sudo,root" -- "$@")
 eval set -- "$ARGS"
 while true; do
   case "$1" in
@@ -71,41 +75,40 @@ while true; do
       sudo="sudo "
       shift
       ;;
+    -r|--root)
+      options="-l root"
+      shift
+      ;;
     --) shift; break ;;
     *) break ;;
   esac
 done
 
-options=
 if [ -e "$PWD/ssh_config" ]
 then
-  options="-F $PWD/ssh_config"
+  options="-F $PWD/ssh_config $options"
 fi
 
-if [ $# -eq 0 ]
-then
-  _error "Not enough arguments!"
-  exit 1
-fi
-
-if [ $# -ge 3 ]
-then
+host=
+command=
+if [ $# -eq 0 ] ; then
+  host=instance
+  command="/usr/bin/env bash"
+elif [ $# -eq 1 ] ; then
+  host=instance
+  command="$@"
+elif [ $# -eq 2 ] ; then
+  host=$1
+  shift
+  command="$@"
+else
   _error "To many arguments!"
   exit 1
 fi
 
 
-host=
-if [ $# -eq 1 ]
-then
-  host=instance
-else
-  host=$1
-  shift
-fi
-
-command="$sudo$@"
-_debug "Execute command [$command]"
+command="$sudo$command"
+_debug "Execute command [ssh -gt $options $host $command]"
 ssh -gt $options $host $command 2>/dev/null
 if [ $? -ne 0 ]
 then
