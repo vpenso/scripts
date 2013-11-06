@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.1
 
 require 'ostruct'
 require 'getoptlong' 
@@ -135,7 +134,7 @@ class Virsh
       images = Dir.glob("#{path}/**/*.img").map do |image|
         image = image.gsub(%r{#{path}/},'  ').split('/')[0]
       end
-      images.uniq.each do |image|
+      images.uniq.sort.each do |image|
         $stdout.puts image.gsub(%r{#{path}/},'  ').split('/')[0]
       end
     end
@@ -298,7 +297,7 @@ begin
     when '--overwrite'
       $options.overwrite = true
     when '--version'
-      $stdout.puts VERSION
+      $stdout.puts '0.2'
       exit 0
     end
   end
