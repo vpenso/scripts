@@ -10,7 +10,7 @@ In the `bin/` sub-directory
 
 * **ansi-color** — Show ANSI color escaping.
 * **binary-prefix** – Add binary prefixes (e.g. K,G,M) to numbers.
-* **chef-remote** —  Execute `chef-solo` on a remote node.
+* **chef-remote** —  Execute `chef-solo` on a remote node[…][chef]
 * **debian-default-config** — Install Debian dependencies.
 * **dir-colors** — Deploys a simple coloring configuration.
 * **git-default-config** — My custom Git configuration.
@@ -50,6 +50,7 @@ remote repository.
 * **zsh-default-config** — Install antigen and my default Zsh 
   configuration.
 
+[chef]: docs/chef.markdown
 [git]: docs/git.markdown
 [ssh]: docs/ssh.markdown
 [virsh]: docs/virsh.markdown
