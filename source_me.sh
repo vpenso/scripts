@@ -17,6 +17,11 @@
 
 # Find the correct path even if dereferenced by a link
 __source=$0
+
+if [[ "$__source" == *bash* ]]; then
+  __source=${BASH_SOURCE[0]}
+fi
+
 __dir="$( dirname $__source )"
 while [ -h $__source ]
 do
