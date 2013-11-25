@@ -63,6 +63,8 @@ Options
     /srv/vms/instances)
   --location, -l URL
     URL for installation sources (default Debian stable).
+  --overwrite, -O
+    Overwrite existing virtual machine instance.
   --version
     Print version number.
 
@@ -140,26 +142,28 @@ class Virsh
     end
 
     def self.clone(image,instance,args = {})
+      # default values
       args[:shadow] = false unless args.has_key? :shadow
       args[:overwrite] = false unless args.has_key? :overwrite
+      # Continue if the source virtual machine image exists
       raise("Image #{image} not existing") unless File.directory? image
+      # If the target directory exists?
       if File.directory? instance
+        # Is the virtual machine instance running?
         name = instance.split('/')[-1]
         if Virsh.running?(name)
-          if CLI.ask?("Remove instance #{name}?")
+          # Does the users wants to overwrite the virtual machine instance
+          if args[:overwrite] or CLI.ask?("Remove instance #{name}?")
+            # Shutdown and undefine the virtual machine instance
             Virsh.remove(name)
             sleep 5
           else
             exit 0
           end
         end
-        if not args[:overwrite]
-          if CLI.ask?("Overwrite #{instance}?")
-            System::exec("rm --force #{instance}/*.img")
-          else
-            exit 0
-          end
-        end
+        # Delete existing virtual machine images from the target directory
+        System::exec("rm --force #{instance}/*.img")
+      # Create target directory if missing
       else
         System::exec("mkdir -p #{instance}")
       end
@@ -191,14 +195,26 @@ class Virsh
     System::run("virt-install --os-type linux --virt-type kvm --graphics vnc --noautoconsole #{options} #{args[:source]}")
   end
 
+
+  # Create the Libvirt XML configuration file, and the SSH configuration
+  # file for a virtual machine instance.
   def self.config(path)
     name = File.basename(path)
+    # Get the network configuration for the virtual machine instance
     output = System::exec("virsh-nat-bridge lookup #{name}")  
+    # Don't continue if unless the network configuration is found
     raise("Couldn't read network configuration for #{name}") if output.nil?
     name, ip, mac = output.split
-    options = "--name #{name} --mac-address #{mac}"
-    System::run("cd #{path} ; virsh-config #{options} libvirt_instance.xml")
-    System::run("ssh-instance #{ip} --user devops --identity-file #{path}/keys/id_rsa #{path}")
+    # Write the libvirt configuration file
+    virsh_config = "cd #{path} ; virsh-config --name #{name} --mac-address #{mac} libvirt_instance.xml"
+    # Respect the overwrite option set by the user
+    virsh_config << " --overwrite" if $options.overwrite
+    System::run(virsh_config)
+    # Create the SSH configuration file for password-less login 
+    ssh_instance = "ssh-instance #{ip} --user devops --identity-file #{path}/keys/id_rsa #{path}"
+    # Respect the overwrite option set by the user
+    ssh_instance << " --overwrite" if $options.overwrite
+    System::run(ssh_instance)
   end
 
   def self.start(path)
@@ -297,7 +313,7 @@ begin
     when '--overwrite'
       $options.overwrite = true
     when '--version'
-      $stdout.puts '0.2'
+      $stdout.puts 0.3
       exit 0
     end
   end
@@ -318,10 +334,10 @@ begin
     # clone options
     options = Hash.new
     options[:shadow] = true if command == 'shadow'
+    options[:overwrite] = true if $options.overwrite
     Virsh::Image.clone(image,instance,options)
     Virsh.config(instance)
     Virsh.start(instance)
-    $stdout.puts "#{command.capitalize} create in #{instance}"
   when 'install'
     name = ARGV.shift || raise('Expecting name as argument!')
     path = ARGV.shift || raise('Expecting disk image path as argument!')
