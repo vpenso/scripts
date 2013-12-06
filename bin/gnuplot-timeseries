@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2012 Victor Penso
+# Copyright 2012-2013 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,6 +53,8 @@ columns, to be selected with the option --column.
   --print, -p
     Print Gnuplot commands to STDOUT, instead
     of piping it thru Gnuplot to create an SVG.
+  --rowstacked, -r 
+    Use stacked bars instead of lines.
   --size, -s WIDTH,HEIGHT
     Dimensions of the plot (default 400,200).
   --style as|l|lp|p
@@ -60,11 +62,14 @@ columns, to be selected with the option --column.
     l - lines
     lp - linespoints
     p - points
-  --time-format, -t 
+  --time-format, -t FORMAT
     Time format of the first column in the input
     data table (default %Y-%m-%d).
   --version, -v
     Print version number.
+  --x-time-format, -x FORMAT
+    Time format use for the plot x-axis (default
+    %m/%d).
 EOF
 
 begin
@@ -93,7 +98,9 @@ begin
   options.debug = false
   options.size = '400,200'
   options.time_format = '%Y-%m-%d'
+  options.x_time_format = '%m/%d'
   options.style = 'acsplines'
+  options.rowstacked = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -111,10 +118,12 @@ begin
     ['--ignore-missing-columns','-I',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--print','-p',GetoptLong::NO_ARGUMENT],
+    ['--rowstacked','-r',GetoptLong::NO_ARGUMENT],
     ['--size','-s',GetoptLong::REQUIRED_ARGUMENT],
     ['--style','-S',GetoptLong::REQUIRED_ARGUMENT],
     ['--time-format','-t',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version','-v',GetoptLong::NO_ARGUMENT]
+    ['--version','-v',GetoptLong::NO_ARGUMENT],
+    ['--x-time-format','-x',GetoptLong::REQUIRED_ARGUMENT],
   ).each do |opt,arg|
     case opt
     when '--color'
@@ -142,6 +151,8 @@ begin
        end
     when '--print'
       options.print = true
+    when '--rowstacked'
+      options.rowstacked = true
     when '--size'
       raise("Broken size [#{arg}]") unless arg =~ /[0-9]*,[0-9]/
       options.size = arg
@@ -150,8 +161,10 @@ begin
     when '--time-format'
       options.time_format = arg
     when '--version'
-      $stdout.puts 0.3
+      $stdout.puts 0.4
       exit 0
+    when '--x-time-format'
+      options.x_time_format = arg
     end
   end
 
@@ -175,23 +188,41 @@ begin
     set border linewidth 0.8 
     set style line 11 lc rgb '#000000' lt 1
     set border 3 back ls 11
-    set tics nomirror out scale 0.75
-    set xdata time
     set timefmt '#{options.time_format}'
-    set ytics format '%.0s%c'
+    set tics nomirror out scale 0.6
     set yrange [1:*]
+    set xtics rotate by -90 format '#{options.x_time_format}'
+    set ytics format '%.0s%c'
   END_OF_FILE
+ 
+
+  if options.rowstacked
+    plot << <<-END_OF_FILE
+      set style data histogram
+      set style histogram rowstacked
+      set style fill solid border -2
+      set boxwidth 0.8 relative
+    END_OF_FILE
+  else
+    plot << <<-EOF
+      set xdata time
+    EOF
+  end
+
   plot = plot.gsub(/^ */,'')
 
+  # select the line style
   style = case options.style
           when 'acsplines','as'
-            ':(1.0) smooth acsplines'
+            ':(1.0) smooth acsplines linewidth 1.2'
           when 'points','p'
-            ' with points'
+            ' with points pointtype 7'
           when 'linespoints','lp'
-            ' with linespoints'
+            ' with linespoints pointtype 7 pointsize 0.5'
           when 'lines','l'
-            ' with lines'
+            ' with lines linewidth 1.2'
+          when 'xticlabels'
+            ':xticlabels(1)'
           else
             raise("Style [#{options.style}] not supported")
           end
@@ -202,23 +233,46 @@ begin
 
   commands = Array.new
   colors = options.colors
- 
-  # By default all columns are plotted in the graph
-  if options.columns.nil?
-    index.keys[2..-1].each do |column|
-      color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
-      commands << %Q[using 1:#{index[column]}#{style} title '#{column}' #{color} linewidth 1.2]
-    end
-  # If the user selected specific columns to plot by command options 
-  else
-    options.columns.map! do |column|
-      # keep the order of colors as defined by the users
-      color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
-      unless index.has_key?(column)
-        next if options.ignore_missing_columns
-        raise("Missing column called [#{column}]!") 
+
+  if options.rowstacked
+    flag = true
+    style = ':xticlabels(1)'
+    if options.columns.nil?
+      index.keys[2..-1].each do |column|
+        color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+        commands << %Q[using #{index[column]}#{style} #{color} title '#{column}']
+        style = '' if flag
       end
-      commands << %Q[using 1:#{index[column]}#{style} '#{column}' #{color} linewidth 1.2]
+    else
+      options.columns.map! do |column|
+        # keep the order of colors as defined by the users
+        color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+        unless index.has_key?(column)
+          next if options.ignore_missing_columns
+          raise("Missing column called [#{column}]!") 
+        end
+        commands << %Q[using #{index[column]}#{style} #{color} title '#{column}']
+        style = '' if flag
+      end
+    end
+  else
+    # By default all columns are plotted in the graph
+    if options.columns.nil?
+      index.keys[2..-1].each do |column|
+        color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+        commands << %Q[using 1:#{index[column]}#{style} #{color} title '#{column}' ]
+      end
+    # If the user selected specific columns to plot by command options 
+    else
+      options.columns.map! do |column|
+        # keep the order of colors as defined by the users
+        color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
+        unless index.has_key?(column)
+          next if options.ignore_missing_columns
+          raise("Missing column called [#{column}]!") 
+        end
+        commands << %Q[using 1:#{index[column]}#{style} #{color} title '#{column}']
+      end
     end
   end
   
