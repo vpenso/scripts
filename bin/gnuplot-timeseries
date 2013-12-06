@@ -218,6 +218,7 @@ begin
     EOF
   end
   plot << %Q[set datafile separator '#{options.data_seperator}'\n] unless options.data_seperator.nil?
+  plot << "unset xtics\n" if options.x_time_format.empty?
   plot = plot.gsub(/^ */,'')
 
   # Does a column header exists in the input file?
