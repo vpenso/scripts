@@ -16,7 +16,7 @@ In the `bin/` sub-directory
 * **git-default-config** — My custom Git configuration.
 * **git-repos** — Maintains a list of Git remote repositories and 
   shows the status[…][git]
-* **gnuplot-timeseries** – Create SVG plots from time-series data with Gnuplot.
+* **gnuplot-timeseries** – Create SVG plots from time-series data with Gnuplot.[…][gnuplot]
 * **hash-merge** — Merge multiple hash objects into one.
 * **hash-transform** — Converts hash objects between JSON, YAML and CSV.
 * **mpd-default-config** — Writes a personal MPD configuration.
@@ -50,10 +50,11 @@ remote repository.
 * **zsh-default-config** — Install antigen and my default Zsh 
   configuration.
 
-[chef]: docs/chef.markdown
-[git]: docs/git.markdown
-[ssh]: docs/ssh.markdown
-[virsh]: docs/virsh.markdown
+[chef]: ./docs/chef.markdown
+[git]: ./docs/git.markdown
+[gnuplot]: ./docs/gnuplot.markdown
+[ssh]: ./docs/ssh.markdown
+[virsh]: ./docs/virsh.markdown
 
 License
 =======
