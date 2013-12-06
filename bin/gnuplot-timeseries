@@ -43,8 +43,12 @@ columns, to be selected with the option --column.
     Colors used to plot the columns.
   --column, -c NAME[:NAME:NAME]
     Columns to plot from the input table.
-  --debug, -d
+  --data-seperator, -d CHAR
+    Character seperating columns in data.
+  --debug, -D
     Show stacktraces in case of errors.
+  --header, -H NAME[:NAME:NAME]
+    Column header names if not present in the data.
   --ignore-missing-columns, -I
     Ignore missing columns slected with option
     --columns.
@@ -95,6 +99,7 @@ begin
     '#000000', # black
     '#808080'  # gray
   ]
+  options.data_seperator = nil
   options.debug = false
   options.size = '400,200'
   options.time_format = '%Y-%m-%d'
@@ -113,7 +118,9 @@ begin
   GetoptLong.new(
     ['--color', '-C',GetoptLong::REQUIRED_ARGUMENT],
     ['--column','-c',GetoptLong::REQUIRED_ARGUMENT],
-    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--data-seperator','-d',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--header','-H',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--ignore-missing-columns','-I',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
@@ -130,9 +137,13 @@ begin
       options.colors = arg.split(':')
     when '--column'
       options.columns = arg.split(':').sort
+    when '--data-seperator'
+      options.data_seperator = arg
     when '--debug'
       options.debug = true
       $logger.level = Logger::DEBUG
+    when '--header'
+      options.header = arg
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -168,15 +179,15 @@ begin
     end
   end
 
-  file = ARGV[0] 
-  unless file.nil?
-    raise("File [#{file}] missing!") unless File.exists?(file)
-    file = File.expand_path file
+  unless stdin.empty?
+    file = `mktemp`.chop
+    File.open(file,'w') { |f| f.write stdin }
+    $logger.debug "Input stream written to file [#{file}]"
   else
-    unless stdin.empty?
-      file = `mktemp`.chop
-      File.open(file,'w') { |f| f.write stdin }
-      $logger.debug "Input stream written to file [#{file}]"
+    if ARGV.length == 1
+      file = ARGV[0] 
+      raise("File [#{file}] missing!") unless File.exists?(file)
+      file = File.expand_path(file)
     else
       raise("Expecting input data as an argument or by stdin!")
     end
@@ -194,8 +205,6 @@ begin
     set xtics rotate by -90 format '#{options.x_time_format}'
     set ytics format '%.0s%c'
   END_OF_FILE
- 
-
   if options.rowstacked
     plot << <<-END_OF_FILE
       set style data histogram
@@ -208,8 +217,20 @@ begin
       set xdata time
     EOF
   end
-
+  plot << %Q[set datafile separator '#{options.data_seperator}'\n] unless options.data_seperator.nil?
   plot = plot.gsub(/^ */,'')
+
+  # Does a column header exists in the input file?
+  if options.header.nil?
+    header = `cat #{file} | head -1`.strip.split(options.data_seperator)
+  else
+    header = options.header.split(':')
+  end
+  options.header = Hash.new
+  header = header.unshift('THIS SHOULD NEVER BE USED')
+  header = header.map { |col| col = col.downcase }
+  header.each_index { |i| options.header[header[i]] = i }
+  index = options.header
 
   # select the line style
   style = case options.style
@@ -226,10 +247,6 @@ begin
           else
             raise("Style [#{options.style}] not supported")
           end
-
-  index = `cat #{file} | head -1`.split.unshift('THIS SHOULD NEVER BE USED')
-  index = index.map { |col| col = col.downcase }
-  index = Hash[index.map.with_index.to_a]
 
   commands = Array.new
   colors = options.colors
@@ -291,7 +308,7 @@ rescue => exc
     $stderr.puts '-- Stack Trace --'
     $stderr.puts exc.backtrace
   else
-    $stderr.puts 'You may want run this in debug mode with \'-d\''
+    $stderr.puts 'You may want run this in debug mode with \'-D\''
   end
   exit 1
 end
