@@ -55,6 +55,11 @@ columns, to be selected with the option --column.
     of piping it thru Gnuplot to create an SVG.
   --size, -s WIDTH,HEIGHT
     Dimensions of the plot (default 400,200).
+  --style as|l|lp|p
+    as - acsplines
+    l - lines
+    lp - linespoints
+    p - points
   --time-format, -t 
     Time format of the first column in the input
     data table (default %Y-%m-%d).
@@ -88,6 +93,7 @@ begin
   options.debug = false
   options.size = '400,200'
   options.time_format = '%Y-%m-%d'
+  options.style = 'acsplines'
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -106,6 +112,7 @@ begin
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--print','-p',GetoptLong::NO_ARGUMENT],
     ['--size','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--style','-S',GetoptLong::REQUIRED_ARGUMENT],
     ['--time-format','-t',GetoptLong::REQUIRED_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
@@ -138,6 +145,8 @@ begin
     when '--size'
       raise("Broken size [#{arg}]") unless arg =~ /[0-9]*,[0-9]/
       options.size = arg
+    when '--style'
+      options.style = arg
     when '--time-format'
       options.time_format = arg
     when '--version'
@@ -174,6 +183,19 @@ begin
   END_OF_FILE
   plot = plot.gsub(/^ */,'')
 
+  style = case options.style
+          when 'acsplines','as'
+            ':(1.0) smooth acsplines'
+          when 'points','p'
+            ' with points'
+          when 'linespoints','lp'
+            ' with linespoints'
+          when 'lines','l'
+            ' with lines'
+          else
+            raise("Style [#{options.style}] not supported")
+          end
+
   index = `cat #{file} | head -1`.split.unshift('THIS SHOULD NEVER BE USED')
   index = index.map { |col| col = col.downcase }
   index = Hash[index.map.with_index.to_a]
@@ -185,7 +207,7 @@ begin
   if options.columns.nil?
     index.keys[2..-1].each do |column|
       color = colors.empty? ? "" : "linecolor rgb '#{colors.shift}'"
-      commands << %Q[using 1:#{index[column]}:(1.0) smooth acsplines title '#{column}' #{color} linewidth 1.2]
+      commands << %Q[using 1:#{index[column]}#{style} title '#{column}' #{color} linewidth 1.2]
     end
   # If the user selected specific columns to plot by command options 
   else
@@ -196,11 +218,11 @@ begin
         next if options.ignore_missing_columns
         raise("Missing column called [#{column}]!") 
       end
-      commands << %Q[using 1:#{index[column]}:(1.0) smooth acsplines title '#{column}' #{color} linewidth 1.2]
+      commands << %Q[using 1:#{index[column]}#{style} '#{column}' #{color} linewidth 1.2]
     end
   end
   
-  plot << "plot '#{file}' " << commands.join(", '' ")
+  plot << "plot '#{file}' " << commands.join(", \\\n     '' ")
 
   if options.print
     $stdout.puts plot
