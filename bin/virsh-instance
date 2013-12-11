@@ -24,23 +24,24 @@ require 'logger'
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 
-  #{exec_name} [-Dhv] COMMAND [ARGUMENTS]
+  #{exec_name} [-DhOv] -i PATH -p PATH -l URL 
+               -s SIZE COMMAND [ARGUMENTS]
 
 Clone virtuel machine images and their configuration.
 
 Command
 -------
 
-  clone IMAGE NAME
+  clone, cl IMAGE NAME
     Clone source IMAGE and start an virtual machine
     instance called NAME.
-  install NAME PATH
+  install, in NAME PATH
     Install a new virtual machine image.
-  list
+  list, l
     List available images.
-  remove NAME
+  remove, rm NAME
     Shutdown and undefine instance.
-  shadow IMAGE NAME
+  shadow, sh IMAGE NAME
     Make shadow disks of IMAGE and start a virtual
     machine called NAME.
 
@@ -325,7 +326,7 @@ begin
 
 
   case command
-  when 'clone','shadow'
+  when 'clone','cl','shadow','sh'
     # check user arguments
     image = ARGV.shift || raise('Expecting image name as argument!')
     image = "#{$options.image_path}/#{image}"
@@ -348,9 +349,9 @@ begin
                          "--location #{$options.location}"
                        end
     Virsh.install(name,path,options)
-  when 'list'
+  when 'list','li','l'
     Virsh::Image.list($options.image_path)
-  when 'remove'
+  when 'remove','rm'
     name = ARGV.shift || raise('Expecting name as argument!')
     if Virsh.running?(name)
       Virsh.remove(name)
