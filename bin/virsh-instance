@@ -228,7 +228,7 @@ class Virsh
 
   def self.remove(name)
     name = self.nat_config(name)[0]  
-    System::run("virsh shutdown #{name} | sed '/^$/d'")
+    System::run("virsh destroy #{name} | sed '/^$/d'")
     System::run("virsh undefine #{name} | sed '/^$/d'")
   end
 
@@ -334,7 +334,7 @@ begin
     instance = "#{$options.instance_path}/#{instance}"
     # clone options
     options = Hash.new
-    options[:shadow] = true if command == 'shadow'
+    options[:shadow] = true if command == 'shadow' or command == 'sh'
     options[:overwrite] = true if $options.overwrite
     Virsh::Image.clone(image,instance,options)
     Virsh.config(instance)
