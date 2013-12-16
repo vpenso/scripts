@@ -124,7 +124,7 @@ module Virsh
       $options.nodes.each do |node|
         bytes = "%02X" % ip
         mac = "#{$options.mac}:#{bytes}"
-        ips << %Q[<host mac="#{mac}" ip="#{$options.network}.#{ip}" name="#{node}.#{$options.domain}"/>]
+        ips << %Q[<host mac="#{mac}" name="#{node}.#{$options.domain}" ip="#{$options.network}.#{ip}"/>]
         ip += 1
         next if ip > 100
       end

@@ -10,4 +10,5 @@ g0        first tab
 g$        last tab
 d         close tab
 ^o        back in history
-^i        forward in history "
+^i        forward in history 
+⇧Esc      disable key binding temporarily"
