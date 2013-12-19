@@ -36,8 +36,9 @@ given hostname.
 
 Commands:
 
-  list 
-    List all available FQDNs and IP-addresses.
+  li,list 
+    List all available FQDNs and IP-addresses (dnsmasq 
+    host list format).
   lo,lookup hostname|ip|mac
     Show the configuration for a given MAC-, IP-address
     and hostname.
@@ -154,7 +155,7 @@ module Virsh
         config = System::exec("virsh net-dumpxml #{$options.name} | grep 'host mac'")
         config.split("\n").each do |line|
           mac,name,ip = line.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' \/>/,'').split
-          $stdout.puts "#{name} #{ip}"
+          $stdout.puts "#{mac},#{name},#{ip}"
         end
       else
         $stdout.puts "Network [#{$options.name}] not configured."
@@ -283,7 +284,7 @@ begin
     when '--nodes'
       nodes = arg
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 0.2
       exit 0
     end
   end
@@ -298,15 +299,15 @@ begin
   case command
   when 'config'
     $stdout.puts Virsh::Network.config
-  when 'status'
+  when 'status','st'
     Virsh::Network.status
   when 'start'
     Virsh::Network.start
   when 'stop'
     Virsh::Network.stop
-  when 'list'
+  when 'list','li'
     Virsh::Network.list
-  when 'lookup'
+  when 'lookup','lo'
     node = ARGV.shift || raise('Expecting name argument!')
     Virsh::Network.lookup node
   else
