@@ -25,6 +25,6 @@ function vm() {
   "shutdown"|"h") shift ; virsh shutdown "$1" ;;
   "start"|"s") shift ; virsh start "$1" ;;
   "undefine"|"u") shift ; virsh undefine "$@" ;;
-  *) echo "Usage: vm d|h|l|r|s|u [args]" ;;
+*) echo "Usage: vm (d)efine|s(h)utdown|(l)ist|(r)emove|(s)tart|(u)ndfine [args]" ;;
   esac
 }
