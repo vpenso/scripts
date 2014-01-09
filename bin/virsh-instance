@@ -48,6 +48,8 @@ Command
 Options
 -------
 
+  --bridge, -b NAME
+    Network birdge to use (default nbr0)
   --cdrom PATH
     Location of the CDROM ISO for installation.
   --debug, -D
@@ -188,12 +190,31 @@ class Virsh
   end
 
   def self.install(name,path,args = {})
-    args[:size] = 100 unless args.has_key? :size
-    args[:ram] = 1024 unless args.has_key? :ram
+    
     raise('Missing installation source!') unless args.has_key? :source
+
+    # 100GB virtual machine disk image by default
+    args[:size] = 100 unless args.has_key? :size
+
+    # 1GB RAM for the virtual machine by default
+    args[:ram] = 1024 unless args.has_key? :ram
+
+    # Create the virtual machine disk image
     self::Image.create(path,args[:size])
-    options = "--name #{name} --ram #{args[:ram]} --disk path=#{path},format=qcow2,bus=virtio"
-    System::run("virt-install --os-type linux --virt-type kvm --graphics vnc --noautoconsole #{options} #{args[:source]}")
+
+    # Options for the `virt-install` command
+    options = [
+      "--os-type linux --virt-type kvm",
+      "--graphics vnc --noautoconsole",
+      "--connect qemu:///system",
+      "--network 'bridge=#{args[:bridge]}'",
+      "--name #{name} --ram #{args[:ram]}",
+      "--disk path=#{path},format=qcow2,bus=virtio" 
+    ]
+
+    # Start the virtual machine image installation process
+    System::run("virt-install #{options.join(' ')} #{args[:source]}")
+
   end
 
 
@@ -262,6 +283,7 @@ begin
   $options.instance_path = '/srv/vms/instances'
   $options.overwrite = false
   $options.shadow = false
+  $options.bridge = 'nbr0'
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -272,6 +294,7 @@ begin
   $logger.level = Logger::FATAL
 
   GetoptLong.new(
+    ['--bridge','-b',GetoptLong::REQUIRED_ARGUMENT],
     ['--cdrom',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-D',GetoptLong::NO_ARGUMENT],
     ['--disk-size','-s',GetoptLong::REQUIRED_ARGUMENT],
@@ -284,6 +307,8 @@ begin
     ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
+    when '--bridge'
+      $options.bridge = arg
     when '--cdrom'
       $options.cdrom = arg
     when '--debug'
@@ -314,7 +339,7 @@ begin
     when '--overwrite'
       $options.overwrite = true
     when '--version'
-      $stdout.puts 0.3
+      $stdout.puts 0.4
       exit 0
     end
   end
@@ -340,15 +365,23 @@ begin
     Virsh.config(instance)
     Virsh.start(instance)
   when 'install'
+
+    # Name for the virtual machine instance
     name = ARGV.shift || raise('Expecting name as argument!')
+    # Path to the virtual machine disk image
     path = ARGV.shift || raise('Expecting disk image path as argument!')
-    options = Hash.new
-    options[:source] = if not $options.cdrom.nil?
-                         "--cdrom #{$options.cdrom}"
-                       else
-                         "--location #{$options.location}"
-                       end
+
+    # Use a URL for bootstrapping by default 
+    source = if not $options.cdrom.nil?
+               "--cdrom #{$options.cdrom}"
+             else
+               "--location #{$options.location}"
+             end
+
+    # Call the virtual machine installation with arguments
+    options = { :bridge => $options.bridge, :source => source }
     Virsh.install(name,path,options)
+
   when 'list','li','l'
     Virsh::Image.list($options.image_path)
   when 'remove','rm'
