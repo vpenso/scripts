@@ -6,7 +6,6 @@ html {
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
   line-height: 1.428571429;
   color: #333333;
   background-color: #ffffff;
@@ -50,11 +49,10 @@ h6 { font-size: 12px; }
 blockquote {
   padding: 10px 20px;
   margin: 0 0 20px;
-  border-left: 5px solid #eeeeee;
+  border-left: 2px solid #eeeeee;
 }
 
 blockquote p {
-  font-size: 17.5px;
   font-weight: 300;
   line-height: 1.25;
 }
@@ -106,8 +104,8 @@ code, pre {
 
 code {
   padding: 2px 4px;
-  font-size: 90%;
   color: #c7254e;
+  font-size: 90%;
   white-space: nowrap;
   background-color: #f9f2f4;
   border-radius: 4px;
@@ -117,7 +115,7 @@ pre {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
-  font-size: 13px;
+  font-size: 90%;
   line-height: 1.428571429;
   color: #333333;
   border-top: 1px solid #cccccc;
