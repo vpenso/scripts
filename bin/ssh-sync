@@ -21,7 +21,7 @@
 # exit of statement returns a non-true return value
 #set -o errexit
 
-VERSION=0.1
+VERSION=0.2
 
 # Filename of this script
 SCRIPT=${0##*/}
@@ -43,7 +43,9 @@ Options:
   -D,--debug
     Print debug output.
   -h,--help
-    Show this information."
+    Show this information.
+  -r, --root
+    Use the root account for login."
 
 
 # enable line numbers for debug output
@@ -62,8 +64,10 @@ function _error() {
   echo "See \`$SCRIPT --help\` for usage."
 }
 
+
+user=
 # Parse the command line options
-ARGS=$(getopt -o Dh -l "help,debug" -- "$@")
+ARGS=$(getopt -o DhrV -l "help,debug,root,version" -- "$@")
 eval set -- "$ARGS"
 while true; do
   case "$1" in
@@ -75,6 +79,14 @@ while true; do
       _DEBUG=true
       shift
       ;;
+    -r|--root)
+      user='-l root'
+      shift
+      ;;
+    -V|--version)
+      echo $VERSION
+      exit 0
+      ;;
     --) shift; break ;;
     *) break ;;
   esac
@@ -84,8 +96,10 @@ if [ -e "$PWD/ssh_config" ]
 then
   RSYNC_RSH="ssh -q -F $PWD/ssh_config"
   _debug "Using SSH configuration in ssh_config"
+  _debug "RSYNC_RSH=$RSYNC_RSH"
 fi
 
+RSYNC_RSH="$RSYNC_RSH $user"
 
 if [ $# -ne 2 ]
 then
@@ -111,15 +125,16 @@ else
   dst=$2
 fi
 
-_debug "[sync] Syncing $src to $dst"
-rsync --exclude ".git" \
-      --exclude ".gitignore" \
-      --omit-dir-times \
-      --recursive \
-      --copy-links \
-      --copy-dirlinks \
-      --verbose \
-      $src $dst 
+# Ignore version control system directories
+options="$options --exclude '.git' --exclude '.gitignore' --exclude '.svn'"
+# Copy options...
+options="$options --omit-dir-times --recursive --copy-links --copy-dirlinks --delete"
+# Verbose
+options="$options --verbose"
+command="$options $src $dst" 
+_debug "[sync] rsync$command"
+
+rsync $command
 
 if [ $? -ne 0 ]
 then
