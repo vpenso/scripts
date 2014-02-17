@@ -101,6 +101,7 @@ class System
       Process.wait(pid)
       state=$?
       $logger.debug "Returned with #{state}"
+      $logger.debug "No output recieved" if output.empty?
       if state == 0
         return output
       else
@@ -108,7 +109,6 @@ class System
         return nil
       end
   end
-
 
 end
 

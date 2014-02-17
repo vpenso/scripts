@@ -154,7 +154,7 @@ module Virsh
       if self.active?
         config = System::exec("virsh net-dumpxml #{$options.name} | grep 'host mac'")
         config.split("\n").each do |line|
-          mac,name,ip = line.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' \/>/,'').split
+          mac,name,ip = line.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' ?\/>/,'').split
           $stdout.puts "#{mac},#{name},#{ip}"
         end
       else
@@ -168,7 +168,7 @@ module Virsh
         $stderr.puts "#{node} not defined!"
         exit 1
       end
-      mac,name,ip = config.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' \/>/,'').split
+      mac,name,ip = config.gsub(/^ *<host mac='/,'').gsub(/' name='/,' ').gsub(/' ip='/,' ').gsub(/' ?\/>/,'').split
       $stdout.puts "#{name} #{ip} #{mac}"
     end
 
