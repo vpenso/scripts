@@ -100,7 +100,7 @@ class Virsh
     disks_list.sort.map do |disk|
       disks << %Q[<disk type="file" device="disk">
           <driver name="qemu" type="qcow2"/>
-          <target dev="vd#{id}"/>
+          <target dev="vd#{id}" bus="virtio"/>
           <source file="#{disk}"/>
         </disk>]
       id = id.next
