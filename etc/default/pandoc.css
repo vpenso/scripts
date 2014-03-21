@@ -60,6 +60,10 @@ blockquote p {
   line-height: 1.25;
 }
 
+blockquote strong {
+  font-weight: 600;
+}
+
 a:focus {
   outline: thin dotted;
 }
