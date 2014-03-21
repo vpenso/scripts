@@ -47,9 +47,12 @@ h5 { font-size: 14px; }
 h6 { font-size: 12px; }
 
 blockquote {
-  padding: 10px 20px;
-  margin: 0 0 20px;
-  border-left: 2px solid #eeeeee;
+  padding-top:0;
+  padding-bottom:0;
+  padding-left:1em;
+  padding-right:1em;
+  margin:0;
+  border-left: 1px solid #eeeeee;
 }
 
 blockquote p {
