@@ -1,0 +1,119 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2012 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Iterate over a nodeset and check if a host is
+online by sending a single ping. Prints the 
+list of online hosts as a nodeset.
+
+#{exec_name} [-dhv] NODESET
+
+  NODESET
+    List of nodes to ping.
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --version, -v
+    Print version number.
+EOF
+
+begin
+
+  #stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.debug = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  nodeset = ARGV.shift || raise("No nodeset defined!")
+  # Expand the nodeset and transform it into an array
+  nodeset = `nodeset -e #{nodeset}`.split(' ')
+
+  online = Array.new
+  # Iterate over the nodes an remember online hosts
+  nodeset.each do |node|
+    # Suppress error messages while sending a 
+    # single ping with an live time of a second
+    `ping -c 1 -w 1 #{node} 2>&-`
+    online << node if $?.exitstatus == 0
+  end
+  # Create a nodeset of the online nodes
+  nodeset = `echo "#{online.join(' ')}" | nodeset -f`
+  
+  $stdout.puts nodeset
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0

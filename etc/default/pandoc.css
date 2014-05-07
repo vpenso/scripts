@@ -220,11 +220,14 @@ table tbody + tbody {
   text-decoration:underline; 
 }
 
+
+
+
 table.sourceCode {
   margin: .5em 0 .5em 0;
   padding: 0; 
-  border-top: 1px solid #cccccc;
-  border-bottom: 1px solid #cccccc;
+  border-radius: 3px;
+  background-color: #f4f4f4;
   line-height: 100%; 
   width:100%;
 }
@@ -245,6 +248,7 @@ td.lineNumbers {
   margin: 0; 
   padding: 0; 
   text-align: right; 
+  border-top:none;
   border-right: 1px solid #cccccc; 
 }
 td.lineNumbers pre {
@@ -253,6 +257,7 @@ td.lineNumbers pre {
   padding-left: 0; 
   padding-right:.2em;
 }
+
 code > span.kw { color: #007020; font-weight: bold; }
 code > span.dt { color: #902000; }
 code > span.dv { color: #40a070; }
