@@ -35,7 +35,7 @@ function remove() {
 
 function add() {
   local fqdn=$1
-  ssh-keyscan $fqdn >> $HOME/.ssh/known_hosts
+  ssh-keyscan -H $fqdn >> $HOME/.ssh/known_hosts
 }
 
 
