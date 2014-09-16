@@ -42,3 +42,5 @@ alias ssh-keygen-no-password="ssh-keygen -q -t rsa -b 2048 -N ''"
 
 # Launch SSH proxy
 function shuttle() { sshuttle -r --dns $1 0/0 }
+
+alias ssh-sync='noglob ssh-sync'
