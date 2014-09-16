@@ -229,6 +229,7 @@ begin
     lxdev01 lxdev02 lxdev03 lxdev04
     lxfs01 lxfs02 lxfs03 lxfs04 lxfs05
     lxhvs01 lxhvs02 lxhvs03 lxhvs04
+    lxdb01 lxdb02 lxdb03
   )
   
   $logger = Logger.new($stderr)
