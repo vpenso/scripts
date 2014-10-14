@@ -35,5 +35,5 @@ function ipmi-nodes() {
     ;;
   esac
   : ${NODES:?"Specifiy host list in NODES"}
-  ipmipower -h "$(echo $NODES)" -u $IPMI_USER -P $command
+  /usr/sbin/ipmipower -h "$(echo $NODES)" -u $IPMI_USER -P $command
 }
