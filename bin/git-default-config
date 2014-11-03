@@ -102,16 +102,16 @@ git config --global color.status auto
 git config --global color.ui auto
 
 # define color sets
-git config --global color.branch.current "yellow bold"
-git config --global color.branch.local "green bold"
-git config --global color.branch.remote "green bold"
-git config --global color.diff.meta "yellow bold"
-git config --global color.diff.frag "red bold"
-git config --global color.diff.old "blue bold"
-git config --global color.diff.new "green bold"
-git config --global color.status.added "green bold"
-git config --global color.status.changed "yellow bold"
-git config --global color.status.untracked "red bold"
+git config --global color.branch.current "yellow dim"
+git config --global color.branch.local "green dim"
+git config --global color.branch.remote "blue dim "
+git config --global color.diff.meta "yellow dim"
+git config --global color.diff.frag "blue dim"
+git config --global color.diff.old "red reverse"
+git config --global color.diff.new "green reverse"
+git config --global color.status.added "green dim"
+git config --global color.status.changed "yellow dim"
+git config --global color.status.untracked "red dim"
 
 # Turns off the trailing whitespace warning while 
 # applying patches
