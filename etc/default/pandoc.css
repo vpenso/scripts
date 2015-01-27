@@ -21,6 +21,10 @@ body {
   }
 }
 
+@media print {
+ h1 {page-break-before: always;}
+}
+
 p { margin: 0 0 10px; }
 
 h1, h2, h3, h4, h5, h6 {
@@ -169,8 +173,8 @@ table tfoot > tr > th,
 table thead > tr > td,
 table tbody > tr > td,
 table tfoot > tr > td {
-  padding: 8px;
-  line-height: 1.428571429;
+  padding: 0.3em;
+  line-height: 1.1;
   vertical-align: top;
   border-top: 1px solid #dddddd;
 }
