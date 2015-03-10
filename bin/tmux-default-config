@@ -10,6 +10,7 @@ fi
 
 cat > $config <<EOF
 set -g default-terminal "screen-256color"
+set-option -g default-shell /bin/zsh
 
 # uncomment for GUI support
 set -g mode-mouse on
