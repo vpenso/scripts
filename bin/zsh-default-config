@@ -54,6 +54,8 @@ setopt hist_verify
 setopt inc_append_history
 setopt share_history
 
+bindkey -e
+
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 ZSH_HIGHLIGHT_STYLES+=(
   reserved-word          'fg=27,bold'
