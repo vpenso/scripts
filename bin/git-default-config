@@ -79,10 +79,12 @@ git config --global alias.rb rebase
 git config --global alias.rbi "rebase --interactive"
 
 git config --global alias.pu push
-git config --global alias.l "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
-git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
+
+git config --global alias.l 'log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"'
+git config --global alias.c 'log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat'
 git config --global alias.last "log -1 --stat"
-git config --global alias.changes 'log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue [%cn]" --decorate --numstat'
+
+git config --global alias.ls "ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude"
 git config --global alias.patches 'git log -p --no-merges'
 git config --global alias.tags "tag -n1 -l"
 git config --global alias.amend "commit --amend"
