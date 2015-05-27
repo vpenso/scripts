@@ -41,8 +41,12 @@ Options:
     Login as root.
   -s,--sudo
     Remote execute a command with Sudo.
+  -A
+    Enables forwarding of the authentication agent connection.
   -h,--help
-    Show this information."
+    Show this information.
+  -d,--debug
+    Enable debug messages."
 
 # enable line numbers for debug output
 if [ "$_DEBUG" = "true" ] ; then
@@ -63,7 +67,7 @@ function _error() {
 sudo=
 options=
 # Parse the command line options
-ARGS=$(getopt -o hsr -l "help,sudo,root" -- "$@")
+ARGS=$(getopt -o hsrdA -l "help,sudo,root,debug" -- "$@")
 eval set -- "$ARGS"
 while true; do
   case "$1" in
@@ -76,7 +80,15 @@ while true; do
       shift
       ;;
     -r|--root)
-      options="-l root"
+      options="-l root $options"
+      shift
+      ;;
+    -d|--debug)
+      _DEBUG=true
+      shift
+      ;;
+    -A)
+      options="-A $options"
       shift
       ;;
     --) shift; break ;;
