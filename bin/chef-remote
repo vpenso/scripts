@@ -134,7 +134,7 @@ CHEF_COOKBOOKS=${CHEF_COOKBOOKS:-$CHEF_COOKBOOKS_DEFAULT}
 # Template for the chef-solo configuration file
 # shipped to the virtual machines before execution.
 CHEF_SOLO_CONFIG=$(cat <<EOF
-log_level         :info
+log_level         :fatal
 log_location      STDOUT
 verbose_logging   nil
 verify_api_cert   true
