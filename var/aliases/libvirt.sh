@@ -18,28 +18,33 @@
 
 function vm() {
   local command=$1
-  shift
   case "$command" in
   "create"|"c") 
+    shift
     virsh create "$@" 
     ;;
   "define"|"d") 
+    shift
     virsh define "$@" 
     ;;
   "list"|"l") 
     virsh list --all 
     ;;
   "remove"|"r") 
+    shift
     virsh shutdown "$1" 
     virsh undefine "$1"
     ;;
   "shutdown"|"h") 
+    shift
     virsh shutdown "$1" 
     ;;
   "start"|"s") 
+    shift
     virsh start "$1" 
     ;;
   "undefine"|"u") 
+    shift
     virsh undefine "$@"
     ;;
   *) 
