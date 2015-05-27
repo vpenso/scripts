@@ -1,5 +1,5 @@
 #
-# Copyright 2013 Victor Penso
+# Copyright 2013-2015 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,32 @@
 
 function vm() {
   local command=$1
+  shift
   case "$command" in
-  "define"|"d") shift ; virsh define "$@" ;;
-  "list"|"l") shift ; virsh list --all ;;
-  "remove"|"r") shift ; virsh shutdown "$1" ; virsh undefine "$1" ;;
-  "shutdown"|"h") shift ; virsh shutdown "$1" ;;
-  "start"|"s") shift ; virsh start "$1" ;;
-  "undefine"|"u") shift ; virsh undefine "$@" ;;
-*) echo "Usage: vm (d)efine|s(h)utdown|(l)ist|(r)emove|(s)tart|(u)ndfine [args]" ;;
+  "create"|"c") 
+    virsh create "$@" 
+    ;;
+  "define"|"d") 
+    virsh define "$@" 
+    ;;
+  "list"|"l") 
+    virsh list --all 
+    ;;
+  "remove"|"r") 
+    virsh shutdown "$1" 
+    virsh undefine "$1"
+    ;;
+  "shutdown"|"h") 
+    virsh shutdown "$1" 
+    ;;
+  "start"|"s") 
+    virsh start "$1" 
+    ;;
+  "undefine"|"u") 
+    virsh undefine "$@"
+    ;;
+  *) 
+    echo "Usage: vm (c)reate|(d)efine|s(h)utdown|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
+    ;;
   esac
 }
