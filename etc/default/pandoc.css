@@ -1,18 +1,13 @@
 <style type="text/css">
 
-html {
-  font-family: sans-serif;
-}
-
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.428571429;
   color: #333333;
   background-color: #ffffff;
-  padding-right: 15px;
-  padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+  font-size:14px;
 }
 
 @media (min-width: 700px) {
@@ -25,17 +20,21 @@ body {
  h1 {page-break-before: always;}
 }
 
-p { margin: 0 0 10px; }
+p { 
+  margin: 0 0 10px; 
+  font-size: 1.1em;
+}
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: Helvetica, Arial, sans-serif;
   font-weight: 400;
   line-height: 1.1;
+  
 }
 
 h1, h2, h3 {
   margin-top: 1em;
-  margin-bottom: 0.4em ;
+  margin-bottom: 0.5em ;
+  border-bottom: 1px solid lightgray; 
 }
 
 h4, h5, h6 {
@@ -43,8 +42,9 @@ h4, h5, h6 {
   margin-bottom: 10px;
 }
 
-h1 { font-size: 2.8em; }
-h2 { font-size: 2.2em; }
+
+h1 { font-size: 2.4em; }
+h2 { font-size: 2em; }
 h3 { font-size: 1.8em; }
 h4 { font-size: 18px; }
 h5 { font-size: 14px; }
@@ -116,28 +116,27 @@ h6 a { text-decoration:none; }
 
 pre { white-space: pre-wrap; }
 
-code, pre {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
-}
-
-code {
-  padding: 2px 4px;
-  color: #c7254e;
-  font-size: 90%;
+code,
+tt {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  color: #333;
+  padding: 0.2em;
+  padding-left
+  margin: 0;
+  font-size: 0.9em;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 3px; 
   white-space: nowrap;
-  background-color: #f9f2f4;
-  border-radius: 4px;
 }
 
 pre {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
-  font-size: 90%;
   line-height: 1;
   color: #333333;
   border-radius: 3px;
-  background-color: #f4f4f4;
+  border: 1px solid lightgray; 
   overflow:auto;
   width:auto;
 }
