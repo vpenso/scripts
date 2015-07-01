@@ -31,10 +31,16 @@ h1, h2, h3, h4, h5, h6 {
   
 }
 
-h1, h2, h3 {
-  margin-top: 1em;
+h1 {
+  margin-top:1.5em;
   margin-bottom: 0.5em ;
-  border-bottom: 1px solid lightgray; 
+  border-bottom: 2px solid black; 
+}
+
+h2, h3 {
+  margin-top: 1.3em;
+  margin-bottom: 0.5em ;
+  border-bottom: 1px solid black; 
 }
 
 h4, h5, h6 {
