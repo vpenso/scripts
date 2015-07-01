@@ -155,15 +155,16 @@ pre code {
   border: 0;
 }
 
+th {
+  text-align: left;
+}
+
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-th {
-  text-align: left;
+  margin:1.3em;
+  border: 1px solid #ddd;
 }
 
 table thead > tr > th,
@@ -172,15 +173,16 @@ table tfoot > tr > th,
 table thead > tr > td,
 table tbody > tr > td,
 table tfoot > tr > td {
-  padding: 0.3em;
-  line-height: 1.1;
+  padding: 6px;
+  line-height: 1.428571429;
   vertical-align: top;
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
 }
 
 table thead > tr > th {
   vertical-align: bottom;
-  border-bottom: 2px solid #dddddd;
+  border-bottom: 3px double black;
 }
 
 table caption + thead tr:first-child th,
@@ -193,9 +195,8 @@ table thead:first-child tr:first-child td {
 }
 
 table tbody + tbody {
-  border-top: 2px solid #dddddd;
+  border-top: 2px solid black;
 }
-
 
 
 #table-of-content { 
