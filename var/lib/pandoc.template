@@ -20,9 +20,9 @@ $endfor$
     <br/>
     $created$ $licence$ 
   </p>
-  <div id="table-of-content">
-  $toc$
-  </div>
-  $body$
+<div id="table-of-content">
+$toc$
+</div>
+$body$
 </body>
 </html>
