@@ -28,19 +28,6 @@ function uri-encode() { echo -ne $@ | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\
 
 export BROWSER=${BROWSER:-"firefox"}
 
-# quick export NODES environment variable
-function NODES() {
-  if [ $# -lt 1 ]
-  then
-    : ${NODES:?}
-    echo $NODES
-  else
-    export NODES=$@
-  fi
-}
-# pipe into the NODES environment variable
-alias -g NS='| exp NODES'
-
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
 alias 0=clear

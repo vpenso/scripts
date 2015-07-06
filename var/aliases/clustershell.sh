@@ -15,5 +15,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# quick export NODES environment variable
+function NODES() {
+  if [ $# -lt 1 ]
+  then
+    : ${NODES:?}
+    echo $NODES
+  else
+    export NODES=$@
+  fi
+}
+
+alias NODES='noglob NODES'
+# pipe into the NODES environment variable
+alias -g NS='| exp NODES'
+
+
+
 # run Clustershell using the NODES environment variable
 alias rush='clush -l root -w $NODES'
