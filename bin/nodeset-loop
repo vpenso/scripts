@@ -1,0 +1,168 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2015 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+class System 
+  
+  def self.exec(command)
+    command + ' 2>&1'
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
+  end
+
+end
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Iterate over a nodeset and exectue a command for each node
+
+#{exec_name} [-dhv] COMMAND
+
+  COMMAND
+    Command to execute on all nodes "{}" is replaced by the
+    node name.
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --nodes, -w NODESET
+    Nodeset to execute the command on.
+  --prefix, -p
+    Print node name infront of command output.
+  --version, -v
+    Print version number.
+
+Environment
+-----------
+
+NODES: Nodeset to execute the command on (overwrite with
+       options -w).
+EOF
+
+begin
+
+  #stdin = $stdin.tty? ? String.new : $stdin.read
+
+  options = OpenStruct.new
+  options.debug = false
+  options.nodeset = String.new
+  options.prefix = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::INFO
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--nodes','-w',GetoptLong::REQUIRED_ARGUMENT],
+    ['--prefix','-p',GetoptLong::NO_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--nodes'
+      options.nodeset = arg
+    when '--prefix'
+      options.prefix = true
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  if options.nodeset.empty?
+    if ENV.has_key? 'NODES'
+      options.nodeset = ENV['NODES']
+    else
+      raise 'No nodeset defined!'
+    end
+  end
+
+  $logger.debug "Options:\n #{options.inspect}"
+
+  # Expand the nodeset and transform it into an array
+  nodeset = `nodeset -e #{options.nodeset}`.split(' ') 
+
+  $logger.debug "Expanded nodeset:\n #{nodeset.inspect}"
+
+  commands = ARGV.join(' ')
+
+
+  nodeset.each do |node|
+    command = commands.gsub(/\{\}/, node)
+    $stdout.print "#{node}: " if options.prefix
+    $stdout.puts System::exec(command)
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
