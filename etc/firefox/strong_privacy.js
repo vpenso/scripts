@@ -2,6 +2,7 @@ user_pref("dom.battery.enabled",false); // Web applications have no access to ba
 user_pref("dom.event.clipboardevents.enabled", false); // Web applications have no access to the clipboard 
 user_pref("plugin.state.flash", 0); // Turn off the Flash plugin
 user_pref("plugin.state.java", 0); // Turn of the Java plugin
+user_pref("plugin.scan.plid.all", false); // Disable reporting about installed plugins
 user_pref("geo.enabled", false); // Disable location aware browsing
 user_pref("media.peerconnection.enabled",false); // Disable WebRTC
 user_pref("browser.search.geoip.url", "");
@@ -18,6 +19,7 @@ user_pref("extensions.blocklist.enabled", true);
 user_pref("security.warn_entering_weak", true);
 user_pref("security.ssl.warn_missing_rfc5746", 1);
 user_pref("network.stricttransportsecurity.preloadlist", true);
+user_pref("security.ssl.treat_unsafe_negotiation_as_broken", true);
 user_pref("security.OCSP.enabled", true);
 user_pref("security.ssl.enable_ocsp_stapling", true);
 user_pref("security.OCSP.require", true);
