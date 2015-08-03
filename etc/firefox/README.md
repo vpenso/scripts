@@ -11,3 +11,5 @@ Suggested plug-ins:
 - [Privacy Settings](https://addons.mozilla.org/en-US/firefox/addon/privacy-settings/) 
 - [UAControl](https://addons.mozilla.org/en-us/firefox/addon/uacontrol/), [User-Agent JS Fixer](https://addons.mozilla.org/en-us/firefox/addon/user-agent-js-fixer/) – Adjust user-agent fingerprints, find commonly user agents at [http://www.browser-info.net/useragents](http://www.browser-info.net/useragents)
 
+Check the browser [SSL configuration](https://www.howsmyssl.com/)
+
