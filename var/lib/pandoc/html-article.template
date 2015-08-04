@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>$title$</title>
+<meta charset="UTF-8">
+$for(header-includes)$
+  $header-includes$
+$endfor$
+</head>
+<body>
+<div id="table-of-content">
+$toc$
+</div>
+$body$
+</body>
+</html>
