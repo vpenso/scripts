@@ -123,7 +123,6 @@ function slurm-jobs-time() {
     | uniq -c
 }
 
-# Print a list of jobs in a failed state fro the Slurm accounting
 function slurm-jobs-failed {
   sacct \
     --noheader --allocations --allusers \
@@ -132,14 +131,16 @@ function slurm-jobs-failed {
     --format end,user,account,state,exitcode \
     | sort -k 1 \
     | uniq -f 1 -c
-  # Sort by first column for jobs in chronological order
-  # Ignore date in first column for matching adjacent lines
 }
 
 function slurm-jobs-completed {
   sacct --state completed \
+        --noheader \
         --allusers \
-        --starttime $(date --date="7 days ago" +"%Y-%m-%d")\
-        --format end,user,nnodes,ncpus,nodelist,elapsed \
-        --allocations
+        --starttime $(date --date="1 days ago" +"%Y-%m-%d")\
+        --format end,elapsed,user,nnodes \
+        --allocations \
+        | sort -k 1 \
+        | uniq -c
+
 }
