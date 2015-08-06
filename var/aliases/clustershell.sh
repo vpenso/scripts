@@ -30,7 +30,11 @@ alias NODES='noglob NODES'
 # pipe into the NODES environment variable
 alias -g NS='| exp NODES'
 
-
-
 # run Clustershell using the NODES environment variable
 alias rush='clush -l root -w $NODES'
+
+function nodeset-fping() {
+  fping $(nodeset -e $NODES) 2>$-
+}
+
+
