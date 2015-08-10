@@ -22,11 +22,10 @@ require 'logger'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-Iterate over a nodeset and check if a host is
-online by sending a single ping. Prints the 
-list of online hosts as a nodeset.
+Iterate over a nodeset and check if a host is online.
+Prints the list of online hosts to standard out.
 
-#{exec_name} [-dhv] NODESET
+#{exec_name} [-dhfv] [NODESET]
 
   NODESET
     List of nodes to ping.
@@ -36,10 +35,19 @@ Options
 
   --debug, -d
     Show stacktraces in case of errors.
+  --fold, -f 
+    Fold nodes into nodeset.
   --help, -h
     Show this help information.
   --version, -v
     Print version number.
+
+Environment
+-----------
+
+  NODES
+    Set of nodes to ping. (Used as alternative to the
+    first command parameter.)
 EOF
 
 begin
@@ -48,6 +56,7 @@ begin
 
   options = OpenStruct.new
   options.debug = false
+  options.fold = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -59,6 +68,7 @@ begin
 
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--fold','-f',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
@@ -67,6 +77,8 @@ begin
     when '--debug'
       options.debug = true
       $logger.level = Logger::DEBUG
+    when '--fold'
+      options.fold = true
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -87,7 +99,16 @@ begin
     end
   end
 
-  nodeset = ARGV.shift || raise("No nodeset defined!")
+  # Does to user provide a nodeset as parameter?  
+  if ARGV.length.eql?(1)
+    nodeset = ARGV.shift
+  # Is the environment variable NODES set proviuding
+  # the nodeset to use 
+  elsif ENV.has_key? 'NODES'
+    nodeset = ENV['NODES']
+  else
+    raise("Pass a set of nodes as parameter, or use environment variable NODES!")
+  end
   # Expand the nodeset and transform it into an array
   nodeset = `nodeset -e #{nodeset}`.split(' ')
 
@@ -99,10 +120,14 @@ begin
     `ping -c 1 -w 1 #{node} 2>&-`
     online << node if $?.exitstatus == 0
   end
-  # Create a nodeset of the online nodes
-  nodeset = `echo "#{online.join(' ')}" | nodeset -f`
+
+  node = if options.fold
+           `echo "#{online.join(' ')}" | nodeset -f`
+         else
+           online.join("\n")
+         end
   
-  $stdout.puts nodeset
+  $stdout.puts node
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
