@@ -1,3 +1,3 @@
 # Always select a user profile before launching the browser
-alias ff='firefox -profilemanager -no-remote'
+alias ff='firefox -profilemanager -no-remote 2>&- & ; disown'
 # Allow multiple instances of Firefox
