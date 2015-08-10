@@ -1,4 +1,4 @@
 
 export DOMAIN=$(hostname -d)
  
-alias host-ip="dig +short +domain=$DOMAIN" 
+alias dig-ip="dig +short +domain=$DOMAIN" 
