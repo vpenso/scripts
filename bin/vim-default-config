@@ -204,9 +204,10 @@ hi PreProc      ctermfg=33   cterm=bold
 hi Type         ctermfg=160
 hi Error        ctermfg=none ctermbg=none
 
-hi shQuote        ctermfg=239
+hi shQuote        ctermfg=241
+hi shOption       ctermfg=31
 hi shDerefSimple  ctermfg=34
-hi shCommandSub   ctermfg=220 ctermbg=none
+hi shCommandSub   ctermfg=31 ctermbg=none cterm=bold
 hi shSpecial      ctermfg=124
 
 hi htmlTag                        ctermfg=241
