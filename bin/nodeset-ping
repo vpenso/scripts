@@ -39,6 +39,8 @@ Options
     Fold nodes into nodeset.
   --help, -h
     Show this help information.
+  --offline, -o
+    List offline nodes instead.
   --version, -v
     Print version number.
 
@@ -57,6 +59,7 @@ begin
   options = OpenStruct.new
   options.debug = false
   options.fold = false
+  options.offline = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -71,7 +74,8 @@ begin
     ['--fold','-f',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version','-v',GetoptLong::NO_ARGUMENT]
+    ['--offline','-o',GetoptLong::NO_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--debug'
@@ -93,6 +97,8 @@ begin
       else
         Logger::INFO
        end
+    when '--offline'
+      options.offline = true
     when '--version'
       $stdout.puts 0.1
       exit 0
@@ -113,21 +119,32 @@ begin
   nodeset = `nodeset -e #{nodeset}`.split(' ')
 
   online = Array.new
+  offline= Array.new
   # Iterate over the nodes an remember online hosts
   nodeset.each do |node|
     # Suppress error messages while sending a 
     # single ping with an live time of a second
     `ping -c 1 -w 1 #{node} 2>&-`
-    online << node if $?.exitstatus == 0
+    if $?.exitstatus == 0
+      online << node 
+    else
+      offline << node
+    end
   end
 
-  node = if options.fold
-           `echo "#{online.join(' ')}" | nodeset -f`
-         else
-           online.join("\n")
-         end
-  
-  $stdout.puts node
+  nodeset = if options.offline
+              offline
+            else
+              online
+            end
+
+  output = if options.fold
+             `echo "#{nodeset.join(' ')}" | nodeset -f`
+           else
+             nodeset.join("\n")
+           end
+ 
+  $stdout.puts output
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
