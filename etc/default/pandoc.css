@@ -1,5 +1,15 @@
 <style type="text/css">
 
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.428571429;
@@ -7,7 +17,14 @@ body {
   background-color: #ffffff;
   margin-right: auto;
   margin-left: auto;
-  font-size:14px;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
 }
 
 @media (min-width: 700px) {
@@ -22,7 +39,6 @@ body {
 
 p { 
   margin: 0 0 10px; 
-  font-size: 1.1em;
 }
 
 #title {
@@ -141,17 +157,26 @@ tt {
   white-space: nowrap;
 }
 
+ul {
+  margin-bottom: 1em;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
 pre {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
   line-height: 1;
   color: #333333;
+  font-size: 0.9em;
   border-radius: 3px;
   border: 1px solid lightgray; 
   overflow:auto;
   width:auto;
 }
+
+
 
 .ascii-table pre {
   text-align: center;
