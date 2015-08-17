@@ -10,23 +10,6 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   vertical-align: baseline;
 }
 
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  line-height: 1.428571429;
-  color: #333333;
-  background-color: #ffffff;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-strong {
-  font-weight: bold;
-}
-
-em {
-  font-style: italic;
-}
-
 @media (min-width: 700px) {
   body {
     max-width: 700px;
@@ -37,53 +20,70 @@ em {
  h1 {page-break-before: always;}
 }
 
-p { 
-  margin: 0 0 10px; 
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+body {
+  font-family: "Droid Seurif","Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.428571429;
+  color:black;
+  background-color:white;
+  vertical-align:middle;
+  margin:1em;
 }
+
+p, blockquote, pre, ul, ol {
+  margin-bottom:0.7em;
+  margin-top:0.7em;
+}
+
+strong { font-weight: bold; }
+em { font-style: italic; }
+
+ul,ol {
+  padding-left:1em;
+}
+ul li { list-style-type:circle; }
 
 #title {
   border:none;
   font-size:3em;
   line-height:1.2em;
-  border-bottom: 2px solid black;
+  border-left: 1em solid lightgray; 
+  border-bottom: 2px solid lightgray;
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: 'Yanone Kaffeesatz';
   font-weight: 400;
-  line-height: 1.1;
+  margin-bottom:0.5em;
+  margin-top:0.5em;
   
 }
 
 h1 {
-  margin-top:1.6em;
-  margin-bottom: 0.5em ;
-  border-bottom: 1px solid black; 
-}
-
-h2, h3 {
-  margin-top: 1.4em;
-  margin-bottom: 0.5em ;
-}
-
-h4, h5, h6 {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  font-size:2.4em;
+  padding-left: .5em;
+  margin-top:1.3em;
+  padding-top:0.2em;
+  border-left: 1em solid lightgray; 
+  border-top: 1px solid lightgray; 
 }
 
 
-h1 { font-size: 2.4em; }
-h2 { font-size: 2em; }
-h3 { font-size: 1.8em; }
+h2 {
+  font-size:2em;
+  padding-bottom:0.2em;
+  border-bottom:1px solid lightgray; 
+}
+
+h3 { font-size:1.5em; }
 h4 { font-size: 18px; }
 h5 { font-size: 14px; }
 h6 { font-size: 12px; }
 
 blockquote {
-  padding-top:0;
-  padding-bottom:0;
-  padding-left:1em;
-  padding-right:1em;
-  margin:0;
   border-left: 1px solid #eeeeee;
 }
 
@@ -100,22 +100,18 @@ a:focus {
   outline: thin dotted;
 }
 
-a:active,
-a:hover {
+a:active, a:hover {
   outline: 0;
 }
-
 a {
   color: #428bca;
   text-decoration: none;
 }
-
 a:hover,
 a:focus {
   color: #2a6496;
   text-decoration: underline;
 }
-
 a:focus {
   outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
@@ -142,49 +138,36 @@ h4 a { text-decoration:none; }
 h5 a { text-decoration:none; }
 h6 a { text-decoration:none; }
 
-pre { white-space: pre-wrap; }
 
 code,
 tt {
-  font-family: Consolas, "Liberation Mono", Courier, monospace;
-  color: #333;
+  font-family: "Ubuntu Mono", Consolas, "Liberation Mono", Courier, monospace;
+  color:#006600;
+  background:#F0FFF0;
   padding: 0.2em;
-  padding-left
   margin: 0;
   font-size: 0.9em;
-  background-color: rgba(0,0,0,0.04);
   border-radius: 3px; 
   white-space: nowrap;
 }
 
-ul {
-  margin-bottom: 1em;
-  margin-left: 2em;
-  margin-right: 2em;
-}
 
 pre {
   display: block;
   padding: 9.5px;
-  margin: 0 0 10px;
   line-height: 1;
+
   color: #333333;
   font-size: 0.9em;
   border-radius: 3px;
   border: 1px solid lightgray; 
+  background-color: rgba(0,0,0,0.04);
   overflow:auto;
   width:auto;
-}
-
-
-
-.ascii-table pre {
-  text-align: center;
-  background-color: transparent;
+  white-space: pre-wrap;
 }
 
 pre code {
-  padding: 0;
   font-size: inherit;
   color: inherit;
   white-space: pre;
@@ -200,7 +183,6 @@ th {
 table {
   border-collapse: collapse;
   border-spacing: 0;
-  margin:1.3em;
   border: 1px solid #ddd;
 }
 
@@ -240,16 +222,14 @@ table tbody + tbody {
   margin-bottom:2em; 
   line-height:1em; 
   padding:0.5em;
-  border-top:1px solid lightgray;
-  border-bottom:1px solid lightgray;
   background-color: whitesmoke;
 }
 #table-of-content ul { 
-  list-style-type: none; 
   padding:0; 
   margin:0;
 }
 #table-of-content li { 
+  list-style-type: none; 
   padding:0;
   margin: 0; 
 }
@@ -264,9 +244,6 @@ table tbody + tbody {
 #table-of-content a:hover { 
   text-decoration:underline; 
 }
-
-
-
 
 table.sourceCode {
   margin: .5em 0 .5em 0;
