@@ -47,16 +47,16 @@ bind -r Up resize-pane -U
 bind -r Down resize-pane -R
 
 # status line
-set -g status-fg colour244
-set -g status-bg default
-set -g pane-border-fg colour240
+set -g status-fg colour237
+set -g status-bg colour247
+set -g pane-border-fg colour33
 set -g pane-active-border-fg colour33
 set -g message-fg colour240
 set -g message-bg default
-set -g status-left '#[fg=colour235,bold] #S '
-set -g status-right 'VM #(virsh list | grep running | wc -l) │ LD#(uptime | cut -d, -f 4- | cut -d: -f2) '
-set -g window-status-format "#[fg=colour250] #I:#W "
-set -g window-status-current-format "#[fg=colour33,bold] #W "
+set -g status-left '#[fg=colour247,bg=colour240] #H '
+set -g status-right ''
+set -g window-status-format "#[fg=colour236] #I:#W "
+set -g window-status-current-format "#[fg=colour237,bg=colour253,bold] #W "
 
 ##
 ## Custom configuration...
