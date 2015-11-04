@@ -47,16 +47,21 @@ bind -r Up resize-pane -U
 bind -r Down resize-pane -R
 
 # status line
+set -g status-position top
 set -g status-fg colour237
-set -g status-bg colour247
-set -g pane-border-fg colour33
-set -g pane-active-border-fg colour33
-set -g message-fg colour240
+set -g status-bg colour254
+set -g pane-border-fg colour249
+set -g pane-active-border-fg colour244
+set -g message-fg colour88
 set -g message-bg default
-set -g status-left '#[fg=colour247,bg=colour240] #H '
+set -g status-utf8 on
+set -g status-left '#[fg=colour252,bg=colour237,bold] #H '
 set -g status-right ''
-set -g window-status-format "#[fg=colour236] #I:#W "
-set -g window-status-current-format "#[fg=colour237,bg=colour253,bold] #W "
+set -g window-status-separator ''
+set -g window-status-format " #[fg=colour249]#I:#[fg=colour236]#W "
+set -g window-status-current-format "#[fg=colour33,bg=colour153] #I:#[fg=colour21,bg=colour153,bold]#W "
+set -g window-status-activity-style bg=colour224
+
 
 ##
 ## Custom configuration...
