@@ -33,7 +33,6 @@ alias go-="chmod go-rwx"
 alias 0=clear
 alias x=exit
 alias v=vim
-alias m=music
 alias _=" sudo"
 alias _!=" sudo !!"
 alias __=noglob
@@ -60,10 +59,14 @@ alias epoch="date +%s"
 alias get="curl -C - -O"
 alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
 alias ascii="man ascii"
-alias mute="amixer --quiet set Master toggle"
-alias volume="amixer --quiet set Master"
 alias suspend="sudo true ; xscreensaver-command -lock ; sudo pm-suspend"
 
-
 calc() { echo "$*" | bc -l ; }
+
+alias m=music
+alias mute="amixer --quiet set Master toggle"
+alias volume="amixer --quiet set Master"
+
+play() { mpg123 $1 2&>1 1>/dev/null & ; disown }
+stop() { killall mpg123 }
 
