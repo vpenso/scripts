@@ -96,18 +96,21 @@ HELP = <<EOF
 #{exec_name} [options] [command] [subcommand] 
 
 Commands:
-  n | nodes                     state of execution nodes
   j | jobs                      state of jobs 
+  n | nodes                     state of execution nodes
+  r | report                    accounting statistics
 
 Sub-Commands:
-
-  nodes  d | defect             list nodes removed from service
-  nodes  a | alloc | allocated  List nodes executing jobs
-  nodes  i | idle               List nodes with available resources
-
-  jobs   p | pend  | pending    list pending jobs
-  jobs   r | run   | running    list jobs currenlty being executed
-  jobs   c | comp  | completed  list jobs completed after execution
+  jobs   c | comp  | completed  jobs completed after execution
+  jobs   f | fail  | failed     jobs finished with a failure
+  jobs   p | pend  | pending    pending jobs
+  jobs   r | run   | running    jobs currenlty being executed
+  nodes  a | alloc | allocated  nodes executing jobs
+  nodes  d | defect             nodes removed from service
+  nodes  i | idle               nodes with available resources
+  nodes  u | users              list users of each node
+  report a | account            consumed CPU time by account (last 30 days)
+  report u | users              consumed CPU time by users (last 30 days)
 
 Options:
   --debug, -d                   show stacktraces in case of errors
@@ -174,13 +177,31 @@ class Jobs
           --noheader
           --allusers
           --starttime $(date --date="1 days ago" +"%Y-%m-%d")
-          --format end,elapsed,user,nnodes
+          --format end,user,account,state,nnodes
           --allocations
           | sort -k 1
           | uniq -f 2 -c
     '
     table = Array.new
-    table << ['Jobs','end','Run-time','User','Nodes']
+    table << ['Jobs','End','User','Accounts','State','Nodes']
+    System::exec(command).split("\n").each do |line|
+      table << line.split(' ')
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+
+  def self.failed
+    command = '
+      sacct
+        --noheader --allocations --allusers
+        --starttime $(date --date="14 days ago" +"%Y-%m-%d")
+        --state failed,node_fail,timeout
+        --format end,user,account,state,exitcode
+        | sort -k 1
+        | uniq -f 1 -c
+    '
+    table = Array.new
+    table << ['Jobs','End','User','Account','State','Exit Code']
     System::exec(command).split("\n").each do |line|
       table << line.split(' ')
     end
@@ -239,6 +260,63 @@ class Nodes
     end
     $stdout.puts CLI::Table.print(table)
   end
+
+  def self.users
+    command = "
+      squeue 
+        --noheader
+        --states RUNNING
+        --sort 'N'
+        --format '%N|%D|%u|%a|%M|%L|%Z|%o'
+    "
+    table = Array.new
+    table << ['Nodeset','Nodes','User','Account','Run Time','Time Left','Working Directory','Executed']
+    System::exec(command).split("\n").each do |line|
+      table << line.split('|').map! { |e| e.strip }
+    end
+    system "echo \"#{CLI::Table.print(table)}\" | less --quit-on-intr --chop-long-lines"
+  end
+
+end
+
+class Report
+
+  def self.top_user
+    command = '
+      sreport user top 
+        start=$(date --date="30 days ago" +"%Y-%m-%d") 
+        format="login,account,used" 
+        topcount=100 
+        --noheader
+    '
+    table = Array.new
+    table << ['User','Account','CPU Time']
+    System::exec(command).split("\n").each do |line|
+      table << line.split(' ').map! { |e| e.strip }
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+
+  def self.account
+    command = '
+      sreport cluster accountutilizationbyuser 
+        start=$(date --date="30 days ago" +"%Y-%m-%d") 
+        format="account,login,used"
+        --noheader
+    '
+    table = Array.new
+    table << ['Account','User','CPU Time']
+    System::exec(command).split("\n").each do |line|
+      line = line.split(' ').map! { |e| e.strip }
+      if line.length == 2
+        table << [ line[0], '-', line[1]  ]
+      else
+        table << line
+      end
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+
 end
 
 
@@ -287,7 +365,7 @@ begin
     end
   end
 
-  command = ARGV.shift || raise('No command given!')
+  command = ARGV.shift || 'help'
   case command
   when 'j','jobs'
      subcommand = ARGV.shift || 'running'
@@ -298,21 +376,34 @@ begin
        Jobs::completed
      when 'r','run','running'
        Jobs::running
+     when 'f', 'fail', 'failed'
+       Jobs::failed
      else
        raise("Sub-command #{subcommand} not supported") 
      end
   when 'n','nodes'
      subcommand = ARGV.shift || 'idle'
      case subcommand
-     when 'd','defects'
-       Nodes::defects
      when 'a','alloc','allocated'
        Nodes::allocated
+     when 'd','defects'
+       Nodes::defects
      when 'i','idle'
        Nodes::idle
+     when 'u','users'
+       Nodes::users
      end
-  else
-    raise("Command #{command} not supported")
+  when 'r','report'
+     subcommand = ARGV.shift || 'top'
+     case subcommand
+     when 'a','account'
+       Report::account
+     when 'u','users'
+       Report::top_user
+     end
+  when 'help'
+      $stdout.puts HELP
+      exit 0
   end
 
 
