@@ -78,7 +78,7 @@ EOF
 
 begin
 
-  #stdin = $stdin.tty? ? String.new : $stdin.read
+  stdin = $stdin.tty? ? String.new : $stdin.read
 
   options = OpenStruct.new
   options.debug = false
@@ -130,7 +130,9 @@ begin
   end
 
   if options.nodeset.empty?
-    if ENV.has_key? 'NODES'
+    if not stdin.empty?
+      options.nodeset = stdin
+    elsif ENV.has_key? 'NODES'
       options.nodeset = ENV['NODES']
     else
       raise 'No nodeset defined!'

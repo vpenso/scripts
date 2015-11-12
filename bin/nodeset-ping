@@ -54,7 +54,7 @@ EOF
 
 begin
 
-  #stdin = $stdin.tty? ? String.new : $stdin.read
+  stdin = $stdin.tty? ? String.new : $stdin.read
 
   options = OpenStruct.new
   options.debug = false
@@ -108,8 +108,9 @@ begin
   # Does to user provide a nodeset as parameter?  
   if ARGV.length.eql?(1)
     nodeset = ARGV.shift
-  # Is the environment variable NODES set proviuding
-  # the nodeset to use 
+  elsif not stdin.empty?
+    nodeset = stdin
+  # Is the environment variable NODES set  
   elsif ENV.has_key? 'NODES'
     nodeset = ENV['NODES']
   else
