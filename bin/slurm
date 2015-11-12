@@ -93,63 +93,154 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-Synopsis
-========
+#{exec_name} [options] [command] [subcommand] 
 
-Explain in one sentance whta this cript does.
+Commands:
+  n | nodes                     state of execution nodes
+  j | jobs                      state of jobs 
 
-Usage
------
+Sub-Commands:
 
-#{exec_name} [OPTIONS] ARGUMENT 
+  nodes  d | defect             list nodes removed from service
+  nodes  a | alloc | allocated  List nodes executing jobs
+  nodes  i | idle               List nodes with available resources
 
-  ARGUMENT
-    Describe what this parameter does.
+  jobs   p | pend  | pending    list pending jobs
+  jobs   r | run   | running    list jobs currenlty being executed
+  jobs   c | comp  | completed  list jobs completed after execution
 
-Options
--------
-
-  --debug, -d
-    Show stacktraces in case of errors.
-  --help, -h
-    Show this help information.
-  --version, -v
-    Print version number.
+Options:
+  --debug, -d                   show stacktraces in case of errors
+  --help, -h                    show this help information
+  --version, -v                 print program version
 EOF
 
-def jobs
-  table = Array.new
-  command = "
-    squeue 
-      --states RUNNING 
-      --format '%9T %.11M %.11L %9P %8u %10a' 
-      --sort '-M,L' 
-      --noheader 
-      | uniq -f3 -c 
+
+class Jobs
+
+  def self.running
+    table = Array.new
+    command = "
+      squeue 
+        --states RUNNING 
+        --format '%9T %.11M %.11L %9P %8u %10a' 
+        --sort '-M,L' 
+        --noheader 
+        | uniq -f3 -c 
+      "
+    table << ['Jobs','State','Run-Time','Time-Left','Partition','User','Account']
+    System::exec(command).split("\n").each do |line|
+      table << line.split(' ')
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+
+  def self.pending
+    command = "
+      squeue
+        --all
+        --sort '-Q,P,u,C,D,l,t' -t pd
+        --format '%9T %8Q %8u %10a %9P %.4C %5D %11l %8f %6b %6q'
+        --noheader
+        | uniq -c
     "
-  table << ['Jobs','State','Run-Time','Time-Left','Partition','User','Account']
-  System::exec(command).split("\n").each do |line|
-    table << line.split(' ')
+    table = Array.new
+    table << ['Jobs','State','Priority','User','Account','Partition','CPUs','Nodes','Time-Limit','Features','GRES','QoS']
+    System::exec(command).split("\n").each do |line|
+      table << line.split(' ')
+    end
+    $stdout.puts CLI::Table.print(table)
+    $stdout.puts
+    command = "
+      squeue 
+        --all 
+        --state pending 
+        --format '%9T %V %8Q %8u %10a %9P %r' 
+        --noheader 
+        | uniq -f 2 -c 
+        | sort -k 3
+    "
+    table = Array.new
+    table << ['Jobs','State','Submitted','Priority','User','Account','Partition','Reason']
+    System::exec(command).split("\n").each do |line|
+      table << line.split(' ')
+    end
+    $stdout.puts CLI::Table.print(table)
   end
-  $stdout.puts CLI::Table.print(table)
-  $stdout.puts 
 
-  command = "
-    squeue
-      --all
-      --sort '-Q,P,u,C,D,l,t' -t pd
-      --format '%9T %8Q %8u %10a %9P %.4C %5D %11l %8f %6b %6q'
-      --noheader
-      | uniq -c
-  "
-
-  table = Array.new
-  table << ['Jobs','State','Priority','User','Account','Partition','CPUs','Nodes','Time-Limit','Features','GRES','QoS']
-  System::exec(command).split("\n").each do |line|
-    table << line.split(' ')
+  def self.completed
+    command = '
+      sacct --state completed
+          --noheader
+          --allusers
+          --starttime $(date --date="1 days ago" +"%Y-%m-%d")
+          --format end,elapsed,user,nnodes
+          --allocations
+          | sort -k 1
+          | uniq -f 2 -c
+    '
+    table = Array.new
+    table << ['Jobs','end','Run-time','User','Nodes']
+    System::exec(command).split("\n").each do |line|
+      table << line.split(' ')
+    end
+    $stdout.puts CLI::Table.print(table)
   end
-  $stdout.puts CLI::Table.print(table)
+
 end
+
+class Nodes
+
+  def self.idle
+    command = "
+      sinfo 
+        --format='%o|%T|%P|%L|%l|%m|%z|%h|%f|%G' 
+        --noheader
+        --state=idle
+        --sort o
+    "
+    table = Array.new
+    table << ['Node','State','Partition','Time','Limit','RAM','S;C:T','Share','Features','GRES']
+    System::exec(command).split("\n").each do |line|
+      table << line.split('|').map! { |e| e.strip }
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+  
+  def self.allocated
+    command = "
+      sinfo 
+        --format='%o|%T|%P|%O|%C' 
+        --noheader
+        --state=allocated
+        --sort o
+    "
+    table = Array.new
+    table << ['Node','State','Partition','Load','CPUs (A/I/O/T)']
+    System::exec(command).split("\n").each do |line|
+      line = line.split('|').map! { |e| e.strip }
+      table << line.map! { |e| e.strip } unless line[0].empty?
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+
+  def self.defects
+    command = "
+      sinfo 
+        --format '%5D|%10T|%100N|%7u|%E' 
+        --noheader
+        -S 'T,E' 
+        -t drain,down
+    "
+    table = Array.new
+    table << ['Nodes','State','Nodeset','Admin','Reason']
+    System::exec(command).split("\n").each do |line|
+      table << line.split('|').map! { |e| e.strip }
+    end
+    $stdout.puts CLI::Table.print(table)
+  end
+end
+
 
 begin
 
@@ -198,8 +289,28 @@ begin
 
   command = ARGV.shift || raise('No command given!')
   case command
-  when 'jobs'
-    jobs
+  when 'j','jobs'
+     subcommand = ARGV.shift || 'running'
+     case subcommand
+     when 'p','pend','pending'
+       Jobs::pending
+     when 'c','comp','completed'
+       Jobs::completed
+     when 'r','run','running'
+       Jobs::running
+     else
+       raise("Sub-command #{subcommand} not supported") 
+     end
+  when 'n','nodes'
+     subcommand = ARGV.shift || 'idle'
+     case subcommand
+     when 'd','defects'
+       Nodes::defects
+     when 'a','alloc','allocated'
+       Nodes::allocated
+     when 'i','idle'
+       Nodes::idle
+     end
   else
     raise("Command #{command} not supported")
   end
