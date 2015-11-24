@@ -190,9 +190,9 @@ endif
 
 hi Visual       ctermfg=27   ctermbg=146
 hi SpellBad     ctermbg=none cterm=underline,bold
-hi CursorLine   ctermbg=233  cterm=none
-hi LineNr       ctermfg=240  ctermbg=233
-hi Comment      ctermfg=239
+hi CursorLine   ctermbg=254 cterm=none
+hi LineNr       ctermfg=240  ctermbg=254
+hi Comment      ctermfg=251
 hi Number       ctermfg=202
 hi String       ctermfg=248
 hi Boolean      ctermfg=39
@@ -203,6 +203,7 @@ hi Statement    ctermfg=33
 hi PreProc      ctermfg=33   cterm=bold
 hi Type         ctermfg=160
 hi Error        ctermfg=none ctermbg=none
+
 
 hi shQuote        ctermfg=241
 hi shOption       ctermfg=31
@@ -236,7 +237,7 @@ hi cssColor                       ctermfg=43
 
 hi erubyDelimiter                 ctermfg=214 cterm=bold
 
-hi javaScript                     ctermfg=255
+hi javaScript                     ctermfg=232
 hi javaScriptFunction             ctermfg=39 cterm=bold
 hi javaScriptIdentifier           ctermfg=208 cterm=bold
 hi javaScriptType                 ctermfg=160 cterm=bold
@@ -267,7 +268,7 @@ hi markdownLinkDelimiter          ctermfg=236
 hi markdownLinkTextDelimiter      ctermfg=236
 hi markdownUrl                    ctermfg=240
 hi markdownCode                   ctermfg=196
-hi markdownCodeBlock              ctermfg=250 ctermbg=234
+hi markdownCodeBlock              ctermfg=250
 hi markdownCodeDelimiter          ctermfg=202 cterm=bold
 hi markdownLineBreak              ctermbg=254
 hi markdownId                     ctermfg=244
