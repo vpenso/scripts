@@ -19,10 +19,10 @@ In the `bin/` sub-directory
 * **gnuplot-timeseries** – Create SVG plots from time-series data with Gnuplot.[…][gnuplot]
 * **hash-merge** — Merge multiple hash objects into one.
 * **hash-transform** — Converts hash objects between JSON, YAML and CSV.
-* **mpd-default-config** — Writes a personal MPD configuration.
 * **music** — Controls the local Music Player Daemon.
-* **node-state** — Collect host monitoring information and 
-  serialize the data into JSON.   
+* **nodeset-loop** — Loop a command of a list of nodes.
+* **nodeset-ping** — Ping a list of nodes.
+* **node-state** — Collect host monitoring information and serialize the data into JSON.
 * **pingable** — Wait until a host is pingable.
 * **redis-values** — Store and load hash tables from a Redis database.
 * **ruby-erb-template** – Render Erb templates.
@@ -36,12 +36,11 @@ In the `bin/` sub-directory
 * **ssh-known-hosts** — Remove/add/update SSH host fingerprints.
 * **ssh-sync** — Wraps `rsync` to be used with `ssh-instance`.
 * **ssh-tunnel** — Easy access to remote networks with `sshuttle`.
-* **sqlite-backup** — Backup SQLite database files into a Git 
-remote repository.
+* **sqlite-backup** — Backup SQLite database files into a Git remote repository.
 * **time-elapsed** — Calculates elapsed time between two dates.
 * **tmux-cheat** — Most important Tmux keys.
-* **tmux-default-config** — helps to configure Tmux terminal
-  multiplexer.
+* **tmux-default-config** — helps to configure Tmux terminal multiplexer.
+* **until-success** – Execute a command until it is successful.
 * **vim-cheat** — "What was this key again?" Vim cheat sheet. 
 * **vim-default-config** — Install Vundle and my personal Vim configuration.
 * **virsh-config** — Create XML configuration files[…][virsh]
@@ -59,7 +58,7 @@ remote repository.
 License
 =======
 
-Copyright 2012-2013 Victor Penso
+Copyright 2012-2015 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public
