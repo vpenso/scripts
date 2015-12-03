@@ -1,0 +1,257 @@
+<style type="text/css">
+
+body {
+  padding: 2em; 
+  font-size: 1.1em; 
+  color: rgb(56, 58, 66); 
+  overflow: auto; 
+  font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; 
+}
+
+h1 { font-size: 2.4em; font-weight: 300; }
+h2 { font-size: 1.8em; font-weight: 400; }
+h3 { font-size: 1.5em; font-weight: 500; }
+h4 { font-size: 1.2em; font-weight: 600; }
+h5 { font-size: 1.1em; font-weight: 600; }
+h6 { font-size: 1em; font-weight: 600; }
+
+strong { color: rgb(0, 0, 0); }
+del { color: rgb(94, 97, 110); }
+
+ul,ol {
+  padding-left:1em;
+}
+ul li { list-style-type:circle; }
+
+blockquote {
+  border-left: 1px solid #eeeeee;
+}
+
+blockquote p {
+  font-weight: 300;
+  line-height: 1.25;
+}
+
+blockquote strong {
+  font-weight: 600;
+}
+
+/*
+  Links
+
+*/
+
+
+a:focus {
+  outline: thin dotted;
+}
+
+a:active, a:hover {
+  outline: 0;
+}
+a {
+  color: #428bca;
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  color: #2a6496;
+  text-decoration: underline;
+}
+a:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+a code {
+  color: #428bca;
+  background: none;
+  font-size:.8em;
+  padding:0;
+}
+
+
+
+
+
+/*
+ Code snippets and blocks
+
+*/
+
+code,
+tt {
+  font-family: "Ubuntu Mono", Consolas, "Liberation Mono", Courier, monospace;
+  font-size: 1.1em; 
+  padding: 0.2em;
+  margin: 0;
+  font-size: 0.9em;
+  border-radius: 3px; 
+  white-space: nowrap;
+}
+
+pre {
+  font-size: 1.1em; 
+  display: block;
+  padding: 9.5px;
+  line-height: 1;
+  color: #333333;
+  border-radius: 3px;
+  border: 1px solid lightgray; 
+  background-color: rgba(0,0,0,0.04);
+  overflow:auto;
+  width:auto;
+  white-space: pre-wrap;
+}
+
+pre code {
+  font-size: inherit;
+  color: inherit;
+  white-space: pre;
+  background-color: transparent;
+  border: 0;
+  padding:0;
+}
+
+table.sourceCode {
+  margin: .5em 0 .5em 0;
+  padding: 0; 
+  border-radius: 3px;
+  background-color: #f4f4f4;
+  line-height: 100%; 
+  width:100%;
+}
+table.sourceCode pre {
+  background: none;
+  border: none;
+  margin: 0;
+}
+tr.sourceCode, 
+td.sourceCode {
+  margin: 0; 
+  padding: 0; 
+  vertical-align: baseline; 
+  border: none; 
+}
+
+td.lineNumbers { 
+  margin: 0; 
+  padding: 0; 
+  text-align: right; 
+  border-top:none;
+  border-right: 1px solid #cccccc; 
+}
+
+td.lineNumbers { 
+  margin: 0; 
+  padding: 0; 
+  text-align: right; 
+  border-top:none;
+  border-right: 1px solid #cccccc; 
+}
+td.lineNumbers pre {
+  color:#cccccc;
+  margin: 0; 
+  padding-left: 0; 
+  padding-right:.2em;
+}
+
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+
+
+/*   
+ Table style
+
+*/ 
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  width:100%;
+}
+
+table thead > tr > th,
+table tbody > tr > th,
+table tfoot > tr > th,
+table thead > tr > td,
+table tbody > tr > td,
+table tfoot > tr > td {
+  padding: 6px;
+  line-height: 1.428571429;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+table thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  text-align: left;
+}
+
+table caption + thead tr:first-child th,
+table colgroup + thead tr:first-child th,
+table thead:first-child tr:first-child th,
+table caption + thead tr:first-child td,
+table colgroup + thead tr:first-child td,
+table thead:first-child tr:first-child td {
+  border-top: 0;
+}
+
+table tbody + tbody {
+  border-top: 2px solid black;
+}
+
+
+/*
+  Table of content
+
+*/
+
+#table-of-content { 
+  margin-bottom:2em; 
+  line-height:1em; 
+  padding:0.5em;
+  background-color: whitesmoke;
+}
+#table-of-content ul { 
+  padding:0; 
+  margin:0;
+}
+#table-of-content li { 
+  list-style-type: none; 
+  padding:0;
+  margin: 0; 
+}
+
+#table-of-content li li { 
+  padding-left:1em; 
+  margin: 0; 
+}
+#table-of-content a { 
+  text-decoration:none; 
+} 
+#table-of-content a:hover { 
+  text-decoration:underline; 
+}
+
+
+
+
+
+</style>
