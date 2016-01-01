@@ -91,21 +91,27 @@ begin
     namespace = OpenStruct.new
     namespace.content = Array.new
     
-    imgs = Dir["*.{jpg,jpeg,png}"]
+    imgs = Dir["*.{jpg,jpeg,png}"].sort
+
     sdirs = Dir.glob("*").select { |p| File.directory? p }
     $logger.info("#{dir}: #{imgs.length} images, #{sdirs.length} sub-directories")
 
     imgs.each do |img| 
       namespace.content << { link: img, src: img, desc: File.basename(img) }
     end
-    $logger.debug("Images: #{namespace.content.inspect}")
  
     sdirs.each do |sdir|
-      cover = "#{sdir}/cover"
-      $stderr.puts "#{dir}/#{cover}: missing" unless File.exists? cover
+      cover = String.new
+      if File.exists? cover
+        cover = "#{sdir}/cover"
+      else
+        $stderr.puts "#{dir}/#{cover}: missing"
+      end
       namespace.content << { link: "#{sdir}/index.html", src: cover, desc: sdir }
     end  
     
+    $logger.debug("Images: #{namespace.content.inspect}")
+
     html = ERB.new(template).result(namespace.instance_eval {binding})
     file = 'index.html'
     File.write(file,html.gsub(/^$\n/,''))
@@ -147,6 +153,8 @@ __END__
       border:2px solid lightgray;
       background:black;
       color:lightgray;
+      text-align:center;  
+      vertical-align:middle;
     }
 
     div.img:hover {
@@ -158,16 +166,24 @@ __END__
       height:auto;
     }
 
-    div.img div.desc {
-      text-align:center;  
+    div.img div.box {
+      min-width:400px;
+      min-height:230px;
+      color:red;
+      font-size:20px;
     }
-
   </style>
 </head>
 <body>
   <% content.each do |img| %>
     <div class="img">
-    <a href="<%= img[:link] %>"><img src="<%= img[:src] %>"></img></a>
+    <a href="<%= img[:link] %>">
+      <% if img[:src].empty? %>
+      <div class="box">no cover</div>
+      <% else %>
+      <img src="<%= img[:src] %>"></img>
+      <% end %>
+    </a>
     <div class="desc"><%= img[:desc]%></div>
     </div>
   <% end %>
