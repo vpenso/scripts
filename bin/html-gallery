@@ -101,11 +101,10 @@ begin
     end
  
     sdirs.each do |sdir|
-      cover = String.new
-      if File.exists? cover
-        cover = "#{sdir}/cover"
-      else
+      cover = "#{sdir}/cover"
+      unless File.exists? cover
         $stderr.puts "#{dir}/#{cover}: missing"
+        cover = String.new
       end
       namespace.content << { link: "#{sdir}/index.html", src: cover, desc: sdir }
     end  
@@ -141,51 +140,65 @@ __END__
   <style type="text/css">
 
     body {
-      background:whitesmoke;
-      font-size:9px;
+      background:#111;
+      font-size:11px;
     }
 
     div.img {
-      margin:3px;
-      padding:2px;
       float:left;
-      max-width:400px;
-      border:2px solid lightgray;
+      position:relative;
+      margin:3px;
+      width:400px;
+      height:400px;
+      border:2px solid #333;
       background:black;
       color:lightgray;
       text-align:center;  
-      vertical-align:middle;
     }
 
     div.img:hover {
       border:2px solid dodgerblue;
     }
 
-    div.img img {
-      width:100%;
-      height:auto;
+    div.img span.box {
+      display:inline-block;
+      height:100%;
+      vertical-align: middle;
+      padding:0;
+      margin:0;
     }
 
-    div.img div.box {
-      min-width:400px;
-      min-height:230px;
-      color:red;
-      font-size:20px;
+    div.img img {
+      display:inline-block;
+      max-width:99%;
+      max-height:99%;
+      vertical-align: middle;
+      text-align:center;  
+      padding:0;
+      margin:0;
+    }
+
+    div.img div.desc {
+      float: left;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      z-index: 1000;
+      background:black;
+      width:100%;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
   <% content.each do |img| %>
-    <div class="img">
     <a href="<%= img[:link] %>">
-      <% if img[:src].empty? %>
-      <div class="box">no cover</div>
-      <% else %>
-      <img src="<%= img[:src] %>"></img>
-      <% end %>
+      <div class="img">
+        <div class="desc"><%= img[:desc]%></div>
+        <span class="box"></span>
+        <img src="<%= img[:src] %>"></img>
+      </div>
     </a>
-    <div class="desc"><%= img[:desc]%></div>
-    </div>
   <% end %>
 </body>
 </html>
