@@ -116,6 +116,10 @@ git config --global color.status.added "green dim"
 git config --global color.status.changed "yellow dim"
 git config --global color.status.untracked "red dim"
 
+git config --global core.quotepath off
+git config --global i18n.logoutputencoding utf8
+git config --global i18n.commitencoding utf8
+
 # Turns off the trailing whitespace warning while 
 # applying patches
 git config --global apply.whitespace nowarn
