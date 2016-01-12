@@ -80,8 +80,7 @@ a code {
 
 */
 
-code,
-tt {
+code, tt, kbd {
   font-family: "Ubuntu Mono", Consolas, "Liberation Mono", Courier, monospace;
   font-size: 1.1em; 
   padding: 0.2em;
@@ -89,6 +88,12 @@ tt {
   font-size: 0.9em;
   border-radius: 3px; 
   white-space: nowrap;
+}
+
+
+kbd {
+  color:darkblue;
+  font-weight:bold;
 }
 
 pre {
@@ -99,7 +104,6 @@ pre {
   color: #333333;
   border-radius: 3px;
   border: 1px solid lightgray; 
-  background-color: rgba(0,0,0,0.04);
   overflow:auto;
   width:auto;
   white-space: pre-wrap;
