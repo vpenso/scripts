@@ -21,42 +21,22 @@ name=$(basename $0)
 function _help() {
 echo "Usage: $name [COMMAND] [ARGUMENT]
 
-By default the currently played song is displayed.
-
-$name h|help:
-  Show this text.
-$name config PATH:
-  Creates a configuration file for MPC, where
-  PATH is the directory of your music library.
-$name l|library [PATH]:
-  Show all music directories in PATH of your
-  library.
-$name p|playlist:
-  Show current playlist.
-$name a|add PATH:
-  Adds a direcotry from your music library to
-  the playlist.
-$name c|clear:
-  Remove all songs from playlist.
-$name @|crop:
-  Remove all songs except the current playing 
-  from playlist.
-$name 0:
-  Remove currently played song from playlist.
-$name d|delete NUMS:
-  Remove songs from playlist.
-$name r|play [NUM]:
-  Plays the music from your playlist.
-$name +|next:
-  Plays next song in playlist.
-$name -|prev:
-  Plays previous song in playlist.
-$name 1:
-  Toggles loops over currently played song.
-$name s|stop:
-  Stops playing music.
-$name kill:
-  Kills the MPC daemon."
+$name @|crop                Remove songs except current from playlist
+$name +|next                Play next song in playlist
+$name -|prev                Play previous song in playlist
+$name 0                     Remove current song from playlist
+$name 1                     Toggles looping
+$name a|add PATH            Adds directory to playlist
+$name c|clear               Remove all songs from playlist
+$name config PATH           Write ~/.mpcconf
+$name d|delete NUMS         Remove songs from playlist
+$name h|help                Show this text.
+$name kill                  Kill MPD daemon
+$name l|library [PATH]      Show music in PATH
+$name p|playlist            Show current playlist
+$name r|play [NUM]          Plays playlist
+$name s|stop                Stop playing music
+$name u                     Update database"
 }
 
 function _error() {
@@ -131,5 +111,6 @@ case "$command" in
   "s"|"stop") _mpc stop ;;
   "h"|"help") _help ;;
   "kill") killall mpd ;;
+  "u") _mpc update ;;
   *) _mpc current  ;;
 esac
