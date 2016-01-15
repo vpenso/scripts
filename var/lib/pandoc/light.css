@@ -92,8 +92,15 @@ code, tt, kbd {
 
 
 kbd {
+  border-radius: 3px;
+  background:whitesmoke;
   color:darkblue;
   font-weight:bold;
+}
+
+code {
+  border-radius: 3px;
+  background:whitesmoke;
 }
 
 pre {
@@ -183,7 +190,6 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
   border: 1px solid #ddd;
-  width:100%;
 }
 
 table thead > tr > th,
