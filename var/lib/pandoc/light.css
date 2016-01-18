@@ -103,6 +103,11 @@ code {
   background:whitesmoke;
 }
 
+td code {
+  background:none;
+}
+
+
 pre {
   font-size: 1.1em; 
   display: block;
