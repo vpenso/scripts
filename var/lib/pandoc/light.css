@@ -15,13 +15,11 @@ h4 { font-size: 1.2em; font-weight: 600; }
 h5 { font-size: 1.1em; font-weight: 600; }
 h6 { font-size: 1em; font-weight: 600; }
 
-strong { color: rgb(0, 0, 0); }
-del { color: rgb(94, 97, 110); }
-
 ul,ol {
-  padding-left:1em;
+  padding-left:2em;
 }
-ul li { list-style-type:circle; }
+
+ul li { list-style-type:disc; }
 
 blockquote {
   border-left: 1px solid #eeeeee;
