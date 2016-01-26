@@ -40,7 +40,8 @@ source ~/.zsh/antigen.zsh
 
 antigen-bundle git
 antigen-bundle zsh-users/zsh-syntax-highlighting
-antigen-bundle nojhan/liquidprompt
+
+PROMPT='$(git_super_status)%F{253}»%f '
 
 export HISTSIZE=10000
 export SAVEHIST=10000
@@ -69,7 +70,22 @@ ZSH_HIGHLIGHT_STYLES+=(
   double-quoted-argument 'fg=208,bold'
 )
 
+antigen-bundle olivierverdier/zsh-git-prompt
+__GIT_PROMPT_DIR=~/.zsh/repos/https-COLON--SLASH--SLASH-github.com-SLASH-olivierverdier-SLASH-zsh-git-prompt.git/
+export __GIT_PROMPT_DIR
+ZSH_THEME_GIT_PROMPT_PREFIX=""
+ZSH_THEME_GIT_PROMPT_SUFFIX=" "
+ZSH_THEME_GIT_PROMPT_SEPARATOR=""
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+ZSH_THEME_GIT_PROMPT_STAGED="%F{166}●"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="%F{166}✖"
+ZSH_THEME_GIT_PROMPT_CHANGED="%F{26}✚"
+ZSH_THEME_GIT_PROMPT_BRANCH="%F{243}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%F{166}…"
 antigen-apply
+PROMPT='$(git_super_status)%F{253}»%f '
+RPROMPT='%F{239}%n@%m%F{253}:%F{243}%~%k%f'
+
 
 autoload -U colors && colors
 if [ -f $HOME/.dir_colors/rainbow ] ; then
