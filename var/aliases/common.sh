@@ -65,11 +65,3 @@ alias ascii="man ascii"
 alias suspend="sudo true ; xscreensaver-command -lock ; sudo pm-suspend"
 
 calc() { echo "$*" | bc -l ; }
-
-alias m=music
-alias mute="amixer --quiet set Master toggle"
-alias volume="amixer --quiet set Master"
-
-play() { mpg123 $1 2>&- 1>&- & ; disown }
-stop() { killall mpg123 }
-
