@@ -56,7 +56,7 @@ alias ports='netstat -tulanp'
 # Print seconds since epoch
 alias epoch="date +%s"
 
-alias slurm=s
+alias s=slurm
 
 # Download a file
 alias get="curl -C - -O"
