@@ -1,6 +1,6 @@
 
 
-The [gnuplot-timeseries][01] scripts wraps `gnuplot` to enable users the create time series plots easily. 
+The [gnuplot-timeseries][1] scripts wraps `gnuplot` to enable users the create time series plots easily. 
  
     » gnuplot-timeseries -h
     Create SVG plots from time-series data tables.
@@ -52,4 +52,5 @@ Option `--print` will show the commands passed to _gunplot_. Pipe the output to 
     » gnuplot-timeseries /tmp/test.data -p > /tmp/test.plot
     » gnuplot /tmp/test.plot > /tmp/test.svg
 
-[01]: ../bin/gunplot-timeseries
+[1]: ../bin/gnuplot-timeseries
+

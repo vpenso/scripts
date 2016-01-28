@@ -1,6 +1,6 @@
 **Guide to use virtual machines for development and testing on the local workstation**, based on tools available in all modern Linux distributions: [KVM](http://www.linux-kvm.org), [Libvirt](http://libvirt.org/), [SSH](http://www.openssh.com/), [Rsync](http://rsync.samba.org/i), [SSHfs](http://fuse.sourceforge.net/sshfs.html), and [Chef](https://wiki.opscode.com).
 
-## Basics
+# Basics
 
 Check if your CPU supports virtualization:
 
@@ -29,7 +29,7 @@ Enable your user account to manage virtual machines:
 
     user = "USER"
 
-### Libvirt
+## Libvirt
 
 Use the `--connect` or `-c` options for **virsh** to specify the libvirtd instance to connect to:
 
@@ -50,7 +50,7 @@ It is possible to use the connection option with most of the libvirt tools:
     » virt-manager -c qemu+ssh://root@lxhvs01.devops.test/system
     » virt-top -c qemu+ssh://root@lxhvs01.devops.test/system
 
-### Virtual Machines
+## Virtual Machines
 
 The "virtinst" package (in Debian) ships the `virt-install` program which will configure and start a virtual machine for installation.
 
@@ -67,7 +67,7 @@ The **default location** for virtual machine images is `/var/lib/libvirt/images/
 
     » virt-install --bridge br124 --mac 02:FF:0A:0A:18:6F --boot network […]
 
-### Mount Images
+## Mount Images
 
 Use `qemu-nbd` (package "qemu-utils" in Debian) to mount a qcow2 virtual machine disk image (requires root):
 
@@ -93,7 +93,7 @@ Follow these steps:
     /dev/nbd0 disconnected
 
 
-### Life Cycle
+## Life Cycle
 
 Basically two types of virtual machines are distinguished. **Transient** "undefined" virtual machines exist until they are shutdown. **Persistent** virtual machines have a permanent "defined" configuration, and support for example automatic start on host reboot. Virtual machines installed with `virt-install` are defined by default. In order to **list** all defined virtual machines (including not running instances) use the option `--all`:
 
@@ -152,7 +152,7 @@ function vm() {
 }
 ```
 
-## Network
+# Network
 
 For development it is recommended to use a host **internal network bridged to the external LAN using a NAT**. This allows communication between the local virtual machine instances, and at the same time protects these from external access as well as prevents accidental interference of local services with the LAN. 
 
@@ -198,7 +198,7 @@ Show the configuration for a single host with the **lookup** command.
     » virsh-nat-bridge --network 192.168.0 --bridge br0 --nodes alice,bob […]
 
 
-## Configuration 
+# Configuration 
 
 The basic concept is to maintain a **dedicated directory for each node and its configuration files** (like the login credentials, or file for the configuration management). Below you can see an example directory listing:
 
@@ -215,7 +215,7 @@ The basic concept is to maintain a **dedicated directory for each node and its c
 
 The `VM_INSTANCE_PATH` environment variable defines the **base directory** used by ↴[virsh-instance][virsh-instance] to deploy virtual machines instances (by default `/srv/vms/instances`). The directory are called like the host name (FQDN) of the virtual machine instance. 
 
-### Images
+## Images
 
 One of the advantages of using virtual machines is the convenience of cloning them as many times as needed. **It is recommended to maintain a set of basic virtual machine images used to clone new virtual machine instances from**. The environment variable `VM_IMAGE_PATH` is used by the `virsh-instance` command to locate these virtual machine images. 
 
@@ -264,7 +264,7 @@ Elevate the _devops_ user to be able to run all commands with Sudo:
 
     » echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
 
-### Login
+## Login
 
 Enable password-less login using an SSH configuration file `ssh_config`. Defining the login account name (e.g. "devops"), the SSH key to use, and the node IP address:
 
@@ -296,7 +296,7 @@ The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers aro
 
 The three command above will install Rsync and Sudo (unless installed already), as well as deploy the SSH public key. Note that these scripts aren't limited to local virtual machines instances. It is possible to use password protected keys with an _ssh-agent_ and any remote node (not a virtual machine necessarily).
 
-### Customization 
+## Customization 
 
 The ↴[virsh-config][virsh-config] scripts creates simple libvirt [XML configuration](http://libvirt.org/formatdomain.html) files for virtual machines. Use a MAC- and IP-address pair from the `virsh-nat-bridge`, write a configuration file, and start a new virtual machine instance:
 
@@ -320,7 +320,7 @@ The ↴[virsh-config][virsh-config] scripts creates simple libvirt [XML configur
     » virsh create libvirt_instance.xml
     […]
 
-## Instances
+# Instances
 
 It is possible to start as many virtual machines instances as your hardware can sustain. Basically it's limited by memory. Before you start a virtual machine instance you need to select the host name to use.
 
@@ -363,7 +363,7 @@ The libvirt and SSH configuration is created automatically:
 
 Use the command `remove` to drop the virtual machine instance. Note that this will stop and undefine the virtual machine instance, but not delete the corresponding file from *VM_INSTANCE_PATH*.
 
-## Access
+# Access
 
 Once you have started a virtual machine instance, change to its directory and login with the [ssh-exec][ssh-exec] command. Unless when parameters are provided, the script will login with the **devops** account. You can use the `--sudo` option to login as devops and immediately switch user to become root:
 
@@ -385,7 +385,7 @@ All parameters to the `ssh-exec` command will be executed as associated command 
     Retype new UNIX password: 
     passwd: password updated successfully
 
-## Sharing Data
+# Sharing Data
 
 The script ↴[ssh-sync][ssh-sync] wraps the Rsync command and allows differential synchronisation of files and directories:
 
@@ -402,7 +402,7 @@ Remote path need to be prefixed with colon, e.g. `:/absolute/remote/path`.
 
 Mount the root file-system of the virtual machine instance with ↴[ssh-fs][ssh-fs].
 
-## Provisioning
+# Provisioning
 
 This section introduces methods to configured nodes using the [Chef](https://wiki.opscode.com) Configuration Management System. It is assumed that Chef cookbooks and roles are available in the local file-system (by default in `~/chef/`). The ↴[chef-remote][chef-remote] script uploads these to a define remote node and executes `chef-solo` (depends on ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync]) on the targeted system.
 
