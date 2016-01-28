@@ -14,8 +14,8 @@ For example to generate an HTML page from a document in this directory:
     » source ../source_me.sh
     » pandoc-html-book libvirt.md > libvirt.html
 
-1. Install the `pandoc` package on [Debian][6] (cf. [Installing Pandoc][4])
-2. Load the `pandoc-html-*` aliases into your shell environment with <kbd>source</kbd>.
+1. Install the `pandoc` package on [Debian][6] (cf. [Installing Pandoc][4]).
+2. Load the `pandoc-html-*` aliases into your shell environment with → [source_me.sh][10].
 3. Generate an HTML page from a Markdown file.
 
 [1]: https://en.wikipedia.org/wiki/Markdown
@@ -25,3 +25,5 @@ For example to generate an HTML page from a document in this directory:
 [5]: https://en.wikipedia.org/wiki/Cascading_Style_Sheets
 [6]: https://www.debian.org/
 
+
+[10]: ../source_me.sh
