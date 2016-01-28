@@ -8,9 +8,6 @@ $for(header-includes)$
 $endfor$
 </head>
 <body>
-<div id="table-of-content">
-$toc$
-</div>
 $body$
 </body>
 </html>
