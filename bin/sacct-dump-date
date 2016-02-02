@@ -131,6 +131,7 @@ begin
     user
     uid
     submit
+    priority
     eligible
     start
     end
@@ -139,9 +140,12 @@ begin
     state
     nnodes
     ncpus
+    ntasks
     reqcpus
     reqmem 
     timelimit
+    cputime
+    cputimeraw
     nodelist
     jobname
   )
