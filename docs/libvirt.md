@@ -6,24 +6,35 @@ Check if your CPU supports virtualization:
 
     » egrep --color '(vmx|svm)' /proc/cpuinfo
 
-Install all required packages (by the example of Debian), and check with `lsmod` if the KVM modules are loaded:
+If the flags are missing enabled support for virtualization in the BIOS/EFI.
 
-    » sudo apt-get -y install libvirt-bin virt-manager virt-viewer virt-top virtinst qemu-utils qemu-kvm
+Required packages on **Debian**
+
+    » sudo apt-get -y install libvirt-bin virt-manager virt-viewer \
+       virt-top virtinst qemu-utils qemu-kvm
     […]
-    » lsmod | grep kvm
-    […]
 
-Make sure virtualization support is enabled in your BIOS/EFI if the KVM modules are missing.
-
-Installing the _dnsmasq_ package (as dependency of _libvrit-bin_) will start automatically an instance of a _dnsmasq_ daemon. Before you continue make sure to shut it down and disable it from the boot process.
+Installing the _dnsmasq_ package (as dependency of _libvirt-bin_) will start automatically an instance of a _dnsmasq_ daemon. Before you continue make sure to shut it down and disable it from the boot process.
 
     » sudo service dnsmasq stop
     » sudo update-rc.d dnsmasq disable
 
+Required packages on **Fedora** (>=22)
+
+    » dnf groupinfo virtualization 
+    […]
+    » sudo dnf -y group install with-optional virtualization
+    » sudo systemctl start libvirtd && sudo systemctl enable libvirtd
+
+Check with `lsmod` if the KVM modules are loaded:
+
+    » lsmod | grep kvm
+    […]
+
+
 Enable your user account to manage virtual machines:
 
-    » sudo adduser `id -un` libvirt
-    » sudo adduser `id -un` kvm
+    » sudo usermod -a -G libvirt,kvm `id -un`
 
 **Re-login to activate these group rights.** Add your account name to `/etc/libvirt/qemu.conf`:
 
@@ -31,15 +42,17 @@ Enable your user account to manage virtual machines:
 
 ## Libvirt
 
-Use the `--connect` or `-c` options for **virsh** to specify the libvirtd instance to connect to:
+Use the `--connect` or `-c` options for <kbd>virsh</kbd> to specify the libvirtd instance to connect to:
 
     » virsh --connect qemu:///system list
     […]
     » virsh -c qemu:///session list --all
 
-All `//system` URIs connect to a libvirtd running as root, while `//session` launches a user specific libvirtd instance with limitations in network connectivity. Define the default connection with:
+The `//system` URI connect to a libvirtd running as root, while `//session` launches a user specific libvirtd instance with limitations in network connectivity. Define the default connection with:
 
     » export LIBVIRT_DEFAULT_URI=qemu:///system
+
+→ [var/aliases/libvirt.sh](../var/aliases/libvirt.sh)
 
 Connect to a remote libvirt instance (read the [URI Reference](http://libvirt.org/remote.html#Remote_URI_reference)):
 
@@ -52,7 +65,7 @@ It is possible to use the connection option with most of the libvirt tools:
 
 ## Virtual Machines
 
-The "virtinst" package (in Debian) ships the `virt-install` program which will configure and start a virtual machine for installation.
+The <kbd>virt-install</kbd> program is used to install virtual machine images:
 
     » virt-install --ram 2048 --name install --graphics vnc \
        --os-type linux --virt-type kvm \
@@ -135,23 +148,6 @@ The libvirtd stores the XML configuration for defined virtual machine instances 
 
 Read [VM Lifecycle](http://wiki.libvirt.org/page/VM_lifecycle) for a in detail explanation.
 
-For constantly recycling virtual machines for development and testing it may be useful to define an alias function wrapping the most common `vrish` commands: 
-
-```{.bash .numberLines}
-function vm() {
-  local command=$1
-  case "$command" in
-  "define"|"d") shift ; virsh define "$@" ;;
-  "list"|"l") shift ; virsh list --all ;;
-  "remove"|"r") shift ; virsh shutdown "$1" ; virsh undefine "$1" ;;
-  "shutdown"|"h") shift ; virsh shutdown "$1" ;;
-  "start"|"s") shift ; virsh start "$1" ;;
-  "undefine"|"u") shift ; virsh undefine "$@" ;;
-  *) echo "Usage: vm d|h|l|r|s|u [args]" ;;
-  esac
-}
-```
-
 # Network
 
 For development it is recommended to use a host **internal network bridged to the external LAN using a NAT**. This allows communication between the local virtual machine instances, and at the same time protects these from external access as well as prevents accidental interference of local services with the LAN. 
@@ -222,7 +218,7 @@ One of the advantages of using virtual machines is the convenience of cloning th
 Use the command **install** to create a new virtual machine images. Internally this script uses `virt-install` (as described above) to install Debian stable 64Bit.
 
     » export VM_IMAGE_PATH=/srv/vms/images
-    » virsh-instance install debian64-7.1-basic $VM_IMAGE_PATH/debian64-7.1-basic/disk.img
+    » virsh-instance install debian64-8 $VM_IMAGE_PATH/debian64-8/disk.img
     […]
     » virsh-instance install \
         --location http://ftp.de.debian.org/debian/dists/stable/main/installer-i386
@@ -246,9 +242,9 @@ Set the following configuration options during installation:
 Once the operating system is installed make sure to boot it another time to check if everything is working. Use a MAC- and IP-address pair from the `virsh-nat-bridge` and create a libvirt configuration with ↴[virsh-config][virsh-config]:
 
     […]
-    » virsh undefine debian64-7.1-basic
-    » cd /srv/vms/images/debian64-7.1-basic
-    » virsh-config -n debian64-7.1-basic -m 02:FF:0A:0A:06:1A libvirt_instance.xml
+    » virsh undefine debian64-8
+    » cd /srv/vms/images/debian64-8
+    » virsh-config -n debian64-8 -m 02:FF:0A:0A:06:1A libvirt_instance.xml
     » virsh create libvirt_instance.xml
     […]
 
@@ -288,10 +284,10 @@ Use the script ↴[ssh-instance][ssh-instance] to create the SSH configuration f
 
 The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers around the `ssh` and `rsync` commands. They automatically use an `ssh_config` file if it is present in the working directory:
 
-    » ssh-exec root@instance "apt-get install rsync sudo ; usermod -a -G sudo devops"
-    » ssh-exec 'mkdir -p -m 0700 $HOME/.ssh ; mkdir -p -m 0700 /root/.ssh'
+    » ssh-exec -s "apt-get install rsync sudo ; usermod -a -G sudo devops"
+    » ssh-exec -s 'mkdir -p -m 0700 /home/devops/.ssh ; mkdir -p -m 0700 /root/.ssh'
     » ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
-    » sssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
+    » ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 
 
 The three command above will install Rsync and Sudo (unless installed already), as well as deploy the SSH public key. Note that these scripts aren't limited to local virtual machines instances. It is possible to use password protected keys with an _ssh-agent_ and any remote node (not a virtual machine necessarily).

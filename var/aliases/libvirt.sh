@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2015 Victor Penso
+# Copyright 2013-2016 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+export LIBVIRT_DEFAULT_URI=qemu:///system
+
+export VM_IMAGE_PATH=~/vms/images
+export VM_INSTANCE_PATH=~/vms/instances
+
+alias vi=virsh-instance
+alias vc=virsh-config
 
 function vm() {
   local command=$1
@@ -52,3 +59,5 @@ function vm() {
     ;;
   esac
 }
+
+
