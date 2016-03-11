@@ -36,9 +36,13 @@ Enable your user account to manage virtual machines:
 
     » sudo usermod -a -G libvirt,kvm `id -un`
 
-**Re-login to activate these group rights.** Add your account name to `/etc/libvirt/qemu.conf`:
+**Re-login to activate these group rights.** 
 
-    user = "USER"
+Configure **user** in `/etc/libvirt/qemu.conf` and restart the service:
+
+    » sudo grep '^user =' /etc/libvirt/qemu.conf
+    user = "vpenso"
+    » sudo systemctl restart libvirtd && sudo systemctl status libvirtd
 
 ## Libvirt
 
@@ -275,17 +279,17 @@ Enable password-less login using an SSH configuration file `ssh_config`. Definin
 
 Use the script ↴[ssh-instance][ssh-instance] to create the SSH configuration files (targeting a host called "instance" by default). The option `-i path` points to the SSH key used for password-less login, followed by the instance IP-address.
 
-    » cd /srv/vms/images/debian64-7.1-basic
+    » cd /srv/vms/images/debian64-8
     […]
     » ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
     » ssh-instance -i keys/id_rsa 10.1.1.26 
-    /srv/vms/images/debian64-7.1-basic/ssh_config written.
+    /srv/vms/images/debian64-8/ssh_config written.
     » ssh -F ssh_config instance -C […]
 
 The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers around the `ssh` and `rsync` commands. They automatically use an `ssh_config` file if it is present in the working directory:
 
-    » ssh-exec -s "apt-get install rsync sudo ; usermod -a -G sudo devops"
-    » ssh-exec -s 'mkdir -p -m 0700 /home/devops/.ssh ; mkdir -p -m 0700 /root/.ssh'
+    » ssh-exec "su -lc 'apt-get install rsync sudo ; usermod -a -G sudo devops'"
+    » ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
     » ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
     » ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 
