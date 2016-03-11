@@ -288,7 +288,8 @@ Use the script ↴[ssh-instance][ssh-instance] to create the SSH configuration f
 
 The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers around the `ssh` and `rsync` commands. They automatically use an `ssh_config` file if it is present in the working directory:
 
-    » ssh-exec "su -lc 'apt-get install rsync sudo ; usermod -a -G sudo devops'"
+    » ssh-exec "su -lc 'apt install rsync sudo"
+    » ssh-exec 'su -lc echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops'
     » ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
     » ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
     » ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
@@ -406,7 +407,7 @@ Mount the root file-system of the virtual machine instance with ↴[ssh-fs][ssh-
 
 This section introduces methods to configured nodes using the [Chef](https://wiki.opscode.com) Configuration Management System. It is assumed that Chef cookbooks and roles are available in the local file-system (by default in `~/chef/`). The ↴[chef-remote][chef-remote] script uploads these to a define remote node and executes `chef-solo` (depends on ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync]) on the targeted system.
 
-    » ssh-exec -s 'apt-get install chef rsync'
+    » ssh-exec -r 'apt install chef rsync'
     […]
     » chef-remote cookbook sys
     Cookbook 'sys' added
