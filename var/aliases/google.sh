@@ -15,6 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+alias @gmail='firefox -new-tab gmail.com'
+
 function @google-translate() { 
   local lang=${1:-"en/de"}
   shift 2>-
@@ -29,5 +31,9 @@ function @google() {
   $BROWSER "http://www.google.com/search?h1=$lang#q=$(uri-encode $@)"
 }
 
+
 alias @g="@google en"
 alias @g.de="@google de"
+
+
+
