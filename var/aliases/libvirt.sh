@@ -20,6 +20,10 @@ export LIBVIRT_DEFAULT_URI=qemu:///system
 export VM_IMAGE_PATH=~/vms/images
 export VM_INSTANCE_PATH=~/vms/instances
 
+echo "LibVirt configuration [$SCRIPTS/var/aliases/libvirt.sh]"
+echo "  VM_IMAGE_PATH=$VM_IMAGE_PATH"
+echo "  VM_INSTANCE_PATH=$VM_INSTANCE_PATH"
+
 alias vi=virsh-instance
 alias vc=virsh-config
 
