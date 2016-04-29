@@ -20,7 +20,7 @@ BMCs may support access by following methods, depending on the vendor:
 
     » apt install openipmi freeipmi-tools ipmitool
 
-**OpenIPMI** implements device drivers that go into the Linux kernel, and a user-level library that provides a higher-level abstraction of IPMI and generic services that can be used on any operation system.  
+**OpenIPMI** implements device drivers that go into the Linux kernel, and a user-level library that provides a higher-level abstraction of IPMI and generic services that can be used on any operation system.
 
 Kernel 3.10 and later will auto load OpenIPMI modules
 
@@ -60,6 +60,16 @@ Connects to the serial over LAN (SOL) console with:
     Firmware Revision         : 1.70
     IPMI Version              : 2.0
     […]
+
+## Accounts
+
+List user accounts, and use the IDs to configure name and password:
+
+    » ipmitool user list 1
+    » ipmitool user set name 2 <name>
+    » ipmitool user set password 2
+
+## Network
 
 Belows command will print the network settings:
 
