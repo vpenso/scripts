@@ -17,6 +17,7 @@ Deploy role [account_database][2], to install a MySQL database.
 
 Grant the `slurm` user access to the database
 
+    » ssh-exec -r 'sed -i "s/^bind-address/#bind-address/" /etc/mysql/my.cnf'
     » ssh-exec -r "grep -e '^user' -e '^password' /etc/mysql/debian.cnf"
     » ssh-exec -r "mysql -u debian-sys-maint -p"
     mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
@@ -45,8 +46,16 @@ Deploy role [cluster_controller][3], to install slurmctld, and slurmdbd
 Deploy a basic Slurm configuration from [slurm/basis][4]
 
     » ssh-sync -r $SCRIPTS/var/slurm/basic/ :/etc/slurm-llnl
-    » ssh-exec -r 'systemctl restart slurmdbd slurmctld'
-    » ssh-exec -r sinfo
+
+    » slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -s $@ ; cd - >/dev/null }
+    » slurm-cc 'systemctl restart slurmdbd slurmctld'
+    » slurm-cc sinfo
+
+Configure the accounting, and allow job execution with the `devops` user:
+
+    » slurm-cc 'sacctmgr -i add cluster vega --immediate'
+    » slurm-cc 'sacctmgr add account hpc description=hpc organization=hpc --immediate'
+    » slurm-cc 'sacctmgr create user name=devops account=hpc defaultaccount=hpc --immediate'
 
 ## Execution Nodes
 
@@ -58,11 +67,12 @@ Create a couple a virtual machines for the execution nodes called **lxb00[1,4].d
 
 Deploy the Chef role [execution_node][5] to install _slurmd_
 
-    » lxb-loop() { for d in $VM_INSTANCE_PATH/lxb* ; do cd $d ; $@ ; cd - >/dev/null ; done }
-    » lxb-loop chef-remote cookbook sys
-    » lxb-loop chef-remote role $SCRIPTS/var/chef/roles/debian/jessie/execution_node.rb
-    » lxb-loop chef-remote -r "role[execution_node]" solo
-    » lxb-loop ssh-exec -s 'systemctl restart munge slurmd'
+    » slurm-en() { for d in $VM_INSTANCE_PATH/lxb* ; do cd $d ; $@ ; cd - >/dev/null ; done }
+    » slurm-en chef-remote cookbook sys
+    » slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/jessie/execution_node.rb
+    » slurm-en chef-remote -r "role[execution_node]" solo
+    » slurm-en ssh-exec -s 'systemctl restart munge slurmd'
+
 
 
 [1]: ../libvirt.md
