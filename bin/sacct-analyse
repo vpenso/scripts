@@ -55,8 +55,8 @@ Columns in the output:
   USER                       Number of users for a given account, or the user name.
   USE%                       Relative use of the cluster in percent from the 
                              selected data set.
-  SHR%                       Absolute pre-configured cluster share in percent 
-  QWM                        Median time jobs waited in the queue, format HH:MM
+  SHR%                       Normalized fair share in percent
+  QWM                        Median time jobs waited in the queue, format [DD-]HH:MM
   RUNTIME                    Total run-time in seconds
   JOBS                       Total number of jobs
   CO                         Total number of completed jobs
@@ -543,7 +543,7 @@ end
 begin
 
   $options = OpenStruct.new
-  $options.accounts  = Array.new
+  $options.account = Array.new
   $options.debug = false
   $options.raw_json = false
   $options.node_regex = String.new
