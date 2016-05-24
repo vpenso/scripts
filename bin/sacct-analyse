@@ -782,18 +782,46 @@ begin
   end
   
   sortby.each do |elem|
+
+    # Get the data for a given element
+    data = if $options.users
+             o_data['users'][elem]
+           elsif $options.partitions
+             o_data['partitions'][elem]
+           else
+             o_data['accounts'][elem]
+           end
+
+    partition = if $options.partitions
+                  elem
+                else
+                  if data['partitions'].length > 1
+                    data['partitions'].length
+                  else
+                    data['partitions'].keys.first
+                  end
+                end
+
+    user = if $options.users
+             elem
+           else
+             # Number of users which consumed resources
+             user = data['users'].keys.length
+           end
+
+    account = unless $options.users || $options.partitions
+                elem
+              else
+                # The number of accounts a use has consumed resources from
+                if data['accounts'].keys.length > 1
+                  data['accounts'].keys.length
+                else
+                  data['accounts'].keys.first
+                end
+              end
+
     share = 0.0
-    #
-    # Primary column as defined by user option, either by account or user
-    #
     if $options.users
-      data = o_data['users'][elem]
-      # The number of accounts a use has consumed resources from
-      account = data['accounts'].keys.length
-      # The name of the user
-      user = elem
-      # Number of partitions
-      partition = data['partitions'].length
       # Accumulate fair share for a given user on all associated accounts
       data['accounts'].keys.each do |account|
         share += shares[account]['users'][user]['share']['norm'].to_f * 100
@@ -801,26 +829,13 @@ begin
       # Two digits fair share value
       share = sprintf('%.2f', share)
     elsif $options.partitions
-      data = o_data['partitions'][elem]
-      # Number of accounts which consumed resources
-      account = data['accounts'].keys.length
-      # Number of users which consumed resources
-      user = data['users'].keys.length
-      # Name of the partition
-      partition = elem
       # Partitions don't have associated shares
       share = '-'
     else
-      data = o_data['accounts'][elem]
-      # Name of the account
-      account = elem
-      # Number of users which have consumed resources associated to this account
-      user = data['users'].keys.length
-      # Number of partitions used by this account
-      partition = data['partitions'].length
       # Fair share configured for this account
       share = sprintf('%.2f', shares[account]['share']['norm'].to_f*100)
     end
+
     #
     # Assemble the fields for this table row
     #
