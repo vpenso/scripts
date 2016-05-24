@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.2
+VERSION = 0.21
 
 require 'ostruct'
 require 'getoptlong' 
@@ -42,6 +42,7 @@ Read accounting data from Slurm and accumulate statistics:
                              of nodes from the cluster.
   --no-header, -h            Disable header information in the output.
   --parsable, -p DELIM       Print output with given delimiter
+  --run-time, -R             Show accumulative statistics of job run-times. 
   --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
   --states, -S               Show job states.
   --user, -u <usr,usr>       Limit the output to a given list of users
@@ -63,7 +64,15 @@ Columns in the output:
   CA                         Total number of canceled jobs
   F                          Total number of failed jobs
   NF                         Total number of node failers
-  TO                         Total number of jobs stopeed by time out
+  TO                         Total number of jobs ended by time out
+  <5m                        Number of jobs with a run-time sorter then 5 minutes
+  <1h                        Number of jobs with a run-time sorter then 1 hour
+  <4h                        Number of jobs with a run-time sorter then 4 hours
+  <8h                        Number of jobs with a run-time sorter then 8 hours
+  <12h                       Number of jobs with a run-time sorter then 12 hours
+  <1d                        Number of jobs with a run-time sorter then 1 day
+  <7d                        Number of jobs with a run-time sorter then 7 days
+  >7d                        Number of jobs with a run-time longer then 7 days
 
 Examples:
 
@@ -351,7 +360,17 @@ module Slurm
             'raw_time' => 0,            # Total accumulated run-time on this account 
             'job_count' => 0,           # Total number of executed jobs
             'job_states' => {},         # Total number of jobs in certain exit states
-            'wait_time' => []           # Time in seconds jobs waited in the queue 
+            'wait_time' => [],          # Time in seconds jobs waited in the queue 
+            'run_time' => {             # Jobs run-time...
+              'lt_5m'  => 0,            # less then 5 minutes
+              'lt_1h'  => 0,            # less then 1 hour
+              'lt_4h'  => 0,            # less then 4 hours
+              'lt_8h'  => 0,            # less then 8 hours
+              'lt_12h' => 0,            # less then 12 hours
+              'lt_1d'  => 0,            # less then 24 hours
+              'lt_7d'  => 0,            # less then 7 days
+              'gt_7d'  => 0             # greater then 7 days
+            }
           }
           Slurm::SACCT_STATES.each { |s| o_data['accounts'][a_name]['job_states'][s] = 0 } 
         end
@@ -361,6 +380,7 @@ module Slurm
         o_data['accounts'][a_name]['raw_time'] += r_time
         o_data['accounts'][a_name]['job_count'] += 1
         o_data['accounts'][a_name]['job_states'][state] += 1
+        o_data['accounts'][a_name]['run_time'][run_time] += 1
 
         # Initialize the users data structure
         #
@@ -545,10 +565,11 @@ begin
   $options = OpenStruct.new
   $options.account = Array.new
   $options.debug = false
-  $options.raw_json = false
   $options.node_regex = String.new
   $options.no_header = false
   $options.parsable = String.new
+  $options.raw_json = false
+  $options.run_time = false
   $options.states = false
   $options.sortby = 'a'
   $options.users = false
@@ -572,6 +593,7 @@ begin
     ['--no-header','-h',GetoptLong::NO_ARGUMENT],
     ['--parsable','-P',GetoptLong::REQUIRED_ARGUMENT],
     ['--raw-json','-J',GetoptLong::NO_ARGUMENT],
+    ['--run-time','-R',GetoptLong::NO_ARGUMENT],
     ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
     ['--states','-S',GetoptLong::NO_ARGUMENT],
     ['--user','-u',GetoptLong::REQUIRED_ARGUMENT],
@@ -606,6 +628,8 @@ begin
       $options.parsable = arg[0]
     when '--raw-json'
       $options.raw_json = true
+    when '--run-time'
+      $options.run_time = true
     when '--sort-by'
       $options.sortby = arg
     when '--states'
@@ -670,6 +694,15 @@ begin
       'F' << 
       'NF' << 
       'TO' if $options.states
+    header <<
+      '<5m' <<
+      '<1h' <<
+      '<4h' <<
+      '<8h' <<
+      '<12h' <<
+      '<1d' <<
+      '<7d' <<
+      '>7d' if $options.run_time
     table << header
   end
 
@@ -706,6 +739,16 @@ begin
         row << a_data['job_states']['node_fail']
         row << a_data['job_states']['timeout']
       end
+      if $options.run_time
+        row << a_data['run_time']['lt_5m']
+        row << a_data['run_time']['lt_1h']
+        row << a_data['run_time']['lt_4h']
+        row << a_data['run_time']['lt_8h']
+        row << a_data['run_time']['lt_12h']
+        row << a_data['run_time']['lt_1d']
+        row << a_data['run_time']['lt_7d']
+        row << a_data['run_time']['gt_7d']
+      end
       table << row 
     end 
   # Iterate over the list of sorted users
@@ -733,6 +776,16 @@ begin
         row << u_data['job_states']['failed']
         row << u_data['job_states']['node_fail']
         row << u_data['job_states']['timeout']
+      end
+      if $options.run_time
+        row << u_data['run_time']['lt_5m']
+        row << u_data['run_time']['lt_1h']
+        row << u_data['run_time']['lt_4h']
+        row << u_data['run_time']['lt_8h']
+        row << u_data['run_time']['lt_12h']
+        row << u_data['run_time']['lt_1d']
+        row << u_data['run_time']['lt_7d']
+        row << u_data['run_time']['gt_7d']
       end
       # Append row to output table
       table << row
