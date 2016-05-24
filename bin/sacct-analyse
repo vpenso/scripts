@@ -42,18 +42,19 @@ Read accounting data from Slurm and accumulate statistics:
                              of nodes from the cluster.
   --no-header, -h            Disable header information in the output.
   --parsable, -p DELIM       Print output with given delimiter
+  --partitions, -P           Show partition statistics.
   --run-time, -R             Show accumulative statistics of job run-times. 
   --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
   --states, -S               Show job states.
   --user, -u <usr,usr>       Limit the output to a given list of users
-  --users, -U                Show users instead of accounts.
+  --users, -U                Show users statistics.
   --version, -v              Print version number.
 
 Columns in the output:
 
-  ACCOUNT                    Slurm account name, or the number of accounts a user
-                             is associated to.
-  USER                       Number of users for a given account, or the user name.
+  ACCT                       Account name or number of accounts.
+  USER                       User name or number of users.
+  PART                       Partitions name or number of partitiosn.
   USE%                       Relative use of the cluster in percent from the 
                              selected data set.
   SHR%                       Normalized fair share in percent
@@ -294,6 +295,7 @@ module Slurm
       o_data = {
         'accounts' => Hash.new,
         'users' => Hash.new,
+        'partitions' => Hash.new,
         'raw_time' => 0,
         'job_count' => 0
       }
@@ -314,27 +316,28 @@ module Slurm
         u_name = job['user']
         nodelist = job['nodelist']
 
-        # Skip if the request nodes have not been part of this job allocation
+        ##
         #
+        # Evaluate command line options...
+        #
+        # Skip if the request nodes have not been part of this job allocation
         unless $options.node_regex.empty?
           next unless nodelist =~ Regexp.new($options.node_regex)
         end
-
+        # Skip if the user has not been selected by option
         unless $options.user.empty?
           next unless $options.user.include? u_name          
         end
-
+        # Skip if the job is not belonging to a given account
         unless $options.account.empty?
           next unless $options.account.include? a_name
         end
 
         r_time = job['cputimeraw'].to_i
         p_name = job['partition']
-
         # This may include states  like "CANCELLED by 1234",
         # therefore everything after the first space is removed
         state  = job['state'].gsub(/\s.*/,'').downcase
-
         # Accumulate accounting data for the individual accounts
         #
         run_time = case
@@ -347,18 +350,15 @@ module Slurm
                    when r_time < 604800 ; 'lt_7d'
                    else                 ; 'gt_7d'
                    end
-        
-        
 
 
-        o_data['raw_time'] += r_time
-        o_data['job_count'] += 1
-
+        ##
         # Initialize the account data structure
         #
         if not o_data['accounts'].has_key? a_name
           o_data['accounts'][a_name] = {
-            'users' => {},              # List of users having consumed resource on this account
+            'users' => {},              # List of users 
+            'partitions' => {},         # List of partitions 
             'raw_time' => 0,            # Total accumulated run-time on this account 
             'job_count' => 0,           # Total number of executed jobs
             'job_states' => {},         # Total number of jobs in certain exit states
@@ -374,16 +374,12 @@ module Slurm
               'gt_7d'  => 0             # greater then 7 days
             }
           }
-          Slurm::SACCT_STATES.each { |s| o_data['accounts'][a_name]['job_states'][s] = 0 } 
+          Slurm::SACCT_STATES.each do |state| 
+            o_data['accounts'][a_name]['job_states'][state] = 0
+          end
         end
 
-        # Accumulate accounting data for the individual accounts
-        #
-        o_data['accounts'][a_name]['raw_time'] += r_time
-        o_data['accounts'][a_name]['job_count'] += 1
-        o_data['accounts'][a_name]['job_states'][state] += 1
-        o_data['accounts'][a_name]['run_time'][run_time] += 1
-
+        ##
         # Initialize the users data structure
         #
         if not o_data['users'].has_key? u_name
@@ -405,17 +401,81 @@ module Slurm
               'gt_7d'  => 0             # greater then 7 days
             }
           }
-          Slurm::SACCT_STATES.each { |s| o_data['users'][u_name]['job_states'][s] = 0 } 
+          Slurm::SACCT_STATES.each do |state| 
+            o_data['users'][u_name]['job_states'][state] = 0
+          end
         end
 
-        o_data['users'][u_name]['raw_time']             += r_time
-        o_data['users'][u_name]['job_count']            += 1
-        o_data['users'][u_name]['job_states'][state]    += 1
-        o_data['users'][u_name]['run_time'][run_time]   += 1
-        o_data['users'][u_name]['accounts'][a_name]      = {} unless 
-             o_data['users'][u_name]['accounts'].include? a_name
-        o_data['users'][u_name]['partitions'][p_name]    = {} unless 
-             o_data['users'][u_name]['partitions'].include? a_name
+        if not o_data['partitions'].has_key? p_name
+          o_data['partitions'][p_name] = {
+            'accounts' => {},           # List of accounts
+            'users' => {},              # List of users 
+            'raw_time' => 0,            # Total accumulated run-time
+            'job_count' => 0,           # Total number of executed jobs
+            'job_states' => {},         # Total number of jobs in certain exit states
+            'wait_time' => [],          # Time in seconds jobs waited in the queue
+            'run_time' => {             # Jobs run-time...
+              'lt_5m'  => 0,            # less then 5 minutes
+              'lt_1h'  => 0,            # less then 1 hour
+              'lt_4h'  => 0,            # less then 4 hours
+              'lt_8h'  => 0,            # less then 8 hours
+              'lt_12h' => 0,            # less then 12 hours
+              'lt_1d'  => 0,            # less then 24 hours
+              'lt_7d'  => 0,            # less then 7 days
+              'gt_7d'  => 0             # greater then 7 days
+            }
+          }
+          Slurm::SACCT_STATES.each do |state| 
+            o_data['partitions'][p_name]['job_states'][state] = 0
+          end
+        end
+
+        ##
+        # Populate the output object with statistical data 
+        #
+        # Accumulated CPU time consumed by all users/accounts
+        o_data['raw_time'] += r_time
+        # Total number of jobs executed by all users/accounts
+        o_data['job_count'] += 1
+        #
+        # Account specific data...
+        #
+        unless o_data['accounts'][a_name]['partitions'].has_key? p_name
+          o_data['accounts'][a_name]['partitions'][p_name] = Hash.new
+        end
+        unless o_data['accounts'][a_name]['users'].has_key? u_name
+          o_data['accounts'][a_name]['users'][u_name] = Hash.new
+        end
+        o_data['accounts'][a_name]['raw_time'] += r_time
+        o_data['accounts'][a_name]['job_count'] += 1
+        o_data['accounts'][a_name]['job_states'][state] += 1
+        o_data['accounts'][a_name]['run_time'][run_time] += 1
+        #
+        # User specific data
+        #
+        unless o_data['users'][u_name]['accounts'].include? a_name
+          o_data['users'][u_name]['accounts'][a_name] = Hash.new
+        end
+        unless o_data['users'][u_name]['partitions'].include? a_name
+          o_data['users'][u_name]['partitions'][p_name] = Hash.new
+        end
+        o_data['users'][u_name]['raw_time'] += r_time
+        o_data['users'][u_name]['job_count'] += 1
+        o_data['users'][u_name]['job_states'][state] += 1
+        o_data['users'][u_name]['run_time'][run_time] += 1
+        #
+        # Partition specific data
+        # 
+        unless o_data['partitions'][p_name]['accounts'].has_key? a_name
+          o_data['partitions'][p_name]['accounts'][a_name] = Hash.new
+        end
+        unless o_data['partitions'][p_name]['users'].has_key? u_name
+          o_data['partitions'][p_name]['users'][u_name] = Hash.new
+        end
+        o_data['partitions'][p_name]['raw_time'] += r_time
+        o_data['partitions'][p_name]['job_count'] += 1
+        o_data['partitions'][p_name]['job_states'][state] += 1
+        o_data['partitions'][p_name]['run_time'][run_time] += 1
        
         # Calculate time the job waited in the queue
         #
@@ -425,45 +485,34 @@ module Slurm
         if not wait_time_secs > 31449600 # 364 days
           o_data['accounts'][a_name]['wait_time'] << wait_time_secs
           o_data['users'][u_name]['wait_time'] << wait_time_secs
+          o_data['partitions'][p_name]['wait_time'] << wait_time_secs
         end
-
-        # Initialize per user statistics 
-        #
-        if not o_data['accounts'][a_name]['users'].include? u_name
-          o_data['accounts'][a_name]['users'][u_name] = {
-            'raw_time' => 0,
-            'job_count' => 0,
-            'job_states' => {}
-          } 
-          Slurm::SACCT_STATES.each do |s| 
-            o_data['accounts'][a_name]['users'][u_name]['job_states'][s] = 0 
-          end
-        end
-
-        # Accumulate accounting data for each individual user an account
-        #
-        o_data['accounts'][a_name]['users'][u_name]['raw_time'] += r_time 
-        o_data['accounts'][a_name]['users'][u_name]['job_count'] += 1
-        o_data['accounts'][a_name]['users'][u_name]['job_states'][state] += 1
 
       end
 
-      # Post processing of account data
-      #
-      o_data['accounts'].each do |a_name,a_data|
+      ##
+      ## Post processing of output data
+      ##
+      o_data['accounts'].each do |name,data|
         # Relative percent of the consumed resources according to the CPU seconds
-        r_perc = sprintf '%.2f', (a_data['raw_time'].to_f/o_data['raw_time']) * 100
-        o_data['accounts'][a_name]['rel_percent'] = r_perc
+        r_perc = sprintf '%.2f', (data['raw_time'].to_f/o_data['raw_time']) * 100
+        o_data['accounts'][name]['rel_percent'] = r_perc
         # Median wait time of jobs in queue
-        o_data['accounts'][a_name]['wait_time'] = a_data['wait_time'].median
+        o_data['accounts'][name]['wait_time'] = data['wait_time'].median
       end
-
-      o_data['users'].each do |u_name,u_data|
+      o_data['users'].each do |name,data|
         # Relative percent of the consumed resources according to the CPU seconds
-        rel_perc = sprintf '%.2f', (u_data['raw_time'].to_f/o_data['raw_time']) * 100
-        o_data['users'][u_name]['rel_percent'] = rel_perc
+        r_perc = sprintf '%.2f', (data['raw_time'].to_f/o_data['raw_time']) * 100
+        o_data['users'][name]['rel_percent'] = r_perc
         # Median wait time of jobs in queue
-        o_data['users'][u_name]['wait_time'] = u_data['wait_time'].median
+        o_data['users'][name]['wait_time'] = data['wait_time'].median
+      end
+      o_data['partitions'].each do |name,data|
+        # Relative percent of the consumed resources according to the CPU seconds
+        r_perc = sprintf '%.2f', (data['raw_time'].to_f/o_data['raw_time']) * 100
+        o_data['partitions'][name]['rel_percent'] = r_perc
+        # Median wait time of jobs in queue
+        o_data['partitions'][name]['wait_time'] = data['wait_time'].median
       end
 
       return o_data
@@ -549,8 +598,8 @@ class Array
              end
 
     return { 
-      'average' => average, 
-      'median' => median,
+      'average' => average.to_i, 
+      'median' => median.to_i,
       'lowest' => lowest,
       'highest' => highest
     }
@@ -570,6 +619,7 @@ begin
   $options.node_regex = String.new
   $options.no_header = false
   $options.parsable = String.new
+  $options.partitions = false
   $options.raw_json = false
   $options.run_time = false
   $options.states = false
@@ -593,7 +643,8 @@ begin
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--node-regex','-n',GetoptLong::REQUIRED_ARGUMENT],
     ['--no-header','-h',GetoptLong::NO_ARGUMENT],
-    ['--parsable','-P',GetoptLong::REQUIRED_ARGUMENT],
+    ['--parsable','-p',GetoptLong::REQUIRED_ARGUMENT],
+    ['--partitions','-P',GetoptLong::NO_ARGUMENT],
     ['--raw-json','-J',GetoptLong::NO_ARGUMENT],
     ['--run-time','-R',GetoptLong::NO_ARGUMENT],
     ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
@@ -628,6 +679,8 @@ begin
       $options.no_header = true
     when '--parsable'
       $options.parsable = arg[0]
+    when '--partitions'
+      $options.partitions = true
     when '--raw-json'
       $options.raw_json = true
     when '--run-time'
@@ -682,8 +735,9 @@ begin
   unless $options.no_header
     header = Array.new 
     header << 
-      'ACCOUNT' << 
-      'USER' << 
+      'ACCT' << 
+      'USER' <<
+      'PART' <<
       'USE%' <<
       'SHR%' <<
       'QWM' <<
@@ -708,7 +762,13 @@ begin
     table << header
   end
 
-  sortby = $options.users ? o_data['users'] : o_data['accounts']
+  if $options.users
+    sortby = o_data['users']
+  elsif $options.partitions
+    sortby = o_data['partitions']
+  else
+    sortby = o_data['accounts']
+  end
 
   case $options.sortby
   # Sort by CPU seconds consumed/relative usage
@@ -732,18 +792,32 @@ begin
       account = data['accounts'].keys.length
       # The name of the user
       user = elem
+      # Number of partitions
+      partition = data['partitions'].length
       # Accumulate fair share for a given user on all associated accounts
       data['accounts'].keys.each do |account|
         share += shares[account]['users'][user]['share']['norm'].to_f * 100
       end
       # Two digits fair share value
       share = sprintf('%.2f', share)
+    elsif $options.partitions
+      data = o_data['partitions'][elem]
+      # Number of accounts which consumed resources
+      account = data['accounts'].keys.length
+      # Number of users which consumed resources
+      user = data['users'].keys.length
+      # Name of the partition
+      partition = elem
+      # Partitions don't have associated shares
+      share = '-'
     else
       data = o_data['accounts'][elem]
       # Name of the account
       account = elem
       # Number of users which have consumed resources associated to this account
-      user = data['users'].length
+      user = data['users'].keys.length
+      # Number of partitions used by this account
+      partition = data['partitions'].length
       # Fair share configured for this account
       share = sprintf('%.2f', shares[account]['share']['norm'].to_f*100)
     end
@@ -753,6 +827,7 @@ begin
     row = Array.new
     row << account
     row << user 
+    row << partition
     row << data['rel_percent'] 
     row << share
     row << humanize_secs(data['wait_time']['median'].to_i)
