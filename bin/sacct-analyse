@@ -347,6 +347,8 @@ module Slurm
                    when r_time < 604800 ; 'lt_7d'
                    else                 ; 'gt_7d'
                    end
+        
+        
 
 
         o_data['raw_time'] += r_time
@@ -420,7 +422,7 @@ module Slurm
         submit_epoch = DateTime.strptime(job['submit'],'%Y-%m-%YT%H:%M').to_time.to_i 
         start_epoch = DateTime.strptime(job['start'],'%Y-%m-%YT%H:%M').to_time.to_i 
         wait_time_secs = start_epoch - submit_epoch
-        if not wait_time_secs > 31537500
+        if not wait_time_secs > 31449600 # 364 days
           o_data['accounts'][a_name]['wait_time'] << wait_time_secs
           o_data['users'][u_name]['wait_time'] << wait_time_secs
         end
@@ -719,79 +721,69 @@ begin
     sortby = sortby.keys.sort
   end
   
-   # Iterate over the list of accounts
-  if not $options.users
-    sortby.each do |account|
-      a_data = o_data['accounts'][account]
-      row = [ 
-        account, 
-        a_data['users'].length,
-        a_data['rel_percent'], 
-        sprintf('%.2f', shares[account]['share']['norm'].to_f*100),
-        humanize_secs(a_data['wait_time']['median'].to_i),
-        a_data['raw_time'],
-        a_data['job_count']
-      ]
-      if $options.states
-        row << a_data['job_states']['completed']
-        row << a_data['job_states']['cancelled']
-        row << a_data['job_states']['failed']
-        row << a_data['job_states']['node_fail']
-        row << a_data['job_states']['timeout']
+  sortby.each do |elem|
+    share = 0.0
+    #
+    # Primary column as defined by user option, either by account or user
+    #
+    if $options.users
+      data = o_data['users'][elem]
+      # The number of accounts a use has consumed resources from
+      account = data['accounts'].keys.length
+      # The name of the user
+      user = elem
+      # Accumulate fair share for a given user on all associated accounts
+      data['accounts'].keys.each do |account|
+        share += shares[account]['users'][user]['share']['norm'].to_f * 100
       end
-      if $options.run_time
-        row << a_data['run_time']['lt_5m']
-        row << a_data['run_time']['lt_1h']
-        row << a_data['run_time']['lt_4h']
-        row << a_data['run_time']['lt_8h']
-        row << a_data['run_time']['lt_12h']
-        row << a_data['run_time']['lt_1d']
-        row << a_data['run_time']['lt_7d']
-        row << a_data['run_time']['gt_7d']
-      end
-      table << row 
-    end 
-  # Iterate over the list of sorted users
-  else
-    sortby.each do |user|
-      u_data = o_data['users'][user]
-      accounts = u_data['accounts'].keys
-      row = Array.new
-      # Number of accounts used by a user
-      row << accounts.length
-      row << user 
-      row << u_data['rel_percent'] 
-      # Accumulate all shares a user can consume with associated accounts
-      n_share = 0.0
-      accounts.each do |account|
-        n_share += shares[account]['users'][user]['share']['norm'].to_f * 100
-      end 
-      row << sprintf('%.2f', n_share)
-      row << humanize_secs(u_data['wait_time']['median'].to_i)
-      row << u_data['raw_time']
-      row << u_data['job_count']  
-      if $options.states
-        row << u_data['job_states']['completed']
-        row << u_data['job_states']['cancelled']
-        row << u_data['job_states']['failed']
-        row << u_data['job_states']['node_fail']
-        row << u_data['job_states']['timeout']
-      end
-      if $options.run_time
-        row << u_data['run_time']['lt_5m']
-        row << u_data['run_time']['lt_1h']
-        row << u_data['run_time']['lt_4h']
-        row << u_data['run_time']['lt_8h']
-        row << u_data['run_time']['lt_12h']
-        row << u_data['run_time']['lt_1d']
-        row << u_data['run_time']['lt_7d']
-        row << u_data['run_time']['gt_7d']
-      end
-      # Append row to output table
-      table << row
+      # Two digits fair share value
+      share = sprintf('%.2f', share)
+    else
+      data = o_data['accounts'][elem]
+      # Name of the account
+      account = elem
+      # Number of users which have consumed resources associated to this account
+      user = data['users'].length
+      # Fair share configured for this account
+      share = sprintf('%.2f', shares[account]['share']['norm'].to_f*100)
     end
+    #
+    # Assemble the fields for this table row
+    #
+    row = Array.new
+    row << account
+    row << user 
+    row << data['rel_percent'] 
+    row << share
+    row << humanize_secs(data['wait_time']['median'].to_i)
+    row << data['raw_time']
+    row << data['job_count']  
+    #
+    # Job stats enable by user option
+    #
+    if $options.states
+      row << data['job_states']['completed']
+      row << data['job_states']['cancelled']
+      row << data['job_states']['failed']
+      row << data['job_states']['node_fail']
+      row << data['job_states']['timeout']
+    end
+    #
+    # Run time stats enable by user option
+    #
+    if $options.run_time
+      row << data['run_time']['lt_5m']
+      row << data['run_time']['lt_1h']
+      row << data['run_time']['lt_4h']
+      row << data['run_time']['lt_8h']
+      row << data['run_time']['lt_12h']
+      row << data['run_time']['lt_1d']
+      row << data['run_time']['lt_7d']
+      row << data['run_time']['gt_7d']
+    end
+    # Append row to output table
+    table << row
   end
-
 
   if $options.parsable.empty?
     $stdout.puts Table::print table
