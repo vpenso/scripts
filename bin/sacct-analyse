@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.21
+VERSION = 0.3
 
 require 'ostruct'
 require 'getoptlong' 
@@ -34,20 +34,32 @@ Read accounting data from Slurm and accumulate statistics:
                              Time format like `sacct`...
   end_time                   Select accounting data before end time
                              (default is now)
+
+By default statistics are accumulated by account, select statistics
+for partitions or users with following options:
+
+  --partitions, -P           Show partition statistics.
+  --users, -U                Show users statistics.
+
+Limit the output to a given list of accounts, nodes,  partitions or users:
+
   --account, -a <acc,acc>    Limit the output to a given list of accounts
+  --node-regex, -n <regex>   Regular expression to select a subset of nodes
+  --partition, -p <par,par>  Limit the output ot a given list of partitions
+  --user, -u <usr,usr>       Limit the output to a given list of users
+
+Enable additional statistics for job exist states and job run-time with:
+
+  --run-time, -R             Show accumulative statistics of job run-times. 
+  --states, -S               Show job states.
+
+Other options:
+
+  --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
   --debug, -d                Show stacktraces in case of errors.
   --help, -H                 Show this help information.
-  --raw-json, -J             Print the raw output data in JSON.
-  --node-regex, -n REGEX     Regular expression to select a subset 
-                             of nodes from the cluster.
-  --no-header, -h            Disable header information in the output.
-  --parsable, -p DELIM       Print output with given delimiter
-  --partitions, -P           Show partition statistics.
-  --run-time, -R             Show accumulative statistics of job run-times. 
-  --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
-  --states, -S               Show job states.
-  --user, -u <usr,usr>       Limit the output to a given list of users
-  --users, -U                Show users statistics.
+  --no-header, -N            Disable header information in the output.
+  --parsable, -X <delim>     Print output with given delimiter
   --version, -v              Print version number.
 
 Columns in the output:
@@ -82,17 +94,13 @@ realtive use in percent:
 
   >>> sacct-analyse -s p -S -n lxbk 2016-04-01T00:00:00 2016-04-10T23:59:59
 
-Print the raw data as JSON from the given date until today:
-
-  >>> sacct-analyse -J 2016-05-20T00:00:00
-
 Limit the output to a given user:
 
   >>> sacct-analyse -u vpenso -U $(date +%Y-%m-%dT00:00:00) -d
 
 List user of a given account by relative usage in a parsable format:
 
-  >>> sacct-analyse -P "|" -a alice -U -s r 2016-05-20T12:00:00
+  >>> sacct-analyse -X "|" -a alice -U -s r 2016-05-20T12:00:00
 EOF
 
 #
@@ -253,10 +261,13 @@ module Slurm
   def sacct_findex(field) ; SACCT_FIELDS.index(field) end
 
   ##
-  # Generate the command to export data from Slurm with sacct,
-  # expects a specific date of the format YYYY/MM/DD as parameter
+  # Generate the command to export data from Slurm with sacct
   #
-  def sacct(start_time,end_time)
+  def sacct(start_time,end_time,append = '')
+    #
+    # Note that option --allusers is required to make sure that unprivileged 
+    # user will query data...
+    #
     command = "sacct
                  --allusers
                  --noheader
@@ -266,8 +277,10 @@ module Slurm
                  --state #{sacct_states}
                  --starttime #{start_time}
                  --endtime #{end_time}
-              ".gsub(/^  */,'').gsub(/\n/,' ')
-     System::exec_split_lines(command,'|')
+              "
+    command << " #{append}" unless append.empty?
+    command.gsub!(/^  */,'').gsub(/\n/,' ')
+    System::exec_split_lines(command,'|')
   end
 
   ##
@@ -284,11 +297,8 @@ module Slurm
     # Statistical analysis of the Slurm accounting data
     #
     #
-    def data(start_time,end_time)
+    def data(i_data)
 
-      # Query Slurm for the required accounting data
-      #
-      i_data = Slurm::sacct(start_time,end_time)
 
       # This object holds the output data
       #
@@ -323,14 +333,6 @@ module Slurm
         # Skip if the request nodes have not been part of this job allocation
         unless $options.node_regex.empty?
           next unless nodelist =~ Regexp.new($options.node_regex)
-        end
-        # Skip if the user has not been selected by option
-        unless $options.user.empty?
-          next unless $options.user.include? u_name          
-        end
-        # Skip if the job is not belonging to a given account
-        unless $options.account.empty?
-          next unless $options.account.include? a_name
         end
 
         r_time = job['cputimeraw'].to_i
@@ -619,8 +621,8 @@ begin
   $options.node_regex = String.new
   $options.no_header = false
   $options.parsable = String.new
+  $options.partition = Array.new
   $options.partitions = false
-  $options.raw_json = false
   $options.run_time = false
   $options.states = false
   $options.sortby = 'a'
@@ -642,10 +644,10 @@ begin
     ['--help','-H',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--node-regex','-n',GetoptLong::REQUIRED_ARGUMENT],
-    ['--no-header','-h',GetoptLong::NO_ARGUMENT],
-    ['--parsable','-p',GetoptLong::REQUIRED_ARGUMENT],
+    ['--no-header','-N',GetoptLong::NO_ARGUMENT],
+    ['--parsable','-X',GetoptLong::REQUIRED_ARGUMENT],
+    ['--partition','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--partitions','-P',GetoptLong::NO_ARGUMENT],
-    ['--raw-json','-J',GetoptLong::NO_ARGUMENT],
     ['--run-time','-R',GetoptLong::NO_ARGUMENT],
     ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
     ['--states','-S',GetoptLong::NO_ARGUMENT],
@@ -679,6 +681,8 @@ begin
       $options.no_header = true
     when '--parsable'
       $options.parsable = arg[0]
+    when '--partition'
+      $options.partition = arg
     when '--partitions'
       $options.partitions = true
     when '--raw-json'
@@ -710,13 +714,28 @@ begin
   #
   end_time = ARGV.shift || time_now
 
-
-  o_data =  Slurm::Analyse::data(start_time,end_time) 
-
-  if $options.raw_json
-    $stdout.puts JSON.pretty_generate o_data
-    exit 0
+  #
+  # Toggle options to sacct to select a subset of accounts, partitions and users.
+  #
+  append = ''
+  if not $options.account.empty?
+    append << " --accounts #{$options.account.join(',')}"
   end
+  if not $options.user.empty?
+    append << " --user #{$options.user.join(',')}"
+  end
+  if not $options.partition.empty?
+    append << " --partition " << $options.partition
+  end
+
+  # Query Slurm for the required accounting data
+  #
+  i_data = Slurm::sacct(start_time,end_time,append)
+
+  #
+  # Accumulate statistics
+  #
+  o_data =  Slurm::Analyse::data(i_data) 
 
   ##
   #
