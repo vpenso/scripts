@@ -228,7 +228,7 @@ class Virsh
     raise("Couldn't read network configuration for #{name}") if output.nil?
     name, ip, mac = output.split
     # Write the libvirt configuration file
-    virsh_config = "cd #{path} ; virsh-config --name #{name} --mac-address #{mac} libvirt_instance.xml"
+    virsh_config = "cd #{path} ; virsh-config --vnc --name #{name} --mac-address #{mac} libvirt_instance.xml"
     # Respect the overwrite option set by the user
     virsh_config << " --overwrite" if $options.overwrite
     System::run(virsh_config)
