@@ -40,16 +40,16 @@ function vm() {
     ;;
   "kill"|"k")
     shift
-    virsh destroy "$1" 
     virsh undefine "$1"
+    virsh destroy "$1" 
     ;;
   "list"|"l") 
     virsh list --all 
     ;;
   "remove"|"r") 
     shift
-    virsh shutdown "$1" 
     virsh undefine "$1"
+    virsh shutdown "$1" 
     ;;
   "shutdown"|"h") 
     shift
