@@ -38,6 +38,11 @@ function vm() {
     shift
     virsh define "$@" 
     ;;
+  "kill"|"k")
+    shift
+    virsh destroy "$1" 
+    virsh undefine "$1"
+    ;;
   "list"|"l") 
     virsh list --all 
     ;;
