@@ -254,15 +254,16 @@ Once the operating system is installed make sure to boot it another time to chec
 
 Customize your installation for example by installing packages like SSH, Sudo and Rsync:
 
-    » apt-get update
+    » apt update
     […]
-    » apt-get install openssh-server sudo rsync
+    » apt install openssh-server sudo rsync chef haveged
     […]
-    » apt-get clean
 
 Elevate the _devops_ user to be able to run all commands with Sudo:
 
     » echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
+
+
 
 ## Login
 
