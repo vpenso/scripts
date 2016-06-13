@@ -8,77 +8,100 @@ Make sure to understand how to build [development and test environments with vir
 
 Create a virtual machine to host the database server called **lxdb01.devops.test**
 
-    » virsh-instance -O shadow debian64-9 lxdb01.devops.test
-    » cd $VM_INSTANCE_PATH/lxdb01.devops.test
-    » ssh-exec -s 'hostname lxdb01 ; hostname -f'
+```bash
+>>> virsh-instance -O shadow debian64-9 lxdb01.devops.test
+>>> cd $VM_INSTANCE_PATH/lxdb01.devops.test
+>>> ssh-exec -s 'hostname lxdb01 ; hostname -f'
+```
 
 Deploy role [account_database][account_database.rb], to install a MySQL database. 
 
-    » chef-remote cookbook sys 
-    » chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
-    » chef-remote -r "role[account_database]" solo
+```bash
+>>> chef-remote cookbook sys 
+>>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
+>>> chef-remote -r "role[account_database]" solo
+```
 
 Grant the `slurm` user access to the database
 
-    » ssh-exec -r 'sed -i "s/^bind-address/#bind-address/" /etc/mysql/mysql.conf.d/mysqld.cnf'
-    » ssh-exec -r "grep -e '^user' -e '^password' /etc/mysql/debian.cnf"
-    » ssh-exec -r "mysql -u debian-sys-maint -p"
-    mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
-    mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01' identified by '12345678' with grant option;
-    mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01.devops.test' identified by '12345678' with grant option;
-    mysql> select User,Host from mysql.user where User = 'slurm';
-    […]
-    mysql> quit
-    » ssh-exec -r 'systemctl restart mysql'
-
+```bash
+>>> ssh-exec -r 'sed -i "s/^bind-address/#bind-address/" /etc/mysql/mysql.conf.d/mysqld.cnf'
+>>> ssh-exec -r "grep -e '^user' -e '^password' /etc/mysql/debian.cnf"
+>>> ssh-exec -r "mysql -u debian-sys-maint -p"
+mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
+mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01' identified by '12345678' with grant option;
+mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01.devops.test' identified by '12345678' with grant option;
+mysql> select User,Host from mysql.user where User = 'slurm';
+[…]
+mysql> quit
+>>> ssh-exec -r 'systemctl restart mysql'
+```
 ## Cluster Controller
 
 Create a virtual machine to host the Slurm cluster controller called **lxrm01.devops.test** 
 
-    » virsh-instance -O shadow debian64-9 lxrm01.devops.test
-    » slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -s $@ ; cd - >/dev/null }
-    » slurm-cc 'hostname lxrm01 ; hostname -f'
+```bash
+>>> virsh-instance -O shadow debian64-9 lxrm01.devops.test
+>>> slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -s $@ ; cd - >/dev/null }
+>>> slurm-cc 'hostname lxrm01 ; hostname -f'
+```
 
 Deploy role [cluster_controller][cluster_controller.rb], to install slurmctld, and slurmdbd
 
-    » cd $VM_INSTANCE_PATH/lxrm01.devops.test
-    » chef-remote cookbook sys 
-    » chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
-    » chef-remote -r "role[cluster_controller]" solo
+```bash
+>>> cd $VM_INSTANCE_PATH/lxrm01.devops.test
+>>> chef-remote cookbook sys 
+>>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
+>>> chef-remote -r "role[cluster_controller]" solo
+```
 
 Deploy a basic Slurm configuration from [slurm/basis][slurm_basic]
 
-    » slurm-cc -r 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
-    » ssh-sync -r $SCRIPTS/var/slurm/basic/ :/etc/slurm-llnl
-    » slurm-cc 'systemctl restart slurmdbd'
+```bash
+>>> slurm-cc -r 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
+>>> ssh-sync -r $SCRIPTS/var/slurm/basic/ :/etc/slurm-llnl
+>>> slurm-cc 'systemctl restart slurmdbd'
+```
 
 Configure the accounting, and allow job execution with the `devops` user:
 
-    » slurm-cc 'sacctmgr -i add cluster vega --immediate'
-    » slurm-cc 'sacctmgr add account hpc description=hpc organization=hpc --immediate'
-    » slurm-cc 'sacctmgr create user name=devops account=hpc defaultaccount=hpc --immediate'
+```bash
+>>> slurm-cc 'sacctmgr -i add cluster vega --immediate'
+>>> slurm-cc 'sacctmgr add account hpc description=hpc organization=hpc --immediate'
+>>> slurm-cc 'sacctmgr create user name=devops account=hpc defaultaccount=hpc --immediate'
+```
 
 Start the controller:
 
-    » slurm-cc 'systemctl restart slurmctld'
-    » slurm-cc sinfo
+```bash
+>>> slurm-cc 'systemctl restart slurmctld'
+>>> slurm-cc sinfo
+```
 
 ## Execution Nodes
 
 Create a couple a virtual machines for the execution nodes called **lxb00[1,4].devops.test**
 
-    » NODES lxb00[1-4] 
-    » nodeset-loop "virsh-instance -O shadow debian64-9 {}.devops.test"
-    » nodeset-loop "cd $VM_INSTANCE_PATH/{}.devops.test ; ssh-exec -s 'hostname {} ; hostname -f' ; cd -"
+```bash
+>>> NODES lxb00[1-4] 
+>>> nodeset-loop "virsh-instance -O shadow debian64-9 {}.devops.test"
+>>> nodeset-loop "cd $VM_INSTANCE_PATH/{}.devops.test ; ssh-exec -s 'hostname {} ; hostname -f' ; cd -"
+[…]
+```
 
 Deploy the Chef role [execution_node][execution_node.rb] to install _slurmd_
 
-    » slurm-en() { for d in $VM_INSTANCE_PATH/lxb* ; do cd $d ; $@ ; cd - >/dev/null ; done }
-    » slurm-en-exec() { slurm-en ssh-exec -s $@ }
-    » slurm-en chef-remote cookbook sys
-    » slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/execution_node.rb
-    » slurm-en chef-remote -r "role[execution_node]" solo
-    » slurm-en ssh-exec -s 'systemctl restart munge slurmd'
+```bash
+>>> slurm-en() { for d in $VM_INSTANCE_PATH/lxb* ; do cd $d ; $@ ; cd - >/dev/null ; done }
+>>> slurm-en-exec() { slurm-en ssh-exec -s $@ }
+```
+```bash
+>>> slurm-en chef-remote cookbook sys
+>>> slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/execution_node.rb
+>>> slurm-en chef-remote -r "role[execution_node]" solo
+[…]
+>>> slurm-en-exec 'systemctl restart munge slurmd'
+```
 
 # Configuration
 
@@ -91,16 +114,22 @@ Slurm has the capability to simulate resources on execution nodes for testing:
 
 Make sure `stress` is installed on all execution nodes, and copy the job helper script [slurm-stress][slurm_stress] into the home directory of the devops user:
 
-    » slurm-en-exec 'apt install stress'
-    » cd $VM_INSTANCE_PATH/lxrm01.devops.test && ssh-sync $SCRIPTS/bin/slurm-stress : && ssh-exec
+```bash
+>>> slurm-en-exec 'apt install stress'
+[…]
+>>> cd $VM_INSTANCE_PATH/lxrm01.devops.test 
+>>> ssh-sync $SCRIPTS/bin/slurm-stress : && ssh-exec
+[…]
+```
 
 Execute jobs:
 
-    » sbatch -D /tmp slurm-stress 60s 1 256
-    […]
-    » sbatch -n 64 --mem-per-cpu=4096 slurm-stree 300s 64 4G
-    […]
-
+```bash
+>>> sbatch -D /tmp slurm-stress 60s 1 256
+[…]
+>>> sbatch -n 64 --mem-per-cpu=4096 slurm-stress 300s 64 4G
+[…]
+```
 
 [slurm_basic]: ../../var/slurm/basic/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
