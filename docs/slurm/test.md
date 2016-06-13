@@ -11,7 +11,8 @@ Create a virtual machine to host the database server called **lxdb01.devops.test
 ```bash
 >>> virsh-instance -O shadow debian64-9 lxdb01.devops.test
 >>> cd $VM_INSTANCE_PATH/lxdb01.devops.test
->>> ssh-exec -s 'hostname lxdb01 ; hostname -f'
+>>> ssh-exec -r 'echo lxdb01 > /etc/hostname ; hostname lxdb01 ; hostname -f'
+lxdb01.devops.test
 ```
 
 Deploy role [account_database][account_database.rb], to install a MySQL database. 
@@ -43,7 +44,8 @@ Create a virtual machine to host the Slurm cluster controller called **lxrm01.de
 ```bash
 >>> virsh-instance -O shadow debian64-9 lxrm01.devops.test
 >>> slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -s $@ ; cd - >/dev/null }
->>> slurm-cc 'hostname lxrm01 ; hostname -f'
+>>> slurm-cc 'echo lxrm01 > /etc/hostname ; hostname lxrm01 ; hostname -f'
+lxrm01.devops.test
 ```
 
 Deploy role [cluster_controller][cluster_controller.rb], to install slurmctld, and slurmdbd
@@ -133,6 +135,6 @@ Execute jobs:
 
 [slurm_basic]: ../../var/slurm/basic/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
-[account_database.rb]: ../../var/chef/roles/debian/jessie/slurm/account_database.rb
-[cluster_controller.rb]: ../../var/chef/roles/debian/jessie/slurm/cluster_controller.rb
-[execution_node.rb]: ../../var/chef/roles/debian/jessie/slurm/execution_node.rb
+[account_database.rb]: ../../var/chef/roles/debian/slurm/account_database.rb
+[cluster_controller.rb]: ../../var/chef/roles/debian/slurm/cluster_controller.rb
+[execution_node.rb]: ../../var/chef/roles/debian/slurm/execution_node.rb

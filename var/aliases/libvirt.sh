@@ -64,7 +64,7 @@ function vm() {
     virsh undefine "$@"
     ;;
   *) 
-    echo "Usage: vm (c)reate|(d)efine|s(h)utdown|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
+    echo "Usage: vm (c)reate|(d)efine|s(h)utdown|(k)ill|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
     ;;
   esac
 }
