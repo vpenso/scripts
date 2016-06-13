@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Task name
+#SBATCH -J stress
+
+# Working directory on shared storage
+#SBATCH -D /lustre/hpc/vpenso/tests
+
+# Standard and error output in different files
+#SBATCH -o %j_%N.out.log
+#SBATCH -e %j_%N.err.log
+
+debug() {
+  local format='+%Y/%m/%dT%H:%M:%S'
+  echo 1>&2 [`date $format`] "$@"
+}
+
+logger() {
+  local format='+%Y/%m/%dT%H:%M:%S'
+  echo [`date $format`] "$@"
+}
+
+# Write the SLURM environment to stderr
+debug "$(env | grep ^SLURM)"
+# Identity of the job, and execution node
+logger "Job $SLURM_JOB_NAME [$SLURM_JOB_ID] running on $USER@`hostname`:$PWD"
+
+# Run time of 60 seconds by default
+rtime=${1:-'60s'}
+# Allocate a single core by default
+cores=${2:-1} 
+# Memory allocation
+mem=${3:-'1G'}
+# Generate defined load on the execution node
+command="stress --vm $cores --vm-bytes $mem --timeout $rtime"
+logger "Executing [$command]"
+$command &
+
+# The process ID of the last spawned child process
+child=$!
+logger "Spawn with PID $child"
+# Wait for the child to finish
+wait $child
+# Exit signal of the child process 
+state=$?
+
+logger "Finishing with $state"
+# Propagate last signal of the application to the system
+exit $state 
