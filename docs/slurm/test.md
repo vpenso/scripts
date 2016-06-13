@@ -133,6 +133,6 @@ Execute jobs:
 
 [slurm_basic]: ../../var/slurm/basic/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
-[account_database.rb]: ../../var/chef/roles/debian/jessie/account_database.rb
-[cluster_controller.rb]: ../../var/chef/roles/debian/jessie/cluster_controller.rb
-[execution_node.rb]: ../../var/chef/roles/debian/jessie/execution_node.rb
+[account_database.rb]: ../../var/chef/roles/debian/jessie/slurm/account_database.rb
+[cluster_controller.rb]: ../../var/chef/roles/debian/jessie/slurm/cluster_controller.rb
+[execution_node.rb]: ../../var/chef/roles/debian/jessie/slurm/execution_node.rb
