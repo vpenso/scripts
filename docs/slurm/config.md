@@ -320,7 +320,7 @@ Configuration in [slurm.conf][slurmconf]:
 
 ### Memory
 
-Configuration in [slurm.conf][slurmconf]:
+Global defaults for memory limits are defined with **DefMemPerCPU** and **MaxMemPerCPU** in  [slurm.conf][slurmconf]
 
 ```bash
 >>> scontrol show config | grep -i mempercpu
@@ -328,57 +328,94 @@ DefMemPerCPU            = 64
 MaxMemPerCPU            = 256
 ```
 
-**Enforce memory limits**, cf. [cgroup.conf][cgroupconf] and [Cgroups Guide](http://slurm.schedmd.com/cgroups.html):
+Enable enforcement of memory limits with Cgroups **TaskPlugin**
+
 
 ```bash
 >>> scontrol show config | grep -i taskplugin
 TaskPlugin              = task/cgroup
 TaskPluginParam         = (null type)
+```
+
+Enable  **ConstrainRAMSpace** [cgroup.conf][cgroupconf], cf. [Cgroups Guide](http://slurm.schedmd.com/cgroups.html)
+
+```bash
 >>> grep -i ram /etc/slurm-llnl/cgroup.conf 
 ConstrainRAMSpace=yes
+```
+
+Enable support for memory in Cgroups on Debian
+
+```bash
 >>> grep -i cmdline_linux= /etc/default/grub 
 GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
 >>> update-grub
-```
-```bash
 >>> grep cgroup /proc/cmdline 
 […] ro cgroup_enable=memory swapaccount=1 quiet
 ```
 
-If memory is a consumable resource node require `RealMemory` to be configured, cf. [slurm.conf][slurmconf]:
+If memory is a consumable resource nodes require **RealMemory** in [slurm.conf][slurmconf]
 
 ```bash
-» grep ^NodeName /etc/slurm-llnl/slurm.conf 
+>>> grep ^NodeName /etc/slurm-llnl/slurm.conf 
 NodeName=lxbk0[197-200] […] RealMemory=129000 […]
 ```
 
-Submission commands will define memory resource limits with the options `--mem=MB` and -`-mem-per-cpu=MB`. 
+User define limits with `--mem=<MB>` and `--mem-per-cpu=<MB>`:
+
+```bash
+>>> sbatch --mem 12 […] 
+[…]
+>>> scontrol show job $SLURM_JOBID | grep -e TRES -e MinMemoryNode
+TRES=cpu=1,mem=12,node=1
+MinCPUsNode=1 MinMemoryNode=12M MinTmpDiskNode=0
+```
+
+Exceeding the memory limits with a jobs results in following log information on the execution nodes:
+
+```bash
+>>> grep "\[$SLURM_JOBID\]" /var/log/slurm-llnl/slurmd.log
+[…] [12] task/cgroup: /slurm/uid_1000/job_12: alloc=64MB mem.limit=64MB memsw.limit=unlimited
+[…] [12] task/cgroup: /slurm/uid_1000/job_12/step_batch: alloc=64MB mem.limit=64MB memsw.limit=unlimited
+[…] [12] Exceeded step memory limit at some point.
+```
+
+Similar users will get this information in stderr:
+
+```
+slurmstepd: Exceeded step memory limit at some point.
+```
+
 
 
 ### Sockets, Cores and Threads
 
 Invoking `slurmd -C` will print the execution node hardware configuration.
 
-    » export NODES="lxb[001-010]"
-    » clush -w $NODES "sudo slurmd -C | cut -d' ' -f2-"
-    ---------------
-    lxb[001,003-007] (6)
-    ---------------
-    Procs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1003 TmpDisk=40869
-    ---------------
-    lxb[002,008,010] (3)
-    ---------------
-    Procs=2 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=2012 TmpDisk=40869
-    ---------------
-    lxb009
-    ---------------
-    Procs=4 Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1002 TmpDisk=40869
+```bash
+>>> export NODES="lxb[001-010]"
+>>> clush -w $NODES "sudo slurmd -C | cut -d' ' -f2-"
+---------------
+lxb[001,003-007] (6)
+---------------
+Procs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1003 TmpDisk=40869
+---------------
+lxb[002,008,010] (3)
+---------------
+Procs=2 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=2012 TmpDisk=40869
+---------------
+lxb009
+---------------
+Procs=4 Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1002 TmpDisk=40869
+```
 
 For the node resources collected above the configuration would look like:
 
-    NodeName=lxb[001,003-007] Procs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1003 TmpDisk=40869
-    NodeName=lxb[002,008,010] Procs=2 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=2012 TmpDisk=40869
-    NodeName=lxb[009] Procs=4 Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1002 TmpDisk=40869
+```
+NodeName=lxb[001,003-007] Procs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1003 TmpDisk=40869
+NodeName=lxb[002,008,010] Procs=2 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=2012 TmpDisk=40869
+NodeName=lxb[009] Procs=4 Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1002 TmpDisk=40869
+```
 
 Except from the node list expression all other parameters to the _NodeName_ definition are optional. 
 
