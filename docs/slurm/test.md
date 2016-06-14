@@ -128,7 +128,7 @@ Execute jobs:
 
 ```bash
 >>> cd /network/devops
->>> sbatch -D /tmp slurm-stress 60s 1 256
+>>> sbatch slurm-stress 60s 1 128M
 […]
 >>> sbatch -n 64 --mem-per-cpu=4096 slurm-stress 300s 64 4G
 […]

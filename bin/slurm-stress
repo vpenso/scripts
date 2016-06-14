@@ -4,7 +4,7 @@
 #SBATCH -J stress
 
 # Working directory on shared storage
-#SBATCH -D /lustre/hpc/vpenso/tests
+#SBATCH -D /network/devops
 
 # Standard and error output in different files
 #SBATCH -o %j_%N.out.log
