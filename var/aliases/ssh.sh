@@ -36,7 +36,6 @@ alias sshfs='sshfs -C'
 alias ssh-no-checks='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 alias scp-no-checks='scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
-
 # Generate key-pairs, use `-f <PATH>` to provide the location
 alias ssh-keygen-ecdsa="ssh-keygen -t ecdsa -b 521 "
 alias ssh-keygen-rsa='ssh-keygen -t rsa -b 4096'
@@ -44,4 +43,7 @@ alias ssh-keygen-no-password="ssh-keygen -q -t rsa -b 2048 -N ''"
 
 # Launch SSH proxy
 function shuttle() { sshuttle -r --dns $1 0/0 }
+
+alias ssh-sync='noglob ssh-sync'
+
 

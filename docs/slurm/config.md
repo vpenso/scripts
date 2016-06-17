@@ -320,7 +320,15 @@ Configuration in [slurm.conf][slurmconf]:
 
 ### Memory
 
-Global defaults for memory limits are defined with **DefMemPerCPU** and **MaxMemPerCPU** in  [slurm.conf][slurmconf]
+Memory as a consumable resource with **SelectTypeParameters** in [slurm.conf][slurmconf]
+
+```bash
+>>> scontrol show config | grep SelectType
+SelectType              = select/cons_res
+SelectTypeParameters    = CR_CPU_MEMORY,[…]
+```
+
+Global memory limits with **DefMemPerCPU** and **MaxMemPerCPU** 
 
 ```bash
 >>> scontrol show config | grep -i mempercpu
@@ -328,8 +336,7 @@ DefMemPerCPU            = 64
 MaxMemPerCPU            = 256
 ```
 
-Enable enforcement of memory limits with Cgroups **TaskPlugin**
-
+Enforcement of memory limits with Cgroups **TaskPlugin**
 
 ```bash
 >>> scontrol show config | grep -i taskplugin
@@ -344,7 +351,7 @@ Enable  **ConstrainRAMSpace** [cgroup.conf][cgroupconf], cf. [Cgroups Guide](htt
 ConstrainRAMSpace=yes
 ```
 
-Enable support for memory in Cgroups on Debian
+Support for memory in Cgroups on Debian
 
 ```bash
 >>> grep -i cmdline_linux= /etc/default/grub 
@@ -354,14 +361,14 @@ GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
 […] ro cgroup_enable=memory swapaccount=1 quiet
 ```
 
-If memory is a consumable resource nodes require **RealMemory** in [slurm.conf][slurmconf]
+If memory is a consumable resource nodes require **RealMemory** 
 
 ```bash
 >>> grep ^NodeName /etc/slurm-llnl/slurm.conf 
 NodeName=lxbk0[197-200] […] RealMemory=129000 […]
 ```
 
-User define limits with `--mem=<MB>` and `--mem-per-cpu=<MB>`:
+User define limits with `--mem=<MB>` and `--mem-per-cpu=<MB>` options to the submit commands:
 
 ```bash
 >>> sbatch --mem 12 […] 
@@ -370,6 +377,19 @@ User define limits with `--mem=<MB>` and `--mem-per-cpu=<MB>`:
 TRES=cpu=1,mem=12,node=1
 MinCPUsNode=1 MinMemoryNode=12M MinTmpDiskNode=0
 ```
+
+Memory allocation information in the accounting:
+
+```bash
+>>> sacct -X -o jobid,reqmem,reqtres%20,AllocTRES%20 -j 16,19
+JobID     ReqMem              ReqTRES            AllocTRES 
+------------ ---------- -------------------- -------------------- 
+16                 12Mc  cpu=1,mem=12,node=1  cpu=1,mem=12,node=1 
+19                256Mn cpu=1,mem=256,node=1 cpu=1,mem=256,node=1 
+```
+`Mc` memory per CPU, `Mn` memory per node
+
+
 
 Exceeding the memory limits with a jobs results in following log information on the execution nodes:
 

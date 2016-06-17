@@ -120,7 +120,7 @@ Make sure `stress` is installed on all execution nodes, and copy the job helper 
 >>> slurm-en-exec 'apt install stress'
 […]
 >>> cd $VM_INSTANCE_PATH/lxrm01.devops.test 
->>> ssh-sync $SCRIPTS/bin/slurm-stress :/network/devops && ssh-exec
+>>> ssh-sync $SCRIPTS/bin/slurm-* :/network/devops && ssh-exec
 […]
 ```
 
