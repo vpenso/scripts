@@ -328,6 +328,13 @@ SelectType              = select/cons_res
 SelectTypeParameters    = CR_CPU_MEMORY,[…]
 ```
 
+Memory resources are tracked default in the accounting 
+
+```bash
+>>> scontrol show config | grep -i tres
+AccountingStorageTRES   = cpu,mem,energy,node
+```
+
 Global memory limits with **DefMemPerCPU** and **MaxMemPerCPU** 
 
 ```bash
@@ -376,11 +383,6 @@ User define limits with `--mem=<MB>` and `--mem-per-cpu=<MB>` options to the sub
 >>> scontrol show job $SLURM_JOBID | grep -e TRES -e MinMemoryNode
 TRES=cpu=1,mem=12,node=1
 MinCPUsNode=1 MinMemoryNode=12M MinTmpDiskNode=0
-```
-
-Memory allocation information in the accounting:
-
-```bash
 >>> sacct -X -o jobid,reqmem,reqtres%20,AllocTRES%20 -j 16,19
 JobID     ReqMem              ReqTRES            AllocTRES 
 ------------ ---------- -------------------- -------------------- 
@@ -388,6 +390,7 @@ JobID     ReqMem              ReqTRES            AllocTRES
 19                256Mn cpu=1,mem=256,node=1 cpu=1,mem=256,node=1 
 ```
 `Mc` memory per CPU, `Mn` memory per node
+
 
 
 
