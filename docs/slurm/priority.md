@@ -123,16 +123,6 @@ Usage and Shares are the two components o fair-share factor:
 […]
 ```
 
-Set `fairshare=` for a given account:
-
-```bash
->>> sacctmgr modify account where name=hpc set fairshare=1000
-[…]
->>> sacctmgr modify user where user=vpenso set fairshare=parent
-```
-
-Disable fair-share at certain levels of the hierarchy with `fairshare=parent`.
-
 The algorithm use to determine the fair share factor is highly configurable. The default algorithm can be further replaced by setting options with `PriorityFlags`:
 
 Flag                   | Description

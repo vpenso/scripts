@@ -16,10 +16,22 @@ default_attributes(
       ]
     },
     accounts: {
-      spock: { uid: 1111 },
-      sulu: { uid: 1112 },
-      kirk: { uid: 1113 },
-      uhura: { uid: 1114 }
+      spock: { 
+        uid: 1111,
+        home: '/network/spock'
+      },
+      sulu: { 
+        uid: 1112,
+        home: '/network/sulu'
+      },
+      kirk: { 
+        uid: 1113,
+        home: '/network/kirk'
+      },
+      uhura: { 
+        uid: 1114,
+        home: '/network/uhura'
+      }
     },
     #
     # Create use directories on the shared storage

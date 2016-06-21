@@ -1,5 +1,4 @@
 
-
 Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
 
 The **configuration is deployed using Chef** with the [sys](https://github.com/GSI-HPC/sys-chef-cookbook) cookbook.
@@ -74,13 +73,15 @@ Deploy a basic Slurm configuration from [slurm/basis][slurm_basic]
 >>> slurm-cc 'systemctl restart slurmdbd'
 ```
 
-Configure the accounting, and allow job execution with theuser:
+Manage the account DB configuration: 
 
 ```bash
->>> slurm-cc 'sacctmgr -i add cluster vega --immediate'
->>> slurm-cc 'sacctmgr add account hpc description=hpc organization=hpc --immediate'
->>> slurm-cc 'sacctmgr create user name=sulu account=hpc defaultaccount=hpc --immediate'
-[…]
+>>> ssh-sync $SCRIPTS/var/slurm/accounts.conf :/tmp/
+>>> slurm-cc 'sacctmgr load /tmp/accounts.conf'
+```
+```bash
+>>> slurm-cc 'sacctmgr dump vega file=/tmp/accounts.conf'
+>>> ssh-sync :/tmp/accounts.conf $SCRIPTS/var/slurm/
 ```
 
 Start the controller:
@@ -89,6 +90,7 @@ Start the controller:
 >>> slurm-cc 'systemctl restart slurmctld'
 >>> slurm-cc sinfo
 ```
+
 
 ## Execution Nodes
 
@@ -118,13 +120,12 @@ Deploy the Chef role [execution_node][execution_node.rb] to install _slurmd_
 
 # Tests
 
-Make sure `stress` is installed on all execution nodes, and copy the job helper script [slurm-stress][slurm_stress] into the home directory of the devops user:
+Copy the job helper script [slurm-stress][slurm_stress] into the home directory of a user:
 
 ```bash
->>> slurm-en-exec 'apt install stress'
-[…]
 >>> cd $VM_INSTANCE_PATH/lxrm01.devops.test 
->>> ssh-sync $SCRIPTS/bin/slurm-* :/network/devops && ssh-exec
+>>> ssh-sync -r $SCRIPTS/bin/slurm-* :/network/spock && ssh-exec -r 'chown spock /network/spock/slurm*'
+>>> ssh-exec -r 'su spock -c bash'
 […]
 ```
 
