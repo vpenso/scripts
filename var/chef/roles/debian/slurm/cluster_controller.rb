@@ -18,19 +18,23 @@ default_attributes(
     accounts: {
       spock: { 
         uid: 1111,
-        home: '/network/spock'
+        home: '/network/spock',
+        shell: '/bin/bash'
       },
       sulu: { 
         uid: 1112,
-        home: '/network/sulu'
+        home: '/network/sulu',
+        shell: '/bin/bash'
       },
       kirk: { 
         uid: 1113,
-        home: '/network/kirk'
+        home: '/network/kirk',
+        shell: '/bin/bash'
       },
       uhura: { 
         uid: 1114,
-        home: '/network/uhura'
+        home: '/network/uhura',
+        shell: '/bin/bash'
       }
     },
     #
