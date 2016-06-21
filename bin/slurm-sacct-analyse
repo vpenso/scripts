@@ -240,6 +240,17 @@ module Slurm
     alloccpus
   )
 
+  SSHARE_FIELDS = %w(
+    account
+    user
+    rawshares
+    normshares
+    rawusage
+    normusage
+    effectvusage
+    fairshare
+  )
+
   # List of job states queried during data export 
   #
   SACCT_STATES = %w(
@@ -253,12 +264,18 @@ module Slurm
   module_function
 
   def sacct_fields ; SACCT_FIELDS.join(',') end
+  def sshare_fields ; SSHARE_FIELDS.join(',') end
   def sacct_states ; SACCT_STATES.join(',') end
 
   ##
   # Returns th positional number of a specified field name
   #
   def sacct_findex(field) ; SACCT_FIELDS.index(field) end
+
+  ##
+  # Returns th positional number of a specified field name
+  #
+  def sshare_findex(field) ; SSHARE_FIELDS.index(field) end
 
   ##
   # Generate the command to export data from Slurm with sacct
@@ -287,7 +304,14 @@ module Slurm
   # Fair-Share distribution by users 
   #
   def sshare
-    System::exec_split_lines('sshare -alhP','|')
+    command = "sshare
+      --format #{sshare_fields}
+      --all
+      --parsable2
+      --noheader
+    "
+    command.gsub!(/^  */,'').gsub(/\n/,' ')
+    System::exec_split_lines(command,'|')
   end
 
   module Analyse
@@ -529,17 +553,21 @@ module Slurm
       # Populate the output object with the input data
       #
       Slurm::sshare.each do |elem|
+
+        rec = {}
+
+        Slurm::SSHARE_FIELDS.each { |field| rec[field] = elem[Slurm::sshare_findex field] }
+
         # Entities per input element
-        account, 
-        user, 
-        r_share, 
-        n_share, 
-        r_usage, 
-        n_usage, 
-        e_usage, 
-        f_share, 
-        grp_cpu_min, 
-        cpu_run_min = elem
+        account = rec['account']  
+        user    = rec['user']
+        r_share = rec['rawshare']
+        n_share = rec['normshare']
+        r_usage = rec['rawusage']
+        n_usage = rec['normusage']
+        e_usage = rec['effectvusage']
+        f_share = rec['fairshare']
+
         # If this element describes an account...
         if user.empty?
           shares[account] = {
@@ -559,7 +587,7 @@ module Slurm
           }
         end
       end
- 
+
       return shares
 
     end
@@ -843,7 +871,9 @@ begin
     if $options.users
       # Accumulate fair share for a given user on all associated accounts
       data['accounts'].keys.each do |account|
-        share += shares[account]['users'][user]['share']['norm'].to_f * 100
+        if shares.has_key? account
+          share += shares[account]['users'][user]['share']['norm'].to_f * 100
+        end
       end
       # Two digits fair share value
       share = sprintf('%.2f', share)
@@ -852,7 +882,9 @@ begin
       share = '-'
     else
       # Fair share configured for this account
-      share = sprintf('%.2f', shares[account]['share']['norm'].to_f*100)
+      if shares.has_key? account
+        share = sprintf('%.2f', shares[account]['share']['norm'].to_f*100)
+      end
     end
 
     #
