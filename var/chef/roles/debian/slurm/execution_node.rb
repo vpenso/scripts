@@ -2,6 +2,7 @@ name "execution_node"
 description "Cluster Execution Node"
 run_list( 
   'recipe[sys::apt]',
+  'recipe[sys::accounts]',
   'recipe[sys::file]',
   'recipe[sys::link]',
   'recipe[sys::mount]'
@@ -9,7 +10,16 @@ run_list(
 default_attributes(
   sys: {
     apt: {
-      packages: [ 'slurmd' ]
+      packages: [ 
+        'slurmd',
+        'stress'
+      ]
+    },
+    accounts: {
+      spock: { uid: 1111 },
+      sulu: { uid: 1112 },
+      kirk: { uid: 1113 },
+      uhura: { uid: 1114 }
     },
     file: {
       '/etc/munge/munge.key' => { content: '030340d651edb16efabf24a8c080d4b7' }

@@ -43,7 +43,7 @@ Create a virtual machine to host the Slurm cluster controller called **lxrm01.de
 
 ```bash
 >>> virsh-instance -O shadow debian64-9 lxrm01.devops.test
->>> slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -s $@ ; cd - >/dev/null }
+>>> slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -r $@ ; cd - >/dev/null }
 >>> slurm-cc 'echo lxrm01 > /etc/hostname ; hostname lxrm01 ; hostname -f'
 lxrm01.devops.test
 ```
@@ -61,16 +61,17 @@ Deploy a basic Slurm configuration from [slurm/basis][slurm_basic]
 
 ```bash
 >>> slurm-cc -r 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
->>> ssh-sync -r $SCRIPTS/var/slurm/basic/ :/etc/slurm-llnl
+>>> ssh-sync -r $SCRIPTS/var/slurm/ :/etc/slurm-llnl
 >>> slurm-cc 'systemctl restart slurmdbd'
 ```
 
-Configure the accounting, and allow job execution with the `devops` user:
+Configure the accounting, and allow job execution with theuser:
 
 ```bash
 >>> slurm-cc 'sacctmgr -i add cluster vega --immediate'
 >>> slurm-cc 'sacctmgr add account hpc description=hpc organization=hpc --immediate'
->>> slurm-cc 'sacctmgr create user name=devops account=hpc defaultaccount=hpc --immediate'
+>>> slurm-cc 'sacctmgr create user name=sulu account=hpc defaultaccount=hpc --immediate'
+[…]
 ```
 
 Start the controller:
@@ -87,7 +88,7 @@ Create a couple a virtual machines for the execution nodes called **lxb00[1,4].d
 ```bash
 >>> NODES lxb00[1-4] 
 >>> nodeset-loop "virsh-instance -O shadow debian64-9 {}.devops.test"
->>> nodeset-loop "cd $VM_INSTANCE_PATH/{}.devops.test ; ssh-exec -s 'hostname {} ; hostname -f' ; cd -"
+>>> nodeset-loop "cd $VM_INSTANCE_PATH/{}.devops.test ; ssh-exec -r 'echo {} > /etc/hostname ; hostname {} ; hostname -f' ; cd -"
 […]
 ```
 

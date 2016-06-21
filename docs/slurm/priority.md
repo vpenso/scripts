@@ -53,7 +53,8 @@ PartitionName=highmen […] Priority=3 […]
 
 ## Trackable Resources
 
-[Trackable RESources][tres] (TRES) are used to **monitor resource consumed by a job to be accounted and considered during the calculation of the fair share factor**. `AccountingStorageTRES` defines which consumable resources are tracked. By default CPU, Energy, Memory, and Node are tracked, whether specified or not. `PriorityWeightTRES` is a comma separated list of resource types and weights. It defines the degree how each resource contributes to the job's priority. `TRESBillingWeights` sets billing weights for each partition to configure how resources contribute to the calculation of a job resource consumption. 
+[Trackable RESources][tres] (TRES) are used to **monitor resource consumed by a job to be accounted and considered during the calculation of the fair share factor**. `AccountingStorageTRES` defines which consumable resources are tracked. By default CPU, Energy, Memory, and Node are tracked, whether specified or not.
+
 
 Default configuration:
 
@@ -64,16 +65,26 @@ PriorityFlags           =
 PriorityWeightTRES      = (null)
 ```
 
-Custom configuration in [slurm.conf][slurmconf]:
+`PriorityWeightTRES` is a comma separated list of **resource types and associated billing weights**. It defines the degree how each resource contributes to the job's priority. 
 
 ```bash
-AccountingStorageTRES=gres/gpu:tesla,license/iop1,bb/cray
-PriorityFlags=[…],MAX_TRES
-PriorityWeightTRES=CPU=1000,Mem=2000,GRES/gpu=3000
-PartitionName=main […] TRESBillingWeights="CPU=1.0,Mem=0.25,GRES/gpu=2.0"
+>>> scontrol show config | grep ^PriorityWeightTRES
+PriorityWeightTRES      = CPU=1000,Mem=1000
 ```
 
-By default the sum of all tracked resources multiplied by their weight is calculated. This incorporates all resources into the aggregation of consumed resources. 
+`TRESBillingWeights` configures the resource types and weights for each partition contributing to the **calculation of the job resource consumption**. These billing weights are specified as a comma-separated list  of type-weight pairs. 
+
+```bash
+>>> scontrol show partition | grep -e PartitionName=[main,long] -e TRESBillingWeights
+PartitionName=main
+   TRESBillingWeights=cpu=1.0,mem=.25G
+PartitionName=long
+   TRESBillingWeights=cpu=1.5,mem=.50G
+```
+
+The base unit can be adjusted with the suffix K,M,G,T or P. 
+
+By default the **sum of all tracked resources multiplied by their weight** is calculated. This incorporates all resources into the aggregation of consumed resources for a particular job. 
 
 ```bash
 sum(<type>*<weight>,[…])
