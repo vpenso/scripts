@@ -2,6 +2,15 @@
 
 Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
 
+The **configuration is deployed using Chef** with the [sys](https://github.com/GSI-HPC/sys-chef-cookbook) cookbook.
+
+Slurm has the capability to simulate resources on execution nodes for testing:
+
+* Set `FastSchedule=2` in order to emulate nodes with more resources then physically available by defining them with NodeName.
+* Set `ReturnToService=1` to prevent nodes from been set to state down due to limitations like "low memory". This can help to emulate non existed memory resources on test nodes. 
+
+**Slurm configuration files are located in [var/slurm/][slurm_basic].**
+
 # Deployment
 
 ## Account Database
@@ -96,22 +105,16 @@ Deploy the Chef role [execution_node][execution_node.rb] to install _slurmd_
 
 ```bash
 >>> slurm-en() { for d in $VM_INSTANCE_PATH/lxb* ; do cd $d ; $@ ; cd - >/dev/null ; done }
->>> slurm-en-exec() { slurm-en ssh-exec -s $@ }
+>>> slurm-en-exec() { slurm-en ssh-exec -r $@ }
 ```
 ```bash
 >>> slurm-en chef-remote cookbook sys
 >>> slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/execution_node.rb
 >>> slurm-en chef-remote -r "role[execution_node]" solo
 […]
->>> slurm-en-exec 'systemctl restart munge slurmd'
+>>> slurm-en-exec 'systemctl reboot'
 ```
 
-# Configuration
-
-Slurm has the capability to simulate resources on execution nodes for testing:
-
-* Set `FastSchedule=2` in order to emulate nodes with more resources then physically available by defining them with NodeName.
-* Set `ReturnToService=1` to prevent nodes from been set to state down due to limitations like "low memory". This can help to emulate non existed memory resources on test nodes. 
 
 # Tests
 
@@ -135,7 +138,7 @@ Execute jobs:
 […]
 ```
 
-[slurm_basic]: ../../var/slurm/basic/slurm.conf
+[slurm_basic]: ../../var/slurm/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
 [account_database.rb]: ../../var/chef/roles/debian/slurm/account_database.rb
 [cluster_controller.rb]: ../../var/chef/roles/debian/slurm/cluster_controller.rb

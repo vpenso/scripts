@@ -1,6 +1,7 @@
 name "execution_node"
 description "Cluster Execution Node"
 run_list( 
+  'recipe[sys::boot]',
   'recipe[sys::apt]',
   'recipe[sys::accounts]',
   'recipe[sys::file]',
@@ -9,8 +10,16 @@ run_list(
 )
 default_attributes(
   sys: {
+    boot: {
+      params: [
+        'cgroup_enable=memory',
+        'swapaccount=1'
+      ]
+    },
     apt: {
       packages: [ 
+        'dbus',
+        'libpam-systemd',
         'slurmd',
         'stress'
       ]
