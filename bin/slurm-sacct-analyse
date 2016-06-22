@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.32
+VERSION = 0.33
 
 require 'ostruct'
 require 'getoptlong' 
@@ -673,7 +673,7 @@ begin
   $options.debug = false
   $options.node_regex = String.new
   $options.no_header = false
-  $options.parsable = String.new
+  $options.parsable = Array.new
   $options.partition = Array.new
   $options.partitions = false
   $options.run_time = false
@@ -733,7 +733,16 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--parsable'
-      $options.parsable = arg[0]
+      f_sep = Array.new
+      # Make sure to use only the first character of a string
+      f_sep << arg[0]
+      # Make sure the first and second field separators are never the same
+      if f_sep.first.eql? ','
+        f_sep << '|'
+      else
+        f_sep << ','
+      end
+      $options.parsable = f_sep
     when '--partition'
       $options.partition = arg
     when '--partitions'
@@ -866,6 +875,9 @@ begin
 
     partition = if $options.partitions
                   elem
+                elsif not $options.parsable.empty?
+                  # Print a list of all users with the second field separator
+                  data['partitions'].keys.join($options.parsable.last)
                 else
                   if data['partitions'].length > 1
                     data['partitions'].length
@@ -876,13 +888,19 @@ begin
 
     user = if $options.users
              elem
+           elsif not $options.parsable.empty?
+             # Print a list of all users with the second field separator
+             data['users'].keys.join($options.parsable.last)
            else
              # Number of users which consumed resources
-             user = data['users'].keys.length
+             data['users'].keys.length
            end
 
-    account = unless $options.users || $options.partitions
+    account = if not $options.users or not $options.partitions
                 elem
+              elsif not $options.parsable.empty?
+                # Print a list of all users with the second field separator
+                data['accounts'].keys.join($options.parsable.last)
               else
                 # The number of accounts a use has consumed resources from
                 if data['accounts'].keys.length > 1
@@ -954,7 +972,7 @@ begin
   if $options.parsable.empty?
     $stdout.puts Table::print table
   else
-    table.each { |r| $stdout.puts "#{r.join($options.parsable)}" }
+    table.each { |r| $stdout.puts "#{r.join($options.parsable.first)}" }
   end
 
 rescue => exc
