@@ -33,6 +33,7 @@ alias go-="chmod go-rwx"
 alias 0=clear
 alias x=exit
 alias v=vim
+alias vim-cheat='vim-cheat | less'
 alias _=" sudo"
 alias _!=" sudo !!"
 alias __=noglob

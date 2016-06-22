@@ -99,6 +99,15 @@ echo "
              \", │ last inserted text register
            :reg │ show content of all registers
 
+            ${B}${U}FOLDING${R}
+
+             za │ toggle folding
+             zc │ close fold at the cursor
+             zo │ open fold at the cursor
+             zR │ open all folds
+             zM │ close all open folds
+             zj │ move cursor to next fold
+             zk │ move cursor to previous fold
 
             ${B}${U}COMMANDS${R}
 
