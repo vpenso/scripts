@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.3
+VERSION = 0.32
 
 require 'ostruct'
 require 'getoptlong' 
@@ -304,15 +304,34 @@ module Slurm
   # Fair-Share distribution by users 
   #
   def sshare
-    command = "sshare
-      --format #{sshare_fields}
-      --all
-      --parsable2
-      --noheader
-    "
-    command.gsub!(/^  */,'').gsub(/\n/,' ')
+
+    # Get the current version of the sshare program
+    #
+    version = `sshare --version`.split(' ')[-1]
+
+    # Unfortunately it is required to execute sshare with version
+    # dependent flags until support fr Slurm prior to version 15
+    # is dropped...
+    #
+    command = case version
+
+              # Old versions of Slurm
+              # 
+              when /^14/
+                'sshare -alhP'
+
+              # Beginning with version 15 the sshare command supports a --format option
+              # 
+              else
+                "sshare --format #{sshare_fields} --all --parsable2 --noheader"
+
+              end
+
     System::exec_split_lines(command,'|')
+
   end
+
+
 
   module Analyse
 
@@ -610,36 +629,42 @@ class Array
 
   def median
 
-    # Average and median wait time of all jobs in queue 
-    lowest = self.min 
-    highest = self.max 
-    total = self.inject(:+)
-    length = self.length
-    average = total.to_f/length
-    sorted = self.sort
-    median = if length > 0 
-               if length % 2 == 1 
-                 sorted[length/2]
-               else
-                 (sorted[length/2 - 1] + sorted[length/2]).to_f / 2
-               end
-             else
-               0
-             end
+    sym = '-'
+    vals =  { 'average' => sym, 'median' => sym, 'lowest' => sym, 'highest' => sym }
 
-    return { 
-      'average' => average.to_i, 
-      'median' => median.to_i,
-      'lowest' => lowest,
-      'highest' => highest
-    }
+    unless self.empty?
+
+      # Average and median wait time of all jobs in queue 
+      lowest = self.min 
+      highest = self.max 
+      total = self.inject(:+)
+      length = self.length
+      average = total.to_f/length
+      sorted = self.sort
+      median = if length > 0 
+                 if length % 2 == 1 
+                   sorted[length/2]
+                 else
+                   (sorted[length/2 - 1] + sorted[length/2]).to_f / 2
+                 end
+               else
+                 0
+               end
+
+      vals =  { 
+        'average' => average.to_i, 
+        'median' => median.to_i,
+        'lowest' => lowest,
+        'highest' => highest
+      }
+
+    end
+
+    return vals
 
   end
 
 end
-
-
-
 
 begin
 
