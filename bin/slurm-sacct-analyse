@@ -580,8 +580,8 @@ module Slurm
         # Entities per input element
         account = rec['account']  
         user    = rec['user']
-        r_share = rec['rawshare']
-        n_share = rec['normshare']
+        r_share = rec['rawshares']
+        n_share = rec['normshares']
         r_usage = rec['rawusage']
         n_usage = rec['normusage']
         e_usage = rec['effectvusage']
@@ -809,6 +809,7 @@ begin
   # at specified time frame:
   #
   shares = Slurm::Analyse::shares
+
 
   # Table containing the output data
   table = Array.new
