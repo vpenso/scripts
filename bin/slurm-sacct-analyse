@@ -16,13 +16,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.33
+VERSION = 0.40
 
 require 'ostruct'
 require 'getoptlong' 
 require 'logger'
 require 'json'
 require 'date'
+require 'erb'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
@@ -57,7 +58,7 @@ Other options:
 
   --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
   --debug, -d                Show stacktraces in case of errors.
-  --help, -H                 Show this help information.
+  --help                     Show this help information.
   --no-header, -N            Disable header information in the output.
   --parsable, -X <delim>     Print output with given delimiter
   --version, -v              Print version number.
@@ -330,8 +331,6 @@ module Slurm
     System::exec_split_lines(command,'|')
 
   end
-
-
 
   module Analyse
 
@@ -613,6 +612,87 @@ module Slurm
 
   end
 
+  module Style
+
+    BLACK          = '#000000'
+    SGI_BEET       = '#8E388E'
+    SGI_SLATEBLUE  = '#7171C6'
+    SGI_LIGHTBLUE  = '#7D9EC0'
+    SGI_TEAL       = '#388E8E'
+    SGI_CHARTREUSE = '#71C671'
+    SGI_OLIVEDRAB  = '#8E8E38'
+    SGI_BRIGHTGRAY = '#C5C1AA'
+    SGI_SALMON     = '#C67171'
+    SGI_DARKGRAY   = '#555555'
+    SGI_LIGHTGRAY  = '#AAAAAA'
+    MISTYROSE_2    = '#EED5D2' 
+    LIGHTPINK_3    = '#CD8C95'
+    LIGHTCORAL     = '#F08080'
+    BROWN_2        = '#EE3B3B'
+    RED_2          = '#EE0000'
+    FIREBRICK_3    = '#CD2626'
+    BROWN          = '#A52A2A'
+    GRAY_20        = '#333333'
+    GRAY_40        = '#666666'
+    GRAY_50        = '#7F7F7F'
+    GRAY_60        = '#999999'
+    GRAY_70        = '#B3B3B3'
+    GRAY_80        = '#CCCCCC'
+    GRAY_95        = '#F2F2F2'
+    DARKGREEN      = '#006400'
+    GREEN_4        = '#008B00'
+    GREEN_3        = '#00CD00'
+    PALEGREEN_3    = '#7CCD7C'
+    DARKSEAGREEN_2 = '#B4EEB4'
+    HONEYDEW_2     = '#E0EEE0'
+    PURPLE_4       = '#551A8B'
+    PURPLE_3       = '#7D26CD'
+    PURPLE_2       = '#912CEE'
+    PURPLE         = '#800080'
+    MAGENTA_3      = '#CD00CD'
+    MEDIUMORCHID_1 = '#E066FF'
+    PLUM           = '#DDA0DD'
+    THISTLE_2      = '#EED2EE'
+    CORNSILK_2     = '#EEE8CD'
+    WHEAT_2        = '#EED8AE'
+    NAVAJOWHITE_3  = '#CDB38B'
+    GOLDENROD      = '#DAA520'
+    GOLDENROD_4    = '#8B6914'
+    ORANGE         = '#FFA500'
+    ORANGE_3       = '#CD8500'
+    DARKORANGE     = '#FF8C00'
+    MELON          = '#E3A869'
+    CARROT         = '#ED9121'
+    BRICK          = '#9C661F'
+    NAVY           = '#000080'
+    BLUE           = '#0000FF'
+    ROYALBLUE      = '#4169E1'
+    DODGERBLUE_1   = '#1E90FF'
+    STEALBLUE_1    = '#63B8FF'
+    LIGTHSKYBLUE_2 = '#A4D3EE'
+    SLATEGRAY_2    = '#B9D3EE'
+
+    module_function
+
+    def share_usage(val)
+      l = val.to_s.length
+      color = if    l > 9   ; PURPLE_4
+              elsif l > 8   ; PURPLE_3
+              elsif l > 7   ; MAGENTA_3
+              elsif l > 6   ; MEDIUMORCHID_1
+              elsif l > 5   ; PLUM
+              else          ; THISTLE_2
+              end
+      %Q[<span style="color:#{color}">#{num_with_delimiter val}<span>]
+    end
+
+    def num_with_delimiter(num, delim = ';psbn&') 
+      num.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(delim).reverse
+    end
+
+
+  end
+
 end
 
 
@@ -671,6 +751,8 @@ begin
   $options = OpenStruct.new
   $options.account = Array.new
   $options.debug = false
+  $options.html = false
+  $options.html_template = String.new
   $options.node_regex = String.new
   $options.no_header = false
   $options.parsable = Array.new
@@ -694,7 +776,8 @@ begin
   GetoptLong.new(
     ['--account','-a',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
-    ['--help','-H',GetoptLong::NO_ARGUMENT],
+    ['--help',GetoptLong::NO_ARGUMENT],
+    ['--html','-H',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--node-regex','-n',GetoptLong::REQUIRED_ARGUMENT],
     ['--no-header','-N',GetoptLong::NO_ARGUMENT],
@@ -717,6 +800,9 @@ begin
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--html'
+      $options.html = true
+      $options.html_template = DATA.read
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -970,7 +1056,9 @@ begin
     table << row
   end
 
-  if $options.parsable.empty?
+  if $options.html
+    puts ERB.new($options.html_template,nil,'-').result(binding)
+  elsif $options.parsable.empty?
     $stdout.puts Table::print table
   else
     table.each { |r| $stdout.puts "#{r.join($options.parsable.first)}" }
@@ -989,3 +1077,85 @@ rescue => exc
 end
 
 exit 0
+
+__END__
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <style type="text/css">
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width:100%;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      background:white;
+    }
+
+    table thead > tr > th,
+    table tbody > tr > th,
+    table tfoot > tr > th,
+    table thead > tr > td,
+    table tbody > tr > td,
+    table tfoot > tr > td {
+      padding: 6px;
+      vertical-align: top;
+    }
+
+    table thead > tr > th {
+      vertical-align: bottom;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table caption + thead tr:first-child th,
+    table colgroup + thead tr:first-child th,
+    table thead:first-child tr:first-child th,
+    table caption + thead tr:first-child td,
+    table colgroup + thead tr:first-child td,
+    table thead:first-child tr:first-child td {
+      border-top: 0;
+    }
+
+    th {
+      text-align:left;
+      background:#FAFAFA;
+    }
+
+    th.ar, td.ar {
+      text-align:right;
+    }
+
+
+  </style>
+</head>
+<body>
+  <table>
+    <% header = table.shift -%>
+    <thead>
+      <tr>
+      <% header.each do |column| -%>
+        <th><%= column %></th>
+      <% end -%>
+      </tr>
+    </thead>
+    <tbody>
+    <% table.each do |column| -%>
+      <tr>
+        <td><%= column.shift -%></td>
+        <td><%= column.shift -%></td>
+        <td><%= column.shift -%></td>
+        <td><%= column.shift -%></td>
+        <td><%= column.shift -%></td>
+        <td><%= column.shift -%></td>
+        <td class="ar"><%= Slurm::Style::share_usage column.shift -%></td>
+        <% column.each do |row| -%>
+        <td><%= row -%></td>
+        <% end -%>
+      </tr>
+    <% end -%>
+    </tbody>
+  </table>
+</body>
+</html>
+
