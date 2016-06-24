@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VERSION = 0.40
+VERSION = 0.41
 
 require 'ostruct'
 require 'getoptlong' 
@@ -56,12 +56,14 @@ Enable additional statistics for job exist states and job run-time with:
 
 Other options:
 
-  --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
-  --debug, -d                Show stacktraces in case of errors.
-  --help                     Show this help information.
-  --no-header, -N            Disable header information in the output.
+  --config-file, -c <path>   Configure the HTML output
+  --debug, -d                Show stacktraces in case of errors
+  --help                     Show this help information
+  --html, -H                 Print HTML instead of plain text
+  --no-header, -N            Disable header information in the output
   --parsable, -X <delim>     Print output with given delimiter
-  --version, -v              Print version number.
+  --sort-by, -s r|p          Sort output by (r)untime, rel. (p)ercent
+  --version, -v              Print version number
 
 Columns in the output:
 
@@ -673,6 +675,10 @@ module Slurm
     SLATEGRAY_2    = '#B9D3EE'
 
     module_function
+ 
+    def num_with_delimiter(num, delim = ';psbn&')
+      num.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(delim).reverse
+    end
 
     def share_usage(val)
       l = val.to_s.length
@@ -685,9 +691,32 @@ module Slurm
               end
       %Q[<span style="color:#{color}">#{num_with_delimiter val}<span>]
     end
+ 
+    # Returns a colorized value from a user defined color
+    # configuration if present...
+    #
+    def map_style(key, val)
 
-    def num_with_delimiter(num, delim = ';psbn&') 
-      num.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(delim).reverse
+      # Check if the user configuration contains color mapping
+      # for the given key
+      #
+      if $config['color'].has_key? key and $config['color'][key].has_key? val
+
+        # Retrieve the color information
+        #
+        color = $config['color'][key][val]
+
+        # Embed the color information into a span tag, and
+        # return the HTML code to the caller
+        #
+        return %Q[<span style="color:#{color}">#{val}<span>]
+
+      end
+
+      # Return the original value if mapping is not possible
+      #
+      val
+
     end
 
 
@@ -748,8 +777,11 @@ end
 
 begin
 
+  $config = Hash.new
+
   $options = OpenStruct.new
   $options.account = Array.new
+  $options.config_file = String.new
   $options.debug = false
   $options.html = false
   $options.html_template = String.new
@@ -763,7 +795,6 @@ begin
   $options.sortby = 'a'
   $options.users = false
   $options.user = Array.new
-  
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -775,6 +806,7 @@ begin
 
   GetoptLong.new(
     ['--account','-a',GetoptLong::REQUIRED_ARGUMENT],
+    ['--config-file','-c',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help',GetoptLong::NO_ARGUMENT],
     ['--html','-H',GetoptLong::NO_ARGUMENT],
@@ -794,6 +826,9 @@ begin
     case opt
     when '--account'
       $options.account = arg.split(',')
+    when '--config-file'
+      raise("#{arg} not existing!") unless File.exists? arg
+      $options.config_file = arg
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
@@ -849,6 +884,10 @@ begin
       $stdout.puts VERSION
       exit 0
     end
+  end
+
+  unless $options.config_file.empty?
+    $config = JSON.parse File.read($options.config_file)
   end
 
   time_format = '%Y-%m-%dT%H:%M:00'
@@ -983,19 +1022,19 @@ begin
              data['users'].keys.length
            end
 
-    account = if not $options.users or not $options.partitions
-                elem
-              elsif not $options.parsable.empty?
-                # Print a list of all users with the second field separator
-                data['accounts'].keys.join($options.parsable.last)
-              else
-                # The number of accounts a use has consumed resources from
-                if data['accounts'].keys.length > 1
-                  data['accounts'].keys.length
-                else
-                  data['accounts'].keys.first
-                end
-              end
+    account = elem
+    if $options.users or $options.partitions
+      # The number of accounts a use has consumed resources from
+      if data['accounts'].keys.length > 1
+        account = data['accounts'].keys.length
+      else
+        account = data['accounts'].keys.first
+      end
+    end
+    unless $options.parsable.empty?
+      # Print a list of all users with the second field separator
+      account = data['accounts'].keys.join($options.parsable.last)
+    end
 
     share = 0.0
     if $options.users
@@ -1079,83 +1118,30 @@ end
 exit 0
 
 __END__
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <style type="text/css">
-    table {
-      border-collapse: collapse;
-      border-spacing: 0;
-      width:100%;
-      border-top: 1px solid #ddd;
-      border-bottom: 1px solid #ddd;
-      background:white;
-    }
-
-    table thead > tr > th,
-    table tbody > tr > th,
-    table tfoot > tr > th,
-    table thead > tr > td,
-    table tbody > tr > td,
-    table tfoot > tr > td {
-      padding: 6px;
-      vertical-align: top;
-    }
-
-    table thead > tr > th {
-      vertical-align: bottom;
-      border-bottom: 1px solid #ddd;
-    }
-
-    table caption + thead tr:first-child th,
-    table colgroup + thead tr:first-child th,
-    table thead:first-child tr:first-child th,
-    table caption + thead tr:first-child td,
-    table colgroup + thead tr:first-child td,
-    table thead:first-child tr:first-child td {
-      border-top: 0;
-    }
-
-    th {
-      text-align:left;
-      background:#FAFAFA;
-    }
-
-    th.ar, td.ar {
-      text-align:right;
-    }
-
-
-  </style>
-</head>
-<body>
-  <table>
-    <% header = table.shift -%>
-    <thead>
-      <tr>
-      <% header.each do |column| -%>
-        <th><%= column %></th>
-      <% end -%>
-      </tr>
-    </thead>
-    <tbody>
-    <% table.each do |column| -%>
-      <tr>
-        <td><%= column.shift -%></td>
-        <td><%= column.shift -%></td>
-        <td><%= column.shift -%></td>
-        <td><%= column.shift -%></td>
-        <td><%= column.shift -%></td>
-        <td><%= column.shift -%></td>
-        <td class="ar"><%= Slurm::Style::share_usage column.shift -%></td>
-        <% column.each do |row| -%>
-        <td><%= row -%></td>
-        <% end -%>
-      </tr>
+<table>
+  <% header = table.shift -%>
+  <thead>
+    <tr>
+    <% header.each do |column| -%>
+      <th><%= column %></th>
     <% end -%>
-    </tbody>
-  </table>
-</body>
-</html>
+    </tr>
+  </thead>
+  <tbody>
+  <% table.each do |column| -%>
+    <tr>
+      <td><%= Slurm::Style::map_style 'account', column.shift -%></td>
+      <td><%= column.shift -%></td>
+      <td><%= Slurm::Style::map_style 'partition', column.shift -%></td>
+      <td><%= column.shift -%></td>
+      <td><%= column.shift -%></td>
+      <td><%= column.shift -%></td>
+      <td><%= Slurm::Style::share_usage column.shift -%></td>
+      <% column.each do |row| -%>
+      <td><%= row -%></td>
+      <% end -%>
+    </tr>
+  <% end -%>
+  </tbody>
+</table>
 
