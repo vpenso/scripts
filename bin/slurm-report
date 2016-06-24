@@ -285,7 +285,7 @@ class Sacct
         r_perc = sprintf '%.2f', (data['runtime'].to_f/@data['runtime']) * 100
         @data[key][value]['useperc'] = r_perc
          # Median wait time of jobs in queue
-        @data[key][value]['qwmedian'] = data['qwmedian'].median
+        @data[key][value]['qwmedian'] = humanize_secs(data['qwmedian'].median)
       end
     end
   end
@@ -317,6 +317,14 @@ class Sacct
     start_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
     wait_time_secs = start_epoch - submit_epoch
     wait_time_secs > 31449600 ? 0 : wait_time_secs
+  end
+
+
+  def humanize_secs(seconds)
+    days = seconds / (60*60*24)
+    seconds = seconds % (60*60*24)
+    hours = Time.at(seconds).utc.strftime('%H:%M')
+    days > 0 ? "#{days}-#{hours}" : hours
   end
 
   def exec
@@ -395,6 +403,7 @@ Read accounting data from Slurm and accumulate statistics:
   --format-list, -F          List of fields available to print
   --group-by, -g <group>     Group ouput by account, partition oser user
   --help                     Show this help information
+  --no-header, -H            Do not print a table header in output
   --node-regex, -n <regex>   Regular expression to select a subset of nodes
   --partition, -p <par,par>  Limit the output ot a given list of partitions
   --print-data               Print the parsed and processed data
@@ -443,6 +452,7 @@ begin
   $options.format = DEFAULT_FORMAT
   $options.group_by = 'account'
   $options.node_regex = String.new
+  $options.node_header = false
   $options.print_data = false
   $options.print_raw_data = false
   $options.sort_by = 'runtime'
@@ -466,6 +476,7 @@ begin
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--node-regex','-n',GetoptLong::REQUIRED_ARGUMENT],
+    ['--no-header','-H',GetoptLong::NO_ARGUMENT],
     ['--partition','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--print-data',GetoptLong::NO_ARGUMENT],
     ['--print-raw-data',GetoptLong::NO_ARGUMENT],
@@ -510,6 +521,8 @@ begin
       else
         Logger::INFO
        end
+    when '--no-header'
+      $options.no_header = true
     when '--node-regex'
       sacct.node_regex arg
     when '--partition'
@@ -558,7 +571,7 @@ begin
   order = order.to_h.keys
 
   table = Array.new
-  table << $options.format.map{|_| _.upcase}
+  table << $options.format.map{|_| _.upcase} unless $options.no_header
   order.each do |elem|
     row = Array.new
     $options.format.each do |_|
