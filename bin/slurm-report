@@ -1,0 +1,573 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong'
+require 'logger'
+require 'json'
+require 'date'
+
+class Hash
+
+  def self.autonew(*args)
+    new(*args){|hsh, key| hsh[key] = Hash.new(&hsh.default_proc) }
+  end
+
+end
+
+class Array
+
+  def median
+
+    val = '-'
+
+    unless self.empty?
+
+      # Average and median wait time of all jobs in queue 
+      lowest = self.min
+      highest = self.max
+      total = self.inject(:+)
+      length = self.length
+      average = total.to_f/length
+      sorted = self.sort
+      median = if length > 0
+                 if length % 2 == 1
+                   sorted[length/2]
+                 else
+                   (sorted[length/2 - 1] + sorted[length/2]).to_f / 2
+                 end
+               else
+                 0
+               end
+
+      val = median.to_i
+
+    end
+
+    return val
+
+  end
+
+end
+
+#
+# Interface to the command-line environment
+#
+module System
+
+  module_function
+
+  ##
+  # Execute a command passed as parameter an return the output
+  # on success. Otherwise the method returns Nil indicating
+  # a problem on execution.
+  def exec(command)
+    command + ' 2>&1'
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    $logger.debug "No output received" if output.empty?
+    if state == 0
+      return output
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
+  end
+
+  ##
+  # Execute a command and transform the output line by line
+  # into an array splitting each line using a delimiter into
+  # a second level array.
+  #
+  def self.exec_split_lines(command, delimiter = ' ')
+    r_val = Array.new
+    # Remove line-feed and leading white-space
+    #
+    command = command.gsub(/^  */,'').gsub(/\n/,' ')
+    # Execute the command and split the output by line
+    #
+    System::exec(command).split("\n").each do |line|
+      # Use the defined delimiter to split the fields per line
+      #
+      r_val << line.split(delimiter).map! { |e| e.strip }
+    end
+    # Pass the output multi-dimensional array to the caller
+    #
+    r_val
+  end
+
+end
+
+##################################################################
+##################################################################
+
+class Sacct
+
+  FIELDS = %w(
+    jobid
+    cluster
+    partition
+    account
+    group
+    gid
+    user
+    uid
+    submit
+    priority
+    eligible
+    start
+    end
+    elapsed
+    exitcode
+    state
+    nnodes
+    ncpus
+    ntasks
+    reqcpus
+    reqmem
+    timelimit
+    cputime
+    cputimeraw
+    nodelist
+    jobname
+    alloccpus
+  )
+
+  # List of job states queried during data export
+  #
+  STATES = %w(
+    cancelled
+    completed
+    failed
+    node_fail
+    timeout
+  )
+
+  DEFAULT_OPTIONS = %w(
+    --allusers
+    --noheader
+    --allocations
+    --parsable2
+  )
+
+  TIME_FORMAT = '%Y-%m-%dT%H:%M:00'
+
+  RUNTIMES = %w(
+    lt_5m
+    lt_1h
+    lt_4h
+    lt_8h
+    lt_12h
+    lt_1d
+    lt_7d
+    gt_7d
+  )
+
+  OBJECTS = %w(
+   account
+   partition
+   user
+  )
+
+  attr_reader :opts, :data, :raw_data
+
+  def initialize()
+    @opts = DEFAULT_OPTIONS
+    @opts << "--state #{states}"
+    @opts << "--format #{fields}"
+    @raw_data = Array.new
+    @data = { 'runtime' => 0}
+    OBJECTS.each {|_| @data[_] = Hash.new}
+  end
+
+  def start_time(time)
+    @opts << "--starttime #{time}"
+  end
+
+  def end_time(time = '')
+    time = Time.now.strftime TIME_FORMAT if time.empty?
+    @opts << "--endtime #{time}"
+  end
+
+  def account(account)
+    @opts << "--accounts #{account}"
+  end
+
+  def user(user)
+    @opts << "--user #{user}"
+  end
+
+  def partition(partition)
+    @opts << "--partition #{partition}"
+  end
+
+  def parse
+    exec()
+    transform()
+    post_process()
+  end
+
+  private
+
+  def skeleton
+    skel = {
+      'accounts' => Array.new,
+      'jobs' => 0,
+      'partitions' => Array.new,
+      'runtime' => 0,
+      'users' => Array.new,
+      'qwmedian' => Array.new
+    }
+    skel.merge(runtimes_h).merge(states_h)
+  end
+
+  def transform
+    # Initialize the basic data structure..
+    OBJECTS.each do |object|
+      @raw_data.map{|_| _[object] }.uniq.each do |elem|
+        @data[object][elem] = skeleton
+      end
+    end
+    # Transform the raw data...
+    @raw_data.each do |job|
+      runtime = job['cputimeraw'].to_i
+      @data['runtime'] += runtime
+      OBJECTS.each do |key|
+        value = job[key]
+        @data[key][value]['accounts'] = (@data[key][value]['accounts'] << job['account']).uniq
+        @data[key][value]['jobs'] += 1
+        @data[key][value]['runtime'] += runtime
+        @data[key][value]['users'] = (@data[key][value]['users'] << job['user']).uniq
+        @data[key][value]['partitions'] = (@data[key][value]['partitions'] << job['partition']).uniq
+        @data[key][value][state(job['state'])] += 1
+        @data[key][value][runtimes_key(runtime)] += 1
+        @data[key][value]['qwmedian'] << waittime(job['start'],job['end'])
+      end
+    end
+  end
+
+  def post_process
+    OBJECTS.each do |key|
+      @data[key].each do |value,data|
+        # Relative percent of the consumed resources according to the CPU seconds
+        r_perc = sprintf '%.2f', (data['runtime'].to_f/@data['runtime']) * 100
+        @data[key][value]['useperc'] = r_perc
+         # Median wait time of jobs in queue
+        @data[key][value]['qwmedian'] = data['qwmedian'].median
+      end
+    end
+  end
+
+  def fields ; FIELDS.join(',') end
+  def field_index(field) ; FIELDS.index(field) end
+  # This may include states  like "CANCELLED by 1234",
+  # therefore everything after the first space is removed
+  def state(s) ; s.gsub(/\s.*/,'').downcase end
+  def states ; STATES.join(',') end
+  def states_h ; Hash[ STATES.map {|_| [_,0]} ] end
+
+  def runtimes_h ; Hash[ RUNTIMES.map {|_| [_,0]} ] end
+  def runtimes_key(seconds)
+    case
+    when seconds < 300    ; 'lt_5m'
+    when seconds < 3600   ; 'lt_1h'
+    when seconds < 14400  ; 'lt_4h'
+    when seconds < 28800  ; 'lt_8h'
+    when seconds < 43200  ; 'lt_12h'
+    when seconds < 86400  ; 'lt_1d'
+    when seconds < 604800 ; 'lt_7d'
+    else                  ; 'gt_7d'
+    end
+  end
+
+  def waittime(start_time,end_time)
+    submit_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
+    start_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
+    wait_time_secs = start_epoch - submit_epoch
+    wait_time_secs > 31449600 ? 0 : wait_time_secs
+  end
+
+  def exec
+    # Gather the accounting data from slurm
+    #
+    System::exec_split_lines("sacct #{@opts.join(' ')}", '|').each do |line|
+      # Transform the output line-by-line and index it
+      #
+      elems = Hash.new
+      FIELDS.each { |f| elems[f] = line[field_index f] }
+      @raw_data << elems
+    end
+  end
+
+end
+
+#
+# Print an array as table with padded columns
+#
+class Table
+
+  def initialize(output)
+    @output = output
+  end
+
+  def self.print(table)
+    Table.new(table).rows
+  end
+
+  def rows
+    form = format()
+    rows = String.new
+    @output.each do |row|
+      $logger.debug("#{row.inspect}")
+      rows << sprintf("#{form}\n", *row)
+    end
+    return rows
+  end
+
+  def format
+    format = Array.new
+    columns = @output.first.length
+    0.upto(columns-1) do |column|
+      format << "%#{field_width(column)}s"
+    end
+    return format.join(' ')
+  end
+
+  def field_width(field = 0)
+    max_width = 0
+    @output.each do |row|
+      elem = row[field].to_s
+      next if elem.empty?
+      width = elem.length
+      max_width = width if width > max_width
+    end
+    return max_width
+  end
+
+end
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Synopsis
+========
+
+Explain in one sentance whta this cript does.
+
+Usage
+-----
+
+#{exec_name} [OPTIONS] ARGUMENT 
+
+  ARGUMENT
+    Describe what this parameter does.
+
+Options
+-------
+
+  --debug, -d
+    Show stacktraces in case of errors.
+  --help, -h
+    Show this help information.
+  --version, -v
+    Print version number.
+EOF
+
+begin
+
+  #stdin = $stdin.tty? ? String.new : $stdin.read
+
+  DEFAULT_FORMAT = %w(
+    accounts
+    useperc
+    runtime
+  )
+
+  FORMAT_OPTIONS = %w(
+    accounts
+    users
+    partitions
+    useperc
+    shareperc
+    qwmedian
+    runtime
+    jobs
+    completed
+    cancel
+    failed
+    nodefail
+    timeout
+    lt_5m
+    lt_1h
+    lt_4h
+    lt_8h
+    lt_12h
+    lt_1d
+    lt_7d
+    gt_7d
+  )
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.print_data = false
+  $options.print_raw_data = false
+  $options.group_by = 'account'
+  $options.format = DEFAULT_FORMAT
+  $options.sort_by = 'runtime'
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  sacct = Sacct.new
+
+  GetoptLong.new(
+    ['--account','-a',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
+    ['--format-list','-F',GetoptLong::NO_ARGUMENT],
+    ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--partition','-p',GetoptLong::REQUIRED_ARGUMENT],
+    ['--print-data',GetoptLong::NO_ARGUMENT],
+    ['--print-raw-data',GetoptLong::NO_ARGUMENT],
+    ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--user','-u',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--account'
+      sacct.account arg
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--format'
+      format = Array.new
+      arg.split(',').each do |f|
+        raise("Format option #{f} not supported") unless FORMAT_OPTIONS.include? f
+        format << f
+      end
+      $options.format = format
+    when '--format-list'
+      $stdout.puts FORMAT_OPTIONS.join("\n")
+      exit 0
+    when '--group-by'
+      groups = %w(account partition user)
+      if groups.include? arg
+        $options.group_by = arg
+      else
+        raise("Group by: #{groups.('|')}")
+      end
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--partition'
+      sacct.partition arg
+    when '--print-data'
+      $options.print_data = true
+    when '--print-raw-data'
+      $options.print_raw_data = true
+    when '--sort-by'
+      raise("Sort option #{arg} not supported") unless FORMAT_OPTIONS.include? arg
+      $options.sort_by = arg
+    when '--user'
+      sacct.user arg
+    when '--version'
+      $stdout.puts 0.5
+      exit 0
+    end
+  end
+
+  # Users are required to define a start time
+  #
+  sacct.start_time ( ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS') )
+
+  # Users can optionally define an end time
+  #
+  sacct.end_time(ARGV.shift || '')
+
+  sacct.parse
+
+  if $options.print_raw_data
+    $stdout.puts sacct.raw_data
+    exit 0
+  end
+
+  if $options.print_data
+    $stdout.puts JSON.pretty_generate sacct.data
+    exit 0
+  end
+
+  data = sacct.data[$options.group_by]
+
+  rel = {}
+  data.each{|n,d| rel[n] = d[$options.sort_by] }
+  order = rel.sort_by{|k,v| v}
+  order = order.reverse unless %w(accounts partitions users).include? $options.sort_by
+  order = order.to_h.keys
+
+  table = Array.new
+  table << $options.format.map{|_| _.upcase}
+  order.each do |elem|
+    row = Array.new
+    $options.format.each do |_|
+      val = data[elem][_]
+      val = val.join(',') if val.class == Array
+      row << val
+    end
+    table << row
+  end
+  $stdout.puts Table::print table
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
