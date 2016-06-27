@@ -76,9 +76,17 @@ module System
   # Execute a command passed as parameter an return the output
   # on success. Otherwise the method returns Nil indicating
   # a problem on execution.
-  def exec(command)
-    command + ' 2>&1'
-    $logger.debug "Exec [#{command}]"
+  def exec(command, file = '')
+    if file.empty?
+      command << ' 2>&1'
+    # Users can optionally provide a file to store the output into
+    #
+    else
+      # Avoid piping the content threw the Ruby process
+      #
+      command << " 1> #{file}"
+    end
+    $logger.info "<#{self.class}##{__method__.to_s}> #{command}"
     # Execute command as subprocess and return the exit code
     pipe = IO.popen(command)
     # Get the process ID from the child
@@ -89,7 +97,6 @@ module System
     Process.wait(pid)
     state=$?
     $logger.debug "Returned with #{state}"
-    $logger.debug "No output received" if output.empty?
     if state == 0
       return output
     else
@@ -110,10 +117,12 @@ module System
     command = command.gsub(/^  */,'').gsub(/\n/,' ')
     # Execute the command and split the output by line
     #
-    System::exec(command).split("\n").each do |line|
+    output = System::exec(command)
+    $logger.info "<#{self.class}##{__method__.to_s}> Split lines by field separator"
+    output.each_line do |line|
       # Use the defined delimiter to split the fields per line
       #
-      r_val << line.split(delimiter).map! { |e| e.strip }
+      r_val << line.split(delimiter).map(&:strip)
     end
     # Pass the output multi-dimensional array to the caller
     #
@@ -199,6 +208,7 @@ class Sacct
     @opts = DEFAULT_OPTIONS
     @opts << "--state #{states}"
     @opts << "--format #{fields}"
+    @delimiter = '|'
     @node_regex = String.new
     @raw_data = Array.new
     @data = { 'runtime' => 0}
@@ -206,11 +216,13 @@ class Sacct
   end
 
   def start_time(time)
+    @start_time = "_#{time}"
     @opts << "--starttime #{time}"
   end
 
   def end_time(time = '')
     time = Time.now.strftime TIME_FORMAT if time.empty?
+    @end_time = "_#{time}"
     @opts << "--endtime #{time}"
   end
 
@@ -236,8 +248,6 @@ class Sacct
     post_process()
   end
 
-  private
-
   def skeleton
     skel = {
       'accounts' => Array.new,
@@ -251,41 +261,66 @@ class Sacct
   end
 
   def transform
+    
     # Initialize the basic data structure..
     OBJECTS.each do |object|
-      @raw_data.map{|_| _[object] }.uniq.each do |elem|
-        @data[object][elem] = skeleton
+      index = field_index(object) + 1
+      # Do not implement this in Ruby code...
+      elems = System::exec %Q<cat #{data_file} | cut -d'#{@delimiter}' -f#{index} | sort | uniq>
+      elems.each_line do |elem|
+        @data[object][elem.chop] = skeleton
       end
     end
-    # Transform the raw data...
-    @raw_data.each do |job|
+
+    $logger.info "<#{self.class}##{__method__.to_s}>"
+
+    # Avoid memory slurping by reading the lines one-by-one into memory
+    #
+    File.foreach(data_file) do |line|
+
+      line = line.chop.split(@delimiter)
+
       unless @node_regex.empty?
-        next unless job['nodelist'] =~ Regexp.new(@node_regex)
+        next unless line[field_index 'nodelist'] =~ Regexp.new(@node_regex)
       end
-      runtime = job['cputimeraw'].to_i
+
+      runtime = line[field_index 'cputimeraw'].to_i
+      account = line[field_index 'account']
+      user = line[field_index 'user']
+      partition = line[field_index 'partition']
+      j_state = line[field_index 'state']
+
       @data['runtime'] += runtime
       OBJECTS.each do |key|
-        value = job[key]
-        @data[key][value]['accounts'] = (@data[key][value]['accounts'] << job['account']).uniq
+        value = line[field_index key]
+        @data[key][value]['accounts'] = (@data[key][value]['accounts'] << account).uniq
         @data[key][value]['jobs'] += 1
         @data[key][value]['runtime'] += runtime
-        @data[key][value]['users'] = (@data[key][value]['users'] << job['user']).uniq
-        @data[key][value]['partitions'] = (@data[key][value]['partitions'] << job['partition']).uniq
-        @data[key][value][state(job['state'])] += 1
+        @data[key][value]['users'] = (@data[key][value]['users'] << user).uniq
+        @data[key][value]['partitions'] = (@data[key][value]['partitions'] << partition).uniq
+        @data[key][value][state(j_state)] += 1
         @data[key][value][runtimes_key(runtime)] += 1
-        @data[key][value]['qwmedian'] << waittime(job['start'],job['end'])
+        # This is expensive in terms of run-time and memory foot print
+        if $options.format.include? 'qwmedian'
+          @data[key][value]['qwmedian'] << waittime(
+            line[field_index 'start'],line[field_index 'end']) 
+        end
       end
     end
+
   end
 
   def post_process
+
+    $logger.info "<#{self.class}##{__method__.to_s}> Post process data"
+
     OBJECTS.each do |key|
       @data[key].each do |value,data|
         # Relative percent of the consumed resources according to the CPU seconds
         r_perc = sprintf '%.2f', (data['runtime'].to_f/@data['runtime']) * 100
         @data[key][value]['useperc'] = r_perc
          # Median wait time of jobs in queue
-        @data[key][value]['qwmedian'] = humanize_secs(data['qwmedian'].median)
+        @data[key][value]['qwmedian'] = data['qwmedian'].median
       end
     end
   end
@@ -327,16 +362,21 @@ class Sacct
     days > 0 ? "#{days}-#{hours}" : hours
   end
 
+  def data_file
+    "/tmp/#{ENV['USER']}_sacct#{@start_time}#{@end_time}.csv"
+  end
+
   def exec
-    # Gather the accounting data from slurm
-    #
-    System::exec_split_lines("sacct #{@opts.join(' ')}", '|').each do |line|
-      # Transform the output line-by-line and index it
+    # It is very expensive to query the Slurm accounting database
+    # therefore make sure to buffer the result on disc to support
+    # multiple executions of the program on the same time frame.
+    if File.exist? data_file
+      $logger.info "<#{self.class}##{__method__.to_s}> File exists #{data_file}"
+    else
+      # Gather the accounting data from Slurm
       #
-      elems = Hash.new
-      FIELDS.each { |f| elems[f] = line[field_index f] }
-      @raw_data << elems
-    end
+      System::exec("sacct #{@opts.join(' ')}",data_file)
+    end 
   end
 
 end
@@ -459,7 +499,7 @@ begin
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
-  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S "
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
   $logger.formatter = proc do |severity, datetime, progname, message|
     "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
   end
