@@ -21,6 +21,7 @@ require 'getoptlong'
 require 'logger'
 require 'json'
 require 'date'
+require 'erb'
 
 class Hash
 
@@ -248,6 +249,8 @@ class Sacct
     post_process()
   end
 
+  private
+
   def skeleton
     skel = {
       'accounts' => Array.new,
@@ -261,7 +264,7 @@ class Sacct
   end
 
   def transform
-    
+
     # Initialize the basic data structure..
     OBJECTS.each do |object|
       index = field_index(object) + 1
@@ -302,8 +305,7 @@ class Sacct
         @data[key][value][runtimes_key(runtime)] += 1
         # This is expensive in terms of run-time and memory foot print
         if $options.format.include? 'qwmedian'
-          @data[key][value]['qwmedian'] << waittime(
-            line[field_index 'start'],line[field_index 'end']) 
+          @data[key][value]['qwmedian'] << waittime(line[field_index 'start'],line[field_index 'end']) 
         end
       end
     end
@@ -323,6 +325,7 @@ class Sacct
         @data[key][value]['qwmedian'] = data['qwmedian'].median
       end
     end
+
   end
 
   def fields ; FIELDS.join(',') end
@@ -426,6 +429,60 @@ class Table
 
 end
 
+module HTML
+
+  PURPLE_4 = '#551A8B'
+  PURPLE_3 = '#7D26CD'
+  MAGENTA_3 = '#CD00CD'
+  MEDIUMORCHID_1 = '#E066FF'
+  PLUM = '#DDA0DD'
+  THISTLE_2 = '#EED2EE'
+
+  module_function
+
+  def num_with_delimiter(num, delim = ';psbn&')
+    num.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(delim).reverse
+  end
+
+  def runtime(val)
+    l = val.to_s.length
+    color = if    l > 9   ; PURPLE_4
+            elsif l > 8   ; PURPLE_3
+            elsif l > 7   ; MAGENTA_3
+            elsif l > 6   ; MEDIUMORCHID_1
+            elsif l > 5   ; PLUM
+            else          ; THISTLE_2
+            end
+    %Q[<span style="color:#{color}">#{num_with_delimiter val}</span>]
+  end
+
+  # Returns a colorized value from a user defined color
+  # configuration if present...
+  #
+  def map_style(key, val)
+    # Check if the user configuration contains color mapping
+    # for the given key
+    #
+    if $config.has_key? 'color' and
+       $config['color'].has_key? key and 
+       $config['color'][key].has_key? val
+      # Retrieve the color information
+      #
+      color = $config['color'][key][val]
+      # Embed the color information into a span tag, and
+      # return the HTML code to the caller
+      #
+      return %Q[<span style="color:#{color}">#{val}</span>]
+    end
+    # Return the original value if mapping is not possible
+    #
+    val
+  end
+
+end
+
+
+
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 Read accounting data from Slurm and accumulate statistics:
@@ -438,11 +495,13 @@ Read accounting data from Slurm and accumulate statistics:
                              (default is now)
 
   --account, -a <acc,acc>    Limit the output to a given list of accounts
+  --config-file, -c <path>   Configure the HTML output
   --debug, -D                Show stacktraces in case of errors
   --format, -f <field,field> List of fields to include in output
   --format-list, -F          List of fields available to print
   --group-by, -g <group>     Group ouput by account, partition oser user
   --help                     Show this help information
+  --html, -h                 Print output as HTML table
   --no-header, -H            Do not print a table header in output
   --node-regex, -n <regex>   Regular expression to select a subset of nodes
   --partition, -p <par,par>  Limit the output ot a given list of partitions
@@ -452,6 +511,14 @@ Read accounting data from Slurm and accumulate statistics:
   --user, -u <usr,usr>       Limit the output to a given list of users
   --version                  Print program version
 EOF
+
+EXAMPLE = <<EOF
+Print default statistics for a given time:
+
+   >>> #{exec_name} 2016-06-26T00:00:00 2016-06-27T23:59:59
+
+EOF
+
 
 begin
 
@@ -487,10 +554,14 @@ begin
     gt_7d
   )
 
+  $config = Hash.new
+
   $options = OpenStruct.new
+  $options.config_file = String.new
   $options.debug = false
   $options.format = DEFAULT_FORMAT
   $options.group_by = 'account'
+  $options.html = false
   $options.node_regex = String.new
   $options.node_header = false
   $options.print_data = false
@@ -509,11 +580,14 @@ begin
 
   GetoptLong.new(
     ['--account','-a',GetoptLong::REQUIRED_ARGUMENT],
+    ['--config-file','-c',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--example',GetoptLong::NO_ARGUMENT],
     ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
     ['--format-list','-F',GetoptLong::NO_ARGUMENT],
     ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
-    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--help',GetoptLong::NO_ARGUMENT],
+    ['--html','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--node-regex','-n',GetoptLong::REQUIRED_ARGUMENT],
     ['--no-header','-H',GetoptLong::NO_ARGUMENT],
@@ -527,9 +601,16 @@ begin
     case opt
     when '--account'
       sacct.account arg
+    when '--config-file'
+      raise("#{arg} not existing!") unless File.exists? arg
+      $options.config_file = arg
+      $config = JSON.parse File.read($options.config_file)
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
+    when '--example'
+      $stdout.puts EXAMPLE
+      exit 0
     when '--format'
       format = Array.new
       arg.split(',').each do |f|
@@ -550,6 +631,8 @@ begin
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--html'
+      $options.html = true
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -577,19 +660,15 @@ begin
     when '--user'
       sacct.user arg
     when '--version'
-      $stdout.puts 0.51
+      $stdout.puts 0.58
       exit 0
     end
   end
 
   # Users are required to define a start time
-  #
   sacct.start_time ( ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS') )
-
   # Users can optionally define an end time
-  #
   sacct.end_time(ARGV.shift || '')
-
   sacct.parse
 
   if $options.print_raw_data
@@ -610,18 +689,25 @@ begin
   order = order.reverse unless %w(accounts partitions users).include? $options.sort_by
   order = order.to_h.keys
 
-  table = Array.new
-  table << $options.format.map{|_| _.upcase} unless $options.no_header
-  order.each do |elem|
-    row = Array.new
-    $options.format.each do |_|
-      val = data[elem][_]
-      val = val.join(',') if val.class == Array
-      row << val
+  # Do not accounts/users/partitions to the output if no runtime has been accumulated
+  order.delete_if{|elem| data[elem]['runtime'] == 0 }
+
+  if $options.html
+    $stdout.puts ERB.new(DATA.read,nil,'-').result(binding)
+  else
+    table = Array.new
+    table << $options.format.map(&:upcase) unless $options.no_header
+    order.each do |elem|
+      row = Array.new
+      $options.format.each do |field|
+        val = data[elem][field]
+        val = val.join(',') if val.class == Array
+        row << val
+      end
+      table << row
     end
-    table << row
+    $stdout.puts Table::print table
   end
-  $stdout.puts Table::print table
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
@@ -636,3 +722,32 @@ rescue => exc
 end
 
 exit 0
+
+__END__
+<table>
+
+  <% if not $options.no_header -%>
+  <thead>
+    <tr><% $options.format.each do |field| -%><th><%= field.capitalize %></th><% end -%></tr>
+  </thead>
+  <% end -%>
+
+  <tbody>
+  <% order.each do |elem| -%>
+    <tr>
+    <% $options.format.each do |field| -%>
+      <td><%=
+        value = data[elem][field]
+        case field
+        when 'accounts','partitions','users'
+          value[0..2].map{|_| HTML::map_style field,_}.join(',')
+        when 'runtime' ; HTML::runtime(value)
+        else
+          value
+        end
+      -%></td>
+    <% end -%>
+    </tr>
+  <% end -%>
+  </tbody>
+</table>
