@@ -24,21 +24,16 @@ require 'date'
 require 'erb'
 
 class Hash
-
   def self.autonew(*args)
     new(*args){|hsh, key| hsh[key] = Hash.new(&hsh.default_proc) }
   end
-
 end
 
 class Array
 
   def median
-
     val = '-'
-
     unless self.empty?
-
       # Average and median wait time of all jobs in queue 
       lowest = self.min
       highest = self.max
@@ -55,13 +50,9 @@ class Array
                else
                  0
                end
-
       val = median.to_i
-
     end
-
     return val
-
   end
 
 end
@@ -175,7 +166,7 @@ class Sacct
     cancelled
     completed
     failed
-    nodefail
+    node_fail
     timeout
   )
 
@@ -313,7 +304,7 @@ class Sacct
       account   = line[field_index 'account']
       user      = line[field_index 'user']
       partition = line[field_index 'partition']
-      j_state   = line[field_index 'state'].gsub /_/,''
+      j_state   = line[field_index 'state']
       qwmedian  = waittime(line[field_index 'start'],line[field_index 'end'])
       # Store the statistics
       @data['runtime'] += runtime
@@ -527,19 +518,19 @@ end
 #########################################################
 
 exec_name = File.split(__FILE__)[-1]
-HELP = <<EOF
+HELP = "
 Read accounting data from Slurm and accumulate statistics:
 
 #{exec_name} [<options>] <start_time> [<end_time>]
 
-  start_time                 Select accouting data after start time
+  start_time                 Select accounting data after start time
                              Time format like `sacct`...
   end_time                   Select accounting data before end time
                              (default is now)
 
   --account, -a <acc,acc>    Limit the output to a given list of accounts
   --config-file, -c <path>   Configure the HTML output
-  --debug, -D                Show stacktraces in case of errors
+  --debug, -D                Show stack traces in case of errors
   --example                  Show help text with usage examples
   --format, -f <field,field> List of fields to include in output
   --format-list, -F          List of fields available to print
@@ -554,9 +545,16 @@ Read accounting data from Slurm and accumulate statistics:
   --sort-by, -s <field>      Sort the output by selected field
   --user, -u <usr,usr>       Limit the output to a given list of users
   --version                  Print program version
-EOF
+"
 
-EXAMPLE = <<EOF
+EXAMPLE = "
+The program will cache retrieved accounting data from the Slurm database:
+
+  /tmp/<user>_sacct_<start_time>_<end_time>.csv
+
+This will improve the performance of the program for subsequent execution
+with the same time-frame.
+
 Statistics for a given time frame:
 
    >>> #{exec_name} 2016-06-26T00:00:00 2016-06-27T23:59:59
@@ -569,12 +567,12 @@ Statistics of a specific partition as HTML table:
 
    >>> #{exec_name} -p main -h 2016-06-26T00:00:00
 
-The printed HTML table fragment can be emebedded into a HTML page.
+The printed HTML table fragment can be embedded into an HTML page.
 
-Statistics grouped by user decending by the number of executed job:  
+Statistics grouped by user descending by the number of executed job:  
 
-   >>> #{exec_name} -f users,useperc,runtime,jobs -g user -s jobs [...
-EOF
+   >>> #{exec_name} -f users,useperc,runtime,jobs -g user -s jobs [...]
+"
 
 
 begin
