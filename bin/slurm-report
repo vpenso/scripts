@@ -512,6 +512,15 @@ module HTML
   # configuration if present...
   #
   def map_style(key, val)
+
+    # If a list is passed as argument 
+    if val.class == Array
+      _ = Array.new
+      # Iterate and recursive call this method for each value
+      val.each {|v| _ << map_style(key, v) }
+       return _.join(',')
+    end
+
     # Check if the user configuration contains color mapping
     # for the given key
     #
