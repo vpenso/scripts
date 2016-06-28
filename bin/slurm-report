@@ -175,7 +175,7 @@ class Sacct
     cancelled
     completed
     failed
-    node_fail
+    nodefail
     timeout
   )
 
@@ -209,9 +209,12 @@ class Sacct
    user
   )
 
-  attr_reader :opts, :data, :raw_data
+  attr_reader :opts, :data, :raw_data, :start_time, :end_time
 
   def initialize()
+
+    @start_time = ''
+    @end_time = ''
 
     # Options from the constants defined above 
     @opts = DEFAULT_OPTIONS
@@ -238,12 +241,16 @@ class Sacct
 
   # Couple of setters for options to the sacct command
   #
-  def end_time(time = '')
+  def end_time=(time = '')
     # If end time is not defined, this hour is used instead
     time = Time.now.strftime TIME_FORMAT if time.empty?
+    @end_time = time
     @opts << "--endtime #{time}"
   end
-  def start_time(time) ; @opts << "--starttime #{time}" end
+  def start_time=(time) 
+    @start_time = time
+    @opts << "--starttime #{time}" 
+  end
   def account(account) ; @opts << "--accounts #{account}" end
   def user(user) ; @opts << "--user #{user}" end
   def partition(partition) ; @opts << "--partition #{partition}" end
@@ -306,7 +313,7 @@ class Sacct
       account   = line[field_index 'account']
       user      = line[field_index 'user']
       partition = line[field_index 'partition']
-      j_state   = line[field_index 'state']
+      j_state   = line[field_index 'state'].gsub /_/,''
       qwmedian  = waittime(line[field_index 'start'],line[field_index 'end'])
       # Store the statistics
       @data['runtime'] += runtime
@@ -445,7 +452,7 @@ class Table
     format = Array.new
     columns = @output.first.length
     0.upto(columns-1) do |column|
-      format << "%#{field_width(column)}s"
+      format << "%-#{field_width(column)}s"
     end
     return format.join(' ')
   end
@@ -516,6 +523,8 @@ module HTML
 end
 
 
+#########################################################
+#########################################################
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
@@ -548,17 +557,23 @@ Read accounting data from Slurm and accumulate statistics:
 EOF
 
 EXAMPLE = <<EOF
-Statistics for a given time frame
+Statistics for a given time frame:
 
    >>> #{exec_name} 2016-06-26T00:00:00 2016-06-27T23:59:59
 
-Statistics since a given point in time with a defined list of fields
+Statistics since a given point in time with a defined list of fields:
    
    >>> #{exec_name} -f accounts,runtime,useperc,jobs 2016-06-26T00:00:00
 
-Statistics of a specific partition as HTML table
+Statistics of a specific partition as HTML table:
 
    >>> #{exec_name} -p main -h 2016-06-26T00:00:00
+
+The printed HTML table fragment can be emebedded into a HTML page.
+
+Statistics grouped by user decending by the number of executed job:  
+
+   >>> #{exec_name} -f users,useperc,runtime,jobs -g user -s jobs [...
 EOF
 
 
@@ -572,29 +587,29 @@ begin
     runtime
   )
 
-  FORMAT_OPTIONS = %w(
-    accounts
-    users
-    partitions
-    useperc
-    shareperc
-    qwmedian
-    runtime
-    jobs
-    completed
-    cancel
-    failed
-    nodefail
-    timeout
-    lt_5m
-    lt_1h
-    lt_4h
-    lt_8h
-    lt_12h
-    lt_1d
-    lt_7d
-    gt_7d
-  )
+  FORMAT_OPTIONS = {
+    accounts:   'Name of a Slurm account',
+    users:      'Name of a user',
+    partitions: 'Name of a partition',
+    useperc:    'Relative use in percent',
+    shareperc:  'Share in percent',
+    qwmedian:   'Median time jobs waited in the queue, format [DD-]HH:MM',
+    runtime:    'Total run-time in seconds',
+    jobs:       'Total number of jobs',
+    completed:  'Total number of completed jobs',
+    cancel:     'Total number of canceled jobs',
+    failed:     'Total number of failed jobs',
+    nodefail:   'Total number of node failers',
+    timeout:    'Total number of jobs ended by time out',
+    lt_5m:      'Number of jobs with a run-time sorter then 5 minutes',
+    lt_1h:      'Number of jobs with a run-time sorter then 1 hour',
+    lt_4h:      'Number of jobs with a run-time sorter then 4 hours',
+    lt_8h:      'Number of jobs with a run-time sorter then 8 hours',
+    lt_12h:     'Number of jobs with a run-time sorter then 12 hours',
+    lt_1d:      'Number of jobs with a run-time sorter then 1 day',
+    lt_7d:      'Number of jobs with a run-time sorter then 7 days',
+    gt_7d:      'Number of jobs with a run-time longer then 7 days'
+  }
 
   $config = Hash.new
 
@@ -656,12 +671,14 @@ begin
     when '--format'
       format = Array.new
       arg.split(',').each do |f|
-        raise("Format option #{f} not supported") unless FORMAT_OPTIONS.include? f
+        raise("Format option #{f} not supported") unless FORMAT_OPTIONS.keys.include? f.to_sym
         format << f
       end
       $options.format = format
     when '--format-list'
-      $stdout.puts FORMAT_OPTIONS.join("\n")
+      table = []
+      FORMAT_OPTIONS.each { |k,v| table << [k,v] }
+      $stdout.puts Table::print table
       exit 0
     when '--group-by'
       groups = %w(account partition user)
@@ -697,7 +714,7 @@ begin
     when '--print-raw-data'
       $options.print_raw_data = true
     when '--sort-by'
-      raise("Sort option #{arg} not supported") unless FORMAT_OPTIONS.include? arg
+      raise("Sort option #{arg} not supported") unless FORMAT_OPTIONS.keys.include? arg.to_sym
       $options.sort_by = arg
     when '--user'
       sacct.user arg
@@ -708,13 +725,9 @@ begin
   end
 
   # Users are required to define a start time
-  start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')
-  sacct.start_time start_time
-  start_time = DateTime.strptime(start_time,'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d&nbsp;%H:%M:%S')
+  sacct.start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')
   # Users can optionally define an end time
-  end_time = ARGV.shift || ''
-  sacct.end_time end_time
-  end_time = DateTime.strptime(end_time,'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d&nbsp;%H:%M:%S')
+  sacct.end_time = ARGV.shift || ''
   sacct.parse
 
   if $options.print_raw_data
@@ -773,7 +786,7 @@ __END__
 <table>
   <% if not $options.no_header -%>
   <caption>
-  From <%= start_time -%> to <%= end_time %>
+  From <%= sacct.start_time -%> to <%= sacct.end_time %>
   </caption>
   <thead>
     <tr><% $options.format.each do |field| -%><th><%= field.capitalize %></th><% end -%></tr>
