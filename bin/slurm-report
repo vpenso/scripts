@@ -771,19 +771,18 @@ begin
 
   case $options.group_by
   when 'account'
-    data.each_key do |account|
-      %w(partitions users).each {|obj| data[account][obj] = data[account][obj].length }
-      data[account]['accounts'] = data[account]['accounts'].first 
+    data.each_key do |_|
+      %w(partitions users).each {|obj| data[_][obj] = data[_][obj].length }
+      data[_]['accounts'] = data[_]['accounts'].first 
     end
   when 'user'
-    data.each_key do |user|
-      %w(accounts partitions).each {|obj| data[account][obj] = data[account][obj].length }
-      data[account]['users'] = data[account]['users'].first
+    data.each_key do |_|
+      data[_]['users'] = data[_]['users'].first
     end
   when 'partition'
-    data.each_key do |user|
-      %w(accounts users).each {|obj| data[account][obj] = data[account][obj].length }
-      data[account]['partitions'] = data[account]['partitions'].first
+    data.each_key do |_|
+      %w(accounts users).each {|obj| data[_][obj] = data[_][obj].length }
+      data[_]['partitions'] = data[_]['partitions'].first
     end
   end
 
