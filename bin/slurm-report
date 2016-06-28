@@ -97,11 +97,11 @@ module System
     # Wait for successful return and pass back the code to the caller
     Process.wait(pid)
     state=$?
-    $logger.debug "Returned with #{state}"
+    $logger.debug "<#{self.class}##{__method__.to_s}> returned with #{state}"
     if state == 0
       return output
     else
-      $logger.warn "Failed to execute [#{command}]"
+      $logger.warn "<#{self.class}##{__method__.to_s}> failed to execute [#{command}]"
       return nil
     end
   end
@@ -119,7 +119,7 @@ module System
     # Execute the command and split the output by line
     #
     output = System::exec(command)
-    $logger.info "<#{self.class}##{__method__.to_s}> Split lines by field separator"
+    $logger.info "<#{self.class}##{__method__.to_s}> split lines by field separator"
     output.each_line do |line|
       # Use the defined delimiter to split the fields per line
       #
@@ -137,6 +137,8 @@ end
 
 class Sacct
 
+  # List of fields use for the --format options
+  #
   FIELDS = %w(
     jobid
     cluster
@@ -177,6 +179,8 @@ class Sacct
     timeout
   )
 
+  # List of command options provides to sacct
+  #
   DEFAULT_OPTIONS = %w(
     --allusers
     --noheader
@@ -184,7 +188,7 @@ class Sacct
     --parsable2
   )
 
-  TIME_FORMAT = '%Y-%m-%dT%H:%M:00'
+  TIME_FORMAT = '%Y-%m-%dT%H:00:00'
 
   RUNTIMES = %w(
     lt_5m
@@ -197,6 +201,8 @@ class Sacct
     gt_7d
   )
 
+  # Primary objects used to group the output statistics
+  #
   OBJECTS = %w(
    account
    partition
@@ -206,51 +212,60 @@ class Sacct
   attr_reader :opts, :data, :raw_data
 
   def initialize()
+
+    # Options from the constants defined above 
     @opts = DEFAULT_OPTIONS
     @opts << "--state #{states}"
     @opts << "--format #{fields}"
+
+    # This is the default used with options --parsable2
     @delimiter = '|'
+
+    # Users may limited statistics to a subset of jobs executed on nodes 
+    # matching a provided regular expression
+    #
     @node_regex = String.new
+    # Data returned from the sacct command
     @raw_data = Array.new
+
+    # Statistical data used as output for the user
+    #
     @data = { 'runtime' => 0}
+    # Statistics are collected for all reference objects
     OBJECTS.each {|_| @data[_] = Hash.new}
+
   end
 
-  def start_time(time)
-    @start_time = "_#{time}"
-    @opts << "--starttime #{time}"
-  end
-
+  # Couple of setters for options to the sacct command
+  #
   def end_time(time = '')
+    # If end time is not defined, this hour is used instead
     time = Time.now.strftime TIME_FORMAT if time.empty?
-    @end_time = "_#{time}"
     @opts << "--endtime #{time}"
   end
+  def start_time(time) ; @opts << "--starttime #{time}" end
+  def account(account) ; @opts << "--accounts #{account}" end
+  def user(user) ; @opts << "--user #{user}" end
+  def partition(partition) ; @opts << "--partition #{partition}" end
+  def node_regex(regex) ; @node_regex = regex end
 
-  def account(account)
-    @opts << "--accounts #{account}"
-  end
-
-  def user(user)
-    @opts << "--user #{user}"
-  end
-
-  def partition(partition)
-    @opts << "--partition #{partition}"
-  end
-
-  def node_regex(regex)
-    @node_regex = regex
-  end
-
+  # Collect statistics of the accounting data returned by sacct
+  #
   def parse
+    # Execute sacct to get the input data from the Slurm 
+    # accounting database
     exec()
-    transform()
+    # Iterate over all jobs in the returned raw data an accumulate 
+    # the required statistics
+    process()
+    # Arithmetic on the statistical data
     post_process()
   end
 
   private
 
+  # Data structure used by all objects to keep the statistics
+  #
   def skeleton
     skel = {
       'accounts' => Array.new,
@@ -263,59 +278,56 @@ class Sacct
     skel.merge(runtimes_h).merge(states_h)
   end
 
-  def transform
-
-    # Initialize the basic data structure..
+  # Accumulate statistics and write them into @data
+  #
+  def process
+    # Initialize the basic data structure using the skeleton
     OBJECTS.each do |object|
       index = field_index(object) + 1
       # Do not implement this in Ruby code...
       elems = System::exec %Q<cat #{data_file} | cut -d'#{@delimiter}' -f#{index} | sort | uniq>
+      # ...it is difficult to implement it more efficiently 
       elems.each_line do |elem|
         @data[object][elem.chop] = skeleton
       end
     end
-
     $logger.info "<#{self.class}##{__method__.to_s}>"
-
     # Avoid memory slurping by reading the lines one-by-one into memory
-    #
     File.foreach(data_file) do |line|
-
+      # Unfortunately this is the most expensive line of code in this program!
+      # It represents the metric collected for each job by the accounting
       line = line.chop.split(@delimiter)
-
+      # Exclude nodes no matching a pattern defined by the user 
       unless @node_regex.empty?
         next unless line[field_index 'nodelist'] =~ Regexp.new(@node_regex)
       end
-
-      runtime = line[field_index 'cputimeraw'].to_i
-      account = line[field_index 'account']
-      user = line[field_index 'user']
+      # Basic metric for the accumulation of statistics
+      runtime   = line[field_index 'cputimeraw'].to_i
+      account   = line[field_index 'account']
+      user      = line[field_index 'user']
       partition = line[field_index 'partition']
-      j_state = line[field_index 'state']
-
+      j_state   = line[field_index 'state']
+      qwmedian  = waittime(line[field_index 'start'],line[field_index 'end'])
+      # Store the statistics
       @data['runtime'] += runtime
+      # ...for each object, means accounts, partitions, users
       OBJECTS.each do |key|
         value = line[field_index key]
-        @data[key][value]['accounts'] = (@data[key][value]['accounts'] << account).uniq
-        @data[key][value]['jobs'] += 1
-        @data[key][value]['runtime'] += runtime
-        @data[key][value]['users'] = (@data[key][value]['users'] << user).uniq
-        @data[key][value]['partitions'] = (@data[key][value]['partitions'] << partition).uniq
-        @data[key][value][state(j_state)] += 1
+        @data[key][value]['accounts']             = (@data[key][value]['accounts'] << account).uniq
+        @data[key][value]['jobs']                += 1
+        @data[key][value]['runtime']             += runtime
+        @data[key][value]['users']                = (@data[key][value]['users'] << user).uniq
+        @data[key][value]['partitions']           = (@data[key][value]['partitions'] << partition).uniq
+        @data[key][value][state(j_state)]        += 1
         @data[key][value][runtimes_key(runtime)] += 1
-        # This is expensive in terms of run-time and memory foot print
-        if $options.format.include? 'qwmedian'
-          @data[key][value]['qwmedian'] << waittime(line[field_index 'start'],line[field_index 'end']) 
-        end
+        # This is expensive in terms of the memory foot print!
+        @data[key][value]['qwmedian'] << qwmedian if $options.format.include? 'qwmedian'
       end
     end
-
   end
 
   def post_process
-
-    $logger.info "<#{self.class}##{__method__.to_s}> Post process data"
-
+    $logger.info "<#{self.class}##{__method__.to_s}>"
     OBJECTS.each do |key|
       @data[key].each do |value,data|
         # Relative percent of the consumed resources according to the CPU seconds
@@ -325,18 +337,35 @@ class Sacct
         @data[key][value]['qwmedian'] = data['qwmedian'].median
       end
     end
-
   end
 
+  # List of sacct --format fields 
+  #
   def fields ; FIELDS.join(',') end
+
+  # Get the numerical position of a given field in the field-list
+  #
   def field_index(field) ; FIELDS.index(field) end
+
   # This may include states  like "CANCELLED by 1234",
   # therefore everything after the first space is removed
+  #
   def state(s) ; s.gsub(/\s.*/,'').downcase end
+
+  # List of sacct --states 
+  #
   def states ; STATES.join(',') end
+
+  # List of states as a hash
+  #
   def states_h ; Hash[ STATES.map {|_| [_,0]} ] end
 
+  # List of runtime groups as a hash
+  #
   def runtimes_h ; Hash[ RUNTIMES.map {|_| [_,0]} ] end
+
+  # Determine which runtime group a runtime in seconds belongs to
+  #
   def runtimes_key(seconds)
     case
     when seconds < 300    ; 'lt_5m'
@@ -365,10 +394,15 @@ class Sacct
     days > 0 ? "#{days}-#{hours}" : hours
   end
 
+  # Path to the file used to cache the output of the sacct command
+  #
   def data_file
-    "/tmp/#{ENV['USER']}_sacct#{@start_time}#{@end_time}.csv"
+    "/tmp/#{ENV['USER']}_sacct_#{@start_time}_#{@end_time}.csv"
   end
 
+  # Execute the sacct command with the configured options
+  # and store the output to a file
+  #
   def exec
     # It is very expensive to query the Slurm accounting database
     # therefore make sure to buffer the result on disc to support
@@ -497,6 +531,7 @@ Read accounting data from Slurm and accumulate statistics:
   --account, -a <acc,acc>    Limit the output to a given list of accounts
   --config-file, -c <path>   Configure the HTML output
   --debug, -D                Show stacktraces in case of errors
+  --example                  Show help text with usage examples
   --format, -f <field,field> List of fields to include in output
   --format-list, -F          List of fields available to print
   --group-by, -g <group>     Group ouput by account, partition oser user
@@ -513,10 +548,17 @@ Read accounting data from Slurm and accumulate statistics:
 EOF
 
 EXAMPLE = <<EOF
-Print default statistics for a given time:
+Statistics for a given time frame
 
    >>> #{exec_name} 2016-06-26T00:00:00 2016-06-27T23:59:59
 
+Statistics since a given point in time with a defined list of fields
+   
+   >>> #{exec_name} -f accounts,runtime,useperc,jobs 2016-06-26T00:00:00
+
+Statistics of a specific partition as HTML table
+
+   >>> #{exec_name} -p main -h 2016-06-26T00:00:00
 EOF
 
 
@@ -666,9 +708,13 @@ begin
   end
 
   # Users are required to define a start time
-  sacct.start_time ( ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS') )
+  start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')
+  sacct.start_time start_time
+  start_time = DateTime.strptime(start_time,'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d&nbsp;%H:%M:%S')
   # Users can optionally define an end time
-  sacct.end_time(ARGV.shift || '')
+  end_time = ARGV.shift || ''
+  sacct.end_time end_time
+  end_time = DateTime.strptime(end_time,'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d&nbsp;%H:%M:%S')
   sacct.parse
 
   if $options.print_raw_data
@@ -725,8 +771,10 @@ exit 0
 
 __END__
 <table>
-
   <% if not $options.no_header -%>
+  <caption>
+  From <%= start_time -%> to <%= end_time %>
+  </caption>
   <thead>
     <tr><% $options.format.each do |field| -%><th><%= field.capitalize %></th><% end -%></tr>
   </thead>
