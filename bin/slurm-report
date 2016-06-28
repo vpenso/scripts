@@ -488,6 +488,26 @@ module HTML
     %Q[<span style="color:#{color}">#{num_with_delimiter val}</span>]
   end
 
+  GRAY_20        = '#333333'
+  GRAY_40        = '#666666'
+  GRAY_50        = '#7F7F7F'
+  GRAY_60        = '#999999'
+  GRAY_70        = '#B3B3B3'
+  GRAY_80        = '#CCCCCC'
+  GRAY_95        = '#F2F2F2'
+
+  def counter(val)
+     l = val.to_s.length
+     color = if    l > 8  ; GRAY_20
+             elsif l > 7  ; GRAY_40
+             elsif l > 6  ; GRAY_50
+             elsif l > 5  ; GRAY_60
+             elsif l > 4  ; GRAY_70
+             else         ; GRAY_80
+             end
+     return %Q[<span style="color:#{color}">#{num_with_delimiter val}</span>]
+  end
+
   # Returns a colorized value from a user defined color
   # configuration if present...
   #
@@ -749,6 +769,24 @@ begin
   # Do not accounts/users/partitions to the output if no runtime has been accumulated
   order.delete_if{|elem| data[elem]['runtime'] == 0 }
 
+  case $options.group_by
+  when 'account'
+    data.each_key do |account|
+      %w(partitions users).each {|obj| data[account][obj] = data[account][obj].length }
+      data[account]['accounts'] = data[account]['accounts'].first 
+    end
+  when 'user'
+    data.each_key do |user|
+      %w(accounts partitions).each {|obj| data[account][obj] = data[account][obj].length }
+      data[account]['users'] = data[account]['users'].first
+    end
+  when 'partition'
+    data.each_key do |user|
+      %w(accounts users).each {|obj| data[account][obj] = data[account][obj].length }
+      data[account]['partitions'] = data[account]['partitions'].first
+    end
+  end
+
   if $options.html
     $stdout.puts ERB.new(DATA.read,nil,'-').result(binding)
   else
@@ -790,7 +828,6 @@ __END__
     <tr><% $options.format.each do |field| -%><th><%= field.capitalize %></th><% end -%></tr>
   </thead>
   <% end -%>
-
   <tbody>
   <% order.each do |elem| -%>
     <tr>
@@ -799,8 +836,11 @@ __END__
         value = data[elem][field]
         case field
         when 'accounts','partitions','users'
-          value[0..2].map{|_| HTML::map_style field,_}.join(',')
-        when 'runtime' ; HTML::runtime(value)
+            HTML::map_style field, value
+        when 'jobs'
+            HTML::counter(value)
+        when 'runtime' 
+            HTML::runtime(value)
         else
           value
         end
