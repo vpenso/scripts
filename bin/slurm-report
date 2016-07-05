@@ -305,7 +305,6 @@ class Sacct
       user      = line[field_index 'user']
       partition = line[field_index 'partition']
       j_state   = line[field_index 'state']
-      qwmedian  = waittime(line[field_index 'start'],line[field_index 'end'])
       # Store the statistics
       @data['runtime'] += runtime
       # ...for each object, means accounts, partitions, users
@@ -319,7 +318,12 @@ class Sacct
         @data[key][value][state(j_state)]        += 1
         @data[key][value][runtimes_key(runtime)] += 1
         # This is expensive in terms of the memory foot print!
-        @data[key][value]['qwmedian'] << qwmedian if $options.format.include? 'qwmedian'
+        if $options.format.include? 'qwmedian'
+          qwmedian  = waittime(line[field_index 'submit'],line[field_index 'start'])
+          if qwmedian < 31449600 or qwmedian > 0
+            @data[key][value]['qwmedian'] << qwmedian 
+          end
+        end
       end
     end
   end
@@ -332,7 +336,7 @@ class Sacct
         r_perc = sprintf '%.2f', (data['runtime'].to_f/@data['runtime']) * 100
         @data[key][value]['useperc'] = r_perc
          # Median wait time of jobs in queue
-        @data[key][value]['qwmedian'] = data['qwmedian'].median
+        @data[key][value]['qwmedian'] = humanize_secs data['qwmedian'].median
       end
     end
   end
@@ -379,9 +383,9 @@ class Sacct
 
   def waittime(start_time,end_time)
     submit_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
-    start_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
+    start_epoch = DateTime.strptime(end_time,'%Y-%m-%YT%H:%M').to_time.to_i
     wait_time_secs = start_epoch - submit_epoch
-    wait_time_secs > 31449600 ? 0 : wait_time_secs
+    return wait_time_secs
   end
 
 
@@ -644,6 +648,7 @@ begin
   $options.config_file = String.new
   $options.debug = false
   $options.format = DEFAULT_FORMAT
+  $options.format_all = false
   $options.group_by = 'account'
   $options.html = false
   $options.node_regex = String.new
@@ -669,6 +674,7 @@ begin
     ['--example',GetoptLong::NO_ARGUMENT],
     ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
     ['--format-list','-F',GetoptLong::NO_ARGUMENT],
+    ['--format-all','-A',GetoptLong::NO_ARGUMENT],
     ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
     ['--help',GetoptLong::NO_ARGUMENT],
     ['--html','-h',GetoptLong::NO_ARGUMENT],
@@ -707,6 +713,8 @@ begin
       FORMAT_OPTIONS.each { |k,v| table << [k,v] }
       $stdout.puts Table::print table
       exit 0
+    when '--format-all'
+      $options.format = FORMAT_OPTIONS.keys.map {|k| k.to_s }
     when '--group-by'
       groups = %w(account partition user)
       if groups.include? arg
@@ -750,6 +758,7 @@ begin
       exit 0
     end
   end
+
 
   # Users are required to define a start time
   sacct.start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')
