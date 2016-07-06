@@ -228,6 +228,7 @@ class Sacct
     # Statistics are collected for all reference objects
     OBJECTS.each {|_| @data[_] = Hash.new}
 
+    @parition = String.new
   end
 
   # Couple of setters for options to the sacct command
@@ -244,7 +245,10 @@ class Sacct
   end
   def account(account) ; @opts << "--accounts #{account}" end
   def user(user) ; @opts << "--user #{user}" end
-  def partition(partition) ; @opts << "--partition #{partition}" end
+  def partition(partition)
+    @partition = partition
+    @opts << "--partition #{partition}"
+  end
   def node_regex(regex) ; @node_regex = regex end
 
   # Collect statistics of the accounting data returned by sacct
@@ -294,7 +298,7 @@ class Sacct
     File.foreach(data_file) do |line|
       # Unfortunately this is the most expensive line of code in this program!
       # It represents the metric collected for each job by the accounting
-      line = line.chop.split(@delimiter)
+      line = line.chop!.split(@delimiter)
       # Exclude nodes no matching a pattern defined by the user 
       unless @node_regex.empty?
         next unless line[field_index 'nodelist'] =~ Regexp.new(@node_regex)
@@ -399,7 +403,9 @@ class Sacct
   # Path to the file used to cache the output of the sacct command
   #
   def data_file
-    "/tmp/#{ENV['USER']}_sacct_#{@start_time}_#{@end_time}.csv"
+    $logger.debug "<#{self.class}##{__method__.to_s}> #{@partition}"
+    parts = @partition.sub(/,/, '_')
+    "/tmp/#{ENV['USER']}_sacct_#{@start_time}_#{@end_time}_#{parts}.csv"
   end
 
   # Execute the sacct command with the configured options
@@ -414,7 +420,8 @@ class Sacct
     else
       # Gather the accounting data from Slurm
       #
-      System::exec("sacct #{@opts.join(' ')}",data_file)
+      sacct_cmd = "sacct #{@opts.join(' ')}"
+      System::exec(sacct_cmd, data_file)
     end 
   end
 
