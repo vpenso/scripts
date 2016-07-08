@@ -403,9 +403,11 @@ class Sacct
   # Path to the file used to cache the output of the sacct command
   #
   def data_file
-    $logger.debug "<#{self.class}##{__method__.to_s}> #{@partition}"
-    parts = @partition.sub(/,/, '_')
-    "/tmp/#{ENV['USER']}_sacct_#{@start_time}_#{@end_time}_#{parts}.csv"
+    parts = String.new
+    unless @partition.nil?
+      parts = "_#{@partition.sub(/,/, '_')}"
+    end
+    "/tmp/#{ENV['USER']}_sacct_#{@start_time}_#{@end_time}#{parts}.csv"
   end
 
   # Execute the sacct command with the configured options
