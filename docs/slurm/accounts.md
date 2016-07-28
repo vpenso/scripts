@@ -34,7 +34,6 @@ Each cluster needs to be initialized in the database using its name before accou
 
 ## Accounts
 
-
 Add accounts (groups) before adding users (multiple accounts can be added at the same time by comma separating the names).
 
 ```bash
@@ -53,30 +52,56 @@ Accounts may be arranged in a hierarchical fashion, limits are inherited by chil
 >>> sacctmgr add account train parent=alice description=train organization=cern
 ```
 
-## Users
+Users associated with an account can have multiple roles:
 
-Add/modify user account associations:
+Role        | Description
+------------|-------------
+User        | (Linux) Account able to request resources
+Coordinator | Representative from a working group managing a single account
+Operator    | Creates and manages accounts in general
+Admin       | Owns all available privileges (like root)
 
-```bash
->>> sacctmgr create user name=dklein account=hpc defaultaccount=hpc
-[…]
->>> sacctmgr modify user where user=vpenso set defaultaccount=hpc
-[…]
->>> sacctmgr list users
-[…]
-```
+### Administrator
 
-Display associations with a specific table format:
+Admin users can operate the accounting database, and alter anything on an instance of slurmctld as if root.
 
 ```bash
->>> sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
+>>> sacctmgr modify user where user=vpenso set adminlevel=admin
+```
+Options for `adminlevel=`
+
+
+Level    | Description
+---------|--------------
+none     | Regular user, no special privileges
+operator | Can add, modify, and remove any database object (user, account, etc), and add other operators
+
+### Coordinator
+
+Privileged account user with permission to:
+
+* Add users to the account
+* Create sub-accounts
+* Modify fair-share and limits to the accounts and users
+* Control all jobs associated to the account
+* Grant coordinator privileges to other users
+
+Coordinators can operate following commands:
+
+```
+sacctmgr create user
+sacctmgr modify user
+scontrol show job
+scontrol update job
+scontrol requeue
+scontrol hold
+scontrol release
+scontrol show step
+scontrol update step
+scancel
 ```
 
-## Coordinators
-
-Coordinators have permission to add users or sub-accounts, modify fair-share and limits to the accounts and users they are coordinator over.
-
-Add coordinators to a given account:
+Promote a user to be coordinator for a given account:
 
 ```bash
 >>> sacctmgr add coordinator account=hpc names=vpenso,dklein
@@ -97,27 +122,39 @@ List the coordinators for a given account:
 >>> sacctmgr list account where account=hpc WithCoordinator
 ```
 
-Coordinators can operate following commands on their accounts:
+### User
 
-    sacctmgr create user
-    scontrol show job
-    scontrol update job
-    scontrol requeue
-    scontrol show step
-    scontrol update step
-    scancel
-
-## Admins
-
-Admin users can operate the accounting database, and alter anything on an instance of slurmctld as if root.
+Associate user to a given account:
 
 ```bash
->>> sacctmgr modify user where user=vpenso set adminlevel=admin
+>>> sacctmgr create user name=dklein account=hpc defaultaccount=hpc
+[…]
+>>> sacctmgr modify user where user=vpenso set defaultaccount=hpc
+[…]
+>>> sacctmgr list users
+[…]
+>>> sacctmgr delete user name=vpenso account=hpc
 ```
+
+**Users `name=` requires to be the Linux account name!**
+
+```bash
+>>> id vpenso
+uid=1234(vpenso) gid=1000(hpc) groups=...
+```
+
+Check for a given user name with the `id` command.
+
+Display associations with a specific table format:
+
+```bash
+>>> sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
+```
+
 
 ## Limits
 
-_Used to set resource limits on a more finer-grained basis then partition limits._
+Used to set resource limits on a more finer-grained basis then partition limits.
 
 Parent association **limits are inherited by children**, unless dedicated limits have been set (children can have limits higher then their parents).
 
@@ -138,6 +175,12 @@ Once a limit is reached no more jobs are allowed to start.
 ```
 
 → [Remaining Cputime Per User/Account](http://tech.ryancox.net/2014/04/scheduler-limit-remaining-cputime-per.html)
+
+Set limits for a given user:
+
+```bash
+» sacctmgr modify user vpenso set GrpJobs=1000
+```
 
 Clear a resource limit for a particular user:
 
