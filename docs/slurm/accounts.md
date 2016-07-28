@@ -159,6 +159,33 @@ Set a fair-share value for a given account:
 >>> sacctmgr modify account where name=hpc set fairshare=10
 ```
 
+# Management
+
+`sacctmgr` support **retrieving the association data including limits** from the accounting database. It will be stored to a plain text file, which allows to alter the configuration, and to load it back into the accounting database. Find more detailed information in the man page:
+
+```
+>> LESS="-p FLAT FILE DUMP AND LOAD" man -P less sacctmgr
+```
+
+`dump` and `load` the account association data to/from a file. Each cluster requires to be dumped into a dedicated file. Print a list of the clusters: 
+
+```
+>>> sacctmgr list cluster format=cluster,controlhost,controlport,rpc --noheader
+```
+
+Dump the associations to a file:
+
+```
+>>> sacctmgr dump cluster=$NAME file=$NAME.cfg
+```
+
+Load the associations from a file
+
+```
+>>> sacctmgs load cluster=$NAME file=$NAME.cfg
+```
+
+
 [slurmconf]: http://manpages.debian.org/slurm.conf
 [slurmdbdconf]: http://manpages.debian.org/slurmdbd.conf
 [cgroupconf]: http://manpages.debian.org/cgroup.conf
