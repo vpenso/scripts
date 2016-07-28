@@ -161,27 +161,31 @@ Set a fair-share value for a given account:
 
 # Management
 
-`sacctmgr` support **retrieving the association data including limits** from the accounting database. It will be stored to a plain text file, which allows to alter the configuration, and to load it back into the accounting database. Find more detailed information in the man page:
+`sacctmgr` supports **retrieving the association data including limits** from the accounting database. It will be stored to a plain text file, which allows to alter the configuration, and to load it back into the accounting database. 
 
-```
+_Note that this does not include the accounting data like counters for consumed resources. In order to preserve this data it is required to backup the accounting database, for example by dumping the table space using the database management._
+
+Find more detailed information in the man page:
+
+```bash
 >> LESS="-p FLAT FILE DUMP AND LOAD" man -P less sacctmgr
 ```
 
 `dump` and `load` the account association data to/from a file. Each cluster requires to be dumped into a dedicated file. Print a list of the clusters: 
 
-```
+```bash
 >>> sacctmgr list cluster format=cluster,controlhost,controlport,rpc --noheader
 ```
 
 Dump the associations to a file:
 
-```
+```bash
 >>> sacctmgr dump cluster=$NAME file=$NAME.cfg
 ```
 
 Load the associations from a file
 
-```
+```bash
 >>> sacctmgs load cluster=$NAME file=$NAME.cfg
 ```
 
