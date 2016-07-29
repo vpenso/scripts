@@ -42,7 +42,7 @@ systemctl daemon-reexec                         # re-execute systemd
 ```
 
 
-Localization and Time
+### Localization/Time
 
 ```bash
 timedatectl                                     # show time and time zone configuration
@@ -57,13 +57,14 @@ localectl list-locales                          # list vailable keys configurati
 localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"
 ```
 
-Journal/Logging
+### Journal/Logging
 
 ```bash
 SYSTEMD_LESS=FRXMK                              # Wrap line to screen width
 journalctl -b                                   # this boot
 journalctl -b -p err                            # error from this boot
 journalctl -b -1                                # previous boot
+journalctl --list-boots                         # show list of boot logs
 journalctl -k                                   # kernel ring buffer
 journalctl -f                                   # tail the log file
 journalctl -u <unit>                            # messages of a specific unit
@@ -80,7 +81,17 @@ systemctl status systemd-journald               # state of the journal service
 man journald.conf                               # documenation for the journal service 
 ```
 
-Timers
+Enable the persistent storage of log messages
+
+```bash
+mkdir /etc/systemd/journald.conf.d
+echo -e "[Journal]\nStorage=persistent" > /etc/systemd/journald.conf.d/storage.conf
+# Enable the change without reboot by...
+systemd-tmpfiles --create --prefix /var/log/journal
+systemctl restart systemd-journald
+```
+
+### Timers
 
 ```bash
 man systemd.timer
@@ -90,7 +101,7 @@ systemd-run --on-active=<time> --unit <unit>    # transient .timer unit executes
 apt install systemd-cron                        # systemd units to run cron scripts
 ```
 
-User login management
+### Login Management
 
 - `pam_systemd` registers user sessions with the systemd login manager
 - All sessions `session-<id>.scope` of a user belong to a slice unit `user-<uid>.slice` below the `user.slice`
