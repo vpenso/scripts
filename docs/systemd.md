@@ -12,10 +12,15 @@
 - **Timers** `.timer` control services or events (similar to cron) supporting calender/monotonic time 
 
 ```bash
-man systemd.unit                                # show documentation about systemd units
+systemd --version                               # show systemd version
+cat /etc/os-release                             # platform information
+LESS="-p SIGNALS" man -P less systemd           # list of supported signals
+LESS="-p KERNEL" man -P less systemd            # kernel command line options for boot
 systemctl                                       # list all units with state
 systemctl -t <unit_type>                        # list units with a given type, e.g. "service"
 ls -l {/etc,/run,/lib}/systemd/system           # list unit configuration files
+systemctl list-unit-files -t service             
+systemctl cat <unit>                            # print unit configuration files
 systemctl --failed --all                        # list units in failed state
 systemctl help <unit>
 systemctl status [<unit>]                       # show state of a unit, e.g. ssh.service
@@ -32,6 +37,7 @@ systemctl kill <service>                        # send TERM to service
 systemctl kill -s <sig> <service>               # send a given signal to servive, e.g. HUB  
 systemctl reboot|poweroff|suspend|hibernate     # power management
 systemctl list-jobs                             # show pending jobs
+systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
 ```
 
@@ -77,4 +83,20 @@ systemctl status systemd-journald               # state of the journal service
 man journald.conf                               # documenation for the journal service 
 ```
 
+User login management:
+
+```bash
+apt install libpam-systemd                      # install PAM support for systemd
+grep pam_systemd.so /etc/pam.d/*                # PAM configuration for systemd
+systemctl status dbus.service                   # state of the user message bus
+systemctl status systemd-logind.service         # state of the login manager
+man logind.conf                                 # login manager configuration
+loginctl [list-users]                           # list users
+loginctl user-status <user>                     # show run-time information of user
+loginctl terminate-user <user>                  # terminate all user sessions
+loginctl list-seats                             # list seats
+loginctl seat-status <seat>                     # list devices associated to seat
+ls ~<user>/.config/systemd/user                 # unit files for a given user
+loginctl enable-linger <user>                   # make user sessions (boot) persistant    
+```
 
