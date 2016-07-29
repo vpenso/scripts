@@ -41,13 +41,8 @@ systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
 ```
 
-```bash
-man systemd.timer
-systemctl list-timers --all                     # list all timers, including inactive
-systemd-run --on-active=30 <command>            # transient .timer unit executes a command
-systemd-run --on-active=<time> --unit <unit>    # transient .timer unit executes unit
-apt install systemd-cron                        # systemd units to run cron scripts
-```
+
+Localization and Time
 
 ```bash
 timedatectl                                     # show time and time zone configuration
@@ -61,6 +56,8 @@ localectl                                       # show language configuration
 localectl list-locales                          # list vailable keys configuration
 localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"
 ```
+
+Journal/Logging
 
 ```bash
 SYSTEMD_LESS=FRXMK                              # Wrap line to screen width
@@ -83,7 +80,20 @@ systemctl status systemd-journald               # state of the journal service
 man journald.conf                               # documenation for the journal service 
 ```
 
-User login management:
+Timers
+
+```bash
+man systemd.timer
+systemctl list-timers --all                     # list all timers, including inactive
+systemd-run --on-active=30 <command>            # transient .timer unit executes a command
+systemd-run --on-active=<time> --unit <unit>    # transient .timer unit executes unit
+apt install systemd-cron                        # systemd units to run cron scripts
+```
+
+User login management
+
+- `pam_systemd` registers user sessions with the systemd login manager
+- All sessions `session-<id>.scope` of a user belong to a slice unit `user-<uid>.slice` below the `user.slice`
 
 ```bash
 apt install libpam-systemd                      # install PAM support for systemd
