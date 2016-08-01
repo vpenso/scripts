@@ -42,6 +42,38 @@ systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
 ```
 
+### Network
+
+**Predictable interface names** prefix `en` Ethernet `wl` WLAN with following types:
+
+```
+o<index>                                                         on-board device index number
+s<slot>[f<function>][d<dev_id>]                                  hotplug slot index number
+x<MAC>                                                           MAC address
+p<bus>s<slot>[f<function>][d<dev_id>]                            PCI geographical location
+p<bus>s<slot>[f<function>][u<port>][..][c<config>][i<interface>] USB port number chain
+```
+
+ref. `/lib/udev/rules.d/80-net-setup-link.rules`, cf. 
+
+```bash
+udevadm info -e | grep -A 9 ^P.*en[sop]          # dump udev database and grep for ethernet
+udevadm test /sys/class/net/* 2>&- | grep ID_NET_NAME_
+man systemd.link                                 # network device configuration
+ls -l {/etc,/run,/lib}/systemd/network/*.link    # list link configuration files
+ip -o -4 link                                    # show link state
+```
+
+`.link` file are used to rename an interface.
+
+```bash
+ls -l {/etc,/run,/lib}/systemd/network/*.network # network configuration 
+networkctl list                                  # list network connections
+networkctl status                                # show IP addresses for interfaces
+systemctl status systemd-networkd                # state of teh network daemon
+```
+
+
 
 ### Localization/Time
 
@@ -126,7 +158,7 @@ systemctl status dbus.service                   # DBus is required by pam_system
 ```
 All user sessions `session-<id>.scope` of belong to a slice `user-<uid>.slice` below the `user.slice`
 
-```
+```bash
 loginctl [list-users]                           # list users
 loginctl user-status <user>                     # show run-time information of user
 loginctl terminate-user <user>                  # terminate all user sessions
