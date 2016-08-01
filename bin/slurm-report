@@ -336,8 +336,11 @@ class Sacct
     $logger.info "<#{self.class}##{__method__.to_s}>"
     OBJECTS.each do |key|
       @data[key].each do |value,data|
-        # Relative percent of the consumed resources according to the CPU seconds
-        r_perc = sprintf '%.2f', (data['runtime'].to_f/@data['runtime']) * 100
+        r_perc = '0'
+        if data['runtime'].is_a? Numeric
+          # Relative percent of the consumed resources according to the CPU seconds
+          r_perc = sprintf '%.2f', (data['runtime'].to_f/@data['runtime']) * 100
+        end
         @data[key][value]['useperc'] = r_perc
          # Median wait time of jobs in queue
         @data[key][value]['qwmedian'] = humanize_secs data['qwmedian'].median
@@ -394,6 +397,7 @@ class Sacct
 
 
   def humanize_secs(seconds)
+    return 0 unless seconds.is_a? Numeric
     days = seconds / (60*60*24)
     seconds = seconds % (60*60*24)
     hours = Time.at(seconds).utc.strftime('%H:%M')
@@ -762,7 +766,7 @@ begin
     when '--user'
       sacct.user arg
     when '--version'
-      $stdout.puts 0.58
+      $stdout.puts 0.59
       exit 0
     end
   end
