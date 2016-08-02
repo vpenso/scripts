@@ -117,47 +117,28 @@ su - -c 'munge -n'                                # check it is working
 
 ### Slurm
 
-    […]
-    » wget http://www.schedmd.com/download/archive/slurm-2.6.3.tar.bz2
-    […]
-    » tar -xvjf slurm-2.6.3.tar.bz2
-    […]
-    » apt-get install -y python
-    […]
-    » ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
-    […]
-    » make && make install
-    […]
+Build [Slurm](https://github.com/SchedMD/slurm) from a [release version](https://github.com/SchedMD/slurm/releases)
 
-Follow these steps…
+```bash
+wget https://github.com/SchedMD/slurm/archive/slurm-16-05-3-1.tar.gz
+                                                  # download the source code
+tar xf slurm-16-05-3-1.tar.gz                     # extract the archive
+apt install python                                # install dependencies
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+                                                  # configure for a system installation
+make && make install                              # compile install
+```
 
-- Download Slurm from the developers site.
-- Extract the archive.
-- Install dependencies. Configure, build and install SLURM. 
-
-Test Slurm after installation:
-
-    » useradd --system slurm
-    » cp etc/slurm.conf.example /etc/slurm.conf
-    […]
-    » egrep '^ControlMachine|^NodeName|^PartitionName' /etc/slurm/slurm.conf
-    ControlMachine=lxdev01
-    NodeName=lxdev[02-04] Procs=1 State=UNKNOWN
-    PartitionName=debug Nodes=lxdev[02-04] Default=YES MaxTime=INFINITE State=UP
-    » slurmctld -D
-    […]
-    slurmctld: Running as primary controller
-    […]
-    » sinfo
-    PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-    debug*       up   infinite      3    unk lxdev[02-04]
-
-Follow these steps…
-
-- Create a slurm user account.
-- Copy the example configuration to `/etc/slurm.conf`.
-- Adjust ControlMachine, NodeName, and PartitionName.
-- Start the controller daemon in foreground `slurmctld -D`. Query the start from the controller with [sinfo][sinfo]. 
+```bash
+>>> useradd --system slurm                            # create a system user
+>>> cp etc/slurm.conf.example /etc/slurm.conf         # create a minimal configuration
+>>> egrep '^ControlMachine|^NodeName|^PartitionName' /etc/slurm/slurm.conf
+ControlMachine=lxdev01
+NodeName=lxdev[02-04] Procs=1 State=UNKNOWN
+PartitionName=debug Nodes=lxdev[02-04] Default=YES MaxTime=INFINITE State=UP
+>>> slurmctld -D                                      # start the control daemon
+>>> sinfo                                             # pinrt state
+```
 
 ## Slurmctld
 
