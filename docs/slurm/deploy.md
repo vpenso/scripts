@@ -71,9 +71,6 @@ apt-get -y install ca-certificates bzip2 build-essential libgcrypt11-dev libbz2-
 make && make install                               # complie and install
 ```
 
-
-Test Munge:
-
 ```bash
 dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key
                                                   # create a secret
@@ -83,7 +80,7 @@ munge -n | unmunge                                # create a credentail, and dec
 remunge                                           # run perfomance test
 ```
 
-Munge as a **service**
+**Service**
 
 ```bash
 useradd --system munge                            # create a system user
@@ -100,7 +97,7 @@ systemctl cat munge                               # print the unit file
 systemctl list-dependencies --after munge         # show unit dependencies 
 ```
 
-Use multiple versions in `/opt/munge/<version>` by adjusting the unit file `munge.service`:
+Multiple versions in `/opt/munge/<version>`, adjust unit file `munge.service`:
 
 ```bash
 Environment="LD_LIBRARY_PATH=/opt/munge/0.5.12/lib"
