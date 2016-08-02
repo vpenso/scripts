@@ -58,86 +58,43 @@ Build Slurm RPM packages:
 
 ### Munge
 
-Build [Munge][munge] from source on Debian:
+Build [Munge][munge] from a [release version](https://github.com/dun/munge/releases)
 
-    » apt-get -y install ca-certificates bzip2 
-    […]
-    » wget https://munge.googlecode.com/files/munge-0.5.11.tar.bz2
-    […]
-    » tar -xvjf munge-0.5.11.tar.bz2
-    […]
-    » apt-get -y install build-essential libgcrypt11-dev libbz2-dev zlib1g-dev
-    […]
-    » ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
-    […]
-    » make && make install
-    […]
+```bash
+wget https://github.com/dun/munge/releases/download/munge-0.5.12/munge-0.5.12.tar.xz
+                                                   # download the source code
+tar xf munge-0.5.12.tar.xz                         # extract the archive
+apt-get -y install ca-certificates bzip2 build-essential libgcrypt11-dev libbz2-dev zlib1g-dev
+                                                   # install dependencies 
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+                                                   # configure the compilation 
+make && make install                               # complie and install
+```
 
-Follow the steps above to…
+Test Munge:
 
-- [Download][munge] Munge from the developers site.
-- Extract the archive.
-- Install dependencies.
-- Configure, build and install Munge. 
+```bash
+dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key
+                                                  # create a secret
+chmod -R 700 /etc/munge                           # adjust permissions for the config
+munged -F                                         # start munged in foreground
+munge -n | unmunge                                # create a credentail, and decode
+remunge                                           # run perfomance test
+```
 
-Test Munge after the installation:
+Munge as a **service**
 
-    » dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key
-    » chmod -R 700 /etc/munge
-    » munged -F
-    munged: Notice: Running on "wheezy.devops.test" (127.0.1.1)
-    munged: Info: PRNG seeded with 1024 bytes from "/dev/urandom"
-    munged: Info: Updating supplementary group mapping every 3600 seconds
-    munged: Info: Enabled supplementary group mtime check of "/etc/group"
-    munged: Info: Removed existing socket "/var/run/munge/munge.socket.2"
-    munged: Notice: Starting munge-0.5.11 daemon (pid 14839)
-    munged: Info: Created 2 work threads
-    munged: Info: Found 1 user with supplementary groups in 0.000 seconds
-    […]
-    » munge -n | unmunge
-    STATUS:           Success (0)
-    ENCODE_HOST:      wheezy.devops.test (127.0.1.1)
-    ENCODE_TIME:      2013-12-17 15:52:46 +0100 (1387291966)
-    DECODE_TIME:      2013-12-17 15:52:46 +0100 (1387291966)
-    TTL:              300
-    CIPHER:           aes128 (4)
-    MAC:              sha1 (3)
-    ZIP:              none (0)
-    UID:              root (0)
-    GID:              root (0)
-    LENGTH:           0
-    » remunge 
-    2013-12-17 15:53:46 Spawning 1 thread for encoding
-    2013-12-17 15:53:46 Processing credentials for 1 second
-    2013-12-17 15:53:47 Processed 10786 credentials in 1.000s (10783 creds/sec)
-
-Follow these steps…
-
-- Create a MUNGE key in `/etc/munge/munge.key`.
-- Start the daemon in foreground with `munged -F`.
-- Create a credential with `munge -n` and decode it with `unmunge`.
-- Run a performance test with `remunge`. 
-
-Start Munge as a service:
-
-    » useradd --system munge
-    » chmod 755 /etc/munge/
-    » chown munge:munge /etc/munge/munge.key
-    » chmod 400 /etc/munge/munge.key
-    » chown munge:munge /var/run/munge/ /var/lib/munge/
-    » /etc/init.d/munge start
-    » ps -fH -C munged
-    UID        PID  PPID  C STIME TTY          TIME CMD
-    munge    16618     1  0 16:46 ?        00:00:00 /usr/sbin/munged -F
-    » munge -n
-    MUNGE:AwQDAAD8XrjJ+QwcjDN[…]
-
-Follow the steps above to…
-
-- Create a munge system users account.
-- Adjust the permissions and owner of the MUNGE key `/etc/munge/munge.key`.
-- Adjust the owner of directories required by the service `/var/run/munge/` and `/var/lib/munge/`.
-- Start the service with and test if it is working. 
+```bash
+useradd --system munge                            # create a system user
+chmod 755 /etc/munge/                             # create configuration directory
+chown munge:munge /etc/munge/munge.key /var/run/munge/ /var/lib/munge/ /var/log/munge/
+                                                  # adjust ownership of service files
+chmod 400 /etc/munge/munge.key                    # adjust permissions of the secret
+systemctl start munge                             # start the service
+systemctl status munge                            # show service state
+journalctl -u munge                               # print log messages
+munge -n                                          # open a connection for testing
+```
 
 ### Slurm
 
@@ -324,7 +281,7 @@ Install **slurmd** on an execution node:
 
 
 [slurmdevel]: https://groups.google.com/forum/#!forum/slurm-devel
-[munge]: https://code.google.com/p/munge/
+[munge]: https://dun.github.io/munge/ 
 [slurmconf]: http://manpages.debian.org/slurm.conf
 [slurmdbdconf]: http://manpages.debian.org/slurmdbd.conf
 [sacct]: http://manpages.debian.org/sacct
