@@ -4,7 +4,7 @@
 First process executed in users space (PID 1)
 
 - Initialize user-space, and provides dependency management between **units**
-- Each Unit is describes with a configuration file, the suffix determines the unit type
+- Each Unit is describes with a configuration file, the suffix determines the unit type `unit_name.type_extensiona`. cf. `systemd.unit`
 - **Targets** define a group of units (like run levels), may inherit services from another target
 - **Scopes** are groups of processes registered using the runtime APIs (e.g. containers).
 - **Slices** are hierarchies of services/scopes (contain processes) 
@@ -13,13 +13,14 @@ First process executed in users space (PID 1)
 
 ```bash
 systemd --version                               # show systemd version
-cat /etc/os-release                             # platform information
+/etc/os-release                                 # platform information
+/etc/machine-id                                 # unique machine identifier
+{/etc,/run,/lib}/systemd/system                 # unit configuration files
 LESS="-p SIGNALS" man -P less systemd           # list of supported signals
 LESS="-p KERNEL" man -P less systemd            # kernel command line options for boot
 SYSTEMD_LESS=FRXMK                              # export to wrap lines to screen width
 systemctl                                       # list all units with state
 systemctl -t <unit_type>                        # list units with a given type, e.g. "service"
-ls -l {/etc,/run,/lib}/systemd/system           # list unit configuration files
 systemctl list-unit-files -t service            # list unit files for a given unit type 
 systemctl cat <unit>                            # print unit configuration files
 systemctl --failed --all                        # list units in failed state
@@ -40,6 +41,7 @@ systemctl reboot|poweroff|suspend|hibernate     # power management
 systemctl list-jobs                             # show pending jobs
 systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
+systemd-delta                                   # overridden or modified unit files
 ```
 
 ### Network
