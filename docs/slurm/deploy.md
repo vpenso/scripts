@@ -67,9 +67,10 @@ tar xf munge-0.5.12.tar.xz                         # extract the archive
 apt-get -y install ca-certificates bzip2 build-essential libgcrypt11-dev libbz2-dev zlib1g-dev
                                                    # install dependencies 
 ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
-                                                   # configure the compilation 
+                                                   # configure for system deployment
 make && make install                               # complie and install
 ```
+
 
 Test Munge:
 
@@ -93,8 +94,29 @@ chmod 400 /etc/munge/munge.key                    # adjust permissions of the se
 systemctl start munge                             # start the service
 systemctl status munge                            # show service state
 journalctl -u munge                               # print log messages
-munge -n                                          # open a connection for testing
+munge -n                                          # test by creating a credential 
+/usr/lib/systemd/system/munge.service             # unit configuration
+systemctl cat munge                               # print the unit file
+systemctl list-dependencies --after munge         # show unit dependencies 
 ```
+
+Use multiple versions in `/opt/munge/<version>` by adjusting the unit file `munge.service`:
+
+```bash
+Environment="LD_LIBRARY_PATH=/opt/munge/0.5.12/lib"
+ExecStart=/opt/munge/0.5.12/sbin/munged
+```
+```bash
+./configure --prefix=/opt/munge/0.5.12/ --sysconfdir=/etc --localstatedir=/var --mandir=/share 
+                                                  # configure for /opt deployment
+ln -s /opt/munge/0.5.12/lib/systemd/system/munge.service /lib/systemd/system/munge.service
+                                                  # link to the version specific unit file
+echo "PATH=$PATH:/opt/munge/0.5.12/bin:/opt/munge/0.5.12/sbin" > /etc/profile.d/munge.sh
+                                                  # set environment on login
+systemctl start munge                             # start the service
+su - -c 'munge -n'                                # check it is working
+```
+
 
 ### Slurm
 
