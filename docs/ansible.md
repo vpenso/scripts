@@ -12,7 +12,7 @@ ANSIBLE_CONFIG=<file>
 ANSIBLE_HOSTS=<file>
 ```
 
-The **inventory** defines nodes, groups of nodes including connection information and node related variables. This information is store to plain text files eventually structured within a directory tree:
+The **inventory** defines nodes, groups of nodes including connection information and node related variables. This information is stored to plain text files eventually structured within a directory tree:
 
 ```
 [<group>]                                      # group definition
@@ -21,17 +21,15 @@ The **inventory** defines nodes, groups of nodes including connection informatio
 <fqdn>:<port>                                  
 <host> ansible_port=<port> ansible_host=<ip> ansible_user=<name>
 <host> var=val ...                             # host variables
-
 [<group>:vars]                                 # group variables
 var=val
-var=val
-
+...
 [<group>:children]                             # groups of groups
 <group>
-<group>
+...
 ```
 
-Execute a command on a selected group og hosts:
+Execute a command on a selected group of hosts:
 
 ```bash
 ansible -a <command> <group>                         # run command on host group
