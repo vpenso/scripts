@@ -51,23 +51,23 @@ ansible -m <module> -a <command> ...                 # execute module
 ```
 
 ```bash
-    -a "<command>"                                   # execute remote command
-    -m shell -a "<command> chdir=<path> executable=/bin/bash"
-... -m copy -a "src=<path> dest=<path>"               # copy files to hosts
-    -m fetch -a "src=<path> dest=./fetched"           # copy files from hosts
-    -m fetch -a "src=<path> dest=/tmp/<prefix>-{{inventory_hostname}} flat=yes"
-... -m file -a "dest=<path> state=absent"             # remove a file
-    -m file -a "dest=<path> mode=<mode> owner=<user> group=<group>"
-                                                      # change owner, group, permissions
-... -m replace -a "dest=<path> regexp=<regex> backup=yes"
-                                                      # alter file content with a regex
-... -m synchronize -a "src=<path> dest=<path>"        # rsync path to hosts
-... -m get_url -a "url=<url> dest=<path> mode=<mode>" # download a file
-... -m service -a "name=<service> state=<state>"
-                      # change service state:  running,started,stopped,restarted,reloaded
-... -m apt -a "update_cache=yes upgrade=yes"          # upgrade packages
-    -m apt -a "name=<pkg> state=<state>"
-    -m apt -a "name=<pkg> state=present install_recommends=yes"
-    -m apt -a "name=<pkg> state=absent purge=yes"
+-a "<command>"                                    # execute remote command
+-m shell -a "<command> chdir=<path> executable=/bin/bash"
+-m copy -a "src=<path> dest=<path>"               # copy files to hosts
+-m fetch -a "src=<path> dest=./fetched"           # copy files from hosts
+-m fetch -a "src=<path> dest=/tmp/<prefix>-{{inventory_hostname}} flat=yes"
+-m file -a "dest=<path> state=absent"             # remove a file
+-m file -a "dest=<path> mode=<mode> owner=<user> group=<group>"
+                                                  # change owner, group, permissions
+-m replace -a "dest=<path> regexp=<regex> backup=yes"
+                                                  # alter file content with a regex
+-m synchronize -a "src=<path> dest=<path>"        # rsync path to hosts
+-m get_url -a "url=<url> dest=<path> mode=<mode>" # download a file
+-m service -a "name=<service> state=<state>"
+                  # change service state:  running,started,stopped,restarted,reloaded
+-m apt -a "update_cache=yes upgrade=yes"          # upgrade packages
+-m apt -a "name=<pkg> state=<state>"
+-m apt -a "name=<pkg> state=present install_recommends=yes"
+-m apt -a "name=<pkg> state=absent purge=yes"
 ```
 

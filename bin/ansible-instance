@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+begin
+ 
+  # current working directory
+  path = ENV['PWD']
+  # name of the virtual machine instance 
+  name = File.basename(path)
+  # get the network configuration
+  name, ip, mac = `virsh-nat-bridge lookup #{name}`.split
+  # target configuration file for Ansible
+  config_file = 'ansible.ini'
+  # Ansible configuration
+  config = <<-EOF
+    [instance]
+    instance ansible_user=root ansible_host=#{ip} host_key_checking=no ansible_ssh_private_key_file=#{path}/keys/id_rsa
+  EOF
+
+  # Create a configuration file if missing
+  unless File.exists? config_file
+    File.open(config_file,'w') do |f|
+      f.puts config.gsub(/^    /,'')
+    end
+    $stdout.puts "#{config_file} written."
+  end
+
+  $stdout.puts `ansible -i #{config_file} instance #{ARGV.join(' ')}`
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
