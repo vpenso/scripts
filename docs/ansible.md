@@ -42,8 +42,6 @@ ansible ... <group> -l ~<pattern>                    # subset of group by patter
 
 **Modules** provide the configuration capabilities. Core modules are part of Ansible, e.g. "apt"
 
-[https://github.com/ansible/ansible-modules-core](https://github.com/ansible/ansible-modules-core)
-
 ```bash
 ansible-doc -l                                       # list all modules
 ansible-doc <module>                                 # print module docs
@@ -69,5 +67,39 @@ ansible -m <module> -a <command> ...                 # execute module
 -m apt -a "name=<pkg> state=<state>"
 -m apt -a "name=<pkg> state=present install_recommends=yes"
 -m apt -a "name=<pkg> state=absent purge=yes"
+```
+
+**Playbooks** orchestrate configuration **tasks** and are written in YAML:
+
+- Tasks are executed in order, one at a time, against machines matching a **host pattern**.
+- Tasks execute a module with specific arguments. Idempotents allows repeated execution.
+- **Notify** is triggered at the end of each task for each defined handler.
+- **Handlers** are lists of tasks executed by notifiers.
+
+
+```bash
+ansible-playbook <playbook>                       # execute playbook 
+ansible-pull -U <url> <playbook>                  # checkout repsotiory URL, execute playbook
+```
+
+```yaml
+---
+- host <pattern>                                  # groups or host patterns, separated by colons
+  remote_user: <user>                             # name of the user account
+  <key>: <value>                                  
+  […]
+  tasks:                                          # list of tasks
+    - name: <comment>                             # task description
+      <module>: [<options>]                       # module to call
+        <key>: <value>                            # configuration for the module
+        […]
+      notify:                                     # actions triggered on change
+      - <key>: <value>                            # list of handlers
+      […]
+    […]
+  handlers:
+    - name: <comment>
+      service:
+        <key>: <value
 ```
 
