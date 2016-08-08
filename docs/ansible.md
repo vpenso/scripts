@@ -97,9 +97,12 @@ ansible-pull -U <url> <playbook>                  # checkout repsotiory URL, exe
       - <key>: <value>                            # list of handlers
       […]
     […]
-  handlers:
+  handlers:                                       # handler task list
     - name: <comment>
       service:
         <key>: <value
 ```
+
+**Roles** organize playbooks in a defined directory structure.
+
 
