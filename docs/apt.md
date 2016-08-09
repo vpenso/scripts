@@ -68,4 +68,29 @@ Numeric value for Priority `P`:
       P > 1000       installed even if this constitutes a downgrade
 ```
 
+### Backports
+
+→ [official backports](https://backports.debian.org/Instructions/)
+→ [official firefox backports](http://mozilla.debian.net/)
+
+```bash
+echo 'deb http://ftp.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list
+                                                    # configure the backports repository
+apt update && apt install -t jessie-backports <package>
+                                                    # installe a package from backports
+dpkg -l  |awk '/^ii/ && $3 ~ /bpo[6-9]/ {print $2}' # list packages installed from backports
+```
+
+Create a backport package:
+
+```bash
+apt update && apt upgrade && apt -y install packaging-dev debian-keyring devscripts equivs
+                                                     # install the build environment
+dget -x <url>.dsc                                    # download slurm meta packages
+cd <srcdir> && mk-build-deps --install --remove      # install package dependencies
+dch --local ~bpo8+ --distribution jessie-backports "Rebuild for jessie-backports."
+                                                     # indicate backport in changelog
+fakeroot debian/rules binary                         # build the source
+dpkg-buildpackage -us -uc                            # build the package
+```
 
