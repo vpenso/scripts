@@ -2,13 +2,13 @@
 
 ```bash
 apt-cache policy | grep -Ev Translation-..$   # list release information
-apt-cache policy <package>                    # list available package verions
+apt-cache policy <package>                    # list available package versions
 apt install -t <release> <package>            # install package from target release
 apt install <package>=<version>               # install a specific version
 ```
 Configure priorities in `/etc/apt/preferences.d/*.pref`:
 
-```
+```bash
 Package: <name>                               # name of the package, may include *
 Pin: <release>                                # identify the package source, cf. apt-cache policy
 Pin-Priority: <priority>                      # numerical value for priority
