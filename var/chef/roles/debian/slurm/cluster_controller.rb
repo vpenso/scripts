@@ -41,6 +41,7 @@ default_attributes(
     # Create use directories on the shared storage
     #
     directory: {
+      '/network' => {},
       '/network/spock' => { owner: 'spock' },
       '/network/sulu' => { owner: 'sulu' },
       '/network/kirk' => { owner: 'kirk' },

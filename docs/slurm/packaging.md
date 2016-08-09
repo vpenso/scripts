@@ -13,6 +13,9 @@ dch --local ~bpo8+ --distribution jessie-backports "Rebuild for jessie-backports
 fakeroot debian/rules binary                         # build the source
 dpkg-buildpackage -us -uc                            # build the package
 ```
+
+Backport the [Munge](https://packages.debian.org/munge) Debian package:
+
 ```bash
 dget http://http.debian.net/debian/pool/main/m/munge/munge_0.5.12-1.dsc
                                                      # download munge meta packages
@@ -20,6 +23,13 @@ cd munge-0.5.12/ && mk-build-deps --install --remove
 dch --local ~bpo8+ --distribution jessie-backports "Rebuild for jessie-backports."
 fakeroot debian/rules binary                        
 dpkg-buildpackage -us -uc                           
+```
+
+Use a [test environment](test.md) to verify the packages:
+
+```bash
+ssh-sync ~/projects/packages/*.deb :/tmp             # copy packages to vm
+ssh-exec -r 'dpkg -i /tmp/*.deb ; apt install -fy'   # install all packages
 ```
 
 
