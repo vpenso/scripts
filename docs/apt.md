@@ -1,7 +1,7 @@
 
 → [package search](https://packages.debian.org/index)
 
-Packages on the local node:
+Local packages:
 
 ```bash
 dpkg -i <path>.deb                            # install package
@@ -11,7 +11,7 @@ dpkg -S <path>                                # find package containing file (if
 dpkg-query -l                                 # list all installed packages
 ```
 
-Packages from remote source:
+Packages from remote sources:
 
 ```bash
 apt update                                    # (re-)synchronize the package index
@@ -56,7 +56,7 @@ suite                      # release code name/class, e.g jessie, stable
 component                  # main, contrib, non-free
 ```
 
-### HTTP Proxy
+HTTP Proxy:
 
 ```bash
 echo "Acquire::http::Proxy \"$URL\";" > /etc/apt/apt.conf.d/http_proxy.conf
