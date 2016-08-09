@@ -1,28 +1,59 @@
 
 → [package search](https://packages.debian.org/index)
 
+Packages on the local node:
+
 ```bash
-dpkg -i <path>.deb                            # install local package
+dpkg -i <path>.deb                            # install package
 dpkg -s <package> | grep -i version           # version of installed package
 dpkg -L <package>                             # list content of a package (if installed)
 dpkg -S <path>                                # find package containing file (if installed)
 dpkg-query -l                                 # list all installed packages
+```
+
+Packages from remote source:
+
+```bash
+apt update                                    # (re-)synchronize the package index
+apt-show-versions -u                          # list upgradeable packages
+apt-get upgrade                               # install the newest versions of all 
+                                              # packages currently installed
+apt-get dist-upgrade                          # ^^, and remove obsolete packages
+apt-get autoremove                            # remove obsolete packages
 apt search <pattern>                          # search the package repos
 apt install apt-file && apt-file update       # install file search
 apt-file search <file>                        # search for a specific file in repos
 apt-file list <package>                       # list files from a packge
-apt-show-versions -u                          # list upgradeable packages
 echo "<package> hold" | dpkg --set-selections # hold package upgrades
 apt-get changelog <package>                   # print package change log
 apt-get --force-yes --yes install <package>=<version>
                                               # package downgrade
 apt-get remove <package>                      # uninstall a package
 apt-get purge <package>                       # uninstall package, and remove config/state
-apt-get autoremove                            # remove orphan dependency packages
 apt-get build-dep <package>                   # install build dependencies 
 apt-get --download-only source <package>      # download package source code
-wget -qO - <url> | sudo apt-key add -         # download, install repository key
 apt-get -f install | dpkg --configure -a      # recover from broken installation
+```
+
+### Sources
+
+```bash
+grep -R '^deb ' /etc/apt/sources.* | tr -s '  ' | cut -d' ' -f2-
+                                              # list all source locations
+/etc/apt/sources.list.d/*.{list|sources}      # custom source location configuration
+wget -qO - <url> | sudo apt-key add -         # download, install repository key
+```
+
+Source list configuration format
+
+```bash
+<type> [<opt>=<val>] <url> <suite> [<compontents>] [...] 
+
+type                       # archive type deb (binary) or deb-src (source code)
+opt                        # comma seperated list of options
+url                        # package repository URL
+suite                      # release code name/class, e.g jessie, stable
+component                  # main, contrib, non-free
 ```
 
 ### HTTP Proxy
