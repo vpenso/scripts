@@ -579,13 +579,14 @@ Read accounting data from Slurm and accumulate statistics:
   --debug, -D                Show stack traces in case of errors
   --example                  Show help text with usage examples
   --format, -f <field,field> List of fields to include in output
+  --format-all, -A           Include all fields in output
   --format-list, -F          List of fields available to print
-  --group-by, -g <group>     Group ouput by account, partition oser user
-  --help                     Show this help information
-  --html, -h                 Print output as HTML table
-  --no-header, -H            Do not print a table header in output
+  --group-by, -g <group>     Group output by account, partition or user
+  --help, -h                 Show this help information
+  --html, -H                 Print output as HTML table
+  --no-header, -N            Do not print a table header in output
   --node-regex, -n <regex>   Regular expression to select a subset of nodes
-  --partition, -p <par,par>  Limit the output ot a given list of partitions
+  --partition, -p <par,par>  Limit the output to a given list of partitions
   --print-data               Print the parsed and processed data
   --print-raw-data           Print data from the accounting database
   --sort-by, -s <field>      Sort the output by selected field
@@ -688,11 +689,11 @@ begin
     ['--format-list','-F',GetoptLong::NO_ARGUMENT],
     ['--format-all','-A',GetoptLong::NO_ARGUMENT],
     ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
-    ['--help',GetoptLong::NO_ARGUMENT],
-    ['--html','-h',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--html','-H',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--node-regex','-n',GetoptLong::REQUIRED_ARGUMENT],
-    ['--no-header','-H',GetoptLong::NO_ARGUMENT],
+    ['--no-header','-N',GetoptLong::NO_ARGUMENT],
     ['--partition','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--print-data',GetoptLong::NO_ARGUMENT],
     ['--print-raw-data',GetoptLong::NO_ARGUMENT],
@@ -766,7 +767,7 @@ begin
     when '--user'
       sacct.user arg
     when '--version'
-      $stdout.puts 0.59
+      $stdout.puts 0.60
       exit 0
     end
   end
