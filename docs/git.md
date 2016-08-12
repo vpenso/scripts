@@ -1,3 +1,65 @@
+
+Repositories:
+
+```bash
+.git/config                              # configuration of remote repositories
+git clone <uri>                          # clone a remote repository
+git remote add <name> <uri>              # configure a remote repository
+git remote -v                            # list remote repositories
+git show <name>                          # show remote commit history
+git pull <name> <branch>                 # sync branch from remote repository
+git push <name> <branch>                 # sync branch to remote repository
+```
+
+Commit:
+
+```bash
+git checkout -- <file>                   # discard changes in file
+git checkout                             # discard changes in working directory
+git reset HEAD <file>                    # discard file from staging ares
+git reset HEAD --                        # discard all changes in the staging area
+git commit --amend                       # alter last commit
+git reset --hard                         # discard uncommited changes
+git reset --hard <hash>                  # discard until specified commit 
+git clean -f                             # recursivly remove file not in version control
+```
+
+Branch:
+
+```bach
+git clone -b <branch> <url>              # clone a remote repository, checkout branch
+git branch                               # list local branches
+```
+
+Tags:
+
+```bash
+git ls-remote --tags <repo>              # list tags of remote repository
+git fetch                                # fetch remote tags
+git tag -l                               # list local tags
+git tag -l <regex>                       # list specific tags
+git tag -n1 -l                           # list local tags with commit message
+git tag -a <version> -m <message>        # create new local tag
+git tag -a <version> <hash>              # tag specific commit
+git push <name> <tag>                    # push local tag to remote repository
+git push --tags <name>                   # push all local tags to remote repository
+git tag -l | xargs git tag -d            # delete all local tags
+```
+
+```bash
+GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
+                                          # Set the commiter for a single commit
+git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
+                                          # list files
+git ls-files --exclude-standard --ignored --others
+                                          # list ignored files                            
+git log -1 --stat                         # show last commit
+git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
+                                          # show commits with a list of cahnges files
+git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
+                                          # list commt messages one by line
+```
+
 ## git-repos
 
 [git-repos][git-repos] helps to solve the following three use-cases:
