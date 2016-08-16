@@ -22,13 +22,19 @@ git commit --amend                       # alter last commit
 git reset --hard                         # discard uncommited changes
 git reset --hard <hash>                  # discard until specified commit 
 git clean -f                             # recursivly remove file not in version control
+GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
+                                          # Set the commiter for a single commit
 ```
 
 Branch:
 
 ```bach
-git clone -b <branch> <url>              # clone a remote repository, checkout branch
+git clone -b <name> <url>                # clone a remote repository, checkout branch
 git branch                               # list local branches
+git branch -r                            # list remote branches 
+git checkout -b <name> origin/<branch>   # checkout remote branch
+git checkout <branch>                    # checkout local branch
+git pull --all                           # fetch all remote branches
 ```
 
 Tags:
@@ -47,8 +53,6 @@ git tag -l | xargs git tag -d            # delete all local tags
 ```
 
 ```bash
-GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
-                                          # Set the commiter for a single commit
 git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
                                           # list files
 git ls-files --exclude-standard --ignored --others
