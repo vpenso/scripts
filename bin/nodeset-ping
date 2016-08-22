@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2014 Victor Penso
+# Copyright 2014-2016 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,35 +22,23 @@ require 'logger'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-Iterate over a nodeset and check if a host is online.
-Prints the list of online hosts to standard out.
+Ping, and SSH check a set of nodes:
 
-#{exec_name} [-dhfv] [NODESET]
+#{exec_name} [-dhslv] [<nodeset>]
 
-  NODESET
-    List of nodes to ping.
-
-Options
--------
-
-  --debug, -d
-    Show stacktraces in case of errors.
-  --fold, -f 
-    Fold nodes into nodeset.
-  --help, -h
-    Show this help information.
-  --offline, -o
-    List offline nodes instead.
-  --version, -v
-    Print version number.
-
-Environment
------------
-
-  NODES
-    Set of nodes to ping. (Used as alternative to the
-    first command parameter.)
+  nodeset:               List of nodes in the nodeset format
+  --debug, -d            Show stacktraces in case of errors
+  --help, -h             Show this help information
+  --ssh-listen, -s       Check if the SSH deamon is listening
+  --ssh-login, -l        Check if SSH login is possible 
+  --version, -v          Print version number.
+  NODES                  Environment variable for the nodeset
 EOF
+
+def nodeset_fold(nodeset)
+  `echo "#{nodeset.join(' ')}" | nodeset -f`.chop
+end
+
 
 begin
 
@@ -59,7 +47,9 @@ begin
   options = OpenStruct.new
   options.debug = false
   options.fold = false
-  options.offline = false
+  options.ssh_listen = false
+  options.ssh_login = false
+  options.ssh_port = 22
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -70,19 +60,22 @@ begin
   $logger.level = Logger::INFO
 
   GetoptLong.new(
+    ['--ssh-listen','-s',GetoptLong::NO_ARGUMENT],
+    ['--ssh-login','-l',GetoptLong::NO_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
-    ['--fold','-f',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--offline','-o',GetoptLong::NO_ARGUMENT],
     ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
+    when '--ssh-listen'
+      options.ssh_listen = true
+    when '--ssh-login'
+      options.ssh_listen = true
+      options.ssh_login = true
     when '--debug'
       options.debug = true
       $logger.level = Logger::DEBUG
-    when '--fold'
-      options.fold = true
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -97,10 +90,8 @@ begin
       else
         Logger::INFO
        end
-    when '--offline'
-      options.offline = true
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 2.0
       exit 0
     end
   end
@@ -133,19 +124,56 @@ begin
     end
   end
 
-  nodeset = if options.offline
-              offline
-            else
-              online
-            end
+  $stderr.puts "#{nodeset_fold(offline)} offline" unless offline.empty?
 
-  output = if options.fold
-             `echo "#{nodeset.join(' ')}" | nodeset -f`
-           else
-             nodeset.join("\n")
-           end
- 
-  $stdout.puts output
+  if not options.ssh_listen
+    $stdout.puts nodeset_fold online
+
+  #
+  # Check if SSH is listening
+  #
+  else
+
+    # list of nodes with SSH listening
+    listen = Array.new
+    # list of nodes with SSH closed
+    closed = Array.new
+    # Iterate over the list of online nodes
+    online.each do |node|
+      # Check if the SSH port is listening
+      output = `netcat -zv #{node} #{options.ssh_port} 2>&1`
+      if output.include? 'succeeded'
+        listen << node
+      else
+        closed << node
+      end
+    end
+
+    $stderr.puts "#{nodeset_fold close} closed" unless closed.empty?
+    $stderr.flush
+
+    if not options.ssh_login
+      $stdout.puts nodeset_fold listen
+
+    #
+    # Check if SSH login is possible
+    #
+    else
+      login = Array.new
+      nologin = Array.new
+      listen.each do |node|
+        output = `ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=1 -o ConnectionAttempts=1 #{node} echo ok 2>&1`.split("\n")[-1]
+        if output =~ /^ok$/
+          login << node
+        else
+          nologin << node
+        end
+      end
+      $stderr.puts "#{nodeset_fold nologin} nologin" unless nologin.empty?
+      $stdout.puts nodeset_fold login
+    end
+
+  end
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
