@@ -1,0 +1,200 @@
+#!/usr/bin/env ruby
+#
+# Copyright Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+def ping(node)
+  `ping -c 1 -w 1 #{node} 2>&-`
+  state = $?.exitstatus == 0 ? 'online' : 'offline'
+  "#{node}:#{state}"
+end
+
+def ssh_listen(node, port = 22)
+  output = `netcat -zv #{node} #{port} 2>&1`
+  success = output.include? 'succeeded'
+  state = success ? 'listen' : 'closed'
+  "#{node}:#{state}"
+end
+
+def ssh_login(node)
+  output = `ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=1 -o ConnectionAttempts=1 #{node} echo ok 2>&1`.split("\n")[-1]
+  success =  output =~ /^ok$/
+  state = success ? 'login' : 'nologin'
+  "#{node}:#{state}"
+end
+
+def nodeset_fold(nodeset)
+  `echo "#{nodeset.join(' ')}" | nodeset -f`.chop
+end
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+Check if a set of nodes allows SSH login:
+
+#{exec_name} [-dhlpv] [<nodeset>]
+
+  --debug, -d          Show stacktraces in case of errors
+  --help, -h           Show this help information
+  --ping, -p           Send ping to the nodeset
+  --ssh-listen, -l     Check if SSH is listening
+  --version, -v        Print version number
+  NODES                Environment variable for the nodeset
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.ping  = false
+  $options.ssh_listen = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--ssh-listen','-l',GetoptLong::NO_ARGUMENT],
+    ['--ping','-p',GetoptLong::NO_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--ping'
+      $options.ping = true
+    when '--ssh-listen'
+      $options.ssh_listen = true
+    when '--version'
+      $stdout.puts 1.0
+      exit 0
+    end
+  end
+
+  ##
+  # Nodeset input provided by the user
+  #
+
+  # By command line argument
+  if ARGV.length.eql?(1)
+    nodeset = ARGV.shift
+  
+  # By input stream
+  elsif not stdin.empty?
+    nodeset = stdin
+
+  # By environment variable   
+  elsif ENV.has_key? 'NODES'
+    nodeset = ENV['NODES']
+
+  # Fail if nodeset is not provides
+  else
+    raise("Pass a set of nodes as parameter, or use environment variable NODES!")
+  end
+
+  # Structure holding the node states
+  nodes = { 
+    'online' => Array.new, 
+    'offline' => Array.new,
+    'listen' => Array.new,
+    'closed' => Array.new,
+    'login' => Array.new,
+    'nologin' => Array.new
+  }  
+
+  # Expand the nodeset passed by argument
+  nodeset = `nodeset -e #{nodeset}`.split(' ')
+
+  ##
+  # Ping all nodes
+  #
+  nodeset.map { |node| Thread.new { ping(node) } }.each do |t| 
+    node, state = t.value.split(':')
+    nodes[state] << node
+  end
+
+  $stderr.puts "#{nodeset_fold nodes['offline']} offline" unless nodes['offline'].empty?
+
+  if $options.ping
+    $stdout.puts "#{nodeset_fold nodes['online']}"
+    exit 0
+  end
+
+  ##
+  # Check if the SSH port is listening
+  #
+  nodes['online'].map { |node| Thread.new { ssh_listen(node) } }.each do |t| 
+    node, state = t.value.split(':')
+    nodes[state] << node
+  end
+
+  $stderr.puts "#{nodeset_fold nodes['closed']} closed" unless nodes['closed'].empty?
+  if $options.ssh_listen
+    $stdout.puts nodeset_fold nodes['listen']
+    exit 0
+  end
+
+  ##
+  # Try to login via SSH
+  #
+  nodes['listen'].map { |node| Thread.new { ssh_login(node)} }.each do |thread|
+    node, state = thread.value.split(':')
+    nodes[state] << node
+  end
+
+  $stderr.puts "#{nodeset_fold nodes['nologin']} nologin" unless nodes['nologin'].empty?
+  $stdout.puts "#{nodeset_fold nodes['login']}"
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
