@@ -41,7 +41,7 @@ systemctl reboot|poweroff|suspend|hibernate     # power management
 systemctl list-jobs                             # show pending jobs
 systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
-systemd-delta                                   # overridden or modified unit files
+systemd-delta --type=extended                   # Identify configuration which override others
 ```
 
 ### Network
@@ -143,6 +143,15 @@ systemd-run --on-active=30 <command>            # transient .timer unit executes
 systemd-run --on-active=<time> --unit <unit>    # transient .timer unit executes unit
 apt install systemd-cron                        # systemd units to run cron scripts
 ```
+
+Cleaning Temporary Directories
+
+```bash
+man 5 tmpfiles.d                                # documentation manual
+{/etc,/run,/usr/lib}/tmpfiles.d/*.conf          # configuraion path
+systemctl status systemd-tmpfiles-clean.timer   # timer state
+```
+
 
 ### Login Management
 
