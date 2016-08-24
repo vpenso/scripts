@@ -1,0 +1,192 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+#
+# Interface to the command-line environment
+#
+module System
+
+  module_function
+
+  ##
+  # Execute a command passed as parameter an return the output
+  # on success. Otherwise the method returns Nil indicating
+  # a problem on execution.
+  def exec(command, file = '')
+    if file.empty?
+      command << ' 2>&1'
+    # Users can optionally provide a file to store the output into
+    #
+    else
+      # Avoid piping the content threw the Ruby process
+      #
+      command << " 1> #{file}"
+    end
+    command = command.delete("\n").squeeze(' ')
+    $logger.info "<#{self.class}##{__method__.to_s}> #{command}"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "<#{self.class}##{__method__.to_s}> returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "<#{self.class}##{__method__.to_s}> failed to execute [#{command}]"
+      return nil
+    end
+  end
+
+end
+
+module SacctMgr
+
+  module_function
+
+  def user_set_limit(user,limit)
+    command = %Q<sacctmgr modify user #{user} set #{limit} --immediate>
+    System::exec(command)
+  end
+  
+  def list_account_users(account)
+    command = %Q{
+      sacctmgr show account where name=#{account} withassoc format=user --noheader 
+        | tail -n+2 
+        | tr -d ' '
+    }
+    System::exec(command).split("\n")
+  end
+
+  def show_user_limit(account,limit)
+    command = %Q<sacctmgr show account where name=#{account} withassoc format=user,#{limit}>
+    $stdout.puts System::exec(command)
+  end
+
+end
+
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [-dhlv] <account> <limit> 
+
+  account            Name of the Slurm account
+  limit              Resource limit to work with
+  --debug, -d        Show stacktraces in case of errors
+  --help, -h         Show this help information
+  --list, -l         List users with define limit
+  --version, -v      Print version number
+EOF
+
+EXAMPLES = <<EOF
+Show the GrpCPUs limit for all users in the account 'hpc':
+
+   >>> #{exec_name} -l hpc grpcpus
+
+Set GrpCPUs for all users of account 'hpc' to 500
+
+   >>> #{exec_name} hpc grpcpus=500
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.list = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--examples','-e',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--list','-l',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--examples'
+      $stdout.puts EXAMPLES
+      exit 0
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--list'
+      $options.list = true
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  account = ARGV[0] || raise('No account specified!')
+  limit = ARGV[1] || raise('No limit specified!')
+
+  if $options.list
+    SacctMgr.show_user_limit(account,limit)
+    exit 0
+  end
+
+  SacctMgr.list_account_users(account).each do |user|
+    SacctMgr.user_set_limit(user,limit)
+  end
+
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
