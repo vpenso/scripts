@@ -15,7 +15,7 @@ First process executed in users space (PID 1)
 systemd --version                               # show systemd version
 /etc/os-release                                 # platform information
 /etc/machine-id                                 # unique machine identifier
-{/etc,/run,/lib}/systemd/system                 # unit configuration files
+{/etc,/run,/lib}/systemd/system/                # unit configuration files
 LESS="-p SIGNALS" man -P less systemd           # list of supported signals
 LESS="-p KERNEL" man -P less systemd            # kernel command line options for boot
 SYSTEMD_LESS=FRXMK                              # export to wrap lines to screen width
@@ -23,6 +23,8 @@ systemctl                                       # list all units with state
 systemctl -t <unit_type>                        # list units with a given type, e.g. "service"
 systemctl list-unit-files -t service            # list unit files for a given unit type 
 systemctl cat <unit>                            # print unit configuration files
+systemctl edit --full <unit>                    # edit a unit file, reload on close
+systemctl reenable <unit>                       # reconfigure existing unit
 systemctl --failed --all                        # list units in failed state
 systemctl help <unit>
 systemctl status [<unit>]                       # show state of a unit, e.g. ssh.service
@@ -41,6 +43,7 @@ systemctl reboot|poweroff|suspend|hibernate     # power management
 systemctl list-jobs                             # show pending jobs
 systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
+/etc/systemd/system/<unit>.d/*.conf             # drop-in files to overwrite units
 systemd-delta --type=extended                   # Identify configuration which override others
 ```
 
