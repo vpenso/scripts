@@ -45,6 +45,9 @@ systemctl daemon-reload                         # Re-read configuration files
 systemctl daemon-reexec                         # re-execute systemd
 /etc/systemd/system/<unit>.d/*.conf             # drop-in files to overwrite units
 systemd-delta --type=extended                   # Identify configuration which override others
+systemd-analyze                                 # time the system required during last booting
+systemd-analyze blame                           # ^^ time by by unit
+systemd-analyze critical-chain                  
 ```
 
 ### Network

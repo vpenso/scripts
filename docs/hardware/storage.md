@@ -1,106 +1,29 @@
 
-    hwinfo --disk
-    lshw -class storage -class disk --class volume
-    fdisk -l
-    hdparm -I /dev/sda
-    smartctl -a /dev/sda
-    /proc/partitions
-    parted -l | grep '^Disk /dev'
+```bash
+hwinfo --disk
+fdisk -l
+smartctl -a /dev/sda
+/proc/partitions
+parted -l | grep '^Disk /dev'
+lspci | egrep "RAID|SATA"
+dmesg | grep ata[0-9] | tr -s ' ' | cut -d' ' -f3- | sort
+lshw -class disk                          # show disk configuration
+lshw -class tape -class disk -class storage -short
+                                          # show all storage resources
+hdparm -I <device>                        # get device parameters
+```
 
-# Controllers
+```bash
+/proc/self/mountinfo                      # mount information
+findmnt                                   # show tree all file systems
+findmnt -l                                # list all file systems
+findmnt -D                                # output like df
+findmnt -s                                # from /etc/fstab
+findmnt -S /dev/<device>                  # by source device
+findmnt -T <path>                         # by mount point
+findmnt -t <type>,...                     # by type, e.g. nfs
 
-
-| Year | Interconnect    | Throughput |
-|------|-----------------|------------|
-| 1986 | IDE (ATA)       |            |
-|      | SCSI 1          | 5MB/s      |
-| 1994 | EIDE (ATA 2)    | 8.3MB/s    |
-|      | ATA 6           | 100MB/s    |
-| 2003 | SATA 1(.5)      | 150MB/s    |
-|      | SATA 2.0        | 280MB/s    |
-|      | SAS 1.1         | 300MB/s    |
-| 2008 | SATA 3.0        | 600MB/s    |
-|      | SAS 2.1         | 600MB/s    |
-|      | SCSI Ultra-5    | 640MB/s    |
-|      | SAS 3.0         | 1.2GB/s    |
-| 2013 | SATA 3.2        | 1.9GB/s    |
-
-IDE/EIDE compatible interfaces are called PATA on modern controllers.
-
-List storage device controllers with <kbd>lspci</kbd>:
-
-    » lspci | egrep "RAID|SATA"
-    00:1f.2 SATA controller: Intel Corporation Patsburg 6-Port SATA AHCI […]
-    03:00.0 RAID bus controller: LSI Logic / Symbios Logic MegaRAID SAS TB (rev 05)
-    04:00.0 RAID bus controller: LSI Logic / Symbios Logic MegaRAID SAS TB (rev 05)
-    07:00.0 Serial Attached SCSI controller: Intel Corporation Patsburg 4-Port SATA […]
-
-Get the ATA configuration from the boot messages:
-
-    » dmesg | grep ata[0-9] | tr -s ' ' | cut -d' ' -f3- | sort
-    ata1.00: 1953525168 sectors, multi 16: LBA48 NCQ (depth 31/32), AA
-    ata1.00: ATA-8: TOSHIBA MK1002TSKB, MT4A, max UDMA/100
-    ata1.00: configured for UDMA/100
-    ata1: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-    ata1: SATA max UDMA/133 abar m1024@0xdfdfa400 port 0xdfdfa500 irq 22
-    ata2.00: 1953525168 sectors, multi 16: LBA48 NCQ (depth 31/32), AA
-    ata2.00: ATA-8: TOSHIBA MK1002TSKB, MT4A, max UDMA/100
-    ata2.00: configured for UDMA/100
-    ata2: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-    ata2: SATA max UDMA/133 abar m1024@0xdfdfa400 port 0xdfdfa580 irq 22
-    ata3: SATA link down (SStatus 0 SControl 300)
-    ata3: SATA max UDMA/133 abar m1024@0xdfdfa400 port 0xdfdfa600 irq 22
-    ata4: SATA link down (SStatus 0 SControl 300)
-    ata4: SATA max UDMA/133 abar m1024@0xdfdfa400 port 0xdfdfa680 irq 22
-    ata5: PATA max UDMA/100 cmd 0x1f0 ctl 0x3f6 bmdma 0x410 irq 14
-    ata6: PATA max UDMA/100 cmd 0x170 ctl 0x376 bmdma 0x418 irq 15
-
-# Disks
-
-List disk hardware with <kbd>lshw</kbd>:
-
-    » lshw -class disk
-      *-disk
-           description: ATA Disk
-           product: ST3250318AS
-           vendor: Seagate
-           […]
-           logical name: /dev/sda
-           […]
-           size: 232GiB (250GB)
-           […]
-      *-cdrom
-           description: DVD reader
-           product: DVD-ROM DH30N
-           vendor: HL-DT-ST
-           […]
-    » lshw -class tape -class disk -class storage -short
-    H/W path         Device     Class      Description
-    ==================================================
-    /0/100/11        scsi0      storage    SB7x0/SB8x0/SB9x0 SATA Controller [IDE mode]
-    /0/100/11/0      /dev/sda   disk       1TB TOSHIBA MK1002TS
-    /0/100/11/1      /dev/sdb   disk       1TB TOSHIBA MK1002TS
-    /0/100/14.1                 storage    SB7x0/SB8x0/SB9x0 IDE Controller
-
-Get SATA/IDE device parameters with <kbd>hdparm<kbd>:
-
-    » hdparm -I /dev/sda
-    […]
-    Configuration:
-            Logical         max     current
-            cylinders       16383   16383
-            heads           16      16
-            sectors/track   63      63
-            --
-            CHS current addressable sectors:   16514064
-            LBA    user addressable sectors:  268435455
-            LBA48  user addressable sectors:  488281250
-            Logical/Physical Sector size:           512 bytes
-            device size with M = 1024*1024:      238418 MBytes
-            device size with M = 1000*1000:      250000 MBytes (250 GB)
-            cache/buffer size  = 8192 KBytes
-            Nominal Media Rotation Rate: 7200
-    […]
+```
 
 # Devices
 
