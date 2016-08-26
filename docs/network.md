@@ -101,122 +101,61 @@ Inspect packages with <kbd>dhcpdump</kbd>
 
 ## Networks
 
-Common CIDR network masks 
+CIDR blocks 
 
-| Suffix | Network Mask  |
-|--------|---------------|
-| /8     | 255.0.0.0     |
-| /16    | 255.255.0.0   |
-| /24    | 255.255.255.0 | 
-
+````
+Prefix  Netmask
+/8      255.0.0.0     
+/16     255.255.0.0   
+/24     255.255.255.0  
+```
 
 Private IPv4 address ranges:
 
-| First       | Last            | Class | 
-|-------------|-----------------|-------|
-| 10.0.0.0    | 10.255.255.255  | A     |
-| 172.16.0.0  | 172.31.255.255  | B     |
-| 192.168.0.0 | 192.168.255.255 | C     |
+```
+First       Last            Class 
+10.0.0.0    10.255.255.255  A     
+172.16.0.0  172.31.255.255  B     
+192.168.0.0 192.168.255.255 C     
+```
 
-Calculate network IP address configuration with <kbd>ipcalc</kbd>:
-
-    » ipcalc -b 10.0.0.8
-    » ipcalc 10.0.3.0/16
-    » ipcalc 10.0.3.0 255.255.0.0
-      # Calculate multiple subnets
-    » ipcalc 10.150.0.0/16 --s 25 25 50
-
-## Addresses & Routes 
-
-
-Configure the IP address of a network interface:
-
-    » ip addr add 10.0.3.4/24 dev eth0
-
-Show configuration for interface
-
-    » ip addr show eth0
-
-Show enabled interfaces
-
-    » ip link show up
-
-Enable/disable network interface
-
-    » ip link set eth0 up|down
-
-Clear interface IP configuration
-
-    » ip addr flush dev eth0
-
-Show routing table
-
-    » ip r
-    » ip route 
-    » ip route list
-    » ip route show table local
-
-Check which interface is used for a specific destination
-
-    » ip route get 192.169.4.5
-
-Configure/change the default route
-
-    » ip route add default via 192.168.1.1
-    » ip route change default via 192.168.1.1 dev eth0 
-
-Create network route
-
-    » ip route add 192.168.1.0/24 dev eth0
-
-Static routes
-
-    » ip route add 192.168.55.0/24 via 192.168.1.254 dev eth1
-
-Remove network route
-
-     » ip route delete 192.168.1.0/24 dev eth0
+```bash
+ipcalc <address>/<prefix>            # calculate sub networks
+ipcalc <address> <netmask>
+```
+```bash
+ip addr add <address>/<prefix> dev <interface>       # configure the IP address of a network interface:
+ip addr show <interface>                             # show configuration for interface
+ip link show up                                      # show enabled interfaces
+ip link set <interface> up|down                      # enable/disable network interface
+ip addr flush dev <interface>                        # clear interface IP configuration
+ip r                                                 # show routing table
+ip route show table local                            # ^^ including local bridges
+ip route get <address>                               # check which interface is used for a specific destination
+ip route add default via <gateway>                   # configure/change the default route
+ip route change default via <gateway> dev <interface> 
+ip route add <address>/<prefix> dev <interface>      # create network route
+ip route add <address>/<prefix> via <gateway> dev <interace> # Static routes
+ip route delete <address>/<prefix> dev <interface>   # remove network route
+/proc/net/dev                                        # network traffic counters
+ip -s l                                              # ^^
+```
+```bash
+ss -l                                                # listening ports
+netstat -lN
+lsof -nPi tcp                                        # established connections
+ss -r
+netstat -p                                           # process socket binding:
+ss -p
+socklist
+nc -vnzu <address> <port>                            # check connectivity to destination port
+```
+```bash
+tcpdump -X -C NUM -i <interface>                     # listen to network traffic
+tcpdump -i <interface> arp                           # ARP conversation
+tcpdump -i <interface> port <port>                   # snoop ports
+tcpdump -i <interface> dst <address> and port <port> # snoop a destination IP address
+```
 
 
-
-# Operation
-
-## Sockets/Ports
-
-Listening ports:
-
-    ss -l
-    netstat -lN
-
-Established connections:
-
-    lsof -nPi tcp
-    ss -r
-
-Process socket binding:
-
-    netstat -p
-    ss -p
-    socklist
-
-Listen to network traffic:
-
-    tcpdump -X -C NUM -i INTERFACE
-    tcpdump -i eth0 arp
-    tcpdump -i eth0 port 22
-    tcpdump -i eth0 dst W.X.Y.Z and port 22
-
-Check remote ports:
-
-    » nc -vnzu 10.10.1.2 18000
-    (UNKNOWN) [10.10.1.2] 18000 (?) open
-
-## Counters
-
-`/proc/net/dev` read **proc** man page.
-
-List network counters (incoming & outgoing traffic) with <kbd>ip</kbd>
- 
-    » ip -s l
-    » ip -stats link show
 
