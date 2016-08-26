@@ -62,7 +62,7 @@ p<bus>s<slot>[f<function>][d<dev_id>]                            PCI geographica
 p<bus>s<slot>[f<function>][u<port>][..][c<config>][i<interface>] USB port number chain
 ```
 
-ref. `/lib/udev/rules.d/80-net-setup-link.rules`, cf. 
+ref. `/lib/udev/rules.d/80-net-setup-link.rules`
 
 ```bash
 udevadm info -e | grep -A 9 ^P.*en[sop]          # dump udev database and grep for ethernet
@@ -78,7 +78,16 @@ ip -o -4 link                                    # show link state
 ls -l {/etc,/run,/lib}/systemd/network/*.network # network configuration 
 networkctl list                                  # list network connections
 networkctl status                                # show IP addresses for interfaces
-systemctl status systemd-networkd                # state of teh network daemon
+```
+
+Debugging `systemd-networkd`:
+
+```bash
+SYSTEMD_LOG_LEVEL=debug /lib/systemd/systemd-networkd   # execute with debugging in foreground
+# Permanent by drop-in configuration
+mkdir /etc/systemd/system/systemd-networkd.service.d/
+echo -e "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug" > /etc/systemd/system/systemd-networkd.service.d/10-debug.conf 
+systemctl daemon-reload && systemctl restart systemd-networkd
 ```
 
 
