@@ -49,15 +49,20 @@ begin
   FileUtils.mkdir_p "#{path}/salt/cache"
 
   conf = <<-EOF
-    #{name}:
+    instance:
      host: #{ip}
      user: root
   EOF
   
   conf_file('salt/roster',conf)
 
+  FileUtils.mkdir_p "#{path}/salt/states"
+
   conf = <<-EOF
-    cachedir: "#{path}/salt/cache"
+    cachedir: #{path}/salt/cache
+    file_roots:
+      base:
+        - #{ENV['HOME']}/projects/salt/states
   EOF
 
   conf_file('salt/master',conf)
