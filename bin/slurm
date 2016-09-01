@@ -50,6 +50,34 @@ class Hash
   end
 end
 
+class Table
+
+  attr_writer :no_header
+
+  def initialize(header)
+    @header = header
+    @rows = Array.new
+    @no_header = false
+  end
+
+  def transform(command)
+    System::exec(command).split("\n").each do |line|
+      @rows << line.split(' ')
+    end
+    print()
+  end
+
+  private
+
+  def print
+    table = Array.new
+    table << @header unless @no_header
+    table = table + @rows
+    $stdout.puts CLI::Table.print(table)
+  end
+
+end
+
 module CLI
   class Table
     def initialize(output)
@@ -101,16 +129,18 @@ Commands:
   r | report                    accounting statistics
 
 Sub-Commands:
-  jobs   c | comp  | completed  jobs completed after execution
-  jobs   f | fail  | failed     jobs finished with a failure
-  jobs   p | pend  | pending    pending jobs
-  jobs   r | run   | running    jobs currenlty being executed
-  nodes  a | alloc | allocated  nodes executing jobs
-  nodes  d | defect             nodes removed from service
-  nodes  i | idle               nodes with available resources
-  nodes  u | users              list users of each node
-  report a | account            consumed CPU time by account (last 30 days)
-  report u | users              consumed CPU time by users (last 30 days)
+  jobs   c  | comp  | completed  jobs completed after execution
+  jobs   f  | fail  | failed     jobs finished with a failure
+  jobs   p  | pend  | pending    pending jobs by submit time
+  jobs   pp                      pending jobs by priority 
+  jobs   r  | run   | running    running jobs by user
+  jobs   br                      running jobs by runtime 
+  nodes  a  | alloc | allocated  nodes executing jobs
+  nodes  d  | defect             nodes removed from service
+  nodes  i  | idle               nodes with available resources
+  nodes  u  | users              list users of each node
+  report a  | account            consumed CPU time by account (last 30 days)
+  report u  | users              consumed CPU time by users (last 30 days)
 
 Options:
   --debug, -d                   show stacktraces in case of errors
@@ -121,40 +151,42 @@ EOF
 
 class Jobs
 
+
   def self.running
-    table = Array.new
-    command = "
+    Table.new(%w(Jobs State User Partition Account)).transform("
+      squeue
+        --states RUNNING
+        --format '%9T %8u %9P %10a'
+        --sort 'u'
+        --noheader
+        | uniq -f2 -c
+    ")
+  end
+
+  def self.running_by_runtime
+    Table.new(%w(Jobs State Run-Time Time-Left Partition User Account)).transform("
       squeue 
         --states RUNNING 
         --format '%9T %.11M %.11L %9P %8u %10a' 
         --sort '-M,L' 
         --noheader 
         | uniq -f3 -c 
-      "
-    table << ['Jobs','State','Run-Time','Time-Left','Partition','User','Account']
-    System::exec(command).split("\n").each do |line|
-      table << line.split(' ')
-    end
-    $stdout.puts CLI::Table.print(table)
+    ")
   end
 
-  def self.pending
-    command = "
+  def self.pending_by_priority
+    Table.new(%w(Jobs State Priority User Account Partition CPUs Nodes Time-Limit Features GRES QoS)).transform("
       squeue
         --all
         --sort '-Q,P,u,C,D,l,t' -t pd
         --format '%9T %8Q %8u %10a %9P %.4C %5D %11l %8f %6b %6q'
         --noheader
         | uniq -c
-    "
-    table = Array.new
-    table << ['Jobs','State','Priority','User','Account','Partition','CPUs','Nodes','Time-Limit','Features','GRES','QoS']
-    System::exec(command).split("\n").each do |line|
-      table << line.split(' ')
-    end
-    $stdout.puts CLI::Table.print(table)
-    $stdout.puts
-    command = "
+    ")
+  end
+
+  def self.pending_by_submit_date
+    Table.new(%w(Jobs State Submitted Priority User Account Partition Reason)).transform("
       squeue 
         --all 
         --state pending 
@@ -162,13 +194,7 @@ class Jobs
         --noheader 
         | uniq -f 2 -c 
         | sort -k 3
-    "
-    table = Array.new
-    table << ['Jobs','State','Submitted','Priority','User','Account','Partition','Reason']
-    System::exec(command).split("\n").each do |line|
-      table << line.split(' ')
-    end
-    $stdout.puts CLI::Table.print(table)
+    ")
   end
 
   def self.completed
@@ -360,7 +386,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 0.2
       exit 0
     end
   end
@@ -371,11 +397,15 @@ begin
      subcommand = ARGV.shift || 'running'
      case subcommand
      when 'p','pend','pending'
-       Jobs::pending
+       Jobs::pending_by_submit_date
+     when 'pp','pending-by-priority'
+       Jobs::pending_by_priority
      when 'c','comp','completed'
        Jobs::completed
      when 'r','run','running'
        Jobs::running
+     when 'br','running-by-runtime'
+       Jobs::running_by_runtime
      when 'f', 'fail', 'failed'
        Jobs::failed
      else
