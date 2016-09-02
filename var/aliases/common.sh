@@ -19,8 +19,6 @@
 bindkey '^B' backward-word
 bindkey '^F' forward-word
 
-# stdin is exported as environment variable
-function exp() { read n; export $1=$n }
 # export working directory to path
 function exwd() { export PATH=$PATH:$PWD }
 # Encode URLs before using them with a browser

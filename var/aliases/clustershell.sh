@@ -27,14 +27,20 @@ function NODES() {
 }
 
 alias NODES='noglob NODES'
+
+# stdin is exported as environment variable
+function exp() { read n; export $1=$n }
+
 # pipe into the NODES environment variable
-alias -g NS='| exp NODES'
+alias -g NE='| exp NODES'
+
+alias -g NF='| nodeset -f'
+alias -g NC='| nodeset -c'
 
 # run Clustershell using the NODES environment variable
 alias rush='clush -l root -w $NODES'
 
-
-alias nodeset-ping='noglob nodeset-ping'
+alias nodeset-accessible='noglob nodeset-accessible'
 
 function nodeset-fping() {
   fping $(nodeset -e $NODES) 2>$-
