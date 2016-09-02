@@ -21,7 +21,6 @@ In the `bin/` sub-directory
 * **hash-transform** — Converts hash objects between JSON, YAML and CSV.
 * **music** — Controls the local Music Player Daemon.
 * **nodeset-loop** — Loop a command of a list of nodes.
-* **nodeset-ping** — Ping a list of nodes.
 * **node-state** — Collect host monitoring information and serialize the data into JSON.
 * **pingable** — Wait until a host is pingable.
 * **redis-values** — Store and load hash tables from a Redis database.

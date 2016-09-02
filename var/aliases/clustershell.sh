@@ -15,6 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+alias nodeset='noglob nodeset'
+
 # quick export NODES environment variable
 function NODES() {
   if [ $# -lt 1 ]
