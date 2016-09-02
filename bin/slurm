@@ -141,6 +141,7 @@ Sub-Commands:
   nodes  a  | allocated            nodes executing jobs
   nodes  d  | defect               nodes removed from service
   nodes  i  | idle                 nodes with available resources
+  nodes  s  | state                overview nodes/CPUs state
   nodes  u  | users                list users of each node
 
 Options:
@@ -240,6 +241,16 @@ end
 module Nodes
 
   module_function
+
+  def state
+    Table.new(%w(Partition State NumNodes CPUsAlloc CPUsIdle NodeNames)).transform(%q[
+      sinfo -o '%9P %.5a %5D %20C %N' 
+        | tail -n+2 
+        | tr '/' ' ' 
+        | tr -s ' ' 
+        | cut -d' ' -f1-5,8-
+    ])
+  end
 
   def idle
     Table.new(%w(Node State Partition Time Limit RAM S:C:T Share Features GRES)).transform("
@@ -353,7 +364,7 @@ begin
        raise("Sub-command #{subcommand} not supported") 
      end
   when 'n','nodes'
-     subcommand = ARGV.shift || 'idle'
+     subcommand = ARGV.shift || 'state'
      case subcommand
      when 'a','allocated'
        Nodes::allocated
@@ -361,6 +372,8 @@ begin
        Nodes::defects
      when 'i','idle'
        Nodes::idle
+     when 's','state'
+       Nodes::state
      when 'u','users'
        Nodes::users
      end
