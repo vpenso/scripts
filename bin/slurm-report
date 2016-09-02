@@ -22,6 +22,7 @@ require 'logger'
 require 'json'
 require 'date'
 require 'erb'
+require 'yaml'
 
 class Hash
   def self.autonew(*args)
@@ -669,6 +670,7 @@ begin
   $options.print_data = false
   $options.print_raw_data = false
   $options.sort_by = 'runtime'
+  $options.yaml = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -699,7 +701,8 @@ begin
     ['--print-raw-data',GetoptLong::NO_ARGUMENT],
     ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
     ['--user','-u',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version',GetoptLong::NO_ARGUMENT]
+    ['--version',GetoptLong::NO_ARGUMENT],
+    ['--yaml','-Y',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--account'
@@ -769,6 +772,8 @@ begin
     when '--version'
       $stdout.puts 0.60
       exit 0
+    when '--yaml'
+      $options.yaml = true
     end
   end
 
@@ -815,6 +820,11 @@ begin
       %w(accounts users).each {|obj| data[_][obj] = data[_][obj].length }
       data[_]['partitions'] = data[_]['partitions'].first
     end
+  end
+
+  if $options.yaml
+    $stdout.puts data.to_yaml
+    exit 0 
   end
 
   if $options.html
