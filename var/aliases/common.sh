@@ -32,6 +32,7 @@ alias go-="chmod go-rwx"
 # get the permissions on a file in octal form
 alias octperm="stat -c '%A %a %n'"
 
+alias a=alias
 alias 0=clear
 alias x=exit
 alias v=vim
