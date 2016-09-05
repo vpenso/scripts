@@ -36,3 +36,8 @@ multiple modifiers like `!!:-4:p`:
     :gs/P/S/       like above, but replace all matches
 
 Quick substitute `^P^S^` similar to `!!:s/P/S/`. 
+
+```bash
+setopt kshoptionprint && setopt | grep hist      # show Zsh history settings
+printenv | grep HIST                             # ^^ show environment variables
+```
