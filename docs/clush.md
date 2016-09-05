@@ -21,7 +21,7 @@ function NODES() {
 ```
 
 ```bash
-alias NODES='noglob NODES'                            # diable globing
+alias NODES='noglob NODES'                            # disable globing
 NODES <nodeset>                                       # export a nodeset to the environment
 NODES                                                 # show content of environment variable
 nodeset -S "\n" -e $NODES                             # expand to one node per line
@@ -32,10 +32,7 @@ alias -g NE='| exp NODES'                             # ^^ global alias
 alias -g NF='| nodeset -f'                            # global folding
 alias -g NC='| nodeset -c'                            # global counting
 ```
-
-Examples
-
-```
+```bash
 mount -t nfs | cut -d':' -f1 | nodeset -f             # fold all NFS mount points 
 sinfo -o '%N' -h -p <partition> | nodeset -e          # expand all nodes for a Slurm partition
 knife status -H 'role:exec*' | cut -d',' -f2 NF NE    # get a nodeset from Chef
