@@ -125,30 +125,19 @@ List the coordinators for a given account:
 ### User
 
 
-Check for a given user name with the `id` command.
-
-```bash
->>> id vpenso
-uid=1234(vpenso) gid=1000(hpc) groups=...
-```
 **Users `name=` requires to be the Linux account name!**
 
-Associate user to a given account:
-
 ```bash
->>> sacctmgr create user name=dklein account=hpc defaultaccount=hpc
-[…]
->>> sacctmgr modify user where user=vpenso set defaultaccount=hpc
-[…]
->>> sacctmgr list users
-[…]
->>> sacctmgr delete user name=vpenso account=hpc
-```
-
-Display associations with a specific table format:
-
-```bash
->>> sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
+id <username>                                                     # check for a given linux account
+sacctmgr create user name=<id> account=<account> [defaultaccount=<account>]
+                                                                  # associate a user to an account
+sacctmgr modify user where user=<id> set <key>=<value>            # modifiy a user association
+sacctmgr list users                                               # list all user associations
+sacctmgr show user withassoc format=account,user,defaultaccount where user=<id>
+                                                                  # list association for user
+sacctmgr delete user name=<id> account=<account>                  # remove a user account association
+sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
+                                                                  # custom format for listing associations
 ```
 
 **Enforce user account associations** in `slurm.conf` with:
@@ -162,8 +151,9 @@ This prevents users without an account association to submit jobs.
 
 **Force option `--account`** to be specified by users:
 
-1. Create an account `none` which has no access to resources. Use it as `defaultaccount=none` for users which should be force to specify the option.
-2. Use a [Job Submit Plugin](http://slurm.schedmd.com/job_submit_plugins.html) to enforce the option for all users:
+Create an account `none` which has no access to resources. Use it as `defaultaccount=none` for users which should be force to specify the option. (Note that before a users needs to be associated to the "none" account)
+
+Alternatively Use a [Job Submit Plugin](http://slurm.schedmd.com/job_submit_plugins.html) to enforce the option for all users:
 
 ```lua
 if job_desc.account == nil then
