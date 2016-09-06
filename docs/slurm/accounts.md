@@ -101,31 +101,19 @@ scontrol update step
 scancel
 ```
 
-Promote a user to be coordinator for a given account:
+**Promote a user to be coordinator** for a given account:
 
 ```bash
->>> sacctmgr add coordinator account=hpc names=vpenso,dklein
-```
-
-List the coordinator accounts for a user:
-
-```bash
->>> sacctmgr list users where name=vpenso WithCoordinator
-      User   Def Acct     Admin       Coord Accounts 
----------- ---------- --------- -------------------- 
-    vpenso        hpc      None                  hpc
-```
-
-List the coordinators for a given account:
-
-```bash
->>> sacctmgr list account where account=hpc WithCoordinator
+sacctmgr add coordinator account=<account> names=<id>,...     # add coordinator(s) to account
+sacctmgr list user withcoordinator where name=<id>            # show coordinator for association 
+sacctmgr list account withcoordinator where account=<account> # list coordinators for a given account
+sacctmgr list user withcoordinator format=user,coordinator -P | tr '|' ' ' | awk 'NF==2'
+                                                             # print a list of all coordinators          
 ```
 
 ### User
 
-
-**Users `name=` requires to be the Linux account name!**
+Users `name=` requires to be the Linux account name!
 
 ```bash
 id <username>                                                     # check for a given linux account
