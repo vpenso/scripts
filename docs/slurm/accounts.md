@@ -124,6 +124,15 @@ List the coordinators for a given account:
 
 ### User
 
+
+Check for a given user name with the `id` command.
+
+```bash
+>>> id vpenso
+uid=1234(vpenso) gid=1000(hpc) groups=...
+```
+**Users `name=` requires to be the Linux account name!**
+
 Associate user to a given account:
 
 ```bash
@@ -136,25 +145,42 @@ Associate user to a given account:
 >>> sacctmgr delete user name=vpenso account=hpc
 ```
 
-**Users `name=` requires to be the Linux account name!**
-
-```bash
->>> id vpenso
-uid=1234(vpenso) gid=1000(hpc) groups=...
-```
-
-Check for a given user name with the `id` command.
-
 Display associations with a specific table format:
 
 ```bash
 >>> sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
 ```
 
+**Enforce user account associations** in `slurm.conf` with:
+
+```bash
+>>> scontrol show config | grep AccountingStorageEnforce
+AccountingStorageEnforce = associations,[...]
+```
+
+This prevents users without an account association to submit jobs.
+
+**Force option `--account`** to be specified by users:
+
+1. Create an account `none` which has no access to resources. Use it as `defaultaccount=none` for users which should be force to specify the option.
+2. Use a [Job Submit Plugin](http://slurm.schedmd.com/job_submit_plugins.html) to enforce the option for all users:
+
+```lua
+if job_desc.account == nil then
+  slurm.user_msg("You didn't specify a account.")
+  return 2045
+end
+```
+
 
 ## Limits
 
-Used to set resource limits on a more finer-grained basis then partition limits.
+Set [Resource Limits](http://slurm.schedmd.com/resource_limits.html) on a more finer-grained basis then partition limits:
+
+```
+>>> scontrol show config | grep AccountingStorageEnforce
+AccountingStorageEnforce = [...],limits
+```
 
 Parent association **limits are inherited by children**, unless dedicated limits have been set (children can have limits higher then their parents).
 

@@ -106,13 +106,6 @@ Order in which limits get processed:
     […]
     AccountingStorageType=accounting_storage/slurmdbd
 
-The option `association` prevents users without an associated account in the database to access the cluster. Following error message will displayed:
-
-    error: Unable to allocate resources: Invalid account or account/partition combination specified
-
-The `limit` option enforces resource limits defined in the accounts database. 
-
-
 ### Backfill
 
 _Backfill scheduler will start lower priority jobs if doing so does not delay the expected start time of any higher priority job._
