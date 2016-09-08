@@ -138,10 +138,11 @@ Sub-Commands:
   jobs   pp | pending-by-priority  pending jobs by priority 
   jobs   r  | running              running jobs by user
   jobs   rr | running-by-runtime   running jobs by runtime 
-  nodes  a  | allocated            nodes executing jobs
-  nodes  d  | defect               nodes removed from service
-  nodes  i  | idle                 nodes with available resources
   nodes  s  | state                overview nodes/CPUs state
+  nodes  a  | allocated            nodes executing jobs
+  nodes  d  | defect               number of nodes with defects
+  nodes  dn | defect-nodes         list defect nodes
+  nodes  i  | idle                 nodes with available resources
   nodes  u  | users                list users of each node
 
 Options:
@@ -272,13 +273,15 @@ module Nodes
     })
   end
 
-  def defects
-    Table.new(%w(Nodes State Nodeset Admin Reason)).transform("
-      sinfo 
-        --format '%D|%T|%N|%u|%E' 
-        --noheader
-        -S 'T,E' 
-        -t drain,down
+  def defect
+    Table.new(%w(Nodes State Reason)).transform(%q{
+      sinfo -h -o '%D|%T|%E' -S '-D' -t drain,draining,drained,down
+    },'|')
+  end
+
+  def defect_nodes
+    Table.new(%w(Nodes State Reason)).transform("
+      sinfo -h -o '%n|%T|%E' -S 'E,T' -t drain,draining,drained,down
     ",'|')
   end
 
@@ -336,7 +339,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.3
+      $stdout.puts 0.4
       exit 0
     end
   end
@@ -368,8 +371,10 @@ begin
      case subcommand
      when 'a','allocated'
        Nodes::allocated
-     when 'd','defects'
-       Nodes::defects
+     when 'd','defect'
+       Nodes::defect
+     when 'dn','defect-nodes'
+       Nodes::defect_nodes
      when 'i','idle'
        Nodes::idle
      when 's','state'
