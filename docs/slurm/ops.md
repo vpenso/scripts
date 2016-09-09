@@ -38,14 +38,21 @@ scontrol create reservation [...] partition=main nodecnt=<num> account=<account>
 
 ### Services
 
+**Nodes**
+
 ```bash
-sinfo -o '%10T %5D %E' -S 'E' -t drain,draining,drained,down        # number of nodes in defect states
-sinfo -o '%10T %7u %12n %E' -S 'E' -t drain,draining,drained,down   # reaseons nodes are defect
+sinfo -R -p <partition>                                             # defect nodes in partition
+sinfo -o '%10T %5D %E' -S 'E' -t drain,draining,drained,down        # defect nodes by numbers
+sinfo -o '%10T %7u %12n %E' -S 'E' -t drain,draining,drained,down   # defect nodes by reaseons
 scontrol show node <node>                                           # node details
 sacctmgr -n show event format=state,nodename,start,end,duration,reason nodes=<nodeset>
-                                                                    # events for a set of nodes
-scontrol update state=drain nodename=<nodeset> reason="<comment>"   # drain nodes
+                                                                    # node event list
+man -P 'less -p "^NODE STATE CODES"' sinfo                          # node state list
+scontrol update state=drain nodename=<nodeset> reason="<comment>"   # node drain
 ```
+
+**Controller**
+
 ```bash
 systemctl status munge nfs-kernel-server slurmdbd slurmctld         # state of controller services
 multitail /var/log/slurm-llnl/*.log                                 # read logs
