@@ -281,7 +281,7 @@ module Nodes
 
   def defect_nodes
     Table.new(%w(Nodes State Reason)).transform("
-      sinfo -h -o '%n|%T|%E' -S 'E,T' -t drain,draining,drained,down
+      sinfo -h -o '%n|%T|%E' -S 'E,T' -t drain,draining,drained,down | uniq
     ",'|')
   end
 
