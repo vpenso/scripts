@@ -136,8 +136,9 @@ Jobs sub-commands:
   f, failed                        jobs finished with a failure
   ps, pending-by-submit            pending jobs by submit time
   pp, pending-by-priority          pending jobs by priority 
-  r, running                       running jobs by user
+> r, running                       running jobs by user
   rr, running-by-runtime           running jobs by runtime 
+  ru, running-by-user <user>       running jobs from user
 
 Nodes sub-commands:
   a, allocated                     nodes executing jobs
@@ -145,7 +146,7 @@ Nodes sub-commands:
   dn, defect-nodes                 list defect nodes
   i, idle                          nodes with available resources
   r, resume <nodeset>              set nodes to state resume
-  s, state                         overview nodes/CPUs state
+> s, state                         overview nodes/CPUs state
   u, users                         list users of each node
 
 Options:
@@ -178,6 +179,13 @@ module Jobs
         --sort '-M,L' 
         --noheader 
         | uniq -f3 -c 
+    ")
+  end
+
+  def running_by_user
+    user = ARGV.shift || raise('No user specified')
+    Table.new(%w[Jobs ID* Node Account Partition CxN Workdir Command]).transform("
+      squeue -h -o '%A %N %a %P %Cx%D %Z %o' -S P,N -t R -u #{user} | uniq -f 1 -c
     ")
   end
 
@@ -347,7 +355,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.5
+      $stdout.puts 0.6
       exit 0
     end
   end
@@ -369,6 +377,8 @@ begin
        Jobs::running
      when 'rr','running-by-runtime'
        Jobs::running_by_runtime
+     when 'ru', 'running-by-user'
+       Jobs::running_by_user
      when 'f','failed'
        Jobs::failed
      else
