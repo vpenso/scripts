@@ -125,30 +125,33 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [options] [command] [subcommand] 
+#{exec_name} [<options>] <command> [<subcommand>] [<args>] 
 
 Commands:
-  j | jobs                         state of jobs 
-  n | nodes                        state of execution nodes
+  j, jobs                          state of jobs 
+  n, nodes                         state of execution nodes
 
-Sub-Commands:
-  jobs   c  | completed            jobs completed after execution
-  jobs   f  | failed               jobs finished with a failure
-  jobs   ps | pending-by-submit    pending jobs by submit time
-  jobs   pp | pending-by-priority  pending jobs by priority 
-  jobs   r  | running              running jobs by user
-  jobs   rr | running-by-runtime   running jobs by runtime 
-  nodes  s  | state                overview nodes/CPUs state
-  nodes  a  | allocated            nodes executing jobs
-  nodes  d  | defect               number of nodes with defects
-  nodes  dn | defect-nodes         list defect nodes
-  nodes  i  | idle                 nodes with available resources
-  nodes  u  | users                list users of each node
+Jobs sub-commands:
+  c, completed                     jobs completed after execution
+  f, failed                        jobs finished with a failure
+  ps, pending-by-submit            pending jobs by submit time
+  pp, pending-by-priority          pending jobs by priority 
+  r, running                       running jobs by user
+  rr, running-by-runtime           running jobs by runtime 
+
+Nodes sub-commands:
+  a, allocated                     nodes executing jobs
+  d, defect                        number of nodes with defects
+  dn, defect-nodes                 list defect nodes
+  i, idle                          nodes with available resources
+  r, resume <nodeset>              set nodes to state resume
+  s, state                         overview nodes/CPUs state
+  u, users                         list users of each node
 
 Options:
-  --debug, -d                   show stacktraces in case of errors
-  --help, -h                    show this help information
-  --version, -v                 print program version
+  --debug, -d                      show stacktraces in case of errors
+  --help, -h                       show this help information
+  --version, -v                    print program version
 EOF
 
 
@@ -285,6 +288,11 @@ module Nodes
     ",'|')
   end
 
+  def resume
+    nodes = ARGV.shift || raise('Nodeset to resume not defined!')
+    System::exec "scontrol update state=resume nodename=#{nodes}"
+  end
+
   def users
     Table.new(%w(Nodeset Nodes User Account RunTime TimeLeft WorkingDirectory Executed)).transform("
       squeue 
@@ -339,7 +347,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.4
+      $stdout.puts 0.5
       exit 0
     end
   end
@@ -377,6 +385,8 @@ begin
        Nodes::defect_nodes
      when 'i','idle'
        Nodes::idle
+     when 'r','resume'
+       Nodes::resume
      when 's','state'
        Nodes::state
      when 'u','users'
