@@ -144,6 +144,7 @@ Nodes sub-commands:
   a, allocated                     nodes executing jobs
   d, defect                        number of nodes with defects
   dn, defect-nodes                 list defect nodes
+  dr, drain <nodeset> <reason>     drain jobs from nodes
   i, idle                          nodes with available resources
   r, resume <nodeset>              set nodes to state resume
 > s, state                         overview nodes/CPUs state
@@ -283,6 +284,12 @@ module Nodes
         --sort o
     })
   end
+  
+  def drain
+    nodes = ARGV.shift || raise('Nodeset to drain not defined!')
+    message = ARGV.shift || raise('Specify a reason for draining the nodes')
+    System::exec "scontrol update state=drain nodename='#{nodes}' reason='#{message}'"
+  end
 
   def defect
     Table.new(%w(Nodes State Reason)).transform(%q{
@@ -389,6 +396,8 @@ begin
      case subcommand
      when 'a','allocated'
        Nodes::allocated
+     when 'dr', 'drain'
+       Nodes::drain
      when 'd','defect'
        Nodes::defect
      when 'dn','defect-nodes'
