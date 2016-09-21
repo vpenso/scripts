@@ -411,9 +411,8 @@ begin
      when 'u','users'
        Nodes::users
      end
-  when 'help'
-      $stdout.puts HELP
-      exit 0
+  else
+    raise("Command '#{command}' not supported!")
   end
 
 
