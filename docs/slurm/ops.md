@@ -1,5 +1,5 @@
 
-### Operation
+### Users
 
 Wrapper to the Slurm command-line interface ↴ [slurm](../../bin/slurm) 
 
@@ -9,22 +9,16 @@ for i in $(squeue -u <user> -o '%i' -h) ; do scontrol show job $i ; done
                                                                     # show all jobs of a user
 scontrol show job <jobid> | grep Requeue                            # show requeue behavior of job
 scontrol update jobid=<jobid> requeue=0                             # disable requeue
-```
-```bash
-squeue -t R -A <account>                                            # running by account
-squeue -t R -o '%20S %11M %9P %8u %6g %10T %11l' | sort -k 1 | uniq -f 2 -c | tac
+squeue -t r -A <account>                                            # running by account
+squeue -t r -o '%20S %11M %9P %8u %6g %10T %11l' | sort -k 1 | uniq -f 2 -c | tac
                                                                     # running by runtime
 squeue -t r -o '%11M %11l %9P %8u %6g %10T' -S '-M' | uniq -f 1 -c  # running by execution time 
-squeue -ho %A -t R -u <user> | paste -sd' '                         # IDs of running jobs by user
-```
-```bash
-squeue -t PD -o '%15i %30R %o' -u <user>                            # pending by user
+squeue -t r -ho %A -u <user> | paste -sd' '                         # IDs of running jobs by user
+squeue -t pd -o '%15i %30R %o' -u <user>                            # pending by user
 squeue --start                                                      # estimated start time of jobs
 squeue -t pd,s -o '%20S %.8u %4P %7a %.2t %R' -S 'S' | uniq -c      # ^^ summery
 squeue -t pd -o '%8u %8a %8Q' -S -p | uniq -c                       # pending by priority
 man -P 'less -p "^JOB REASON CODES"' squeue                         # list of "Job Reason Codes"
-```
-```bash
 scontrol suspend $(squeue -ho %A -t R -u <user> | paste -sd ' ')    # suspend running jobs of user
 scontrol resume $(squeue -ho %A -t S -u <user> | paste -sd ' ')     # resume suspended jobs of user
 scontrol show reservation                                           # list reservations
@@ -44,6 +38,7 @@ scontrol create reservation [...] partition=main nodecnt=<num> account=<account>
 sinfo -R -p <partition>                                             # defect nodes in partition
 sinfo -o '%10T %5D %E' -S 'E' -t drain,draining,drained,down        # defect nodes by numbers
 sinfo -o '%10T %7u %12n %E' -S 'E' -t drain,draining,drained,down   # defect nodes by reaseons
+squeue -t r -ho %N -u <user> | nodeset -f                           # nodes with running jobs by user
 scontrol show node <node>                                           # node details
 sacctmgr -n show event format=state,nodename,start,end,duration,reason nodes=<nodeset>
                                                                     # node event list

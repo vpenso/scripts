@@ -125,30 +125,35 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [options] [command] [subcommand] 
+#{exec_name} [<options>] <command> [<subcommand>] [<args>] 
 
 Commands:
-  j | jobs                         state of jobs 
-  n | nodes                        state of execution nodes
+  j, jobs                          state of jobs 
+  n, nodes                         state of execution nodes
 
-Sub-Commands:
-  jobs   c  | completed            jobs completed after execution
-  jobs   f  | failed               jobs finished with a failure
-  jobs   ps | pending-by-submit    pending jobs by submit time
-  jobs   pp | pending-by-priority  pending jobs by priority 
-  jobs   r  | running              running jobs by user
-  jobs   rr | running-by-runtime   running jobs by runtime 
-  nodes  s  | state                overview nodes/CPUs state
-  nodes  a  | allocated            nodes executing jobs
-  nodes  d  | defect               number of nodes with defects
-  nodes  dn | defect-nodes         list defect nodes
-  nodes  i  | idle                 nodes with available resources
-  nodes  u  | users                list users of each node
+Jobs sub-commands:
+  c, completed                     jobs completed after execution
+  f, failed                        jobs finished with a failure
+  ps, pending-by-submit            pending jobs by submit time
+  pp, pending-by-priority          pending jobs by priority 
+> r, running                       running jobs by user
+  rr, running-by-runtime           running jobs by runtime 
+  ru, running-by-user <user>       running jobs from user
+
+Nodes sub-commands:
+  a, allocated                     nodes executing jobs
+  d, defect                        number of nodes with defects
+  dn, defect-nodes                 list defect nodes
+  dr, drain <nodeset> <reason>     drain jobs from nodes
+  i, idle                          nodes with available resources
+  r, resume <nodeset>              set nodes to state resume
+> s, state                         overview nodes/CPUs state
+  u, users                         list users of each node
 
 Options:
-  --debug, -d                   show stacktraces in case of errors
-  --help, -h                    show this help information
-  --version, -v                 print program version
+  --debug, -d                      show stacktraces in case of errors
+  --help, -h                       show this help information
+  --version, -v                    print program version
 EOF
 
 
@@ -175,6 +180,13 @@ module Jobs
         --sort '-M,L' 
         --noheader 
         | uniq -f3 -c 
+    ")
+  end
+
+  def running_by_user
+    user = ARGV.shift || raise('No user specified')
+    Table.new(%w[Jobs ID* Node Account Partition CxN Workdir Command]).transform("
+      squeue -h -o '%A %N %a %P %Cx%D %Z %o' -S P,N -t R -u #{user} | uniq -f 1 -c
     ")
   end
 
@@ -272,6 +284,12 @@ module Nodes
         --sort o
     })
   end
+  
+  def drain
+    nodes = ARGV.shift || raise('Nodeset to drain not defined!')
+    message = ARGV.shift || raise('Specify a reason for draining the nodes')
+    System::exec "scontrol update state=drain nodename='#{nodes}' reason='#{message}'"
+  end
 
   def defect
     Table.new(%w(Nodes State Reason)).transform(%q{
@@ -281,8 +299,13 @@ module Nodes
 
   def defect_nodes
     Table.new(%w(Nodes State Reason)).transform("
-      sinfo -h -o '%n|%T|%E' -S 'E,T' -t drain,draining,drained,down
+      sinfo -h -o '%n|%T|%E' -S 'E,T' -t drain,draining,drained,down | uniq
     ",'|')
+  end
+
+  def resume
+    nodes = ARGV.shift || raise('Nodeset to resume not defined!')
+    System::exec "scontrol update state=resume nodename=#{nodes}"
   end
 
   def users
@@ -339,7 +362,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.4
+      $stdout.puts 0.6
       exit 0
     end
   end
@@ -361,6 +384,8 @@ begin
        Jobs::running
      when 'rr','running-by-runtime'
        Jobs::running_by_runtime
+     when 'ru', 'running-by-user'
+       Jobs::running_by_user
      when 'f','failed'
        Jobs::failed
      else
@@ -371,20 +396,23 @@ begin
      case subcommand
      when 'a','allocated'
        Nodes::allocated
+     when 'dr', 'drain'
+       Nodes::drain
      when 'd','defect'
        Nodes::defect
      when 'dn','defect-nodes'
        Nodes::defect_nodes
      when 'i','idle'
        Nodes::idle
+     when 'r','resume'
+       Nodes::resume
      when 's','state'
        Nodes::state
      when 'u','users'
        Nodes::users
      end
-  when 'help'
-      $stdout.puts HELP
-      exit 0
+  else
+    raise("Command '#{command}' not supported!")
   end
 
 
