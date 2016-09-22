@@ -137,11 +137,15 @@ AccountingStorageEnforce = associations,[...]
 
 This prevents users without an account association to submit jobs.
 
-**Force option `--account`** to be specified by users:
+**Force option `--account`** to be specified by users. Slurm provides two options to implement this:
 
-Create an account `none` which has no access to resources. Use it as `defaultaccount=none` for users which should be force to specify the option. (Note that before a users needs to be associated to the "none" account)
+I. Create an account `none` which has no access to resources. Use it as `defaultaccount=none` for users which should be force to specify the option. (Note that beforehand a users needs to be associated to the "none" account). Following error will be printed:
 
-Alternatively Use a [Job Submit Plugin](http://slurm.schedmd.com/job_submit_plugins.html) to enforce the option for all users:
+```
+Unable to allocate resources: Job violates accounting/QOS policy (job submit limit, user's size and/or time limits)
+```
+
+II. Alternatively Use a [Job Submit Plugin](http://slurm.schedmd.com/job_submit_plugins.html) to enforce the option for all users:
 
 ```lua
 if job_desc.account == nil then
