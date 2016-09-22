@@ -380,7 +380,7 @@ begin
     Virsh.config(path)
     Virsh.start(path)
 
-  when 'exec'
+  when 'exec','sync'
 
     # Name of the virtual machine instance
     name = ARGV.shift || raise('Expecting name for target VM instance')
@@ -392,8 +392,8 @@ begin
     # Path to virtual machine instance
     path = "#{$options.instance_path}/#{name}" 
 
-    # Execute the command in target virtual machine instance
-    $stdout.puts System::exec(%Q<cd #{path} ; ssh-exec -r "#{ARGV.join(' ')}">)
+    # Execute a command in target virtual machine instance
+    $stdout.puts System::exec(%Q<cd #{path} ; ssh-#{command} -r "#{ARGV.join(' ')}">)
 
   when 'install'
 
