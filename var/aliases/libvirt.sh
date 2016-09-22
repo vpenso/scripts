@@ -69,4 +69,12 @@ function vm() {
   esac
 }
 
+function virsh-instance-exec() {
+  local instance=$1 ;  shift
+  cd $VM_INSTANCE_PATH/${instance}.devops.test 
+  ssh-exec -r $@ 
+  cd - >/dev/null
+}
+
+alias vie=virsh-instance-exec
 
