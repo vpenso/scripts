@@ -392,8 +392,11 @@ begin
     # Path to virtual machine instance
     path = "#{$options.instance_path}/#{name}" 
 
+    args = ARGV.join(' ')
+    args =  "'#{args}'" if command == 'exec'
+
     # Execute a command in target virtual machine instance
-    $stdout.puts System::exec(%Q<cd #{path} ; ssh-#{command} -r "#{ARGV.join(' ')}">)
+    $stdout.puts System::exec(%Q<cd #{path} ; ssh-#{command} -r #{args}>)
 
   when 'install'
 
