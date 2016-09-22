@@ -32,18 +32,21 @@ Clone virtuel machine images and their configuration.
 Command
 -------
 
-  clone, cl IMAGE NAME
-    Clone source IMAGE and start an virtual machine
-    instance called NAME.
-  install, in NAME PATH
+  clone, cl <image> <instance>
+    Clone source virtual machine image and start a 
+    virtual machine instance with specified name.
+  exec <instance> <command>
+    Execute command in virtual machine insyance
+  install, in <instance> <path>
     Install a new virtual machine image.
   list, l
     List available images.
-  remove, rm NAME
+  remove, rm <instance>
     Shutdown and undefine instance.
-  shadow, sh IMAGE NAME
-    Make shadow disks of IMAGE and start a virtual
-    machine called NAME.
+  shadow, sh <image> <instance>
+    Make shadow disks of virtual machine image and 
+    start a virtual machine instance with
+    specified name
 
 Options
 -------
@@ -268,6 +271,11 @@ class Virsh
     return output.split
   end
 
+  def self.instance(name)
+    name = "#{name}.devops.test" unless name =~ /\.devops\.test$/
+    name
+  end
+
 end
 
 begin
@@ -339,7 +347,7 @@ begin
     when '--overwrite'
       $options.overwrite = true
     when '--version'
-      $stdout.puts 0.4
+      $stdout.puts 0.5
       exit 0
     end
   end
@@ -349,27 +357,53 @@ begin
   $options.image_path = ENV['VM_IMAGE_PATH'] if ENV.has_key? 'VM_IMAGE_PATH'
   $options.instance_path = ENV['VM_INSTANCE_PATH'] if ENV.has_key? 'VM_INSTANCE_PATH'
 
-
   case command
+
   when 'clone','cl','shadow','sh'
+
     # check user arguments
     image = ARGV.shift || raise('Expecting image name as argument!')
     image = "#{$options.image_path}/#{image}"
     instance = ARGV.shift || raise('Expecting instance name as argument')
-    instance = "#{$options.instance_path}/#{instance}"
+
+    # Append domain name if missing
+    instance = Virsh::instance(instance)
+    # Path to virtual machine instance
+    path = "#{$options.instance_path}/#{instance}"
+
     # clone options
     options = Hash.new
     options[:shadow] = true if command == 'shadow' or command == 'sh'
     options[:overwrite] = true if $options.overwrite
-    Virsh::Image.clone(image,instance,options)
-    Virsh.config(instance)
-    Virsh.start(instance)
+
+    Virsh::Image.clone(image,path,options)
+    Virsh.config(path)
+    Virsh.start(path)
+
+  when 'exec'
+
+    # Name of the virtual machine instance
+    name = ARGV.shift || raise('Expecting name for target VM instance')
+    # Command to be executed
+    raise('Provide a command to be executed in VM instance') unless ARGV.length > 0
+
+    # Append domain name if missing
+    name = Virsh::instance(name)
+    # Path to virtual machine instance
+    path = "#{$options.instance_path}/#{name}" 
+
+    # Execute the command in target virtual machine instance
+    $stdout.puts System::exec(%Q<cd #{path} ; ssh-exec -r "#{ARGV.join(' ')}">)
+
   when 'install'
 
     # Name for the virtual machine instance
     name = ARGV.shift || raise('Expecting name as argument!')
     # Path to the virtual machine disk image
     path = ARGV.shift || raise('Expecting disk image path as argument!')
+
+    # Append domain name if missing
+    name = Virsh::instance(name)
 
     # Use a URL for bootstrapping by default 
     source = if not $options.cdrom.nil?
@@ -383,14 +417,22 @@ begin
     Virsh.install(name,path,options)
 
   when 'list','li','l'
+
     Virsh::Image.list($options.image_path)
+
   when 'remove','rm'
+
     name = ARGV.shift || raise('Expecting name as argument!')
+
+    # Append domain name if missing
+    name = Virsh::instance(name)
+
     if Virsh.running?(name)
       Virsh.remove(name)
     else
       $stdout.puts("Instance #{name} not running.")
     end
+
   else
     raise("Command #{command} unknown!")
   end
