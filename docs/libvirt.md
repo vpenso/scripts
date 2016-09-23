@@ -263,7 +263,7 @@ Elevate the _devops_ user to be able to run all commands with Sudo:
 
     » echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
 
-
+Configure [systemd](systemd.md) basics for NTP, PAM, etc.
 
 ## Login
 
