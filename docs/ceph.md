@@ -114,7 +114,7 @@ rados -p <pool> rm <objname>                         # delete object
 Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
 
 ```bash
-NODES=lxmon01,lxfs[01-02]
+NODES=lxmon01,lxfs[01-02],lxb001
 nodeset-loop "virsh-instance -O shadow debian8-xfs {}"
 nodeset-loop 'virsh-instance exec {} " echo {} >/etc/hostname ; hostname {} ; hostname -f"'
 # allow password-less ssh to all nodes...
@@ -163,7 +163,16 @@ rush 'sudo chmod +r /etc/ceph/ceph.client.admin.keyring'
 ### File-System
 
 ```bash
-ceph-deploy mds create lxmon01
+ceph-deploy mds create lxmon01                       # create an MDS
+ceph osd pool create cephfs_data 50                  # create a pool for the data
+ceph osd pool create cephfs_metadata                 # create a pool for the metadata
+ceph fs new cephfs cephfs_metadata cephfs_data       # enable the filesystem
+ceph fs ls
+ceph mds stat                                        # state of the MDS
+grep key ~/ceph.client.admin.keyring | tr -d '  ' | cut -d= -f2- > admin.secret
+                                                     # extract client key
+ceph-deploy install lxb001 && scp admin.secret lxb001: 
+sudo mount -t ceph 10.1.1.22:6789:/ /mnt -o name=admin,secretfile=admin.secret
 ```
 
 
