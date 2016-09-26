@@ -39,11 +39,13 @@ ceph-deploy new lxmon01                              # configure the monitoring 
 ceph-deploy install --no-adjust-repos lxmon01        # install ceph on all nodes
 ```
 
-Add another monitor:
+(Optional) Minimum quorum with two additional monitors:
+
 
 ```bash
-ceph-deploy install lxmon02
-ceph-deploy mon add lxmon02
+ceph-deploy install lxmon02 lxmon03
+ceph-deploy mon add lxmon02 
+ceph-deploy mon add lxmon03
 ```
 
 ### Object Storage Server
@@ -72,7 +74,7 @@ ceph-deploy osd activate lxfs04:/srv
 ceph -w                                              # show rebalancing the cluster by migrating placement groups
 ```
 
-### File-System
+### Meta Data Server
 
 ```bash
 ceph-deploy mds create lxmon01                       # create an MDS
