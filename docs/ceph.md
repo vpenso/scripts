@@ -1,54 +1,4 @@
 
-Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
-
-```bash
-NODES=lxmon01,lxfs[01-02]
-nodeset-loop "virsh-instance -O shadow debian8-xfs {}"
-nodeset-loop 'virsh-instance exec {} " echo {} >/etc/hostname ; hostname {} ; hostname -f"'
-# allow password-less ssh to all nodes...
-virsh-instance sync lxmon01 keys/id_rsa :/home/devops/.ssh/
-virsh-instance exec lxmon01 chown devops:devops /home/devops/.ssh/id_rsa
-# Clean up...
-nodeset-loop virsh-instance rm {}
-rm -rf $VM_INSTANCE_PATH/lx(fs|mon)0[1-2]*
-```
-
-### Deployment
-
-Install the deployment tools on `lxmon01`
-
-```bash
-apt install -y lsb-release apt-transport-https clustershell
-wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
-echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
-apt update && apt install -y ceph-deploy
-su - devops                                          # switch to the deployment user
-echo -e 'Host lx*\n StrictHostKeyChecking no' > ~/.ssh/config
-                                                     # ignore SSH fingerprints
-echo "alias rush='clush -b -l root -w lxmon01,lxfs0[1,2] '" > ~/.bashrc && source ~/.bashrc
-                                                     # exec commands on all nodes
-clush -l root -w lxfs0[1,2] -b "dmesg | grep '[v,s]d[a-z]' | tr -s ' ' | cut -d' ' -f3-"
-                                                     # check file-systems on OSDs
-```
-
-Storage Cluster:
-
-```bash
-ceph-deploy new lxmon01                              # configure the monitoring node
-echo 'osd pool default size = 2' >> ~/ceph.conf
-                                                     # configure two copies of each object
-ceph-deploy install --no-adjust-repos lxmon01        # install ceph on all nodes
-clush -l root -w lxfs0[1,2] -b 'apt install -y python'
-ceph-deploy install lxfs01 lxfs02
-ceph-deploy mon create-initial                       # create monitor and gather keys 
-ceph-deploy osd prepare lxfs01:/srv lxfs02:/srv      # prepare the storage
-clush -l root -w lxfs0[1,2] 'chown ceph /srv'        # grant ceph access to the storage
-ceph-deploy osd activate lxfs01:/srv lxfs02:/srv 
-ceph-deploy admin lxmon01 lxfs01 lxfs02              # deploy configuration on all nodes
-rush 'sudo chmod +r /etc/ceph/ceph.client.admin.keyring'
-                                                     # correct permissions for the admin key
-```
-
 ## Operation
 
 ```bash
@@ -61,21 +11,35 @@ rush 'systemctl restart ceph.target'                 # restart everything
 rush 'ps -p $(pgrep ceph) -fH'                       # show the processes
 ```
 
+### Monitor Servers (MONs)
+
+Maintain the cluster state quorum:
+
+* Provide the master copy of the CRUSH, OSD and MON maps
+  - **CRUSH map** used to compute data location
+  - **OSD map** reflect the OSD daemons operating in the cluster
+* There must be on odd number >=3 to provide consensus of distributed decision-making (Paxos)
+* Non-quorate pools are unavailable
+
 ### Object Storage Devices (OSDs)
 
 Node hosting physical storage:
 
-* Requires a storage device accessible via a file-system supported by Ceph (xfs, btrfs)
 * `ceph-osd` is the object storage daemon, responsible for storing objects on a local file system and providing access to them over the network
-* **OSD Maps** reflect the OSD daemons operating in the cluster
+* Requires a storage device accessible via a supported file-system (xfs, btrfs) with extended attributes
 * OSD daemons are numerically identified: `osd.<id>`, and have following states `in`/`out` of the cluster, and `up`/`down`
-* Incoming data written to **OSD Jounral** before `ACK` (may be store to  dedicated device like an SSD)
+* **Primary** OSDs are responsible for replication, coherency, re-balancing and recovery
+* **Secondery** OSDs are under control of a primary OSD, and can become primary 
+* Small, random I/O written sequentially to local **OSD Jounral** (improve performance with SSD)
+  - Enables atomic updates to objects, and replay of the journal on restart
+  - Write `ACK` when minimum replica journals written
+  - Journal sync to file-system periodically to reclaim space 
 
 ```bash
 /var/log/ceph/*.log                                  # logfiles on storage servers    
 ceph osd stat                                        # show state 
 ceph osd dump                                        # show OSD map
-ceph osd tree                                        # show OSD map as tree
+ceph osd tree                                        # OSD/CRUSH map as tree
 ceph osd getmaxosd                                   # show number of available OSDs
 ceph osd map <pool> <objname>                        # identify object location
 /var/run/ceph/*                                      # admin socket
@@ -85,7 +49,7 @@ ceph daemon <socket> status                          # show identity
 
 ### Placement Groups (PGs)
 
-Used to allocate storage objects to specific OSDs:
+Logical collection of objects:
 
 * CRUSH assigns objects to placement groups
 * CRUSH assigns a placement group to a primary OSD
@@ -104,16 +68,36 @@ ceph pg scrub <pgid>                                 # check primary and replica
 
 ### Pools
 
-* Pools form a logical layer over the entire objects store
-* Pools contain a defined number of PGs with a configure replication level
+Logical partitions for storing object data
+
+* Contain a defined number of PGs with a configured replication level
+* PGs in pool dynamically mapped to OSDs
+* Attributes for ownership/access
+* CRUSH rule set mapped to pool
+* Balance number of PGs per pool with the number of PGs per OSD 
+  - 50-200 PGs per OSD to balance out memory and CPU requirements and per-OSD load
+  - Total Placement `Groups = (OSDs*(50-200))/Number of replica`
 
 ```bash
 ceph df                                              # show usage
 ceph osd lspools                                     # list pools
-ceph osd pool get <pool> pg_num                      # number of PGs in pool
 ceph osd dump | grep 'replicated size'               # print replication level
-ceph osd pool set <pool> size <level>                # set replication level
+ceph osd pool get <pool> <key>                       # read configuration attribute
+ceph osd pool set <pool> <key> <value>               # set configuration attribute
 ```
+
+Keys:
+
+- `size` number of replica objects
+- `min_size` minimum number of replica available for IO
+- `pg_num`,`pgp_num` (effective) number of PGs to use when calculating data placement
+- `crush_ruleset` to use for mapping object placement in the cluster (C
+
+
+## Usage
+
+* Objects store data and have: a name, the payload (data), and attributes
+* Object namespace is flat
 
 ```bash
 rados lspools                                        # list pools
@@ -123,6 +107,63 @@ rados rmpool <pool>                                  # delete a pool
 rados ls -p <pool>                                   # list contents of pool
 rados -p <pool> put <objname> <file>                 # store object
 rados -p <pool> rm <objname>                         # delete object
+```
+
+### Deployment
+
+Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
+
+```bash
+NODES=lxmon01,lxfs[01-02]
+nodeset-loop "virsh-instance -O shadow debian8-xfs {}"
+nodeset-loop 'virsh-instance exec {} " echo {} >/etc/hostname ; hostname {} ; hostname -f"'
+# allow password-less ssh to all nodes...
+virsh-instance sync lxmon01 keys/id_rsa :/home/devops/.ssh/
+virsh-instance exec lxmon01 chown devops:devops /home/devops/.ssh/id_rsa
+# Clean up...
+nodeset-loop virsh-instance rm {}
+rm -rf $VM_INSTANCE_PATH/lx(fs|mon)0[1-2]*
+```
+
+
+Install the deployment tools on `lxmon01`
+
+```bash
+apt install -y lsb-release apt-transport-https clustershell
+wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
+echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+apt update && apt install -y ceph-deploy
+su - devops                                          # switch to the deployment user
+echo -e 'Host lx*\n StrictHostKeyChecking no' > ~/.ssh/config
+                                                     # ignore SSH fingerprints
+echo "alias rush='clush -b -l root -w lxmon01,lxfs0[1,2] '" > ~/.bashrc && source ~/.bashrc
+                                                     # exec commands on all nodes
+clush -l root -w lxfs0[1,2] -b "dmesg | grep '[v,s]d[a-z]' | tr -s ' ' | cut -d' ' -f3-"
+                                                     # check file-systems on OSDs
+```
+
+### Storage Cluster
+
+```bash
+ceph-deploy new lxmon01                              # configure the monitoring node
+echo 'osd pool default size = 2' >> ~/ceph.conf
+                                                     # configure two copies of each object
+ceph-deploy install --no-adjust-repos lxmon01        # install ceph on all nodes
+clush -l root -w lxfs0[1,2] -b 'apt install -y python'
+ceph-deploy install lxfs01 lxfs02
+ceph-deploy mon create-initial                       # create monitor and gather keys 
+ceph-deploy osd prepare lxfs01:/srv lxfs02:/srv      # prepare the storage
+clush -l root -w lxfs0[1,2] 'chown ceph /srv'        # grant ceph access to the storage
+ceph-deploy osd activate lxfs01:/srv lxfs02:/srv 
+ceph-deploy admin lxmon01 lxfs01 lxfs02              # deploy configuration on all nodes
+rush 'sudo chmod +r /etc/ceph/ceph.client.admin.keyring'
+                                                     # correct permissions for the admin key
+```
+
+### File-System
+
+```bash
+ceph-deploy mds create lxmon01
 ```
 
 
