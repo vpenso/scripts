@@ -22,22 +22,22 @@ Maintain the cluster state quorum:
 * Non-quorate pools are unavailable
 
 ```bash
+systemctl status ceph-mon@$(hostname)                 # daemon state       
+ceph-mon -d -i $(hostname)                            # run daemon in foreground
+/var/log/ceph/ceph-mon.$(hostname).log                # default log location
+ceph mon stat                                         # state of all monitors
+ceph -f json-pretty quorum_status                     # quorum information
+ceph-conf --name mon.$(hostname) --show-config-value log_file
+                                                      # get location of the log file
 ceph --admin-daemon /var/run/ceph/ceph-mon.$(hostname).asok mon_status
                                                       # access a monitors admin socket
-/var/log/ceph/ceph-mon.$(hostname).log                # default log location
-ceph-conf --name mon.$(hostname) --show-config-value log_file
-                                                      # location of the log file
-ceph mon getmap -o /tmp/monmap                        # print the MON map if a quorum exists:
-/etc/init.d/ceph stop mon                             # stop a monitor
-service ceph start mon                                # start monitor
-pkill -TERM ceph-mon
-ceph-mon -d -i $(hostname)                            # run daemon in foreground
 ```
 
 Manipulate the MON map:
 
 ```bash
 monmap=/tmp/monmap.bin
+ceph mon getmap -o $monmap                            # print the MON map if a quorum exists
 ceph-mon --extract-monmap $monmap -i $(hostname)      # extract the MON map of ceph-mon stopped
 monmaptool $monmap --print                            # print MON map from file
 monmaptool $monmap --clobber --rm lxmon03             # remove a monitor
