@@ -1,3 +1,4 @@
+→ [Ceph Architecture](http://docs.ceph.com/docs/jewel/architecture/)
 
 ## Operation
 
@@ -90,7 +91,7 @@ ceph pg scrub <pgid>                                 # check primary and replica
 
 ### Pools
 
-Logical partitions for storing object data
+Logical partitions for storing object data:
 
 * Contain a defined number of PGs with a configured replication level
 * PGs in pool dynamically mapped to OSDs

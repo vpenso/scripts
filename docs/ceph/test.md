@@ -2,10 +2,10 @@ Make sure to understand how to build [development and test environments with vir
 
 ```bash
 NODES=lxmon0[1-3],lxfs0[1-4],lxb00[1-2]
-# make sure python is pre-installed in the virtual machine image
+# image needs an xfs file-system, make sure python is installed
 nodeset-loop "virsh-instance -O shadow debian8-xfs {}"
 nodeset-loop 'virsh-instance exec {} " echo {} >/etc/hostname ; hostname {} ; hostname -f"'
-# allow password-less ssh to all nodes...
+# allow password-less ssh to all nodes from lxmon01
 virsh-instance sync lxmon01 keys/id_rsa :/home/devops/.ssh/
 virsh-instance exec lxmon01 chown devops:devops /home/devops/.ssh/id_rsa
 # Clean up...
@@ -35,8 +35,8 @@ clush -l root -w lxfs0[1,2] -b "dmesg | grep '[v,s]d[a-z]' | tr -s ' ' | cut -d'
 Install the first monitor:
 
 ```bash
-ceph-deploy new lxmon01                              # configure the monitoring node
-ceph-deploy install --no-adjust-repos lxmon01        # install ceph on all nodes
+ceph-deploy new lxmon01
+ceph-deploy install --no-adjust-repos lxmon01        
 ```
 
 (Optional) Minimum quorum with two additional monitors:
@@ -97,7 +97,7 @@ sudo mount -t ceph 10.1.1.22:6789:/ /mnt -o name=admin,secretfile=admin.secret
 ceph-deploy install lxhvs01
 ceph-deploy admin lxhvs01
 ssh root@lxhvs01
-rbd create lx dev01 --size 20480                     # create a block device image
+rbd create lxdev01 --size 20480                      # create a block device image
 modprobe rbd                                         # load the kernel module
 rbd feature disable lxdev01 deep-flatten fast-diff object-map exclusive-lock
 rbd map lxdev01                                      # map the block device image
