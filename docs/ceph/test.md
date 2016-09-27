@@ -93,10 +93,6 @@ sudo mount -t ceph 10.1.1.22:6789:/ /mnt -o name=admin,secretfile=admin.secret
 
 ### Block Devices
 
-- Block interface on top of RADOS
-- Images (single block devices) striped over multiple RADOS objects/OSDs
-- Default pool `rbd`
-
 ```bash
 ceph-deploy install lxhvs01
 ceph-deploy admin lxhvs01
@@ -105,7 +101,6 @@ rbd create lx dev01 --size 20480                     # create a block device ima
 modprobe rbd                                         # load the kernel module
 rbd feature disable lxdev01 deep-flatten fast-diff object-map exclusive-lock
 rbd map lxdev01                                      # map the block device image
-rbd showmapped                                       # list device mappring
 mkfs.ext4 -m0 /dev/rbd/rbd/lxdev01                   # create a file-system
 mount /dev/rbd/rbd/lxdev01 /mnt                      # mount the file-system
 ```
