@@ -5,8 +5,7 @@
 ceph status                                          # summery of state
 ceph health detail
 ceph osd dump
-ceph-deploy --overwrite-conf config push lxmon01 lxfs01 lxfs02
-                                                     # update the configuration after changes
+ceph-deploy --overwrite-conf config push <node>      # update the configuration after changes
 rush 'systemctl restart ceph.target'                 # restart everything
 rush 'ps -p $(pgrep ceph) -fH'                       # show the processes
 ```
@@ -43,7 +42,6 @@ monmaptool $monmap --print                            # print MON map from file
 monmaptool $monmap --clobber --rm lxmon03             # remove a monitor
 ceph-mon --inject-monmap $monmap -i $(hostname)       # store new map
 ```
-
 
 ### Object Storage Devices (OSDs)
 
@@ -117,19 +115,4 @@ Keys:
 - `pg_num`,`pgp_num` (effective) number of PGs to use when calculating data placement
 - `crush_ruleset` to use for mapping object placement in the cluster (C
 
-
-## Usage
-
-* Objects store data and have: a name, the payload (data), and attributes
-* Object namespace is flat
-
-```bash
-rados lspools                                        # list pools
-rados df                                             # show pool statistics
-rados mkpool <pool>                                  # create a new pool     
-rados rmpool <pool>                                  # delete a pool
-rados ls -p <pool>                                   # list contents of pool
-rados -p <pool> put <objname> <file>                 # store object
-rados -p <pool> rm <objname>                         # delete object
-```
 
