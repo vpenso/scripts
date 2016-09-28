@@ -162,29 +162,42 @@ class Virsh
       # default values
       args[:shadow] = false unless args.has_key? :shadow
       args[:overwrite] = false unless args.has_key? :overwrite
+
       # Continue if the source virtual machine image exists
       raise("Image #{image} not existing") unless File.directory? image
+
       # If the target directory exists?
+      #
       if File.directory? instance
+
+        name = File.basename instance
+
         # Is the virtual machine instance running?
-        name = instance.split('/')[-1]
         if Virsh.running?(name)
+
           # Does the users wants to overwrite the virtual machine instance
-          if args[:overwrite] or CLI.ask?("Remove instance #{name}?")
-            # Shutdown and undefine the virtual machine instance
+          if $options.overwrite or CLI.ask?("Remove instance #{name}?")
+            # Shutdown and undefined the virtual machine instance
             Virsh.remove(name)
             sleep 5
           else
+            $stdout.puts "Instance [#{name}] running..."
             exit 0
           end
+
         end
+
         # Delete existing virtual machine images from the target directory
         System::exec("rm --force #{instance}/*.img")
+
+      #
       # Create target directory if missing
       else
         System::exec("mkdir -p #{instance}")
       end
+
       $logger.info("Copy image #{image}")
+
       if args[:shadow]
         Dir.glob("#{image}/*.img").each do |disk|
           name = File.basename(disk)
@@ -193,6 +206,7 @@ class Virsh
           System::run("qemu-img create -b #{disk} -f qcow2 #{target} >/dev/null")
         end
       end
+
       System::run("cp --recursive --no-clobber #{image}/* #{instance}") 
     end
 
