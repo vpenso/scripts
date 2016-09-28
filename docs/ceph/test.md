@@ -1,10 +1,10 @@
 Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
 
 ```bash
-NODES=lxmon0[1-3],lxfs0[1-4],lxb00[1-2]
+NODES lxmon0[1-3],lxfs0[1-4],lxb00[1-2]
 # image needs an xfs file-system, make sure python is installed
-nodeset-loop "virsh-instance -O shadow debian8-xfs {}"
-nodeset-loop 'virsh-instance exec {} " echo {} >/etc/hostname ; hostname {} ; hostname -f"'
+nodeset-loop "virsh-instance -O shadow debian8 {}"
+nodeset-loop 'virsh-instance exec {} "echo {} >/etc/hostname ; hostname {} ; hostname -f"'
 # allow password-less ssh to all nodes from lxmon01
 virsh-instance sync lxmon01 keys/id_rsa :/home/devops/.ssh/
 virsh-instance exec lxmon01 chown devops:devops /home/devops/.ssh/id_rsa
@@ -16,12 +16,11 @@ rm -rf $VM_INSTANCE_PATH/lx(fs|mon)0[1-2]*
 Install the deployment tools on `lxmon01`
 
 ```bash
-cd $VM_INSTANCE_PATH/lxmon01 ; ssh-exec -r
-apt install -y lsb-release apt-transport-https clustershell
+virsh-instance login lxmon01
+sudo apt install -y lsb-release apt-transport-https clustershell
 wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
-apt update && apt install -y ceph-deploy
-su - devops                                          # switch to the deployment user
+sudo apt update && sudo apt install -y ceph-deploy
 echo -e 'Host lx*\n StrictHostKeyChecking no' > ~/.ssh/config
                                                      # ignore SSH fingerprints
 echo "alias rush='clush -b -l root -w lxmon0[1-3],lxfs0[1-4],lxb00[1-2] '" > ~/.bashrc && source ~/.bashrc
@@ -36,7 +35,7 @@ Install the first monitor:
 
 ```bash
 ceph-deploy new lxmon01
-ceph-deploy install --no-adjust-repos lxmon01        
+ceph-deploy install --no-adjust-repos lxmon01
 ```
 
 (Optional) Minimum quorum with two additional monitors:

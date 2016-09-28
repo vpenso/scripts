@@ -194,3 +194,28 @@ ls ~<user>/.config/systemd/user                 # unit files for a given user
 loginctl enable-linger <user>                   # make user sessions (boot) persistant    
 ```
 
+### File-System Mount
+
+```bash
+/etc/systemd/system/*.mount                     # mount units
+systemctl -t mount                              # show mounts
+systemctl daemon-reload && systemctl start <name>.mount
+                                                # mount with a unit file
+```
+
+Unit file skeleton
+
+```
+[Unit]
+Description= # comment
+
+[Mount]
+What= # partition name, path or UUID to mount
+Where= # path to a mount point
+Type= # file system type (e.g. ext4)
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target
+```
+
