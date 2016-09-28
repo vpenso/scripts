@@ -32,10 +32,10 @@ Clone virtuel machine images and their configuration.
 Command
 -------
 
-  clone, cl <image> <instance>
+  clone, cl, c <image> <instance>
     Clone source virtual machine image and start a 
     virtual machine instance with specified name
-  exec, ex <instance> <command>
+  exec, ex, e <instance> <command>
     Execute command in virtual machine insyance
   install, in <instance> <path>
     Install a new virtual machine image
@@ -45,7 +45,7 @@ Command
     Ssh into the virtual machine instance
   remove, rm <instance>
     Shutdown and undefine instance
-  shadow, sh <image> <instance>
+  shadow, sh, s <image> <instance>
     Make shadow disks of virtual machine image and 
     start a virtual machine instance with
     specified name
@@ -397,7 +397,7 @@ begin
     when '--ram'
       $options.ram = arg
     when '--version'
-      $stdout.puts 0.7
+      $stdout.puts 0.8
       exit 0
     end
   end
@@ -409,7 +409,7 @@ begin
 
   case command
 
-  when 'clone','cl','shadow','sh'
+  when 'clone','cl','c','shadow','sh','s'
 
     # check user arguments
     image = ARGV.shift || raise('Expecting image name as argument!')
@@ -430,7 +430,7 @@ begin
     Virsh.config(path)
     Virsh.start(path)
 
-  when 'exec','ex','sync','sy'
+  when 'exec','ex','e','sync','sy'
 
     # Name of the virtual machine instance
     name = ARGV.shift || raise('Expecting name for target VM instance')
@@ -449,7 +449,7 @@ begin
     # Execute a command in target virtual machine instance
     $stdout.puts System::exec(%Q<cd #{path} ; ssh-#{command} -r #{args}>)
 
-  when 'install'
+  when 'install','in'
 
     # Name for the virtual machine instance
     name = ARGV.shift || raise('Expecting name as argument!')
@@ -492,7 +492,7 @@ begin
 
     System::run "cd #{path}; ssh-exec "
 
-  when 'remove','rm'
+  when 'remove','rm','r'
 
     name = ARGV.shift || raise('Expecting name as argument!')
 
