@@ -51,28 +51,33 @@ Command
 Options
 -------
 
-  --bridge, -b NAME
+  --bridge, -b <name>
     Network birdge to use (default nbr0)
-  --cdrom PATH
+  --cdrom <path>
     Location of the CDROM ISO for installation.
   --debug, -D
     Show stacktraces in case of errors.
-  --disk-size, -s SIZE
+  --disk-size, -s <size>
     Image size when creating new images with the 
-    command "create" (default 40G).
+    command "create" (default 100G).
+  --dry-run, -R 
+    Print the commands without execution.    
   --help, -h
     Show this help information.
-  --image-path, -i PATH
+  --image-path, -i <path>
     Location of the source images (default /srv/vms/images)
-  --instance-path, -p PATH
+  --instance-path, -p <path>
     Location of the virtual machine instances (default
     /srv/vms/instances)
-  --location, -l URL
-    URL for installation sources (default Debian stable).
+  --location, -l <url>
+    URL for installation sources (default Debian stable)
   --overwrite, -O
-    Overwrite existing virtual machine instance.
+    Overwrite existing virtual machine instance
+  --ram, -r <size>
+    Size of the memory to configure for the virtual 
+    machine instance
   --version
-    Print version number.
+    Print version number
 
 Environment
 -----------
@@ -87,6 +92,7 @@ class System
   def self.exec(command)
     command + ' 2>&1'
     $logger.debug "Exec [#{command}]"
+    return String.new if $options.dry_run
     # Execute command as subprocess and return the exit code
     pipe = IO.popen(command)
     # Get the process ID from the child
@@ -106,7 +112,7 @@ class System
   end
   def self.run(command)
     $logger.debug "Run [#{command}]"
-    system(command)
+    system(command) unless $options.dry_run
   end
 end
 
@@ -126,7 +132,7 @@ class Virsh
 
   class Image
 
-    def self.create(path,size = '40')
+    def self.create(path,size = '40G')
       if File.exists?(path) and not $options.overwrite
         return unless CLI.ask?("Overwrite #{path}?")
       end
@@ -134,7 +140,7 @@ class Virsh
       unless File.directory? dir
         System::exec("mkdir -p #{dir}")
       end
-      System::exec("qemu-img create -f qcow2 #{path} #{size}G")
+      System::exec("qemu-img create -f qcow2 #{path} #{size}")
     end
 
     def self.list(path)
@@ -196,12 +202,6 @@ class Virsh
     
     raise('Missing installation source!') unless args.has_key? :source
 
-    # 100GB virtual machine disk image by default
-    args[:size] = 100 unless args.has_key? :size
-
-    # 1GB RAM for the virtual machine by default
-    args[:ram] = 1024 unless args.has_key? :ram
-
     # Create the virtual machine disk image
     self::Image.create(path,args[:size])
 
@@ -215,8 +215,10 @@ class Virsh
       "--disk path=#{path},format=qcow2,bus=virtio" 
     ]
 
+    command = "virt-install #{options.join(' ')} #{args[:source]}"
+
     # Start the virtual machine image installation process
-    System::run("virt-install #{options.join(' ')} #{args[:source]}")
+    System::run(command)
 
   end
 
@@ -285,11 +287,13 @@ begin
   $options = OpenStruct.new
   $options.cdrom = nil
   $options.debug = false
-  $options.disk_size = '40G'
+  $options.disk_size = '100G'
+  $options.dry_run = false
   $options.location = 'http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/'
   $options.image_path = '/srv/vms/images'
   $options.instance_path = '/srv/vms/instances'
   $options.overwrite = false
+  $options.ram = '1024'
   $options.shadow = false
   $options.bridge = 'nbr0'
 
@@ -306,12 +310,14 @@ begin
     ['--cdrom',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-D',GetoptLong::NO_ARGUMENT],
     ['--disk-size','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--dry-run','-R',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--image-path','-i',GetoptLong::REQUIRED_ARGUMENT],
     ['--instance-path','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--location','-l',GetoptLong::REQUIRED_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--ram','-r',GetoptLong::REQUIRED_ARGUMENT],
     ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
@@ -323,7 +329,11 @@ begin
       $options.debug = true
       $logger.level = Logger::DEBUG
     when '--disk-size'
-      $options.disk_size =arg
+      $options.disk_size = arg
+    when '--dry-run'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+      $options.dry_run = true
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -346,8 +356,10 @@ begin
        end
     when '--overwrite'
       $options.overwrite = true
+    when '--ram'
+      $options.ram = arg
     when '--version'
-      $stdout.puts 0.5
+      $stdout.puts 0.6
       exit 0
     end
   end
@@ -416,7 +428,13 @@ begin
              end
 
     # Call the virtual machine installation with arguments
-    options = { :bridge => $options.bridge, :source => source }
+    options = { 
+      :bridge => $options.bridge,
+      :size => $options.disk_size,
+      :ram => $options.ram,  
+      :source => source 
+    }
+
     Virsh.install(name,path,options)
 
   when 'list','li','l'
