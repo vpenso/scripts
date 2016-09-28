@@ -73,9 +73,9 @@ Options
     URL for installation sources (default Debian stable)
   --overwrite, -O
     Overwrite existing virtual machine instance
-  --ram, -r <size>
-    Size of the memory to configure for the virtual 
-    machine instance
+  --ram, -r <size> 
+    Size (GB) of the memory to configure for the virtual 
+    machine instance (default 1)
   --version
     Print version number
 
@@ -327,7 +327,7 @@ begin
   $options.image_path = '/srv/vms/images'
   $options.instance_path = '/srv/vms/instances'
   $options.overwrite = false
-  $options.ram = '1024'
+  $options.ram = 1 # GB
   $options.shadow = false
   $options.bridge = 'nbr0'
 

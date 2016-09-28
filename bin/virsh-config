@@ -33,33 +33,32 @@ virtuel machine instance.
 
 Options:
 
-  -b,--bridge name
+  -b,--bridge <name>
     Network birdge used by the virtual machine 
     instance (default nbr0).
-  -c,--vcpu num
+  -c,--vcpu <num>
     Number of virtual CPUs (default 1).
   -D,--debug
     Show stacktraces in case of errors.
-  -d, --disks path[,path,...]
+  -d, --disks <path>[,<path>]
     Add disk image files to the configuration.
     Uses files called `disk*.img` in the working
     directory by default.
   -h,--help
     Show this help information.
-  -m,--mac-address mac
+  -m,--mac-address <address>
     MAC-address used by the virtual machine
     (default 02:FF:0A:0A:06:00)
-  -M,--memory bytes
-    Memory to be allocated to the virtual machine
-    (default 1048576)
-  -n,--name name
+  -M,--memory <size> 
+    Memory in GB to allocate for the virtual machine
+  -n,--name <name>
     Name of the virtual machine (default is the 
     enclosing directory name).
   -N,--net-boot
     Enable PXE boot.
   -O,--overwrite
     Overwrite target configuration file if existing.
-  -p,--vnc-port num
+  -p,--vnc-port <num>
     VNC connection port.
   -v,--vnc 
     Enable VNC with automatic port allocation.
@@ -110,7 +109,7 @@ class Virsh
     <?xml version="1.0"?>
     <domain type="kvm">
       <name><%= name %></name>
-      <memory><%= $options.memory %></memory>
+      <memory unit='GB'><%= $options.memory %></memory>
       <vcpu><%= $options.vcpu %></vcpu>
       <os>
         <type arch="x86_64">hvm</type>
@@ -161,7 +160,7 @@ begin
   $options.file = nil
   $options.bridge = 'nbr0'
   $options.mac = '02:FF:0A:0A:06:00'
-  $options.memory = 1048576
+  $options.memory = 1
   $options.vcpu = 1
   $options.vns = false
   $options.vnc_port = nil
