@@ -34,19 +34,23 @@ Command
 
   clone, cl <image> <instance>
     Clone source virtual machine image and start a 
-    virtual machine instance with specified name.
-  exec <instance> <command>
+    virtual machine instance with specified name
+  exec, ex <instance> <command>
     Execute command in virtual machine insyance
   install, in <instance> <path>
-    Install a new virtual machine image.
-  list, l
-    List available images.
+    Install a new virtual machine image
+  list, li, l
+    List available images
+  login, lo <instance>
+    Ssh into the virtual machine instance
   remove, rm <instance>
-    Shutdown and undefine instance.
+    Shutdown and undefine instance
   shadow, sh <image> <instance>
     Make shadow disks of virtual machine image and 
     start a virtual machine instance with
     specified name
+  sync, sy <instance> <source> <destination>
+    rsync data between host an virtual machine
 
 Options
 -------
@@ -426,7 +430,7 @@ begin
     Virsh.config(path)
     Virsh.start(path)
 
-  when 'exec','sync'
+  when 'exec','ex','sync','sy'
 
     # Name of the virtual machine instance
     name = ARGV.shift || raise('Expecting name for target VM instance')
@@ -437,6 +441,7 @@ begin
     name = Virsh::instance(name)
     # Path to virtual machine instance
     path = "#{$options.instance_path}/#{name}" 
+
 
     args = ARGV.join(' ')
     args =  "'#{args}'" if command == 'exec'
@@ -474,6 +479,18 @@ begin
   when 'list','li','l'
 
     Virsh::Image.list($options.image_path)
+
+  when 'login', 'lo'
+
+    # Name of the virtual machine instance
+    name = ARGV.shift || raise('Expecting name for target VM instance')
+
+    # Append domain name if missing
+    name = Virsh::instance(name)
+    # Path to virtual machine instance
+    path = "#{$options.instance_path}/#{name}" 
+
+    System::run "cd #{path}; ssh-exec "
 
   when 'remove','rm'
 
