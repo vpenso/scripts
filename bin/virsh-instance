@@ -90,6 +90,10 @@ EOF
 
 class System 
   def self.exec(command)
+    # Remove line-feed and leading white-space
+    #
+    command = command.gsub(/^  */,'').gsub(/\n/,' ')
+    # Redirect error stream
     command + ' 2>&1'
     $logger.debug "Exec [#{command}]"
     return String.new if $options.dry_run
@@ -111,6 +115,7 @@ class System
     end
   end
   def self.run(command)
+    command = command.gsub(/^  */,'').gsub(/\n/,' ')
     $logger.debug "Run [#{command}]"
     system(command) unless $options.dry_run
   end
@@ -233,7 +238,15 @@ class Virsh
     raise("Couldn't read network configuration for #{name}") if output.nil?
     name, ip, mac = output.split
     # Write the libvirt configuration file
-    virsh_config = "cd #{path} ; virsh-config --vnc --name #{name} --mac-address #{mac} libvirt_instance.xml"
+    virsh_config = "
+      cd #{path};
+      virsh-config
+        --vnc
+        --name #{name}
+        --memory #{$options.ram}
+        --mac-address #{mac}
+        libvirt_instance.xml
+    "
     # Respect the overwrite option set by the user
     virsh_config << " --overwrite" if $options.overwrite
     System::run(virsh_config)
