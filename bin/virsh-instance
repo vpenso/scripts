@@ -115,7 +115,7 @@ class System
     end
   end
   def self.run(command)
-    command = command.gsub(/^  */,'').gsub(/\n/,' ')
+    command = command.gsub(/^  */,'').gsub(/\n/,' ').lstrip
     $logger.debug "Run [#{command}]"
     system(command) unless $options.dry_run
   end
@@ -228,47 +228,51 @@ class Virsh
   end
 
 
+  ##
   # Create the Libvirt XML configuration file, and the SSH configuration
   # file for a virtual machine instance.
+  #
   def self.config(path)
+    # extract the instance name from the path
     name = File.basename(path)
-    # Get the network configuration for the virtual machine instance
-    output = System::exec("virsh-nat-bridge lookup #{name}")  
-    # Don't continue if unless the network configuration is found
-    raise("Couldn't read network configuration for #{name}") if output.nil?
-    name, ip, mac = output.split
+    
     # Write the libvirt configuration file
-    virsh_config = "
+    command = "
       cd #{path};
       virsh-config
         --vnc
-        --name #{name}
+        --name #{Virsh.instance name}
         --memory #{$options.ram}
-        --mac-address #{mac}
+        --mac-address #{Virsh.instance_mac name}
         libvirt_instance.xml
     "
     # Respect the overwrite option set by the user
-    virsh_config << " --overwrite" if $options.overwrite
-    System::run(virsh_config)
+    command << " --overwrite" if $options.overwrite
+    System::run command
+
     # Create the SSH configuration file for password-less login 
-    ssh_instance = "ssh-instance #{ip} --user devops --identity-file #{path}/keys/id_rsa #{path}"
+    command = "
+      ssh-instance
+        --user devops
+        --identity-file #{path}/keys/id_rsa
+        #{Virsh.instance_ip name} #{path}
+    "
     # Respect the overwrite option set by the user
-    ssh_instance << " --overwrite" if $options.overwrite
-    System::run(ssh_instance)
+    command << " --overwrite" if $options.overwrite
+    System::run command
   end
 
   def self.start(path)
     config = "#{path}/libvirt_instance.xml"
-    name = path.split('/')[-1]
+    name = File.basename path
     raise("No libvirt configuration in #{path}") unless File.exists?(config)
     System::run("virsh define #{config} | sed '/^$/d'")
     System::run("virsh start #{name} | sed '/^$/d'")
   end
 
   def self.remove(name)
-    name = self.nat_config(name)[0]  
-    System::run("virsh destroy #{name} | sed '/^$/d'")
-    System::run("virsh undefine #{name} | sed '/^$/d'")
+    System::run("virsh destroy #{Virsh.instance name} | sed '/^$/d'")
+    System::run("virsh undefine #{Virsh.instance name} | sed '/^$/d'")
   end
 
   def self.running?(name)
@@ -280,17 +284,20 @@ class Virsh
     end
   end
 
-  def self.nat_config(name)
-    output = System::exec("virsh-nat-bridge lookup #{name}")  
-    raise("Couldn't read network configuration for #{name}") if output.nil?
-    return output.split
-  end
-
   def self.instance(name)
-    name = "#{name}.devops.test" unless name =~ /\.devops\.test$/
-    name
+    # Don't use System::exec here!
+    `virsh-nat-bridge lookup #{name}`.split(' ')[0]
   end
 
+  def self.instance_mac(name)
+    # Don't use System::exec here!
+    `virsh-nat-bridge lookup #{name}`.split(' ')[-1]
+  end
+  
+  def self.instance_ip(name)
+    # Don't use System::exec here!
+    `virsh-nat-bridge lookup #{name}`.split(' ')[1]
+  end
 end
 
 begin
@@ -372,7 +379,7 @@ begin
     when '--ram'
       $options.ram = arg
     when '--version'
-      $stdout.puts 0.6
+      $stdout.puts 0.7
       exit 0
     end
   end

@@ -289,8 +289,8 @@ Use the script ↴[ssh-instance][ssh-instance] to create the SSH configuration f
 
 The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers around the `ssh` and `rsync` commands. They automatically use an `ssh_config` file if it is present in the working directory:
 
-    » ssh-exec "su -lc 'apt install rsync sudo"
-    » ssh-exec 'su -lc echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops'
+    » ssh-exec "su -lc 'apt install rsync sudo'"
+    » ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
     » ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
     » ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
     » ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
