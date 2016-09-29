@@ -31,7 +31,7 @@ sudo apt update
 Setup the Ceph repository in the virtual machine image with the Chef role [ceph_common][01] beforehand:
 
   - Enables to use of `ceph-deploy install --no-adjust-repos <node>`
-  - Directly install the packages: `ceph-mon`, `ceph-osd`, 'ceph-mds` to omit `ceph-deploy 
+  - Directly install the packages: `ceph-mon`, `ceph-osd`, `ceph-mds` to omit `ceph-deploy 
 
 ```bash
 sudo apt install -y ceph-deploy
