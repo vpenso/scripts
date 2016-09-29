@@ -4,20 +4,27 @@ run_list(
   'recipe[sys::apt]'
 )
 default_attributes(
-  sys: {
-    apt: {
-      packages: [
+  'sys' => {
+    'apt' => {
+      'config' => {
+        '11http_proxy' => {
+            'Acquire::http::Proxy' => 'http://<IP>:3128',
+            'Acquire::https::Proxy' => 'https://<IP>:3128'
+        }
+      },
+      'packages' => [
         'apt-transport-https',
         'bash-completion',
+        'clustershell',
         'parted',
         'python'
       ],
-      repositories: {
-        ceph: 'deb https://download.ceph.com/debian-jewel/ jessie main'
+      'repositories' => {
+        'ceph' => 'deb https://download.ceph.com/debian-jewel/ jessie main'
       },
-      keys: {
-        add: [
-          "-----BEGIN PGP PUBLIC KEY BLOCK-----
+      'keys' => {
+        'add' => [
+          '-----BEGIN PGP PUBLIC KEY BLOCK-----
           Version: GnuPG v1
           
           mQINBFX4hgkBEADLqn6O+UFp+ZuwccNldwvh5PzEwKUPlXKPLjQfXlQRig1flpCH
@@ -45,7 +52,7 @@ default_attributes(
           vkdivtdqrq2DXY+ftuqLOQ7b+t1RctbcMHGPptlxFuN9ufP5TiTWSpfqDwmHCLsT
           k2vFiMwcHdLpQ1IH8ORVRgPPsiBnBOJ/kIiXG2SxPUTjjEGOVgeA
           =/Tod
-          -----END PGP PUBLIC KEY BLOCK-----"
+          -----END PGP PUBLIC KEY BLOCK-----'
         ]
       }
     }

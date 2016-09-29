@@ -17,15 +17,21 @@ Install the deployment tools on `lxmon01`
 
 ```bash
 virsh-instance login lxmon01
+```
+
+Configure the Ceph Apt repository:
+
+```bash
 sudo apt install -y lsb-release apt-transport-https clustershell
 wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+sudo apt update 
 ```
 
-Alternatively setup the Ceph repository in the virtual machine image with the Chef role [ceph_common][01]
+Alternatively setup the Ceph repository in the virtual machine image with the Chef role [ceph_common][01] beforehand. 
 
 ```bash
-sudo apt update && sudo apt install -y ceph-deploy
+sudo apt install -y ceph-deploy
 echo -e 'Host lx*\n StrictHostKeyChecking no' > ~/.ssh/config
                                                      # ignore SSH fingerprints
 echo "alias rush='clush -b -l root -w lxmon0[1-3],lxfs0[1-4],lxb00[1-2] '" > ~/.bashrc && source ~/.bashrc
