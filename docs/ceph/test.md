@@ -20,6 +20,11 @@ virsh-instance login lxmon01
 sudo apt install -y lsb-release apt-transport-https clustershell
 wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+```
+
+Alternatively setup the Ceph repository in the virtual machine image with the Chef role [ceph_common][01]
+
+```bash
 sudo apt update && sudo apt install -y ceph-deploy
 echo -e 'Host lx*\n StrictHostKeyChecking no' > ~/.ssh/config
                                                      # ignore SSH fingerprints
@@ -103,3 +108,6 @@ rbd map lxdev01                                      # map the block device imag
 mkfs.ext4 -m0 /dev/rbd/rbd/lxdev01                   # create a file-system
 mount /dev/rbd/rbd/lxdev01 /mnt                      # mount the file-system
 ```
+
+[01]: ../../var/chef/roles/debian/ceph/common.rb
+
