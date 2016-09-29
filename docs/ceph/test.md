@@ -19,7 +19,7 @@ Install the deployment tools on `lxmon01`
 virsh-instance login lxmon01
 ```
 
-Configure the Ceph Apt repository:
+Configure the Ceph repository manually:
 
 ```bash
 sudo apt install -y lsb-release apt-transport-https clustershell
@@ -28,33 +28,32 @@ echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo 
 sudo apt update 
 ```
 
-Alternatively setup the Ceph repository in the virtual machine image with the Chef role [ceph_common][01] beforehand. 
+Setup the Ceph repository in the virtual machine image with the Chef role [ceph_common][01] beforehand:
+
+  - Enables to use of `ceph-deploy install --no-adjust-repos <node>`
+  - Directly install the packages: `ceph-mon`, `ceph-osd`, 'ceph-mds` to omit `ceph-deploy 
 
 ```bash
 sudo apt install -y ceph-deploy
 echo -e 'Host lx*\n StrictHostKeyChecking no' > ~/.ssh/config
                                                      # ignore SSH fingerprints
-echo "alias rush='clush -b -l root -w lxmon0[1-3],lxfs0[1-4],lxb00[1-2] '" > ~/.bashrc && source ~/.bashrc
-                                                     # exec commands on all nodes
+alias rush-mon='clush -b -l root -w lxmon0[1-3] '
+alias rush-osd='clush -b -l root -w lxfs0[1-5] '
 clush -l root -w lxfs0[1,2] -b "dmesg | grep '[v,s]d[a-z]' | tr -s ' ' | cut -d' ' -f3-"
                                                      # check file-systems on OSDs
 ```
 
 ### Monitor Server
 
-Install the first monitor:
+Minimum quorum with three monitor servers:
 
 ```bash
 ceph-deploy new lxmon01
-ceph-deploy install --no-adjust-repos lxmon01
-```
-
-(Optional) Minimum quorum with two additional monitors:
-
-
-```bash
-ceph-deploy install lxmon02 lxmon03
-ceph-deploy mon add lxmon02 
+ceph-deploy install lxmon01 lxmon02 lxmon03          # deploy packages if missing
+ceph-deploy mon create-initial                       # create monitor and gather keys 
+ceph-deploy admin lxmon01                            # deploy admin configuration
+sudo chmod +r /etc/ceph/ceph.client.admin.keyring    # correct permissions for the admin key
+ceph-deploy mon add lxmon02                          # add monitor to configuration
 ceph-deploy mon add lxmon03
 ```
 
@@ -64,24 +63,10 @@ Install two storage servers:
 
 ```bash
 ceph-deploy install lxfs01 lxfs02 lxfs03
-ceph-deploy mon create-initial                       # create monitor and gather keys 
 ceph-deploy osd prepare lxfs01:/srv lxfs02:/srv lxfs03:/srv
                                                      # prepare the storage
 clush -l root -w lxfs0[1-3] 'chown ceph /srv'        # grant ceph access to the storage
 ceph-deploy osd activate lxfs01:/srv lxfs02:/srv lxfs03:/srv 
-ceph-deploy admin lxmon01 lxfs01 lxfs02 lxfs03       # deploy configuration on all nodes
-rush 'sudo chmod +r /etc/ceph/ceph.client.admin.keyring'
-                                                     # correct permissions for the admin key
-```
-
-Expand the cluster with another OSD:
-
-```bash
-ceph-deploy install lxfs04
-ceph-deploy osd prepare lxfs04:/srv
-ssh root@lxfs04 -C 'chown ceph /srv'
-ceph-deploy osd activate lxfs04:/srv
-ceph -w                                              # show rebalancing the cluster by migrating placement groups
 ```
 
 ### Meta Data Server

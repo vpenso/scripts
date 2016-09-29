@@ -1,7 +1,5 @@
 → [Ceph Architecture](http://docs.ceph.com/docs/jewel/architecture/)
 
-## Operation
-
 ```bash
 ceph status                                          # summery of state
 ceph health detail
@@ -9,6 +7,13 @@ ceph osd dump
 ceph-deploy --overwrite-conf config push <node>      # update the configuration after changes
 rush 'systemctl restart ceph.target'                 # restart everything
 rush 'ps -p $(pgrep ceph) -fH'                       # show the processes
+```
+
+Manage authentication keys:
+
+```bash
+ceph auth list                                       # lists authentication state
+ceph auth get-or-create client.<name> <caps>         # create a new user 
 ```
 
 ### Monitor Servers (MONs)
@@ -105,6 +110,7 @@ Logical partitions for storing object data:
 ceph df                                              # show usage
 ceph osd lspools                                     # list pools
 ceph osd dump | grep 'replicated size'               # print replication level
+cpeh osd pool create <name> <pgs> <pgs>              # create a pool 
 ceph osd pool get <pool> <key>                       # read configuration attribute
 ceph osd pool set <pool> <key> <value>               # set configuration attribute
 ```
