@@ -5,7 +5,6 @@ ceph status                                          # summery of state
 cpeh -s
 ceph health detail
 ceph -w                                              # watch mode
-ceph osd dump
 ceph-deploy --overwrite-conf config push <node>      # update the configuration after changes
 rush 'systemctl restart ceph.target'                 # restart everything
 rush 'ps -p $(pgrep ceph) -fH'                       # show the processes
@@ -71,6 +70,8 @@ ceph osd stat                                        # show state
 cpeh osd df                                          # storage utilization by OSD
 ceph node ls osd                                     # list OSDs
 ceph osd dump                                        # show OSD map
+# OSD ID to host IP, port mapping
+ceph osd dump | grep '^osd.[0-9]*' | tr -s ' ' | cut -d' ' -f1,2,14
 ceph osd tree                                        # OSD/CRUSH map as tree
 ceph osd getmaxosd                                   # show number of available OSDs
 ceph osd map <pool> <objname>                        # identify object location
@@ -96,6 +97,7 @@ systemctl stop ceph-osd@<num>                        # stop the OSD daemon on th
 ceph osd crush remove osd.<num>                      # remove the OSD from the CRUSH map
 ceph auth del osd.<num>                              # remove authorization credential
 ceph osd rm osd.<num>                                # remove OSD from configuration
+# remove from clean ceph.conf if required 
 ```
 
 
@@ -116,7 +118,7 @@ Logical partitions for storing object data:
 ```bash
 ceph df                                              # show usage
 ceph osd lspools                                     # list pools
-ceph osd dump | grep 'replicated size'               # print replication level
+ceph osd dump | grep ^pool                           # list replication size
 cpeh osd pool create <name> <pgs> <pgs>              # create a pool 
 ceph osd pool get <pool> <key>                       # read configuration attribute
 ceph osd pool set <pool> <key> <value>               # set configuration attribute
