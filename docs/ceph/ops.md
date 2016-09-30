@@ -68,6 +68,8 @@ Node hosting physical storage:
 ```bash
 /var/log/ceph/*.log                                  # logfiles on storage servers    
 ceph osd stat                                        # show state 
+cpeh osd df                                          # storage utilization by OSD
+ceph node ls osd                                     # list OSDs
 ceph osd dump                                        # show OSD map
 ceph osd tree                                        # OSD/CRUSH map as tree
 ceph osd getmaxosd                                   # show number of available OSDs
@@ -76,6 +78,29 @@ ceph osd map <pool> <objname>                        # identify object location
 ceph daemon <socket> <command>                       # use the admin socket
 ceph daemon <socket> status                          # show identity
 ```
+
+Manipulate the CRUSH map:
+
+```bash
+ceph osd getcrushmap -o /tmp/crushmap.bin                    # extract teh CRUSH map 
+crushtool -d /tmp/crushmap.bin -o /tmp/crushmap.txt          # decompile binary CRUSH map
+crushtool -c /tmp/crushmap.txt -o /tmp/crushmap.bin          # compile CRUSH map
+ceph osd setcrushmap -i /tmp/crushmap.bin                    # inject CRUSH map
+```
+
+Remove an OSD from production:
+
+```bash
+ceph osd out <num>                                   # remove OSD, begin rebalancing
+systemctl stop ceph-osd@<num>                        # stop the OSD daemon on the server 
+ceph osd crush remove osd.<num>                      # remove the OSD from the CRUSH map
+ceph auth del osd.<num>                              # remove authorization credential
+ceph osd rm osd.<num>                                # remove OSD from configuration
+```
+
+
+
+
 ### Pools
 
 Logical partitions for storing object data:
@@ -127,6 +152,7 @@ Logical collection of objects:
 
 ```bash
 ceph pg stat                                         # show state
+ceph pg ls-by-osd <num>                              # lost PGs store on OSD
 ```
 
 ```bash
