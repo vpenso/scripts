@@ -2,7 +2,9 @@
 
 ```bash
 ceph status                                          # summery of state
+cpeh -s
 ceph health detail
+ceph -w                                              # watch mode
 ceph osd dump
 ceph-deploy --overwrite-conf config push <node>      # update the configuration after changes
 rush 'systemctl restart ceph.target'                 # restart everything
@@ -94,6 +96,16 @@ ceph pg <pgid> query                                 # statistics for a particul
 ceph pg scrub <pgid>                                 # check primary and replicas
 ```
 
+Interpret the output of `ceph pg map`
+
+```
+osdmap e20 pg 2.f22 (2.22) -> up [0,1,2] acting [0,1,2]
+       │   │                  │          └──→ acting set of OSDs responsible for a particular PG
+       │   │                  └─────────────→ matches "acting set" unless rebalancing in progress 
+       │   └────────────────────────────────→ placement group number                   
+       └────────────────────────────────────→ monotonically increasing OSD map version number
+```
+
 ### Pools
 
 Logical partitions for storing object data:
@@ -121,5 +133,14 @@ Keys:
 - `min_size` minimum number of replica available for IO
 - `pg_num`,`pgp_num` (effective) number of PGs to use when calculating data placement
 - `crush_ruleset` to use for mapping object placement in the cluster (C
+
+States:
+
+- `active+clean` – optimum state
+- `degraded` – not enough replicas to meet requirement
+- `down` – no OSD available storing PG
+- `inconsistent` – PG nor consistent across different OSDs
+- `repair` – correcting inconsistent PGs to meet replication requirements
+
 
 
