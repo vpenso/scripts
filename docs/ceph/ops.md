@@ -76,36 +76,6 @@ ceph osd map <pool> <objname>                        # identify object location
 ceph daemon <socket> <command>                       # use the admin socket
 ceph daemon <socket> status                          # show identity
 ```
-
-### Placement Groups (PGs)
-
-Logical collection of objects:
-
-* CRUSH assigns objects to placement groups
-* CRUSH assigns a placement group to a primary OSD
-* The Primary OSD use CRUSH to replicate the PGs to the secondary OSDs
-* Re-balance/recover works on all objects in a placement group
-* Placement Group IDs `<pool_num>.<pg_id>` (hexadecimal)
-
-```bash
-ceph pg stat                                         # show state
-ceph pg dump_stuck inactive|unclean|stale|undersized|degraded
-                                                     # statisitcs for stuck PGs
-ceph pg map <pgid>                                   # map a placement group
-ceph pg <pgid> query                                 # statistics for a particular placement group
-ceph pg scrub <pgid>                                 # check primary and replicas
-```
-
-Interpret the output of `ceph pg map`
-
-```
-osdmap e20 pg 2.f22 (2.22) -> up [0,1,2] acting [0,1,2]
-       │   │                  │          └──→ acting set of OSDs responsible for a particular PG
-       │   │                  └─────────────→ matches "acting set" unless rebalancing in progress 
-       │   └────────────────────────────────→ placement group number                   
-       └────────────────────────────────────→ monotonically increasing OSD map version number
-```
-
 ### Pools
 
 Logical partitions for storing object data:
@@ -143,4 +113,36 @@ States:
 - `repair` – correcting inconsistent PGs to meet replication requirements
 
 
+
+
+### Placement Groups (PGs)
+
+Logical collection of objects:
+
+* CRUSH assigns objects to placement groups
+* CRUSH assigns a placement group to a primary OSD
+* The Primary OSD use CRUSH to replicate the PGs to the secondary OSDs
+* Re-balance/recover works on all objects in a placement group
+* Placement Group IDs (pgid) `<pool_num>.<pg_id>` (hexadecimal)
+
+```bash
+ceph pg stat                                         # show state
+```
+
+```bash
+ceph pg map <pgid>                                   # map a placement group
+```
+```
+osdmap e20 pg 2.f22 (2.22) -> up [0,1,2] acting [0,1,2]
+       │   │                  │          └── acting set of OSDs responsible for a particular PG
+       │   │                  └───────────── matches "acting set" unless rebalancing in progress 
+       │   └──────────────────────────────── placement group number                   
+       └──────────────────────────────────── monotonically increasing OSD map version number
+```
+```bash
+ceph pg dump_stuck inactive|unclean|stale|undersized|degraded
+                                                     # statisitcs for stuck PGs
+ceph pg <pgid> query                                 # statistics for a particular placement group
+ceph pg scrub <pgid>                                 # check primary and replicas
+```
 

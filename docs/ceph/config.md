@@ -1,4 +1,19 @@
 
+
+### Placement Groups
+
+Recommended Number of PGs `pg_num` in relation to the number of OSDs
+
+```
+OSDs       PGs
+<5         128
+5~10       512
+10~50      4096
+>50        50-100 per OSD
+```
+
+
+
 ### Libvirt
 
 Libvirt `secret.xml` associated with a Ceph RBD
@@ -22,16 +37,3 @@ virsh secret-set-value --secret "$uuid" --base64 "$key"
                                                      # set the UUID of the secret
 ```
 
-XML skeleton virtual machine disk device using block storage with authentication:
-
-```xml
-<disk type="network" device="disk">
-  <source protocol='rbd' name='libvirt/lxdev01.devops.test'>
-    <host name='10.1.1.22' port='6789'/>
-  </source>
-  <auth username='libvirt'>
-    <secret type='ceph' uuid='ec8a08ff-59b2-49fd-8162-532c9b0a2ed6'/>
-  </auth>
-  <target dev="vda" bus="virtio"/>
-</disk>
-```
