@@ -23,21 +23,43 @@ rados -p <pool> rm <objname>                         # delete object
 
 ## RBD
 
-- Block interface on top of RADOS
+**Block interface** on top of RADOS:
+
 - Images (single block devices) striped over multiple RADOS objects/OSDs
-- Default pool `rbd`
+- The default pool is called `rbd`
 
 ```bash
 mod(probe|info) rbd                                  # kernel module
 /sys/bus/rbd/                                        # live module data
 rbd ls [-l] [<pool>]                                 # list block devices
-rbd info [<pool>/]<name>                             # introspec block device image
+rbd info [<pool>/]<name>                             # introspec image
 rbd du [<name>]                                      # list size of images
-rbd create --size <MB> [<pool>/]<name>               # create a block device image
-rbd map <name>                                       # map block device image
+rbd create --size <MB> [<pool>/]<name>               # create image
+rbd map <name>                                       # map image to device
 rbd showmapped                                       # list device mappring
 rbd unmap <name>                                     # 
-rbd rm [<pool>/]<name>                               # remove block device image
+rbd rm [<pool>/]<name>                               # remove image
+```
+
+**Snapshots**
+
+- Read-only copy of the state of an image at a particular point in time
+- Layering allows for cloning snapshots
+- Stop I/O before taking a snapshot (internal file-systems must be in a consistent state)
+- Rolling back overwrites the current version of the image
+- It is faster to clone from a snapshot than to rollback to return to an pre-existing state
+
+```bash
+rbd snap create <pool>/<image>@<name>                # snapshot image
+rbd snap ls <pool>/<image>                           # list snapshots of image
+rbd snap rollback <pool>/<image>@<name>              # rollback to snapshot
+rbd snap rm <pool>/<image>@<name>                    # delete snapshot
+rbd snap purge <pool>/<image>                        # delete all snapshots
+rbd snap protect <pool>/<image>@<name>               # protect snapshot before cloneing
+rbd snap unprotect <pool>/<image>@<name>             # revert protection
+rbd clone <pool>/<image>@<name> <pool>/<image>       # clone snapshot to new image
+rbd children <pool>/<image>@<name>                   # list snapshot decendents
+rbd flatten <pool>/<image>                           # decouple from parent snapshot
 ```
 
 ### Libvirt
@@ -46,8 +68,9 @@ rbd rm [<pool>/]<name>                               # remove block device image
 qemu-img create -f raw rbd:<pool>/<image> <size>     # create a new image block device
 qemu-img info rbd:<pool>/<image>                     # block device states
 qemu-img resize rbd:<pool>/<image> <size>            # adjust image size
-# create new RBD image from source qcow2 image
+# create new RBD image from source qcow2 image, and vice versa
 qemu-img convert -f qcow2 <path> -O rbd rbd:<pool>/<image>
+qemu-img convert -f rbd rbd:<pool>/<image> -O qcow2 <path>
 ```
 
 RBD image as `<disk>` entry for a virtual machine; replace: 
