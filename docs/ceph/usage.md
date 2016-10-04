@@ -93,8 +93,8 @@ RBD image as `<disk>` entry for a virtual machine; replace:
 
 ```bash
 ceph osd map <pool> <image>                                # map image to PGs
-virsh qemu-monitor-command --hmp $instance 'info block'   # configuration of the VM instance 
-virsh dumpxml $instance | xmlstarlet el -v | grep rbd     # get attached RBD image
+virsh qemu-monitor-command --hmp <instance> 'info block'   # configuration of the VM instance 
+virsh dumpxml <instance> | xmlstarlet el -v | grep rbd     # get attached RBD image
 ```
 
 
