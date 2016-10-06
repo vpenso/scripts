@@ -51,6 +51,8 @@ keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
 a2ensite wsgi-keystone && systemctl restart apache2         # enable the apache configuration for keystone
 ```
 
+Configuration:
+
 ```bash
 export OS_TOKEN=$(augtool print /files/etc/keystone/keystone.conf/DEFAULT/admin_token | tr -d ' "' | cut -d= -f2)
 export OS_URL=http://$CONTROLLER_IPADDRESS:35357/v3
@@ -71,8 +73,11 @@ openstack project create --domain default --description "Demo Project" demo
 openstack user create --domain default --password-prompt demo
 openstack role create user
 openstack role add --project demo --user demo user
-# verify operation by requesting authentication tokens
-unset OS_TOKEN
+```
+
+Verify operation by requesting authentication tokens
+
+```bash
 openstack --os-auth-url $OS_URL --os-project-domain-name default --os-user-domain-name default --os-project-name admin --os-username admin token issue
 openstack --os-auth-url $OS_URL --os-project-domain-name default --os-user-domain-name default --os-project-name demo --os-username demo token issue
 # write the user environments to files
@@ -99,5 +104,29 @@ EOF
 source ~/admin-openrc ; openstack token issue
 ```
 
+
+### Image Service
+
+Prerequisites:
+
+```bash
+echo "export GLANCE_DBPASS=$(openssl rand -hex 10)" >> ~/.bashrc && source ~/.bashrc
+mysql -e 'CREATE DATABASE glance;'
+mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '$GLANCE_DBPASS';"
+mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '$GLANCE_DBPASS';"
+source admin-openrc
+openstack user create --domain default --password-prompt glance
+openstack role add --project service --user glance admin
+openstack service create --name glance --description "OpenStack Image" image
+openstack endpoint create --region RegionOne image public http://$CONTROLLER_IPADDRESS:9292
+openstack endpoint create --region RegionOne image internal http://$CONTROLLER_IPADDRESS:9292
+openstack endpoint create --region RegionOne image admin http://$CONTROLLER_IPADDRESS:9292
+```
+
+Deployment:
+
+```bash
+apt -y install glance
+```
 
 [1]: http://docs.openstack.org/draft/install-guide-debian/
