@@ -126,7 +126,38 @@ openstack endpoint create --region RegionOne image admin http://$CONTROLLER_IPAD
 Deployment:
 
 ```bash
-apt -y install glance
+apt -y install glance                                      
+function agset { augtool -t 'PythonPaste incl /etc/glance/glance*.conf' -sb set /files/etc/glance/$@ ; }
+                                                        # handy function to write the configuration with Augeas
+agset glance-api.conf/database/connection "mysql+pymysql://glance:$GLANCE_DBPASS@$CONTROLLER_IPADDRESS/glance"
+                                                        # configure database access
+agset glance-api.conf/keystone_authtoken/auth_uri http://$CONTROLLER_IPADDRESS:5000
+agset glance-api.conf/keystone_authtoken/auth_url http://$CONTROLLER_IPADDRESS:35357
+agset glance-api.conf/keystone_authtoken/memcached_server $CONTROLLER_IPADDRESS:11211
+                                                        # configure Identity service access
+agset glance-api.conf/keystone_authtoken/auth_type password
+agset glance-api.conf/keystone_authtoken/project_domain_name default
+agset glance-api.conf/keystone_authtoken/user_domain_name default
+agset glance-api.conf/keystone_authtoken/project_name service
+agset glance-api.conf/keystone_authtoken/username glance
+agset glance-api.conf/keystone_authtoken/password glance
+agset glance-api.conf/paste_deploy/flavor keystone      
+agset glance-api.conf/glance_store/stores file,http     # configure the local file system store and location of image files
+agset glance-api.conf/glance_store/default_store file
+agset glance-api.conf/glance_store/filesystem_store_datadir /var/lib/glance/images/
+agset glance-registry.conf/database/connection mysql+pymysql://glance:$GLANCE_DBPASS@$CONTROLLER_IPADDRESS/glance
+                                                        # configure the registry
+agset glance-registry.conf/keystone_authtoken/auth_uri http://$CONTROLLER_IPADDRESS:5000
+agset glance-registry.conf/keystone_authtoken/auth_url http://$CONTROLLER_IPADDRESS:35357
+agset glance-registry.conf/keystone_authtoken/memcached_server $CONTROLLER_IPADDRESS:11211
+                                                        # configure Identity service access
+agset glance-registry.conf/keystone_authtoken/auth_type password
+agset glance-registry.conf/keystone_authtoken/project_domain_name default
+agset glance-registry.conf/keystone_authtoken/user_domain_name default
+agset glance-registry.conf/keystone_authtoken/project_name service
+agset glance-registry.conf/keystone_authtoken/username glance
+agset glance-registry.conf/keystone_authtoken/password glance
+agset glance-registry.conf/paste_deploy/flavor keystone      
 ```
 
 [1]: http://docs.openstack.org/draft/install-guide-debian/
