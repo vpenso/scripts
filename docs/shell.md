@@ -154,6 +154,7 @@ Descriptors stdin 0, stdout 1, stderr 2:
     ${s,}          first character of string s to lowercase
     ${s^^}         all characters of string s to uppercase
     ${s,,}         all characters of string s to lowercase
+    ((v+=1))       increment variable v
 
 ## Primary Expressions
 
