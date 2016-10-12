@@ -18,11 +18,17 @@ dpkg-buildpackage -us -uc                          # build package
 
 ```bash
 /etc/singularity/singularity.conf                  # global configuration
+grep 'allow setuid = yes' /etc/singularity/singularity.conf
+chmod 755 /usr/lib/x86_64-linux-gnu/singularity/sexec && chmod 4755 /usr/lib/x86_64-linux-gnu/singularity/sexec-suid
+                                                   # >2.2 SUID bit required
 ```
+
+
 
 → [Bootstrap Definition][03]
 
 ```bash
+singularity -d -x ...                              # debuging mode
 singularity help <subcommand>                      # call help for sub-command
 singularity create <image>                         # create blank container image
 singularity bootstrap <image> <definition>         # install OS into container
