@@ -11,9 +11,16 @@ tar -xf /tmp/singularity_$version.orig.tar.gz -C /tmp/ && cd /tmp/singularity-$v
 make                                               # build
 sudo make install                                  # install binaries 
 ### create a debian package
-apt -y install debhelper dh-autoreconf git devscripts
-dch -i                                             # adjust changelog if required
-dpkg-buildpackage -us -uc                          # build package
+>>> apt -y install debhelper dh-autoreconf git devscripts
+>>> grep -A5 override_dh_fixperms debian/rules     # adjust permissions during package installation
+override_dh_fixperms:
+        dh_fixperms
+        chown root.root debian/singularity-container/usr/lib/*/singularity/sexec
+        chown root.root debian/singularity-container/usr/lib/*/singularity/sexec-suid
+        chmod 755 debian/singularity-container/usr/lib/*/singularity/sexec
+        chmod 4755 debian/singularity-container/usr/lib/*/singularity/sexec-suid
+>>> dch -i                                         # adjust changelog if required
+>>> dpkg-buildpackage -us -uc                      # build package
 ```
 
 ```bash
