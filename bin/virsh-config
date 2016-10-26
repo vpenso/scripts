@@ -126,7 +126,7 @@ class Virsh
         <interface type="bridge">
           <source bridge="<%= $options.bridge %>"/>
           <mac address="<%= $options.mac %>"/>
-          <modul type="virtio"/>
+          <model type="virtio"/>
         </interface>
         <%= disks.join("\n      ") %>
       </devices>
