@@ -43,9 +43,10 @@ alias -g NC='| nodeset -c'
 alias rush='clush -l root -w $NODES'
 
 alias nodeset-accessible='noglob nodeset-accessible'
+alias na=nodeset-accessible
 
 function nodeset-fping() {
   fping $(nodeset -e $NODES) 2>$-
 }
 
-
+alias np=nodeset-fping

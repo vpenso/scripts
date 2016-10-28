@@ -38,12 +38,15 @@ scontrol create reservation [...] partition=main nodecnt=<num> account=<account>
 sinfo -R -p <partition>                                             # defect nodes in partition
 sinfo -o '%10T %5D %E' -S 'E' -t drain,draining,drained,down        # defect nodes by numbers
 sinfo -o '%10T %7u %12n %E' -S 'E' -t drain,draining,drained,down   # defect nodes by reaseons
+squeue -h -t cg -o '%A,%N' -S N | cut -d, -f2 | uniq                # nodes in completing state
+squeue -h -t cg -o '%A %N' -S N | uniq -c -f 1 | tr -s ' ' | cut -d' ' -f2,4
+                                                                    # number of completing jobs per node
 squeue -t r -ho %N -u <user> | nodeset -f                           # nodes with running jobs by user
 scontrol show node <node>                                           # node details
 sacctmgr -n show event format=state,nodename,start,end,duration,reason nodes=<nodeset>
                                                                     # node event list
 man -P 'less -p "^NODE STATE CODES"' sinfo                          # node state list
-scontrol update state=drain nodename=<nodeset> reason="<comment>"   # node drain
+scontrol update state=drain nodename=<nodeset> reason="<comment>"   # drain a node
 ```
 
 **Controller**
