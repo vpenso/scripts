@@ -14,8 +14,9 @@ git push <name> <branch>                 # sync branch to remote repository
 Commit:
 
 ```bash
-git checkout -- <file>                   # discard changes in file
 git checkout                             # discard changes in working directory
+git checkout -- <file>                   # discard changes in file
+git checkout <commit> <file>             # checkout specific version of a file
 git reset HEAD <file>                    # discard file from staging ares
 git reset HEAD --                        # discard all changes in the staging area
 git commit --amend                       # alter last commit
