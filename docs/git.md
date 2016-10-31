@@ -1,6 +1,4 @@
 
-Repositories:
-
 ```bash
 .git/config                              # configuration of remote repositories
 git clone <uri>                          # clone a remote repository
@@ -10,9 +8,6 @@ git show <name>                          # show remote commit history
 git pull <name> <branch>                 # sync branch from remote repository
 git push <name> <branch>                 # sync branch to remote repository
 ```
-
-Commit:
-
 ```bash
 git checkout                             # discard changes in working directory
 git checkout -- <file>                   # discard changes in file
@@ -26,9 +21,6 @@ git clean -f                             # recursivly remove file not in version
 GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
                                           # Set the commiter for a single commit
 ```
-
-Branch:
-
 ```bach
 git clone -b <name> <url>                # clone a remote repository, checkout branch
 git branch                               # list local branches
@@ -37,9 +29,6 @@ git checkout -b <name> origin/<branch>   # checkout remote branch
 git checkout <branch>                    # checkout local branch
 git pull --all                           # fetch all remote branches
 ```
-
-Tags:
-
 ```bash
 git ls-remote --tags <repo>              # list tags of remote repository
 git fetch                                # fetch remote tags
