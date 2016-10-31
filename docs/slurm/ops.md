@@ -28,6 +28,8 @@ scontrol create reservation starttime=now user=root duration=infinite flags=main
                                                                     # reserve node for ever
 scontrol create reservation [...] partition=main nodecnt=<num> account=<account> user=<user>
                                                                     # reserve hardware for user
+sacct -o jobid,state,submit,start,end,cputimeraw -S $(date --date="12 hours ago" +"%H:%m") -u <user>
+                                                                    # user jobs from the laste 12 hours
 ```
 
 ### Services
