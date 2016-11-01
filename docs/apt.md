@@ -1,19 +1,8 @@
 
 → [package search](https://packages.debian.org/index)
 
-Local packages:
-
 ```bash
 dpkg -i <path>.deb                            # install package
-dpkg -s <package> | grep -i version           # version of installed package
-dpkg -L <package>                             # list content of a package (if installed)
-dpkg -S <path>                                # find package containing file (if installed)
-dpkg-query -l                                 # list all installed packages
-```
-
-Packages from remote sources:
-
-```bash
 apt update                                    # (re-)synchronize the package index
 apt-show-versions -u                          # list upgradeable packages
 apt-get upgrade                               # install the newest versions of all 
@@ -33,6 +22,13 @@ apt-get purge <package>                       # uninstall package, and remove co
 apt-get build-dep <package>                   # install build dependencies 
 apt-get --download-only source <package>      # download package source code
 apt-get -f install | dpkg --configure -a      # recover from broken installation
+```
+```bash
+dpkg-query -l                                 # list all installed packages
+dpkg -s <package> | grep ^Version             # show installed version of package
+apt-cache policy <package> | grep -i installed
+dpkg -L <package>                             # list content of a package (if installed)
+dpkg -S <path>                                # find package containing file (if installed)
 ```
 
 ### Sources
