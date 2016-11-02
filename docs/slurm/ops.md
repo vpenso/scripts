@@ -13,12 +13,15 @@ squeue -t r -A <account>                                            # running by
 squeue -t r -o '%20S %11M %9P %8u %6g %10T %11l' | sort -k 1 | uniq -f 2 -c | tac
                                                                     # running by runtime
 squeue -t r -o '%11M %11l %9P %8u %6g %10T' -S '-M' | uniq -f 1 -c  # running by execution time 
+squeue -r -t r -o '%10A %9P %11M %11l %6z %10T' -S '-M' -u <user>   # running jobs by user
 squeue -t r -ho %A -u <user> | paste -sd' '                         # IDs of running jobs by user
 squeue -t pd -o '%15i %30R %o' -u <user>                            # pending by user
 squeue --start                                                      # estimated start time of jobs
+squeue --start -o '%10Q %15A %3h %20r %10u %10a %7z' -S '-Q'  L
 squeue -t pd,s -o '%20S %.8u %4P %7a %.2t %R' -S 'S' | uniq -c      # ^^ summery
 squeue -t pd -o '%8u %8a %8Q' -S -p | uniq -c                       # pending by priority
 man -P 'less -p "^JOB REASON CODES"' squeue                         # list of "Job Reason Codes"
+
 scontrol suspend $(squeue -ho %A -t R -u <user> | paste -sd ' ')    # suspend running jobs of user
 scontrol resume $(squeue -ho %A -t S -u <user> | paste -sd ' ')     # resume suspended jobs of user
 scontrol show reservation                                           # list reservations
