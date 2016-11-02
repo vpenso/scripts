@@ -52,6 +52,7 @@ sacctmgr -n show event format=state,nodename,start,end,duration,reason nodes=<no
                                                                     # node event list
 man -P 'less -p "^NODE STATE CODES"' sinfo                          # node state list
 scontrol update state=drain nodename=<nodeset> reason="<comment>"   # drain a node
+pgrep slurmstepd | xargs -L1 ps -o user=,pid=,stat=,cmd= --ppid     # list first child of stepd
 ```
 
 **Controller**

@@ -52,6 +52,7 @@ git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate -
                                           # show commits with a list of cahnges files
 git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
                                           # list commt messages one by line
+git log --follow -p -- <file>             # follow changes to a single file
 ```
 
 ## git-repos
