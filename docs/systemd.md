@@ -198,12 +198,14 @@ loginctl enable-linger <user>                   # make user sessions (boot) pers
 
 ```bash
 /etc/systemd/system/*.mount                     # mount units
-systemctl -t mount                              # show mounts
+systemctl --all -t mount                        # show mounts
 systemctl daemon-reload && systemctl start <name>.mount
                                                 # mount with a unit file
 ```
 
-Unit file skeleton
+Mount units must be named after the mount point directories they control, cf `systemd-escape`.
+
+Unit skeleton for a local file-system:
 
 ```
 [Unit]
@@ -218,4 +220,24 @@ Options=defaults
 [Install]
 WantedBy=multi-user.target
 ```
+
+Unit skeleton for an NFS mount:
+
+```
+[Unit]
+Description= # comment
+Wants=network-online.target
+After=network-online.target
+
+[Mount]
+What= # path uuid, e.g. nfs.devops.test:/srv/nfs/devops
+Where= # path to a mount point
+Type=nfs
+Options=defaults
+TimeoutSec=10s
+
+[Install]
+WantedBy=multi-user.target
+```
+
 
