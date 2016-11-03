@@ -232,7 +232,7 @@ After=network-online.target
 [Mount]
 What= # path uuid, e.g. nfs.devops.test:/srv/nfs/devops
 Where= # path to a mount point
-Type=nfs
+Type=nfs4
 Options=defaults
 TimeoutSec=10s
 
