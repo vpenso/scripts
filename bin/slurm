@@ -145,9 +145,11 @@ Nodes sub-commands:
   a, allocated                     nodes executing jobs
   d, defect                        number of nodes with defects
   dn, defect-nodes                 list defect nodes
-  dr, drain <nodeset> <reason>     drain jobs from nodes
+  dr, drain <nodeset> <reason>     drain nodes
+  drn, drain-nodeset <reason>      drain nodes in $NODES
   i, idle                          nodes with available resources
-  r, resume <nodeset>              set nodes to state resume
+  r, resume <nodeset>              resume nodes
+  rn, resume-nodeset               resume nodes in $NODES
 > s, state                         overview nodes/CPUs state
   u, users                         list users of each node
 
@@ -292,6 +294,12 @@ module Nodes
     System::exec "scontrol update state=drain nodename='#{nodes}' reason='#{message}'"
   end
 
+  def drain_nodeset
+    nodes = ENV['NODES'] || raise('$NODES environment variable not defined!')
+    message = ARGV.shift || raise('Specify a reason for draining the nodes')
+    System::exec "scontrol update state=drain nodename='#{nodes}' reason='#{message}'"
+  end
+
   def defect
     Table.new(%w(Nodes State Reason)).transform(%q{
       sinfo -h -o '%D|%T|%E' -S '-D' -t drain,draining,drained,down
@@ -306,6 +314,11 @@ module Nodes
 
   def resume
     nodes = ARGV.shift || raise('Nodeset to resume not defined!')
+    System::exec "scontrol update state=resume nodename=#{nodes}"
+  end
+  
+  def resume_nodeset
+    nodes = ENV['NODES'] || raise('$NODES environment variable not defined!')
     System::exec "scontrol update state=resume nodename=#{nodes}"
   end
 
@@ -363,7 +376,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.6
+      $stdout.puts 0.7
       exit 0
     end
   end
@@ -399,6 +412,8 @@ begin
        Nodes::allocated
      when 'dr', 'drain'
        Nodes::drain
+     when 'drn', 'drain-nodeset'
+       Nodes::drain_nodeset
      when 'd','defect'
        Nodes::defect
      when 'dn','defect-nodes'
@@ -407,6 +422,8 @@ begin
        Nodes::idle
      when 'r','resume'
        Nodes::resume
+     when 'rn', 'resume-nodeset'
+       Nodes::resume_nodeset
      when 's','state'
        Nodes::state
      when 'u','users'
