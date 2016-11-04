@@ -15,6 +15,7 @@ First process executed in users space (PID 1)
 systemd --version                               # show systemd version
 /etc/os-release                                 # platform information
 /etc/machine-id                                 # unique machine identifier
+man systemd.index                               # overview documentation
 {/etc,/run,/lib}/systemd/system/                # unit configuration files
 LESS="-p SIGNALS" man -P less systemd           # list of supported signals
 LESS="-p KERNEL" man -P less systemd            # kernel command line options for boot
