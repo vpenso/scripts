@@ -134,6 +134,7 @@ Commands:
 Jobs sub-commands:
   c, completed                     jobs completed after execution
   f, failed                        jobs finished with a failure
+  p, pending                       pending jobs
   ps, pending-by-submit            pending jobs by submit time
   pp, pending-by-priority          pending jobs by priority 
 > r, running                       running jobs by user
