@@ -220,6 +220,8 @@ class Sacct
     # matching a provided regular expression
     #
     @node_regex = String.new
+    # List of users to be excluded from the report
+    @exclude_users = Array.new
     # Data returned from the sacct command
     @raw_data = Array.new
 
@@ -240,17 +242,25 @@ class Sacct
     @end_time = time
     @opts << "--endtime #{time}"
   end
-  def start_time=(time) 
+
+  def start_time=(time)
     @start_time = time
-    @opts << "--starttime #{time}" 
+    @opts << "--starttime #{time}"
   end
+
   def account(account) ; @opts << "--accounts #{account}" end
+  # Set list of users to be includes in the query to the accounting data base
   def user(user) ; @opts << "--user #{user}" end
+  # Set list of users to be excluded from the report
+  def exclude_users(users) ; @exclude_users = users end
+
   def partition(partition)
     @partition = partition
     @opts << "--partition #{partition}"
   end
+
   def node_regex(regex) ; @node_regex = regex end
+
 
   # Collect statistics of the accounting data returned by sacct
   #
@@ -289,7 +299,7 @@ class Sacct
       index = field_index(object) + 1
       # Do not implement this in Ruby code...
       elems = System::exec %Q<cat #{data_file} | cut -d'#{@delimiter}' -f#{index} | sort | uniq>
-      # ...it is difficult to implement it more efficiently 
+      # ...it is difficult to implement it more efficiently
       elems.each_line do |elem|
         @data[object][elem.chop] = skeleton
       end
@@ -297,17 +307,26 @@ class Sacct
     $logger.info "<#{self.class}##{__method__.to_s}>"
     # Avoid memory slurping by reading the lines one-by-one into memory
     File.foreach(data_file) do |line|
+
       # Unfortunately this is the most expensive line of code in this program!
       # It represents the metric collected for each job by the accounting
       line = line.chop!.split(@delimiter)
-      # Exclude nodes no matching a pattern defined by the user 
+
+      # Exclude nodes no matching a pattern defined by the user
       unless @node_regex.empty?
         next unless line[field_index 'nodelist'] =~ Regexp.new(@node_regex)
       end
+
       # Basic metric for the accumulation of statistics
       runtime   = line[field_index 'cputimeraw'].to_i
       account   = line[field_index 'account']
       user      = line[field_index 'user']
+
+      # Exclude a list for users from the report if defined
+      unless @exclude_users.empty?
+        next if @exclude_users.include? user
+      end
+
       partition = line[field_index 'partition']
       j_state   = line[field_index 'state']
       # Store the statistics
@@ -349,7 +368,7 @@ class Sacct
     end
   end
 
-  # List of sacct --format fields 
+  # List of sacct --format fields
   #
   def fields ; FIELDS.join(',') end
 
@@ -362,7 +381,7 @@ class Sacct
   #
   def state(s) ; s.gsub(/\s.*/,'').downcase end
 
-  # List of sacct --states 
+  # List of sacct --states
   #
   def states ; STATES.join(',') end
 
@@ -570,29 +589,30 @@ Read accounting data from Slurm and accumulate statistics:
 
 #{exec_name} [<options>] <start_time> [<end_time>]
 
-  start_time                 Select accounting data after start time
-                             Time format like `sacct`...
-  end_time                   Select accounting data before end time
-                             (default is now)
+  start_time                   Select accounting data after start time
+                               Time format like `sacct`...
+  end_time                     Select accounting data before end time
+                               (default is now)
 
-  --account, -a <acc,acc>    Limit the output to a given list of accounts
-  --config-file, -c <path>   Configure the HTML output
-  --debug, -D                Show stack traces in case of errors
-  --example                  Show help text with usage examples
-  --format, -f <field,field> List of fields to include in output
-  --format-all, -A           Include all fields in output
-  --format-list, -F          List of fields available to print
-  --group-by, -g <group>     Group output by account, partition or user
-  --help, -h                 Show this help information
-  --html, -H                 Print output as HTML table
-  --no-header, -N            Do not print a table header in output
-  --node-regex, -n <regex>   Regular expression to select a subset of nodes
-  --partition, -p <par,par>  Limit the output to a given list of partitions
-  --print-data               Print the parsed and processed data
-  --print-raw-data           Print data from the accounting database
-  --sort-by, -s <field>      Sort the output by selected field
-  --user, -u <usr,usr>       Limit the output to a given list of users
-  --version                  Print program version
+  --account, -a <acc[,acc]>    Limit the output to a given list of accounts
+  --config-file, -c <path>     Configure the HTML output
+  --debug, -D                  Show stack traces in case of errors
+  --example                    Show help text with usage examples
+  --exclude-users <usr[,usr]>  List of users omitted from report
+  --format, -f <field[,field]> List of fields to include in output
+  --format-all, -A             Include all fields in output
+  --format-list, -F            List of fields available to print
+  --group-by, -g <group>       Group output by account, partition or user
+  --help, -h                   Show this help information
+  --html, -H                   Print output as HTML table
+  --no-header, -N              Do not print a table header in output
+  --node-regex, -n <regex>     Regular expression to select a subset of nodes
+  --partition, -p <par[,par]>  Limit the output to a given list of partitions
+  --print-data                 Print the parsed and processed data
+  --print-raw-data             Print data from the accounting database
+  --sort-by, -s <field>        Sort the output by selected field
+  --user, -u <usr[,usr]>       Limit the output to a given list of users
+  --version                    Print program version
 "
 
 EXAMPLE = "
@@ -661,6 +681,7 @@ begin
   $options = OpenStruct.new
   $options.config_file = String.new
   $options.debug = false
+  $options.exclude_users = Array.new
   $options.format = DEFAULT_FORMAT
   $options.format_all = false
   $options.group_by = 'account'
@@ -687,6 +708,7 @@ begin
     ['--config-file','-c',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-D',GetoptLong::NO_ARGUMENT],
     ['--example',GetoptLong::NO_ARGUMENT],
+    ['--exclude-users',GetoptLong::REQUIRED_ARGUMENT],
     ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
     ['--format-list','-F',GetoptLong::NO_ARGUMENT],
     ['--format-all','-A',GetoptLong::NO_ARGUMENT],
@@ -717,6 +739,8 @@ begin
     when '--example'
       $stdout.puts EXAMPLE
       exit 0
+    when '--exclude-users'
+      sacct.exclude_users arg.split(',')
     when '--format'
       format = Array.new
       arg.split(',').each do |f|
@@ -770,7 +794,7 @@ begin
     when '--user'
       sacct.user arg
     when '--version'
-      $stdout.puts 0.60
+      $stdout.puts 0.61
       exit 0
     when '--yaml'
       $options.yaml = true
@@ -851,7 +875,7 @@ rescue => exc
     $stderr.puts '-- Stack Trace --'
     $stderr.puts exc.backtrace
   else
-    $stderr.puts 'You may want run this in debug mode with \'-d\''
+    $stderr.puts 'You may want run this in debug mode with \'-D\''
   end
   exit 1
 end
