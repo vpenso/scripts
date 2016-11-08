@@ -67,6 +67,17 @@ module SacctMgr
 
   module_function
 
+  def get_accounts
+    command = 'sacctmgr -n show account format=account'
+    __ = System::exec command
+    return Array.new if __.nil? or __.empty?
+    accounts = Array.new
+    __.split("\n").sort.each do |account|
+      accounts << account.gsub(/\s+/, "")
+    end
+    return accounts
+  end
+
   def get_account_users(account)
     command = %Q{
       sacctmgr show account where name=#{account} withassoc format=user --noheader 
@@ -121,9 +132,10 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [-dhlv] <account> <limit>[=<value>] 
+#{exec_name} [-dhlv] <account>|all <limit>[=<value>] 
 
-  <account>          Name of the Slurm account
+  <account>|all      Name of the Slurm account to modify,
+                     or `all` to modify all accounts
   <limit>            List values of specified limit
   <limit>[=<value>]  Set value for specified limit
   --debug, -d        Show stacktraces in case of errors
@@ -200,7 +212,7 @@ begin
     when '--overwrite'
       $options.overwrite = true
     when '--version'
-      $stdout.puts 0.2
+      $stdout.puts 0.3
       exit 0
     end
   end
@@ -208,10 +220,18 @@ begin
   account = ARGV[0] || raise('No account specified!')
   limit = ARGV[1] || raise('No limit specified!')
 
-  SacctMgr.get_account_users(account).each do |user|
-    SacctMgr.set_user_limit(account,user,limit)
+  accounts = Array.new
+  if account == 'all'
+    accounts += SacctMgr.get_accounts
+  else
+    accounts << account
   end
 
+  accounts.each do |account|
+    SacctMgr.get_account_users(account).each do |user|
+      SacctMgr.set_user_limit(account,user,limit)
+    end
+  end
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
