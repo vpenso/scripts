@@ -67,23 +67,53 @@ module SacctMgr
 
   module_function
 
-  def user_set_limit(user,limit)
-    command = %Q<sacctmgr modify user #{user} set #{limit} --immediate>
-    System::exec(command)
-  end
-  
-  def list_account_users(account)
+  def get_account_users(account)
     command = %Q{
       sacctmgr show account where name=#{account} withassoc format=user --noheader 
         | tail -n+2 
         | tr -d ' '
     }
-    System::exec(command).split("\n")
+    __ = System::exec command 
+    raise("No user in account #{account}") if __.nil? or __.empty?
+    # return a list of user names in given account 
+    return __.split("\n")
   end
 
-  def show_user_limit(account,limit)
-    command = %Q<sacctmgr show account where name=#{account} withassoc format=user,#{limit}>
-    $stdout.puts System::exec(command)
+  def get_user_limit(account,user,limit_name)
+    command = %Q<sacctmgr -n show user where account=#{account} name=#{user} withassoc format=#{limit_name}>
+    __ = System::exec(command).gsub(/\s+/, "")
+    return nil if __.empty?
+    return __.to_i
+  end
+  
+  def set_user_limit(account,user,limit)
+    limit_name, target_limit = limit.split('=')
+    # Get the current value of the limit
+    current_limit = get_user_limit(account,user,limit_name)
+    set = false
+    # No target limit defined
+    if target_limit.nil?
+      set = false
+    # No limit set yet... 
+    elsif current_limit.nil?
+      set = true
+    # Limit set already...
+    elsif current_limit.kind_of? Numeric
+      # Limit passed by user differs from limit currently set
+      if current_limit != target_limit
+        # Only overwrite if forced by user
+        set = true if $options.overwrite
+      end
+    end
+    # Do nothing unless the limit should be set to given target_limit
+    if set
+      command = %Q<sacctmgr modify user where account=#{account} name=#{user} set #{limit} --immediate>
+      $logger.info "<#{self.class}##{__method__.to_s}> #{command}"
+      System::exec(command) unless $options.dry_run
+      $stdout.puts %Q<#{user}:#{account} #{limit}>
+    else
+      $stdout.puts %Q<#{user}:#{account} #{limit_name}=#{current_limit}>
+    end
   end
 
 end
@@ -91,20 +121,22 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [-dhlv] <account> <limit> 
+#{exec_name} [-dhlv] <account> <limit>[=<value>] 
 
-  account            Name of the Slurm account
-  limit              Resource limit to work with
+  <account>          Name of the Slurm account
+  <limit>            List values of specified limit
+  <limit>[=<value>]  Set value for specified limit
   --debug, -d        Show stacktraces in case of errors
+  --dry-run          Show commands instead of execution
   --help, -h         Show this help information
   --list, -l         List users with define limit
-  --version, -v      Print version number
+  --version          Print version number
 EOF
 
 EXAMPLES = <<EOF
 Show the GrpCPUs limit for all users in the account 'hpc':
 
-   >>> #{exec_name} -l hpc grpcpus
+   >>> #{exec_name} hpc grpcpus
 
 Set GrpCPUs for all users of account 'hpc' to 500
 
@@ -117,7 +149,9 @@ begin
 
   $options = OpenStruct.new
   $options.debug = false
+  $options.dry_run = false
   $options.list = false
+  $options.overwrite = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -129,16 +163,21 @@ begin
 
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--dry-run',GetoptLong::NO_ARGUMENT],
     ['--examples','-e',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--list','-l',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version','-v',GetoptLong::NO_ARGUMENT]
+    ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
+    when '--dry-run'
+      $options.dry_run = true
+      $logger.level = Logger::INFO
     when '--examples'
       $stdout.puts EXAMPLES
       exit 0
@@ -157,9 +196,11 @@ begin
         Logger::FATAL
       else
         Logger::INFO
-       end
+      end
+    when '--overwrite'
+      $options.overwrite = true
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 0.2
       exit 0
     end
   end
@@ -167,13 +208,8 @@ begin
   account = ARGV[0] || raise('No account specified!')
   limit = ARGV[1] || raise('No limit specified!')
 
-  if $options.list
-    SacctMgr.show_user_limit(account,limit)
-    exit 0
-  end
-
-  SacctMgr.list_account_users(account).each do |user|
-    SacctMgr.user_set_limit(user,limit)
+  SacctMgr.get_account_users(account).each do |user|
+    SacctMgr.set_user_limit(account,user,limit)
   end
 
 
