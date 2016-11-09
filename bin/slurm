@@ -130,6 +130,7 @@ HELP = <<EOF
 <command>
   h, help                          show this help information
 > j, jobs                          state of jobs 
+  l, limits                        association limits
   n, nodes                         state of execution nodes
 
 jobs <subcommand>
@@ -142,6 +143,10 @@ jobs <subcommand>
 > r,   running                     running jobs by user
   rr,  running-by-runtime          running jobs by runtime 
   ru,  running-by-user <user>      running jobs from user
+
+limits <subcommand>
+  a,   by-account <account>        limits for account
+  u,   by-user <user>              limits for user
 
 nodes <subcommand>
   a,   allocated                   nodes executing jobs
@@ -280,6 +285,40 @@ module Jobs
 
 end
 
+module Limits
+
+  module_function
+
+  LIMITS_FORMAT = %w(
+    Cluster Account User Partition Share 
+    GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+    MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+    QOS
+  )
+
+  def by_account
+    name = ARGV.shift || raise('Specify an account name to show limits for')
+    format = %w(
+      Cluster Account User Partition Share 
+      GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+      MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+      QOS
+    )
+    Table.new(format).transform(%Q<
+      sacctmgr -nP show associations where account=#{name} format=#{format.join(',')}
+    >,'|')
+  end
+
+  def by_user
+    name = ARGV.shift || raise('Specify an user name to show limits for')
+    Table.new(LIMITS_FORMAT).transform(%Q<
+      sacctmgr -snP show user where user=#{name} format=#{LIMITS_FORMAT.join(',')}
+    >,'|')
+
+  end
+
+end
+
 module Nodes
 
   module_function
@@ -407,7 +446,7 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.8
+      $stdout.puts 0.9
       exit 0
     end
   end
@@ -437,6 +476,16 @@ begin
       Jobs::running_by_user
     when 'f','failed'
       Jobs::failed
+    else
+      raise("Sub-command #{subcommand} not supported") 
+    end
+  when 'l','limits'
+    subcommand = ARGV.shift || 'state'
+    case subcommand
+    when 'a','by-account'
+      Limits::by_account
+    when 'u','by-user'
+      Limits::by_user
     else
       raise("Sub-command #{subcommand} not supported") 
     end
