@@ -266,10 +266,16 @@ module Sacct
         # Basic metric for the accumulation of statistics
         runtime   = line[Sacct::field_index 'cputimeraw'].to_i
         account   = line[Sacct::field_index 'account']
-        unless $options.accounts == 'all'
+        unless $options.accounts.empty?
           next unless $options.accounts.include? account
         end
         user      = line[Sacct::field_index 'user']
+        unless $options.users.empty?
+          next unless $options.users.include? user
+        end
+        unless $options.exclude_users.empty?
+          next if $options.exclude_users.include? user
+        end
         partition = line[Sacct::field_index 'partition']
         unless $options.partitions.empty?
           next unless $options.partitions.include? partition
@@ -503,23 +509,28 @@ exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 #{exec_name} [<options>] <command>
 
-<options>
-  -d, --debug                        enable debugging output, and stacktraces
-  -D, --dry-run                      implicit option -d, do not execute commands
-  -h, --help                         show this help information.
-  --version                          print version number.
-
 <command>
   e, export <start_time> <end_time> 
   f, format <file>
 
+<options>
+  -d, --debug                          enable debugging output, and stacktraces
+  -D, --dry-run                        implicit option -d, do not execute commands
+  -h, --help                           show this help information.
+  --version                            print version number.
+
 format <options>:
 
-  -f, --format <field>[,<field>]     list of fields to include in output
-  -A, --format-all                   include all fields in output
-  -F, --format-list                  list of fields available to print
-  -g, --group-by <field>             group output by account, partition or user
-  -N, --no-header                    do not show table header
+  -a, --accounts <name>[,<name>]       list of accounts to include
+  -f, --format <field>[,<field>]       list of fields to include in output
+  -A, --format-all                     include all fields in output
+  -F, --format-list                    list of fields available to print
+  -g, --group-by <field>               group output by account, partition or user
+  -N, --no-header                      do not show table header
+  -p, --partitions <name>[,<name>]     list of partitions to include
+  -s, --sort-by <field>                sort row by field, decending
+  -u, --users <name>[,<name>]          list of users to include
+  -U, --exclude-users <name>[,<name>]  list of users to exclude
 EOF
 
 begin
@@ -527,15 +538,17 @@ begin
   stdin = $stdin.tty? ? String.new : $stdin.read
 
   $options = OpenStruct.new
-  $options.accounts = 'all'
+  $options.accounts = Array.new
   $options.debug = false
   $options.dry_run = false
+  $options.exclude_users = Array.new
   $options.format = Format::DEFAULT
   $options.format_all = false
   $options.group_by = 'account'
   $options.node_header = false
   $options.partitions = Array.new
   $options.sort_by = 'runtime'
+  $options.users = Array.new
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -549,6 +562,7 @@ begin
     ['--accounts','-a',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--dry-run','-D',GetoptLong::NO_ARGUMENT],
+    ['--exclude-users','-U',GetoptLong::REQUIRED_ARGUMENT],
     ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
     ['--format-all','-A',GetoptLong::NO_ARGUMENT],
     ['--format-list','-F',GetoptLong::NO_ARGUMENT],
@@ -558,6 +572,7 @@ begin
     ['--no-header','-N',GetoptLong::NO_ARGUMENT],
     ['--partitions','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--users','-u',GetoptLong::REQUIRED_ARGUMENT],
     ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
@@ -570,6 +585,8 @@ begin
       $options.debug = true
       $logger.level = Logger::DEBUG
       $options.dry_run = true
+    when '--exclude-users'
+      $options.exclude_users = arg.split(',')
     when '--format'
       format = Array.new
       arg.split(',').each do |f|
@@ -608,10 +625,12 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--partitions'
-      $options.partitons = arg.split(',')
+      $options.partitions = arg.split(',')
     when '--sort-by'
       raise("Sort option #{arg} not supported") unless Format::OPTIONS.keys.include? arg.to_sym
       $options.sort_by = arg
+    when '--users'
+      $options.users = arg.split(',')
     when '--version'
       $stdout.puts 0.1
       exit 0
