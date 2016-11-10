@@ -21,6 +21,7 @@ require 'getoptlong'
 require 'logger'
 require 'json'
 require 'erb'
+require 'date'
 
 class Array
 
@@ -362,7 +363,10 @@ module Sacct
     def to_json
       JSON.pretty_generate @objects
     end
-    
+   
+    ##
+    # Read the input data and store it into an internal data structure
+    # 
     private def process_input_data
       # Iterate over the list of input files
       @data_files.each do |data_file|
@@ -406,14 +410,27 @@ module Sacct
             @objects[key][value]['partitions']           = (@objects[key][value]['partitions'] << partition).uniq
             @objects[key][value][Sacct::state(j_state)] += 1
             @objects[key][value][runtimes_key(runtime)] += 1
+            # This is expensive in terms of the memory foot print!
+            if $options.format.include? 'qwmedian'
+              qwmedian = waittime(
+                line[Sacct::field_index 'submit'],
+                line[Sacct::field_index 'start']
+              )
+              if qwmedian < 31449600 or qwmedian > 0
+                @objects[key][value]['qwmedian'] << qwmedian 
+              end
+            end
           end
         end
       end
     end
 
+    ##
+    # Calculate summery statistics using aggregated data
+    #
     def post_process_data
-      $logger.debug "<#{self.class}##{__method__.to_s}>"
       OBJECTS.each do |key|
+        $logger.debug "<#{self.class}##{__method__.to_s}> #{key}"
         @objects[key].each do |value,data|
           r_perc = '0'
           if data['runtime'].is_a? Numeric
@@ -421,8 +438,12 @@ module Sacct
             r_perc = sprintf '%.2f', (data['runtime'].to_f/@objects['runtime']) * 100
           end
           @objects[key][value]['useperc'] = r_perc
-           # Median wait time of jobs in queue
-          @objects[key][value]['qwmedian'] = humanize_secs data['qwmedian'].median
+          # Median wait time of jobs in queue
+          if $options.format.include? 'qwmedian'
+            $logger.debug "<#{self.class}##{__method__.to_s}> median #{data['qwmedian'].length} elements"
+            # calculate median wait time and transform to a human readable time format
+            @objects[key][value]['qwmedian'] = humanize_secs data['qwmedian'].median
+          end
         end
       end
     end
@@ -511,12 +532,25 @@ module Sacct
       skel.merge(runtimes_h).merge(states_h)
     end
 
+    ##
+    # Transform time in seconds into DD-HH:MM
+    #
     def humanize_secs(seconds)
       return 0 unless seconds.is_a? Numeric
       days = seconds / (60*60*24)
       seconds = seconds % (60*60*24)
       hours = Time.at(seconds).utc.strftime('%H:%M')
       days > 0 ? "#{days}-#{hours}" : hours
+    end
+
+    ##
+    # Time in seconds between start and end time in YYYY-MM-DDTHH:MM:SS
+    #
+    def waittime(start_time,end_time)
+      submit_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
+      start_epoch = DateTime.strptime(end_time,'%Y-%m-%YT%H:%M').to_time.to_i
+      wait_time_secs = start_epoch - submit_epoch
+      return wait_time_secs
     end
 
   end
