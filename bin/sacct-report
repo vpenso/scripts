@@ -20,6 +20,7 @@ require 'ostruct'
 require 'getoptlong' 
 require 'logger'
 require 'json'
+require 'erb'
 
 class Array
 
@@ -66,7 +67,7 @@ class Table
     form = format()
     rows = String.new
     @output.each do |row|
-      $logger.debug("#{row.inspect}")
+      $logger.debug "<#{self.class}##{__method__.to_s}> #{row.length} -- #{row.join('|')}"
       rows << sprintf("#{form}\n", *row)
     end
     return rows
@@ -78,7 +79,9 @@ class Table
     0.upto(columns-1) do |column|
       format << "%-#{field_width(column)}s"
     end
-    return format.join(' ')
+    format = format.join(' ')
+    $logger.debug "<#{self.class}##{__method__.to_s}> #{format}"
+    return format
   end
 
   def field_width(field = 0)
@@ -89,11 +92,115 @@ class Table
       width = elem.length
       max_width = width if width > max_width
     end
+    $logger.debug "<#{self.class}##{__method__.to_s}> field #{field} width #{max_width}"
     return max_width
   end
 
 end
 
+class HTML
+
+  DARKGREEN      = '#006400'
+  GREEN_4        = '#008B00'
+  GREEN_3        = '#00CD00'
+  PALEGREEN_3    = '#7CCD7C'
+  DARKSEAGREEN_2 = '#B4EEB4'
+  HONEYDEW_2     = '#E0EEE0'
+
+  PURPLE_4       = '#551A8B'
+  PURPLE_3       = '#7D26CD'
+  PURPLE_2       = '#912CEE'
+  PURPLE         = '#800080'
+  MAGENTA_3      = '#CD00CD'
+  MEDIUMORCHID_1 = '#E066FF'
+  PLUM           = '#DDA0DD'
+  THISTLE_2      = '#EED2EE'
+
+  CORNSILK_2     = '#EEE8CD'
+  WHEAT_2        = '#EED8AE'
+  NAVAJOWHITE_3  = '#CDB38B'
+  GOLDENROD      = '#DAA520'
+  GOLDENROD_4    = '#8B6914'
+  ORANGE         = '#FFA500'
+  ORANGE_3       = '#CD8500'
+  DARKORANGE     = '#FF8C00'
+  MELON          = '#E3A869'
+  CARROT         = '#ED9121'
+  BRICK          = '#9C661F'
+
+  NAVY           = '#000080'
+  BLUE           = '#0000FF'
+  ROYALBLUE      = '#4169E1'
+  DODGERBLUE_1   = '#1E90FF'
+  STEALBLUE_1    = '#63B8FF'
+  LIGTHSKYBLUE_2 = '#A4D3EE'
+  SLATEGRAY_2    = '#B9D3EE'
+  
+  PALETTE = [
+    DARKGREEN,
+    PURPLE_4,
+    GOLDENROD,
+    STEALBLUE_1,
+    GREEN_3,
+    PURPLE_2,
+    ROYALBLUE,
+    PALEGREEN_3,
+    MAGENTA_3,
+    ORANGE,
+    DARKSEAGREEN_2,
+    MEDIUMORCHID_1,
+    LIGTHSKYBLUE_2
+  ]
+
+  def initialize
+    @palette = Hash.new
+  end
+
+  def palette(field,value)
+    @palette[field] = Hash.new unless @palette.has_key? field
+    @palette[field][value] = PALETTE[@palette[field].length] unless @palette[field].has_key? value
+    return %Q[<span style="color:#{@palette[field][value]}">#{value}</span>]
+  end
+
+  def num_with_delimiter(num, delim = ';psbn&')
+    num.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(delim).reverse
+  end
+
+  def runtime(val)
+    l = val.to_s.length
+    color = if    l > 9   ; PURPLE_4
+            elsif l > 8   ; PURPLE_3
+            elsif l > 7   ; MAGENTA_3
+            elsif l > 6   ; MEDIUMORCHID_1
+            elsif l > 5   ; PLUM
+            else          ; THISTLE_2
+            end
+    %Q[<span style="color:#{color}">#{num_with_delimiter val}</span>]
+  end
+
+  GRAY_20        = '#333333'
+  GRAY_40        = '#666666'
+  GRAY_50        = '#7F7F7F'
+  GRAY_60        = '#999999'
+  GRAY_70        = '#B3B3B3'
+  GRAY_80        = '#CCCCCC'
+  GRAY_95        = '#F2F2F2'
+
+  def counter(val)
+     l = val.to_s.length
+     color = if    l > 8  ; GRAY_20
+             elsif l > 7  ; GRAY_40
+             elsif l > 6  ; GRAY_50
+             elsif l > 5  ; GRAY_60
+             elsif l > 4  ; GRAY_70
+             else         ; GRAY_80
+             end
+     return %Q[<span style="color:#{color}">#{num_with_delimiter val}</span>]
+  end
+
+
+
+end
 
 #
 # Interface to the command-line environment
@@ -241,8 +348,9 @@ module Sacct
 
     attr_reader :objects
 
-    def initialize(data_file)
-      @data_file = data_file
+    def initialize(data_path)
+      @data_path = data_path
+      @data_files = Dir.glob("#{@data_path}") 
       # This is the default used with options --parsable2
       @delimiter = '|'
       # Read the input data from the file given by the user
@@ -256,46 +364,49 @@ module Sacct
     end
     
     private def process_input_data
-      $logger.debug "<#{self.class}##{__method__.to_s}>"
-      # Avoid memory slurping by reading the lines one-by-one into memory
-      File.foreach(@data_file) do |line|
-        # Unfortunately this is the most expensive line of code in this program!
-        # It represents the metric collected for each job by the accounting
-        line = line.chop!.split(@delimiter)
+      # Iterate over the list of input files
+      @data_files.each do |data_file|
+        $logger.debug "<#{self.class}##{__method__.to_s}> #{data_file}"
+        # Avoid memory slurping by reading the lines one-by-one into memory
+        File.foreach(data_file) do |line|
+          # Unfortunately this is the most expensive line of code in this program!
+          # It represents the metric collected for each job by the accounting
+          line = line.chop!.split(@delimiter)
 
-        # Basic metric for the accumulation of statistics
-        runtime   = line[Sacct::field_index 'cputimeraw'].to_i
-        account   = line[Sacct::field_index 'account']
-        unless $options.accounts.empty?
-          next unless $options.accounts.include? account
-        end
-        user      = line[Sacct::field_index 'user']
-        unless $options.users.empty?
-          next unless $options.users.include? user
-        end
-        unless $options.exclude_users.empty?
-          next if $options.exclude_users.include? user
-        end
-        partition = line[Sacct::field_index 'partition']
-        unless $options.partitions.empty?
-          next unless $options.partitions.include? partition
-        end
-        j_state   = line[Sacct::field_index 'state']
-        
-        ##
-        # Store the statistics
-        #
-        @objects['runtime'] += runtime
-        # ...for each object, means accounts, partitions, users
-        OBJECTS.each do |key|
-          value = line[Sacct::field_index key]
-          @objects[key][value]['accounts']             = (@objects[key][value]['accounts'] << account).uniq
-          @objects[key][value]['jobs']                += 1
-          @objects[key][value]['runtime']             += runtime
-          @objects[key][value]['users']                = (@objects[key][value]['users'] << user).uniq
-          @objects[key][value]['partitions']           = (@objects[key][value]['partitions'] << partition).uniq
-          @objects[key][value][Sacct::state(j_state)] += 1
-          @objects[key][value][runtimes_key(runtime)] += 1
+          # Basic metric for the accumulation of statistics
+          runtime   = line[Sacct::field_index 'cputimeraw'].to_i
+          account   = line[Sacct::field_index 'account']
+          unless $options.accounts.empty?
+            next unless $options.accounts.include? account
+          end
+          user      = line[Sacct::field_index 'user']
+          unless $options.users.empty?
+            next unless $options.users.include? user
+          end
+          unless $options.exclude_users.empty?
+            next if $options.exclude_users.include? user
+          end
+          partition = line[Sacct::field_index 'partition']
+          unless $options.partitions.empty?
+            next unless $options.partitions.include? partition
+          end
+          j_state   = line[Sacct::field_index 'state']
+          
+          ##
+          # Store the statistics
+          #
+          @objects['runtime'] += runtime
+          # ...for each object, means accounts, partitions, users
+          OBJECTS.each do |key|
+            value = line[Sacct::field_index key]
+            @objects[key][value]['accounts']             = (@objects[key][value]['accounts'] << account).uniq
+            @objects[key][value]['jobs']                += 1
+            @objects[key][value]['runtime']             += runtime
+            @objects[key][value]['users']                = (@objects[key][value]['users'] << user).uniq
+            @objects[key][value]['partitions']           = (@objects[key][value]['partitions'] << partition).uniq
+            @objects[key][value][Sacct::state(j_state)] += 1
+            @objects[key][value][runtimes_key(runtime)] += 1
+          end
         end
       end
     end
@@ -331,14 +442,23 @@ module Sacct
     def init_objects
       @objects = { 'runtime' => 0 }
       OBJECTS.each { |_| @objects[_] = Hash.new }
-      # Initialize the basic data structure using the skeleton
-      OBJECTS.each do |object| 
-        index = Sacct::field_index(object) + 1
-        # Do not implement this in Ruby code...
-        elems = System::exec %Q<cat #{@data_file} | cut -d'#{@delimiter}' -f#{index} | sort | uniq>
-        # ...it is difficult to implement it more efficiently
-        elems.each_line do |elem|
-          @objects[object][elem.chop] = skeleton
+      #
+      # Iterate over all input files... 
+      @data_files.each do |data_file|
+        # ..to initialize the basic data structure using the skeleton
+        OBJECTS.each do |object| 
+          # identify the column index number for a given objects, e.g. account or user 
+          index = Sacct::field_index(object) + 1
+          ### Do not implement this in Ruby code...
+          ### ...it is difficult to implement it more efficiently
+          # Get a unique list of elements in a given column, e.g. a list of all user names
+          elems = System::exec %Q<cat #{data_file} | cut -d'#{@delimiter}' -f#{index} | sort | uniq>
+          # Iterate over the returned list to initialize the data structure per eleement
+          elems.each_line do |elem|
+            elem = elem.chop
+            # Use the skeleton() function for the basic data structure
+            @objects[object][elem] = skeleton unless @objects[object].has_key? elem
+          end
         end
       end
     end
@@ -456,18 +576,11 @@ class Format
   
    def initialize(data)
      @data = data
-   end
-
-   def sort_by
-     rel = {}
-     @data.each { |n,d| rel[n] = d[$options.sort_by] }
-     order = rel.sort_by{|k,v| v}
-     order = order.reverse unless %w(accounts partitions users).include? $options.sort_by
-     order = order.to_h.keys
-     order.delete_if { |elem| @data[elem]['runtime'] == 0 }
+     group_by()
    end
 
    def group_by
+     $logger.debug "<#{self.class}##{__method__.to_s}> #{$options.group_by}"
      @data = @data[$options.group_by]
      case $options.group_by
      when 'account'
@@ -477,6 +590,8 @@ class Format
        end
      when 'user'
        @data.each_key do |_|
+         @data[_]['accounts'] = @data[_]['accounts'].join(',')
+         @data[_]['partitions'] = @data[_]['partitions'].join(',')
          @data[_]['users'] = @data[_]['users'].first
        end
      when 'partition'
@@ -487,10 +602,21 @@ class Format
      end
    end
 
+   def sort_by
+     $logger.debug "<#{self.class}##{__method__.to_s}> #{$options.sort_by}"
+     rel = {}
+     @data.each { |n,d| rel[n] = d[$options.sort_by] }
+     order = rel.sort_by{|k,v| v}
+     order = order.reverse unless %w(accounts partitions users).include? $options.sort_by
+     order = order.to_h.keys
+     order.delete_if { |elem| @data[elem]['runtime'] == 0 }
+   end
+
+
    def table
+     $logger.debug "<#{self.class}##{__method__.to_s}>"
      table = Array.new
      table << $options.format.map(&:upcase) unless $options.no_header
-     group_by()
      sort_by.each do |elem|
        row = Array.new
        $options.format.each do |field|
@@ -502,16 +628,20 @@ class Format
      end
      Table::print table
    end
+
+   def data
+     return @data 
+   end
  
 end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [<options>] <command>
+#{exec_name} [<options>] <command> <arguments>
 
 <command>
-  e, export <start_time> <end_time> 
-  f, format <file>
+  e, export <start_time> <end_time>    export data from the accounting database
+  f, format <files>                    process a list of files and format the ouput
 
 <options>
   -d, --debug                          enable debugging output, and stacktraces
@@ -520,12 +650,12 @@ HELP = <<EOF
   --version                            print version number.
 
 format <options>:
-
   -a, --accounts <name>[,<name>]       list of accounts to include
   -f, --format <field>[,<field>]       list of fields to include in output
   -A, --format-all                     include all fields in output
   -F, --format-list                    list of fields available to print
   -g, --group-by <field>               group output by account, partition or user
+  -H, --html                           HTML table instead of clear text
   -N, --no-header                      do not show table header
   -p, --partitions <name>[,<name>]     list of partitions to include
   -s, --sort-by <field>                sort row by field, decending
@@ -545,6 +675,7 @@ begin
   $options.format = Format::DEFAULT
   $options.format_all = false
   $options.group_by = 'account'
+  $options.html = false
   $options.node_header = false
   $options.partitions = Array.new
   $options.sort_by = 'runtime'
@@ -568,6 +699,7 @@ begin
     ['--format-list','-F',GetoptLong::NO_ARGUMENT],
     ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--html','-H',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--no-header','-N',GetoptLong::NO_ARGUMENT],
     ['--partitions','-p',GetoptLong::REQUIRED_ARGUMENT],
@@ -611,6 +743,8 @@ begin
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--html'
+      $options.html = true
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -637,7 +771,6 @@ begin
     end
   end
 
-
   command = ARGV.shift || raise('No command given!')
   case command
   when 'e','export'
@@ -651,7 +784,13 @@ begin
   when 'f','format'
     data_path = ARGV.shift || raise('Specify the path to the source accounting data')
     data =  Sacct::Process.new(data_path)
-    $stdout.puts Format.new(data.objects).table
+    if $options.html
+      html = HTML.new
+      format = Format.new(data.objects)
+      $stdout.puts ERB.new(DATA.read,nil,'-').result(binding)
+    else
+      $stdout.puts Format.new(data.objects).table
+    end
   else
     raise("Command #{command} not supported")
   end
@@ -669,3 +808,35 @@ rescue => exc
 end
 
 exit 0
+
+__END__
+<table>
+  <% if not $options.no_header -%>
+  <caption>
+  </caption>
+  <thead>
+    <tr><% $options.format.each do |field| -%><th><%= field.capitalize %></th><% end -%></tr>
+  </thead>
+  <% end -%>
+  <tbody>
+  <% format.sort_by.each do |elem| -%>
+    <tr>
+    <% $options.format.each do |field| -%>
+      <td><%=
+        value = format.data[elem][field]
+        case field
+        when 'accounts','partitions'
+          html.palette(field,value)
+        when 'jobs'
+          html.counter(value)
+        when 'runtime' 
+          html.runtime(value)
+        else
+          value
+        end
+      -%></td>
+    <% end -%>
+    </tr>
+  <% end -%>
+  </tbody>
+</table>
