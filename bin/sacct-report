@@ -316,6 +316,8 @@ module Sacct
   class Export
 
     def initialize()
+      @start_time = nil
+      @end_time = nil
       # Options from the constants defined above 
       @opts = Sacct::DEFAULT_OPTIONS 
       @opts << "--format #{Sacct::fields}"
@@ -325,7 +327,7 @@ module Sacct
     # Set beginning to time frame 
     #
     def start_time=(time)
-      @opts << "--starttime #{time}"
+      @start_time = time
     end
 
     # Couple of setters for options to the sacct command
@@ -333,11 +335,71 @@ module Sacct
     def end_time=(time = '')
       # If end time is not defined, this hour is used instead
       time = Time.now.strftime Sacct::TIME_FORMAT if time.empty?
-      @opts << "--endtime #{time}"
+      @end_time = time
     end
 
     def data
-      command = "sacct #{@opts.join(' ')}"
+      time_frame(@start_time,@end_time)
+    end
+
+    def by_day
+      check_day_format?(@start_time)        
+      check_day_format?(@end_time)            
+      #
+      # Unfortunately Slurm uses dashes in its time notation
+      #
+      start_date = Date.parse(@start_time)
+            date = start_date
+        end_date = Date.parse(@end_time)
+      #
+      # Loop over the defined time frame
+      # 
+      loop do
+        #
+        # Path to the file storing the output
+        # 
+        o_file = File.join ENV['PWD'], "#{date.strftime("%Y/%m/%d")}.psv"
+        o_path = File.dirname o_file
+        #
+        # Create the parent directory of the output file if missing
+        #
+        System::exec "mkdir --parents #{o_path}" if not File.directory? o_path
+        #
+        # Do not overwrite accounting data exported already
+        #
+        if not File.exists? "o_file_zip"
+          #
+          # Export data from the accounting database
+          #
+          time_frame("#{date}T00:00:00","#{date}T23:59:59","> #{o_file}") 
+          $logger.info "W #{o_file}"
+        
+        else
+          $logger.info "S #{o_file}"
+        end
+        # 
+        # Exit condition if end date is reached
+        #
+        break if date == end_date   
+        date = date.next_day
+      end
+
+    end
+
+    private
+
+    # Check if a given date of a day is well formated
+    #
+    def check_day_format?(date)
+      if date =~ /^20[0-9][0-9]-[0,1][0-9]-[0-3][0-9]$/
+        true
+      else
+        raise('Date not formated correctly: YYYY/MM/DD')
+      end
+    end
+
+    def time_frame(start_time,end_time,append = '')
+      command = "sacct #{@opts.join(' ')} --starttime #{start_time} --endtime #{end_time} #{append}"
       $logger.debug "<#{self.class}##{__method__.to_s}> #{command}"
       return if $options.dry_run
       System::exec command 
@@ -674,7 +736,7 @@ HELP = <<EOF
 #{exec_name} [<options>] <command> <arguments>
 
 <command>
-  e, export <start_time> <end_time>    export data from the accounting database
+  e, export <start_time> [<end_time>]  export data from the accounting database
   f, format <files>                    process a list of files and format the ouput
 
 <options>
@@ -683,7 +745,17 @@ HELP = <<EOF
   -h, --help                           show this help information.
   --version                            print version number.
 
-format <options>:
+export <start_time> [<end_time>]:
+  <start_time>                         YYYY-MM-DD[THH:MM[:SS]], begin of time-frame 
+                                       to be queried from the accounting database
+  <end_time>                           YYYY-MM-DD[THH:MM[:SS]], end time-frame to be 
+                                       queried from the accounting database (defaults 
+                                       to current hour)
+  --by-day                             one file per day for given time-frame
+
+format <options> <files>:
+  <files>                              list of input file holding data exported 
+                                       from the accounting database
   -a, --accounts <name>[,<name>]       list of accounts to include
   -f, --format <field>[,<field>]       list of fields to include in output
   -A, --format-all                     include all fields in output
@@ -703,6 +775,7 @@ begin
 
   $options = OpenStruct.new
   $options.accounts = Array.new
+  $options.by_day = false
   $options.debug = false
   $options.dry_run = false
   $options.exclude_users = Array.new
@@ -721,10 +794,11 @@ begin
   $logger.formatter = proc do |severity, datetime, progname, message|
     "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
   end
-  $logger.level = Logger::WARN
+  $logger.level = Logger::INFO
 
   GetoptLong.new(
     ['--accounts','-a',GetoptLong::REQUIRED_ARGUMENT],
+    ['--by-day',GetoptLong::NO_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--dry-run','-D',GetoptLong::NO_ARGUMENT],
     ['--exclude-users','-U',GetoptLong::REQUIRED_ARGUMENT],
@@ -744,6 +818,8 @@ begin
     case opt
     when '--accounts'
       $options.accounts = arg.split(',')
+    when '--by-day'
+      $options.by_day = true
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
@@ -800,7 +876,7 @@ begin
     when '--users'
       $options.users = arg.split(',')
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 0.2
       exit 0
     end
   end
@@ -813,8 +889,12 @@ begin
     export.start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')        
     # Users can optionally define an end time
     export.end_time = ARGV.shift || ''
-    # dump data to the user
-    $stdout.puts export.data
+    if $options.by_day
+      export.by_day 
+    else
+      # dump data to the user
+      $stdout.puts export.data
+    end
   when 'f','format'
     data_path = ARGV.shift || raise('Specify the path to the source accounting data')
     data =  Sacct::Process.new(data_path)
