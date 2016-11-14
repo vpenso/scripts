@@ -456,7 +456,8 @@ module Sacct
           unless $options.partitions.empty?
             next unless $options.partitions.include? partition
           end
-          j_state   = line[Sacct::field_index 'state']
+          j_state = line[Sacct::field_index 'state']
+          j_state = Sacct::state(j_state)
           
           ##
           # Store the statistics
@@ -470,7 +471,7 @@ module Sacct
             @objects[key][value]['runtime']             += runtime
             @objects[key][value]['users']                = (@objects[key][value]['users'] << user).uniq
             @objects[key][value]['partitions']           = (@objects[key][value]['partitions'] << partition).uniq
-            @objects[key][value][Sacct::state(j_state)] += 1
+            @objects[key][value][j_state] += 1
             @objects[key][value][runtimes_key(runtime)] += 1
             # This is expensive in terms of the memory foot print!
             if $options.format.include? 'qwmedian'
@@ -609,9 +610,9 @@ module Sacct
     # Time in seconds between start and end time in YYYY-MM-DDTHH:MM:SS
     #
     def waittime(start_time,end_time)
-      submit_epoch = DateTime.strptime(start_time,'%Y-%m-%YT%H:%M').to_time.to_i
-      start_epoch = DateTime.strptime(end_time,'%Y-%m-%YT%H:%M').to_time.to_i
-      wait_time_secs = start_epoch - submit_epoch
+      submit_epoch = DateTime.strptime(start_time,'%Y-%m-%dT%H:%M:%S')
+      start_epoch = DateTime.strptime(end_time,'%Y-%m-%dT%H:%M:%S')
+      wait_time_secs = start_epoch.to_time.to_i - submit_epoch.to_time.to_i
       return wait_time_secs
     end
 
