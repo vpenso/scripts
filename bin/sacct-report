@@ -723,7 +723,7 @@ class Format
        end
        table << row
      end
-     Table::print table
+     return table
    end
 
    def data
@@ -744,7 +744,7 @@ HELP = <<EOF
   -d, --debug                          enable debugging output, and stacktraces
   -D, --dry-run                        implicit option -d, do not execute commands
   -h, --help                           show this help information.
-  --version                            print version number.
+      --version                        print version number.
 
 export <start_time> [<end_time>]:
   <start_time>                         YYYY-MM-DD[THH:MM[:SS]], begin of time-frame 
@@ -752,12 +752,13 @@ export <start_time> [<end_time>]:
   <end_time>                           YYYY-MM-DD[THH:MM[:SS]], end time-frame to be 
                                        queried from the accounting database (defaults 
                                        to current hour)
-  --by-day                             one file per day for given time-frame
+      --by-day                         one file per day for given time-frame
 
 format <options> <files>:
   <files>                              list of input file holding data exported 
                                        from the accounting database
   -a, --accounts <name>[,<name>]       list of accounts to include
+      --delimiter <character>          use character to seperate columns
   -f, --format <field>[,<field>]       list of fields to include in output
   -A, --format-all                     include all fields in output
   -F, --format-list                    list of fields available to print
@@ -778,6 +779,7 @@ begin
   $options.accounts = Array.new
   $options.by_day = false
   $options.debug = false
+  $options.delimiter = String.new
   $options.dry_run = false
   $options.exclude_users = Array.new
   $options.format = Format::DEFAULT
@@ -801,6 +803,7 @@ begin
     ['--accounts','-a',GetoptLong::REQUIRED_ARGUMENT],
     ['--by-day',GetoptLong::NO_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--delimiter',GetoptLong::REQUIRED_ARGUMENT],
     ['--dry-run','-D',GetoptLong::NO_ARGUMENT],
     ['--exclude-users','-U',GetoptLong::REQUIRED_ARGUMENT],
     ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
@@ -824,6 +827,8 @@ begin
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
+    when '--delimiter'
+      $options.delimiter = arg
     when '--dry-run'
       $options.debug = true
       $logger.level = Logger::DEBUG
@@ -877,7 +882,7 @@ begin
     when '--users'
       $options.users = arg.split(',')
     when '--version'
-      $stdout.puts 0.2
+      $stdout.puts 0.3
       exit 0
     end
   end
@@ -899,12 +904,28 @@ begin
   when 'f','format'
     data_path = ARGV.shift || raise('Specify the path to the source accounting data')
     data =  Sacct::Process.new(data_path)
+    #
+    # If the user opts to print an HTML table as output
+    #
     if $options.html
       html = HTML.new
       format = Format.new(data.objects)
       $stdout.puts ERB.new(DATA.read,nil,'-').result(binding)
+    #
+    # If the user provides a delimiter, print table 
+    # separated by this delimiter instead of spaces 
+    #
+    elsif not $options.delimiter.empty?
+      table = Format.new(data.objects).table
+      table.each do |line|
+        $stdout.puts line.join($options.delimiter)
+      end
+    #
+    # This is the default, print a space separated table with
+    # proper column width 
+    #
     else
-      $stdout.puts Format.new(data.objects).table
+      $stdout.puts Table::print(Format.new(data.objects).table)
     end
   else
     raise("Command #{command} not supported")
