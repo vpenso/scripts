@@ -445,6 +445,9 @@ module Sacct
           unless $options.accounts.empty?
             next unless $options.accounts.include? account
           end
+          unless $options.exclude_accounts.empty?
+            next if $options.exclude_accounts.include? account
+          end
           user      = line[Sacct::field_index 'user']
           unless $options.users.empty?
             next unless $options.users.include? user
@@ -455,6 +458,9 @@ module Sacct
           partition = line[Sacct::field_index 'partition']
           unless $options.partitions.empty?
             next unless $options.partitions.include? partition
+          end
+          unless $options.exclude_partitions.empty?
+            next if $options.exclude_partitions.include? partition
           end
           j_state = line[Sacct::field_index 'state']
           j_state = Sacct::state(j_state)
@@ -737,38 +743,40 @@ HELP = <<EOF
 #{exec_name} [<options>] <command> <arguments>
 
 <command>
-  e, export <start_time> [<end_time>]  export data from the accounting database
-  f, format <files>                    process a list of files and format the ouput
+  e, export <start_time> [<end_time>]     export data from the accounting database
+  f, format <files>                       process a list of files and format the ouput
 
 <options>
-  -d, --debug                          enable debugging output, and stacktraces
-  -D, --dry-run                        implicit option -d, do not execute commands
-  -h, --help                           show this help information.
-      --version                        print version number.
+  -d, --debug                             enable debugging output, and stacktraces
+  -D, --dry-run                           implicit option -d, do not execute commands
+  -h, --help                              show this help information.
+      --version                           print version number.
 
 export <start_time> [<end_time>]:
-  <start_time>                         YYYY-MM-DD[THH:MM[:SS]], begin of time-frame 
-                                       to be queried from the accounting database
-  <end_time>                           YYYY-MM-DD[THH:MM[:SS]], end time-frame to be 
-                                       queried from the accounting database (defaults 
-                                       to current hour)
-      --by-day                         one file per day for given time-frame
+  <start_time>                            YYYY-MM-DD[THH:MM[:SS]], begin of time-frame 
+                                          to be queried from the accounting database
+  <end_time>                              YYYY-MM-DD[THH:MM[:SS]], end time-frame to be 
+                                          queried from the accounting database (defaults 
+                                          to current hour)
+      --by-day                            one file per day for given time-frame
 
 format <options> <files>:
-  <files>                              list of input file holding data exported 
-                                       from the accounting database
-  -a, --accounts <name>[,<name>]       list of accounts to include
-      --delimiter <character>          use character to seperate columns
-  -f, --format <field>[,<field>]       list of fields to include in output
-  -A, --format-all                     include all fields in output
-  -F, --format-list                    list of fields available to print
-  -g, --group-by <field>               group output by account, partition or user
-  -H, --html                           HTML table instead of clear text
-  -N, --no-header                      do not show table header
-  -p, --partitions <name>[,<name>]     list of partitions to include
-  -s, --sort-by <field>                sort row by field, decending
-  -u, --users <name>[,<name>]          list of users to include
-  -U, --exclude-users <name>[,<name>]  list of users to exclude
+  <files>                                 list of input file holding data exported 
+                                          from the accounting database
+  -a, --accounts <name>[,<name>]          list of accounts to include
+  -A, --exclude-accounts <name>[,<name>]  list of accounts to exclude
+      --delimiter <character>             use character to seperate columns
+  -f, --format <field>[,<field>]          list of fields to include in output
+  -F, --format-all                        include all fields in output
+      --format-list                       list of fields available to print
+  -g, --group-by <field>                  group output by account, partition or user
+  -H, --html                              HTML table instead of clear text
+  -N, --no-header                         do not show table header
+  -p, --partitions <name>[,<name>]        list of partitions to include
+  -P, --exclude-partition <name>[,<name>] list of partitions to exclude
+  -s, --sort-by <field>                   sort row by field, decending
+  -u, --users <name>[,<name>]             list of users to include
+  -U, --exclude-users <name>[,<name>]     list of users to exclude
 EOF
 
 begin
@@ -781,6 +789,8 @@ begin
   $options.debug = false
   $options.delimiter = String.new
   $options.dry_run = false
+  $options.exclude_accounts = Array.new
+  $options.exclude_partitions = Array.new
   $options.exclude_users = Array.new
   $options.format = Format::DEFAULT
   $options.format_all = false
@@ -805,10 +815,12 @@ begin
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--delimiter',GetoptLong::REQUIRED_ARGUMENT],
     ['--dry-run','-D',GetoptLong::NO_ARGUMENT],
+    ['--exclude-accounts','-A',GetoptLong::REQUIRED_ARGUMENT],
+    ['--exclude-partitions','-P',GetoptLong::REQUIRED_ARGUMENT],
     ['--exclude-users','-U',GetoptLong::REQUIRED_ARGUMENT],
     ['--format','-f',GetoptLong::REQUIRED_ARGUMENT],
-    ['--format-all','-A',GetoptLong::NO_ARGUMENT],
-    ['--format-list','-F',GetoptLong::NO_ARGUMENT],
+    ['--format-all','-F',GetoptLong::NO_ARGUMENT],
+    ['--format-list',GetoptLong::NO_ARGUMENT],
     ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--html','-H',GetoptLong::NO_ARGUMENT],
@@ -833,6 +845,10 @@ begin
       $options.debug = true
       $logger.level = Logger::DEBUG
       $options.dry_run = true
+    when '--exclude-accounts'
+      $options.exclude_accounts = arg.split(',')
+    when '--exclude-partitions'
+      $options.exclude_partitions = arg.split(',')
     when '--exclude-users'
       $options.exclude_users = arg.split(',')
     when '--format'
@@ -882,7 +898,7 @@ begin
     when '--users'
       $options.users = arg.split(',')
     when '--version'
-      $stdout.puts 0.3
+      $stdout.puts 0.4
       exit 0
     end
   end
