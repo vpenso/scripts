@@ -67,23 +67,64 @@ module SacctMgr
 
   module_function
 
-  def user_set_limit(user,limit)
-    command = %Q<sacctmgr modify user #{user} set #{limit} --immediate>
-    System::exec(command)
+  def get_accounts
+    command = 'sacctmgr -n show account format=account'
+    __ = System::exec command
+    return Array.new if __.nil? or __.empty?
+    accounts = Array.new
+    __.split("\n").sort.each do |account|
+      accounts << account.gsub(/\s+/, "")
+    end
+    return accounts
   end
-  
-  def list_account_users(account)
+
+  def get_account_users(account)
     command = %Q{
       sacctmgr show account where name=#{account} withassoc format=user --noheader 
         | tail -n+2 
         | tr -d ' '
     }
-    System::exec(command).split("\n")
+    __ = System::exec command 
+    raise("No user in account #{account}") if __.nil? or __.empty?
+    # return a list of user names in given account 
+    return __.split("\n")
   end
 
-  def show_user_limit(account,limit)
-    command = %Q<sacctmgr show account where name=#{account} withassoc format=user,#{limit}>
-    $stdout.puts System::exec(command)
+  def get_user_limit(account,user,limit_name)
+    command = %Q<sacctmgr -n show user where account=#{account} name=#{user} withassoc format=#{limit_name}>
+    __ = System::exec(command).gsub(/\s+/, "")
+    return nil if __.empty?
+    return __.to_i
+  end
+  
+  def set_user_limit(account,user,limit)
+    limit_name, target_limit = limit.split('=')
+    # Get the current value of the limit
+    current_limit = get_user_limit(account,user,limit_name)
+    set = false
+    # No target limit defined
+    if target_limit.nil?
+      set = false
+    # No limit set yet... 
+    elsif current_limit.nil?
+      set = true
+    # Limit set already...
+    elsif current_limit.kind_of? Numeric
+      # Limit passed by user differs from limit currently set
+      if current_limit != target_limit
+        # Only overwrite if forced by user
+        set = true if $options.overwrite
+      end
+    end
+    # Do nothing unless the limit should be set to given target_limit
+    if set
+      command = %Q<sacctmgr modify user where account=#{account} name=#{user} set #{limit} --immediate>
+      $logger.info "<#{self.class}##{__method__.to_s}> #{command}"
+      System::exec(command) unless $options.dry_run
+      $stdout.puts %Q<#{user}:#{account} #{limit}>
+    else
+      $stdout.puts %Q<#{user}:#{account} #{limit_name}=#{current_limit}>
+    end
   end
 
 end
@@ -91,24 +132,35 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [-dhlv] <account> <limit> 
+#{exec_name} [<options>] <account>|all <limit>[=<value>] 
 
-  account            Name of the Slurm account
-  limit              Resource limit to work with
-  --debug, -d        Show stacktraces in case of errors
-  --help, -h         Show this help information
-  --list, -l         List users with define limit
-  --version, -v      Print version number
+<account>|all                          name of the Slurm account to modify,
+                                       or `all` to modify all accounts
+<limit>                                list values of specified limit
+<limit>[=<value>]                      set value for specified limit
+<options>:
+  -d, --debug                          show stacktraces in case of errors
+  --dry-run                            show commands instead of execution
+  -e, --examples                       show command example usage
+  -a, --exclude-account <acc>[,<acc>]  exclude from `all` accounts 
+  -h, --help                           show this help information
+  -O, --overwrite                      overwrite limit if set already
+  --version                            print version number
 EOF
 
-EXAMPLES = <<EOF
-Show the GrpCPUs limit for all users in the account 'hpc':
+EXAMPLES = <<-EOF
+Show the GrpCPUs limit for all users in the account hpc:
 
-   >>> #{exec_name} -l hpc grpcpus
+   >>> #{exec_name} hpc grpcpus
 
-Set GrpCPUs for all users of account 'hpc' to 500
+Set GrpCPUs for all users of account hpc to 500:
 
    >>> #{exec_name} hpc grpcpus=500
+
+Set MaxSubmitJobs for all user to 1000 with the exception of the
+accounts science and simulation:
+
+   >>> #{exec_name} -a science,simulate all maxsubmitjobs=1000
 EOF
 
 begin
@@ -117,7 +169,10 @@ begin
 
   $options = OpenStruct.new
   $options.debug = false
+  $options.dry_run = false
+  $options.exclude_account = Array.new
   $options.list = false
+  $options.overwrite = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -129,19 +184,27 @@ begin
 
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--dry-run',GetoptLong::NO_ARGUMENT],
     ['--examples','-e',GetoptLong::NO_ARGUMENT],
+    ['--exclude-account','-a',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--list','-l',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--version','-v',GetoptLong::NO_ARGUMENT]
+    ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
+    when '--dry-run'
+      $options.dry_run = true
+      $logger.level = Logger::INFO
     when '--examples'
       $stdout.puts EXAMPLES
       exit 0
+    when '--exclude-account'
+      $options.exclude_account += arg.split(',')
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -157,9 +220,11 @@ begin
         Logger::FATAL
       else
         Logger::INFO
-       end
+      end
+    when '--overwrite'
+      $options.overwrite = true
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 0.4
       exit 0
     end
   end
@@ -167,15 +232,20 @@ begin
   account = ARGV[0] || raise('No account specified!')
   limit = ARGV[1] || raise('No limit specified!')
 
-  if $options.list
-    SacctMgr.show_user_limit(account,limit)
-    exit 0
+  accounts = Array.new
+  if account == 'all'
+    accounts += SacctMgr.get_accounts
+  else
+    accounts << account
   end
 
-  SacctMgr.list_account_users(account).each do |user|
-    SacctMgr.user_set_limit(user,limit)
-  end
 
+  accounts.each do |account|
+    next if $options.exclude_account.include? account
+    SacctMgr.get_account_users(account).each do |user|
+      SacctMgr.set_user_limit(account,user,limit)
+    end
+  end
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"

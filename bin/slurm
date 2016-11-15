@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2015 Victor Penso
+# Copyright 2015-2016 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -125,38 +125,46 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [<options>] <command> [<subcommand>] [<args>] 
+#{exec_name} [<options>] [<command>] [<subcommand>] [<args>] 
 
-Commands:
-  j, jobs                          state of jobs 
+<command>
+  h, help                          show this help information
+> j, jobs                          state of jobs 
+  l, limits                        association limits
   n, nodes                         state of execution nodes
 
-Jobs sub-commands:
-  c, completed                     jobs completed after execution
-  f, failed                        jobs finished with a failure
-  p, pending                       pending jobs
-  ps, pending-by-submit            pending jobs by submit time
-  pp, pending-by-priority          pending jobs by priority 
-> r, running                       running jobs by user
-  rr, running-by-runtime           running jobs by runtime 
-  ru, running-by-user <user>       running jobs from user
+jobs <subcommand>
+  c,   completed-by-users          jobs completed by users
+  ce,  completed-by-endtime        jobs completed in the last 6 hours
+  f,   failed                      jobs finished with a failure
+  p,   pending                     pending jobs
+  ps,  pending-by-submit           pending jobs by submit time
+  pp,  pending-by-priority         pending jobs by priority 
+> r,   running                     running jobs by user
+  rr,  running-by-runtime          running jobs by runtime 
+  ru,  running-by-user <user>      running jobs from user
 
-Nodes sub-commands:
-  a, allocated                     nodes executing jobs
-  d, defect                        number of nodes with defects
-  dn, defect-nodes                 list defect nodes
-  dr, drain <nodeset> <reason>     drain nodes
+limits <subcommand>
+  a,   by-account <account>        limits for account
+  u,   by-user <user>              limits for user
+
+nodes <subcommand>
+  a,   allocated                   nodes executing jobs
+  d,   defect                      number of nodes with defects
+  dn,  defect-nodes                list defect nodes on-by-line
+  dr,  drain <nodeset> <reason>    drain nodes
   drn, drain-nodeset <reason>      drain nodes in $NODES
-  i, idle                          nodes with available resources
-  r, resume <nodeset>              resume nodes
-  rn, resume-nodeset               resume nodes in $NODES
-> s, state                         overview nodes/CPUs state
-  u, users                         list users of each node
+  i,   idle                        nodes with available resources
+  r,   resume <nodeset>            resume nodes
+  rn,  resume-nodeset              resume nodes in $NODES
+> s,   state                       overview nodes/CPUs state
+  u,   users                       list users of each node
 
-Options:
-  --debug, -d                      show stacktraces in case of errors
-  --help, -h                       show this help information
-  --version, -v                    print program version
+<options>
+  -b, --begin-time <[0-9]*[hd]>    hours/days to look back in the accounting     
+  -d, --debug                      show stacktraces in case of errors
+  -h, --help                       show this help information
+  -v, --version                    print program version
 EOF
 
 
@@ -205,11 +213,11 @@ module Jobs
   end
 
   def pending_by_priority
-    Table.new(%w(Jobs State Priority User Account Partition CPUs Nodes Time-Limit Features GRES QoS)).transform("
+    Table.new(%w(Jobs State Priority User Account Partition CPUs Nodes Time-Limit Features GRES QoS Reason)).transform("
       squeue
         --all
         --sort '-Q,P,u,C,D,l,t' -t pd
-        --format '%9T %8Q %8u %10a %9P %.4C %5D %11l %8f %6b %6q'
+        --format '%9T %8Q %8u %10a %9P %.4C %5D %11l %8f %6b %6q %r'
         --noheader
         | uniq -c
     ")
@@ -227,12 +235,25 @@ module Jobs
     ")
   end
 
-  def completed
+  def completed_by_users
+    Table.new(%w(Jobs User Account)).transform(%Q[
+      sacct --state completed
+          --noheader
+          --allusers
+          --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --format user,account
+          --allocations
+          | sort 
+          | uniq -c
+    ])
+  end
+
+  def completed_by_endtime
     Table.new(%w(Jobs End User Accounts State Nodes)).transform(%Q[
       sacct --state completed
           --noheader
           --allusers
-          --starttime $(date --date="1 days ago" +"%Y-%m-%d")
+          --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
           --format end,user,account,state,nnodes
           --allocations
           | sort -k 1
@@ -244,12 +265,56 @@ module Jobs
     Table.new(%w(Jobs End User Account State Exit)).transform(%Q[
       sacct
         --noheader --allocations --allusers
-        --starttime $(date --date="14 days ago" +"%Y-%m-%d")
+        --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
         --state failed,node_fail,timeout
         --format end,user,account,state,exitcode
         | sort -k 1
         | uniq -f 1 -c
     ])
+  end
+
+  def begin_time(value = $options.begin_time)
+    case value
+    when /^[0-9]*h$/
+      value.gsub(/h$/,' hours ago')
+    when /^[0-9]*d$/
+      value.gsub(/d$/,' days ago')
+    end
+  end
+
+
+end
+
+module Limits
+
+  module_function
+
+  LIMITS_FORMAT = %w(
+    Cluster Account User Partition Share 
+    GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+    MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+    QOS
+  )
+
+  def by_account
+    name = ARGV.shift || raise('Specify an account name to show limits for')
+    format = %w(
+      Cluster Account User Partition Share 
+      GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+      MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+      QOS
+    )
+    Table.new(format).transform(%Q<
+      sacctmgr -nP show associations where account=#{name} format=#{format.join(',')}
+    >,'|')
+  end
+
+  def by_user
+    name = ARGV.shift || raise('Specify an user name to show limits for')
+    Table.new(LIMITS_FORMAT).transform(%Q<
+      sacctmgr -snP show user where user=#{name} format=#{LIMITS_FORMAT.join(',')}
+    >,'|')
+
   end
 
 end
@@ -340,8 +405,10 @@ begin
 
   #stdin = $stdin.tty? ? String.new : $stdin.read
 
-  options = OpenStruct.new
-  options.debug = false
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.begin_time = '1h'
+
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -352,14 +419,17 @@ begin
   $logger.level = Logger::INFO
 
   GetoptLong.new(
+    ['--begin-time','-b',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
+    when '--begin-time'
+      $options.begin_time = arg if arg =~ /[0-9]*[hd]/
     when '--debug'
-      options.debug = true
+      $options.debug = true
       $logger.level = Logger::DEBUG
     when '--help'
       $stdout.puts HELP
@@ -376,59 +446,73 @@ begin
         Logger::INFO
        end
     when '--version'
-      $stdout.puts 0.7
+      $stdout.puts 0.9
       exit 0
     end
   end
 
-  command = ARGV.shift || 'help'
+  command = ARGV.shift || 'jobs'
   case command
+  when 'h','help'
+    $stdout.puts HELP
   when 'j','jobs'
-     subcommand = ARGV.shift || 'running'
-     case subcommand
-     when 'p','pending'
-       Jobs::pending
-     when 'ps','pending-by-submit'
-       Jobs::pending_by_submit_date
-     when 'pp','pending-by-priority'
-       Jobs::pending_by_priority
-     when 'c','completed'
-       Jobs::completed
-     when 'r','running'
-       Jobs::running
-     when 'rr','running-by-runtime'
-       Jobs::running_by_runtime
-     when 'ru', 'running-by-user'
-       Jobs::running_by_user
-     when 'f','failed'
-       Jobs::failed
-     else
-       raise("Sub-command #{subcommand} not supported") 
-     end
+    subcommand = ARGV.shift || 'running'
+    case subcommand
+    when 'c','completed-by-users'
+      Jobs::completed_by_users
+    when 'ce','completed-by-endtime'
+      Jobs::completed_by_endtime
+    when 'p','pending'
+      Jobs::pending
+    when 'ps','pending-by-submit'
+      Jobs::pending_by_submit_date
+    when 'pp','pending-by-priority'
+      Jobs::pending_by_priority
+    when 'r','running'
+      Jobs::running
+    when 'rr','running-by-runtime'
+      Jobs::running_by_runtime
+    when 'ru', 'running-by-user'
+      Jobs::running_by_user
+    when 'f','failed'
+      Jobs::failed
+    else
+      raise("Sub-command #{subcommand} not supported") 
+    end
+  when 'l','limits'
+    subcommand = ARGV.shift || 'state'
+    case subcommand
+    when 'a','by-account'
+      Limits::by_account
+    when 'u','by-user'
+      Limits::by_user
+    else
+      raise("Sub-command #{subcommand} not supported") 
+    end
   when 'n','nodes'
-     subcommand = ARGV.shift || 'state'
-     case subcommand
-     when 'a','allocated'
-       Nodes::allocated
-     when 'dr', 'drain'
-       Nodes::drain
-     when 'drn', 'drain-nodeset'
-       Nodes::drain_nodeset
-     when 'd','defect'
-       Nodes::defect
-     when 'dn','defect-nodes'
-       Nodes::defect_nodes
-     when 'i','idle'
-       Nodes::idle
-     when 'r','resume'
-       Nodes::resume
-     when 'rn', 'resume-nodeset'
-       Nodes::resume_nodeset
-     when 's','state'
-       Nodes::state
-     when 'u','users'
-       Nodes::users
-     end
+    subcommand = ARGV.shift || 'state'
+    case subcommand
+    when 'a','allocated'
+      Nodes::allocated
+    when 'dr', 'drain'
+      Nodes::drain
+    when 'drn', 'drain-nodeset'
+      Nodes::drain_nodeset
+    when 'd','defect'
+      Nodes::defect
+    when 'dn','defect-nodes'
+      Nodes::defect_nodes
+    when 'i','idle'
+      Nodes::idle
+    when 'r','resume'
+      Nodes::resume
+    when 'rn', 'resume-nodeset'
+      Nodes::resume_nodeset
+    when 's','state'
+      Nodes::state
+    when 'u','users'
+      Nodes::users
+    end
   else
     raise("Command '#{command}' not supported!")
   end
@@ -437,7 +521,7 @@ begin
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
   $stderr.puts " use -h for detailed instructions"
-  if options.debug
+  if $options.debug
     $stderr.puts '-- Stack Trace --'
     $stderr.puts exc.backtrace
   else
