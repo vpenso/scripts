@@ -8,6 +8,17 @@ body {
   font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; 
 }
 
+@media all {
+  /* ensures that the page-break is never seen visually */
+  .page-break { display: none; }
+}
+
+@media print {
+  /* ensures that the page break is seen by the printer */
+  .page-break { display: block; page-break-before: always; }
+}
+
+
 h1 { font-size: 2.4em; font-weight: 300; }
 h2 { font-size: 1.8em; font-weight: 400; }
 h3 { font-size: 1.5em; font-weight: 500; }
