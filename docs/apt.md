@@ -29,6 +29,7 @@ dpkg -s <package> | grep ^Version             # show installed version of packag
 apt-cache policy <package> | grep -i installed
 dpkg -L <package>                             # list content of a package (if installed)
 dpkg -S <path>                                # find package containing file (if installed)
+debsums -ce                                   # find configuration files changed from default 
 ```
 
 ### Sources
