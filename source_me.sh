@@ -42,6 +42,5 @@ do
 done
 
 export PATH=$SCRIPTS/bin:$PATH
-echo "PATH prepend [$SCRIPTS]"
 
 PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
