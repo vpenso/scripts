@@ -30,20 +30,21 @@ alias ssh-agent-forward='ssh -A'
 # Remote login shell for command execution
 #
 function ssh-zsh-command() {
+  # if NODE environment variable is not set
+  if [[ -z ${NODE+x} ]]; then
+    local NODE=${1:?error: Provide remote login [<user>@]<host>}
+    shift
+  fi
+  # User needs to provide command to be executed on remote node
   if [[ $# -eq 0 ]]; then
-    echo "error: Provide remote login [<user>@]<host>"
+    echo "error: Provide command to be executed on $target!"
   else
-    # host name of target node
-    local target=$1 ; shift
-    # User needs to provide command to be executed on remote node
-    if [[ $# -eq 0 ]]; then
-      echo "error: Provide command to be executed on $target!"
-    else
-      # escape singe quote in argument one
-      local command=${1//\'/\'\\\'\'};
-      # login to remote node, start an interactive shell and execute command 
-      ssh $target -t "zsh -i -c '$command'"
-    fi
+    # argument list to be executed as command
+    local command="$@"
+    # escape singe quotes
+    command=${command//\'/\'\\\'\'};
+    # login to remote node, start an interactive shell and execute command 
+    ssh $NODE -t "zsh -i -c '$command'"
   fi
 }
 alias szc=ssh-zsh-command
