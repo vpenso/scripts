@@ -57,7 +57,7 @@ class Table
   def initialize(header)
     @header = header
     @rows = Array.new
-    @no_header = false
+    @no_header = $options.no_header
   end
 
   def transform(command, delim = ' ')
@@ -150,6 +150,7 @@ limits <subcommand>
 
 nodes <subcommand>
   a,   allocated                   nodes executing jobs
+  au,  allocated-by-user <user>    nodeset allocated by user
   d,   defect                      number of nodes with defects
   dn,  defect-nodes                list defect nodes on-by-line
   dr,  drain <nodeset> <reason>    drain nodes
@@ -164,6 +165,7 @@ nodes <subcommand>
   -b, --begin-time <[0-9]*[hd]>    hours/days to look back in the accounting     
   -d, --debug                      show stacktraces in case of errors
   -h, --help                       show this help information
+  -n, --no-header                  do not show table header
   -v, --version                    print program version
 EOF
 
@@ -200,6 +202,7 @@ module Jobs
       squeue -h -o '%A %N %a %P %Cx%D %Z %o' -S P,N -t R -u #{user} | uniq -f 1 -c
     ")
   end
+
 
   def pending
     Table.new(%w(Jobs State User Partition Account)).transform("
@@ -397,6 +400,11 @@ module Nodes
     ",'|')
   end
 
+  def allocated_by_user 
+    user = ARGV.shift || raise('No user specified')
+    $stdout.puts `squeue -h -u #{user} -t r -o '%N %i' | cut -d' ' -f1  | sort | uniq | nodeset -f`
+  end
+
 end
 
 
@@ -408,7 +416,7 @@ begin
   $options = OpenStruct.new
   $options.debug = false
   $options.begin_time = '1h'
-
+  $options.no_header = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -423,6 +431,7 @@ begin
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--no-header','-n',GetoptLong::NO_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
@@ -445,8 +454,10 @@ begin
       else
         Logger::INFO
        end
+    when '--no-header'
+      $options.no_header = true
     when '--version'
-      $stdout.puts 0.9
+      $stdout.puts 1.0
       exit 0
     end
   end
@@ -494,6 +505,8 @@ begin
     case subcommand
     when 'a','allocated'
       Nodes::allocated
+    when 'au','allocated-by-user'
+      Nodes::allocated_by_user
     when 'dr', 'drain'
       Nodes::drain
     when 'drn', 'drain-nodeset'
