@@ -63,8 +63,6 @@ function __ssh_agent_start() {
     chmod 600 $SSH_ENV
     source $SSH_ENV
     echo "ssh-agent started, session in $SSH_ENV"
-  else
-    echo "ssh-agent running with process ID $SSH_AGENT_PID"
   fi
 }
 
