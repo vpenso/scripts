@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2013 Victor Penso
+# Copyright 2013-2016 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,29 +21,20 @@ require 'getoptlong'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-Usage:
+#{exec_name} [<options>] <host> [<path>]
 
-  #{exec_name} [-hD] [-u user] [-i identity-file] host [path]
+  <host>                          IP-address or hostname of the remote instance.
+  <path>                          Target directroy to write the configuration file
+                                  (default is the working directory).
 
-Creates a SSH configuration file called ssh_config with
-a single defined Host called instance.
-
-   host: IP-address or hostname of the remote instance.
-   path: Target directroy to write the configuration file
-         (default is the working directory).
-
-Options:
-
-  -D,--debug
-    Show stacktraces in case of errors.
-  -h,--help
-    Show this help information.
-  -i,--identity-file path
-    SSH identity key to use for the connection.
-  -O,--overwrite
-    Always overwrite existing configuration files.
-  -u,--user name
-    User name for the connection.
+<options>
+  -D,--debug                      Show stacktraces in case of errors
+  -h,--help                       Show this help information
+  -i,--identity-file [<path>]     Identity key to use for the connection.
+  -k,--kerberos                   Enable GSSAPI Kerberos authentication.
+  -O,--overwrite                  Always overwrite existing configuration files.
+  -u,--user <name>                User name for the connection.
+     --version                    Program version number.
 EOF
 
 begin
@@ -56,6 +47,7 @@ begin
   options.user = 'devops'
   options.id_file = String.new
   options.overwrite = false
+  options.kerberos = false
 
   if ENV.has_key? '_DEBUG'
     options.debug = true if ENV['_DEBUG']
@@ -65,8 +57,10 @@ begin
     ['--debug','-D',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--identity-file','-i',GetoptLong::REQUIRED_ARGUMENT],
+    ['--kerberos','-k',GetoptLong::NO_ARGUMENT],
     ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
-    ['--user','-u',GetoptLong::REQUIRED_ARGUMENT]
+    ['--user','-u',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
     when '--debug'
@@ -76,10 +70,15 @@ begin
       exit 0
     when '--identity-file'
       options.id_file = File.expand_path(arg)
+    when '--kerberos'
+      options.kerberos = true
     when '--overwrite'
       options.overwrite = true
     when '--user'
       options.user = arg
+    when '--version'
+      $stdout.puts 1.0
+      exit 0
     end
   end
 
@@ -115,6 +114,10 @@ begin
     else
       raise("SSH identity file missing #{options.id_file}")
     end
+  end
+
+  if options.kerberos
+    config << "  GSSAPIAuthentication yes"
   end
 
   File.open(config_file,'w') do |f|
