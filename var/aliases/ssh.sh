@@ -14,11 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+alias se=ssh-exec
+alias sc=ssh-cmd
+alias ss='noglob ssh-sync'
+alias sr='ssh -l root'
+
 # Use archive mode by default
 alias rsync='rsync -avzrtp'
 
-# Remote login as root
-alias ssh-root='ssh -l root'
 
 # less secure but faster
 alias ssh-fast-encrypt='ssh -C4c arcfour,blowfish-cbc'
@@ -44,6 +48,5 @@ alias ssh-keygen-no-password="ssh-keygen -q -t rsa -b 2048 -N ''"
 # Launch SSH proxy
 function shuttle() { sshuttle -r --dns $1 0/0 }
 
-alias ssh-sync='noglob ssh-sync'
 
 
