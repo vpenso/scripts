@@ -1,0 +1,153 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+class System 
+  def self.exec(command)
+    command = command.gsub(/\n/," ").strip.gsub(/\s+/,' ')
+    command << ' 2>&-' unless $options.debug
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    if state == 0
+      return output.gsub(/^$\n/, '')
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
+  end
+end
+
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] <command> 
+
+<command>                         Commands to be executed on remote node.
+<options>:
+  -d,--debug                      Show stacktraces in case of errors
+  -h,--help                       Show this help information
+     --shell bash|zsh             Login shell to user (default zsh)
+  -s,--ssh-config <path>          Path to ssh config (default ./ssh_config)
+  -v,--version                    Program version number.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.ssh_config = "#{ENV['PWD']}/ssh_config"
+  $options.shell= 'zsh'
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  ssh_options = Array.new
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--shell',GetoptLong::REQUIRED_ARGUMENT],
+    ['--ssh-config','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--shell'
+      $options.shell = arg
+    when '--ssh-config'
+      if File.exists? arg
+        $options.ssh_config = arg
+      else
+        raise("#{arg} missing SSH configuration file!")
+      end
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  if File.exist? $options.ssh_config
+    ssh_options << "-F #{$options.ssh_config}"      
+    host = System::exec "grep ^Host ssh_config | cut -d' ' -f2"
+  else
+    raise("Missing SSH configuration file, expecting #{$options.ssh_config}")
+  end
+
+  case $options.shell
+  when 'zsh'
+    ssh_shell = 'zsh -i -c'
+  when 'bash'
+    ssh_shell = 'bash -c'
+  else
+    raise("#{$options.shell} is not a supported shell!")
+  end
+
+  raise('No command given!') if ARGV.length == 0
+
+  command = %Q<ssh #{ssh_options.join(' ')} #{host} '#{ssh_shell} "#{ARGV.join(' ')}"'>
+  $stdout.puts System::exec(command)
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
