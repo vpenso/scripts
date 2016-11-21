@@ -26,40 +26,6 @@ alias ssh-fast-encrypt='ssh -C4c arcfour,blowfish-cbc'
 # Agent forwarding
 alias ssh-agent-forward='ssh -A'
 
-# quick export NODES environment variable
-function NODE() {
-  if [ $# -lt 1 ]
-  then
-    : ${NODE:?}
-    echo $NODE
-  else
-    export NODE=$@
-  fi
-}
-
-
-#
-# Remote login shell for command execution
-#
-function ssh-zsh-command() {
-  # if NODE environment variable is not set
-  if [[ -z ${NODE+x} ]]; then
-    NODE=${1:?error: Provide remote login [<user>@]<host>}
-    shift
-  fi
-  # User needs to provide command to be executed on remote node
-  if [[ $# -eq 0 ]]; then
-    echo "error: Provide command to be executed on $target!"
-  else
-    # argument list to be executed as command
-    cmd=${@//\'/\'\\\'\'} # escape single quotes
-    # login to remote node, start an interactive shell and execute command 
-    ssh $NODE "zsh -i -c '$cmd'"
-    # do not use pseudo-ttys above
-  fi
-}
-alias szc=ssh-zsh-command
-
 # Spy on the SSH traffic
 alias ssh-snoop='tcpdump -lnn -i any port ssh and tcp-syn'
 
