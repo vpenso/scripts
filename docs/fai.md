@@ -1,21 +1,15 @@
 Fully Automated Installation → [FAI](http://fai-project.org/)
 
-* Non-interactive system to install custom Linux
-* Uses an NFS server to mount a live root file system including the configuration space for automated installation
-
 ```bash
 >>> apt-get -y install fai-quickstart syslinux-common tftpd-hpa
 >>> fai-setup -v                                 # build the NFS root directory in /srv/fai/nfsroot
 >>> cp -a /usr/share/doc/fai-doc/examples/simple/* /srv/fai/config/
                                                  # copy the example configiration space
->>> echo "/srv/fai/config $(ip route get 1 | awk '{print $NF;exit}')/24(async,ro,no_subtree_check,no_root_squash)" >> /etc/exports
-                                                 # export the FAI configuration via NFS
+>>> grep fai /etc/exports                                                                                                           
+/srv/fai/nfsroot *(async,ro,no_subtree_check,no_root_squash)
+/srv/fai/config *(async,ro,no_subtree_check,no_root_squash)
 >>> systemctl restart nfs-kernel-server
 >>> exportfs 
-/srv/fai/nfsroot
-                10.1.1.27/24
-/srv/fai/config
-                10.1.1.27/24
 ```
 
 Stand alone ISO CD images for offline deployment:
@@ -56,6 +50,8 @@ boot
 
 Kernel Configuration
 
+→ [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs)
+
 ```bash
 console=tty0 console=ttyS1,115200n8                           # Configure the serial console
 rd.shell rd.debug log_buf_len=1M                              # Kernel debugging
@@ -75,6 +71,7 @@ KVM virtual machine for testing
 >>> dhcp                                        # enable the network interface
 >>> chain tftp://10.1.1.27/fai/pxelinux.0       # chain load PXELINUX confgiuration from the FAI server using TFTP
 >>> chain http://10.1.1.27/fai/default          # chain load iPXE configuration from the FAI server over HTTP
+## -- Shift-Up/Down to scroll con qemu console -- ##
 ```
 
 
