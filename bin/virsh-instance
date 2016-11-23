@@ -157,7 +157,7 @@ class Virsh
         end
 
         # Delete existing virtual machine instrance
-        System::exec("rm -f #{instance}/*")
+        System::exec("rm -rf #{instance}/*")
 
       #
       # Create target directory if missing
