@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2012 Victor Penso
+# Copyright 2012-2016 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,73 +23,38 @@ require 'logger'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
+#{exec_name} [<options>] <command> [<arguments]
 
-  #{exec_name} [-DhOv] -i PATH -p PATH -l URL 
-               -s SIZE COMMAND [ARGUMENTS]
+<command>
+  c,  clone <img> <name>          Clone image and start instance 
+  e,  exec <name> <cmd>           Execute command in instance
+  in, install <name> <path>       Install a new image
+  l,  list                        List available images
+  lo, login <name>                Login to instance
+  rm, remove <name>               Shutdown and undefine instance
+  s,  shadow <img> <name>         Shadow image and start instance 
+  sy, sync <name> <src> <dst>     Rsync between host and instance
 
-Clone virtuel machine images and their configuration.
-
-Command
--------
-
-  clone, cl, c <image> <instance>
-    Clone source virtual machine image and start a 
-    virtual machine instance with specified name
-  exec, ex, e <instance> <command>
-    Execute command in virtual machine insyance
-  install, in <instance> <path>
-    Install a new virtual machine image
-  list, li, l
-    List available images
-  login, lo <instance>
-    Ssh into the virtual machine instance
-  remove, rm <instance>
-    Shutdown and undefine instance
-  shadow, sh, s <image> <instance>
-    Make shadow disks of virtual machine image and 
-    start a virtual machine instance with
-    specified name
-  sync, sy <instance> <source> <destination>
-    rsync data between host an virtual machine
-
-Options
--------
-
-  --bridge, -b <name>
-    Network birdge to use (default nbr0)
-  --cdrom <path>
-    Location of the CDROM ISO for installation.
-  --debug, -D
-    Show stacktraces in case of errors.
-  --disk-size, -s <size>
-    Image size when creating new images with the 
-    command "create" (default 100G).
-  --dry-run, -R 
-    Print the commands without execution.    
-  --help, -h
-    Show this help information.
-  --image-path, -i <path>
-    Location of the source images (default /srv/vms/images)
-  --instance-path, -p <path>
-    Location of the virtual machine instances (default
-    /srv/vms/instances)
-  --location, -l <url>
-    URL for installation sources (default Debian stable)
-  --overwrite, -O
-    Overwrite existing virtual machine instance
-  --ram, -r <size> 
-    Size (GB) of the memory to configure for the virtual 
-    machine instance (default 1)
-  --version
-    Print version number
+<options>
+  -b, --bridge <name>              Network birdge to use (default nbr0)
+      --cdrom <path>               Location of the CDROM ISO for installation.
+  -D, --debug                      Show stacktraces in case of errors.
+  -s, --disk-size <size>           Image size when creating new images with the 
+                                   command "create" (default 100G).
+  -R, --dry-run                    Print the commands without execution.    
+  -h, --help                       Show this help information.
+  -i, --image-path <path>          Location of the source images (default 
+                                   /srv/vms/images)
+  -p, --instance-path <path>       Location of the virtual machine instances 
+                                   (default /srv/vms/instances)
+  -l, --location <url>             Installation sources (default Debian stable)
+  -O, --no-overwrite               Do not overwrite existing instances.
+  -r, --ram <size>                 Instance memory in GB (defaults 1)
+      --version                    Print version number
 
 Environment
------------
-
-  VM_IMAGE_PATH 
-    Defines default source image path (like option -i).
-  VM_INSTANCE_PATH
-    Defines default instance path (like option -p).
+  VM_IMAGE_PATH                    Image path (like option -i).
+  VM_INSTANCE_PATH                 Instance path (like option -p).
 EOF
 
 class System 
@@ -191,8 +156,8 @@ class Virsh
 
         end
 
-        # Delete existing virtual machine images from the target directory
-        System::exec("rm --force #{instance}/*.img")
+        # Delete existing virtual machine instrance
+        System::exec("rm -f #{instance}/*")
 
       #
       # Create target directory if missing
@@ -330,7 +295,7 @@ begin
   $options.location = 'http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/'
   $options.image_path = '/srv/vms/images'
   $options.instance_path = '/srv/vms/instances'
-  $options.overwrite = false
+  $options.overwrite = true
   $options.ram = 1 # GB
   $options.shadow = false
   $options.bridge = 'nbr0'
@@ -354,7 +319,7 @@ begin
     ['--instance-path','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--location','-l',GetoptLong::REQUIRED_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--overwrite','-O',GetoptLong::NO_ARGUMENT],
+    ['--no-overwrite','-O',GetoptLong::NO_ARGUMENT],
     ['--ram','-r',GetoptLong::REQUIRED_ARGUMENT],
     ['--version',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
@@ -392,12 +357,12 @@ begin
       else
         Logger::INFO
        end
-    when '--overwrite'
-      $options.overwrite = true
+    when '--no-overwrite'
+      $options.overwrite = false
     when '--ram'
       $options.ram = arg
     when '--version'
-      $stdout.puts 0.8
+      $stdout.puts 1.0
       exit 0
     end
   end
@@ -423,7 +388,7 @@ begin
 
     # clone options
     options = Hash.new
-    options[:shadow] = true if command == 'shadow' or command == 'sh'
+    options[:shadow] = true if %w(shadow sh s).include? command 
     options[:overwrite] = true if $options.overwrite
 
     Virsh::Image.clone(image,path,options)
