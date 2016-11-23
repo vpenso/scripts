@@ -1,7 +1,13 @@
 Fully Automated Installation → [FAI](http://fai-project.org/)
 
 ```bash
->>> apt-get -y install fai-quickstart syslinux-common tftpd-hpa
+>>> grep -i pretty /etc/os-release 
+PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
+>>> wget -O - http://fai-project.org/download/074BCDE4.asc | apt-key add -
+>>> echo "deb http://fai-project.org/download jessie koeln" > /etc/apt/sources.list.d/fai.list
+>>> apt update && apt -y upgrade && apt -y install fai-quickstart
+>>> sed -i -e 's/^#deb/deb/' /etc/fai/apt/sources.list
+>>> sed -i -e 's/#LOGUSER/LOGUSER/' /etc/fai/fai.conf
 >>> fai-setup -v                                 # build the NFS root directory in /srv/fai/nfsroot
 >>> cp -a /usr/share/doc/fai-doc/examples/simple/* /srv/fai/config/
                                                  # copy the example configiration space
@@ -43,8 +49,8 @@ server.document-root        = "/srv/http"
 >>> cp /srv/fai/nfsroot/boot/{initrd,vmlinuz}* /srv/http/fai # copy the kernel and init RAM disk
 >>> cat /srv/http/fai/default                                # default iPXE configuration
 #!ipxe
-initrd initrd.img-3.16.0-4-amd64
-kernel vmlinuz-3.16.0-4-amd64 ip=dhcp rw aufs root=10.1.1.27:/srv/fai/nfsroot:vers=3,nolock FAI_CONFIG_SRC=nfs://10.1.1.27/srv/fai/config FAI_FLAGS=verbose,sshd,createvt FAI_ACTION=install DOMAIN=devops.test
+initrd initrd.img-3.16.0-4-amd64 
+kernel vmlinuz-3.16.0-4-amd64 ip=dhcp ro root=10.1.1.27:/srv/fai/nfsroot aufs FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.1.27/srv/fai/config FAI_ACTION=install
 boot
 ```
 
@@ -64,9 +70,8 @@ FAI_FLAGS=[…],sshd,createvt                                   # enable SSH log
 KVM virtual machine for testing
 
 ```bash
->>> qemu-img create -f qcow2 /tmp/disk.img 100G  # disk image for the test virtual machine
->>> alias kvm='kvm -m 2G -drive file=/tmp/disk.img,if=virtio,cache=writeback -netdev user,id=n0,hostfwd=tcp::2222-:22 -device virtio-net,netdev=n0'
-                                                 # KVM configuration use to start a test virual machine
+>>> qemu-img create -f qcow2 disk.img 100G  # disk image for the test virtual machine
+>>> virsh-config -Nv -m 02:FF:0A:0A:06:1C libvirt_instance.xml
 ## ---  Hit CTRL-B to enter the iPXE shell -- ##
 >>> dhcp                                        # enable the network interface
 >>> chain tftp://10.1.1.27/fai/pxelinux.0       # chain load PXELINUX confgiuration from the FAI server using TFTP
