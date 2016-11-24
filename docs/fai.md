@@ -1,5 +1,8 @@
 Fully Automated Installation → [FAI](http://fai-project.org/)
 
+* System to automate the installation of a Linux based operating system using a pre-defined → [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)  
+* FAI boots a live system over the network into the memory of the node and follows a defined list of → [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage 
+
 ```bash
 >>> grep -i pretty /etc/os-release 
 PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
@@ -78,7 +81,6 @@ KVM virtual machine for testing
 
 ## Configuration
 
-→ [The configuration space and its subdirectories](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)  
 → [The class concept](http://fai-project.org/fai-guide/#_a_id_classc_a_the_class_concept)  
 → [Defining classes](http://fai-project.org/fai-guide/#defining%20classes)
 
@@ -88,17 +90,25 @@ KVM virtual machine for testing
 * Class names: Uppercase, no hyphen, hash, semicolon, dot, but may contain underscores and digits
 
 ```bash
+/etc/fai/fai.conf                               # gloabl configuration
 grep -rH FAI_CONFIGDIR /etc/fai/*               # where to find the FAI configuration
 ls -1 $FAI_CONFIGDIR/class/[0-9][0-9]*          # files defining classes
 cat $FAI_CONFIGDIR/class/50-host-classes        # define classes depending on the host name
 grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | cut -d: -f2 | sort | uniq
                                                 # list all classes
 ls -1 $FAI_CONFIGDIR/class/*.var                # files defining variables
+ls -1 $FAI_CONFIGDIR/disk_config/ | grep  '^[A-Z0-9]*$'
+                                                # storage configuration files
+setup-storage -s -f $FAI_CONFIGDIR/disk_config/<class>
+                                                # check the syntax of a storage configuration
+ls -1 $FAI_CONFIGDIR/package_config/*.asc       # apt keys added during deployment
+ls -1 $FAI_CONFIGDIR/package_config/ | grep  '^[A-Z0-9]*$'
+                                                # package configuration files
+install_packages -H                             # list of command supported in package configuration
 ```
 
 ## Installation
 
-→ [The list of tasks](http://fai-project.org/fai-guide/#tasks)
 
 ```bash
 fai-class $FAI_CONFIGDIR /tmp/fai/FAI_CLASSES    # script used to extract class definition from configuration
@@ -107,6 +117,7 @@ source /tmp/fai/variables.log                    # load the FAI environment
 setup-storage -d -f /var/lib/fai/config/disk_config/<class>
                                                  # execute storage configuration
 /tmp/fai/format.log                              # log for the storage configuration
+/target                                          # mount of the local file-systems
 fai-do-scripts /var/lib/fai/config/scripts       
-/tmp/fai/shell.lo`                               # common log for post-installation scripts 
+/tmp/fai/shell.lo`                               # common log for post-installation scripts
 ```
