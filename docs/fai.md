@@ -3,6 +3,8 @@ Fully Automated Installation → [FAI](http://fai-project.org/)
 * System to automate the installation of a Linux based operating system using a pre-defined → [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)  
 * FAI boots a live system over the network into the memory of the node and follows a defined list of → [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage 
 
+Basic FAI server deployment:
+
 ```bash
 >>> grep -i pretty /etc/os-release 
 PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
@@ -21,7 +23,7 @@ PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
 >>> exportfs 
 ```
 
-Stand alone ISO CD images for offline deployment:
+Stand alone ISO CD images for off-line deployment on target node:
 
 ```bash
 >>> fai-mirror -c LINUX,AMD64,FAIBASE,DEBIAN,GRUB_PC -v /srv/fai/mirror | tee /var/log/fai-mirror.log
@@ -29,6 +31,51 @@ Stand alone ISO CD images for offline deployment:
 >>> tree /srv/fai/mirror/                        # mirror package tree 
 >>> fai-make-nfsroot -l
 >>> fai-cd -m /srv/fai/mirror/ /srv/http/fai.iso # create a stand alone FAI CD for offline deployment
+```
+
+## Configuration
+
+Custom FAI configuration including a configuration space, an NFS root directory for the live system and the boot configuration:
+
+```bash
+>>> FAI_CONFIG=/srv/devops                      # path to the custom FAI configuration
+>>> mkdir -p $FAI_CONFIG/{config,nfsroot,tftp,nfsroot-hooks} 
+>>> cp -a /usr/share/doc/fai-doc/examples/simple/* $FAI_CONFIG/config && cp -r /etc/fai/* $FAI_CONFIG/
+                                                # copy the default configuration
+>>> grep devops $FAI_CONFIG/nfsroot.conf        # adjust the configuration to custom path
+NFSROOT=/srv/devops/nfsroot
+TFTPROOT=/srv/devops/tftp
+NFSROOT_HOOKS=/srv/devops/nfsroot-hooks/
+FAI_CONFIGDIR=/srv/devops/config
+>>> fai-make-nfsroot -v -C $FAI_CONFIG          # build a basic NFS root
+>>> cat $FAI_CONFIG/NFSROOT                     # packages installed into the NFS root
+>>> fai-make-nfsroot -vk -C $FAI_CONFIG         # install additional packages after modifing the above file
+```
+
+### Classes
+
+→ [The class concept](http://fai-project.org/fai-guide/#_a_id_classc_a_the_class_concept)  
+→ [Defining classes](http://fai-project.org/fai-guide/#defining%20classes)
+
+* Classes determine which configuration files to apply on a given node during installation
+* Multiple nodes sharing the same configuration by having the same classes associated
+* The order of the classes is important because it defines the priority of the classes from low to high
+* Class names: Uppercase, no hyphen, hash, semicolon, dot, but may contain underscores and digits
+
+```bash
+ls -1 $FAI_CONFIGDIR/class/[0-9][0-9]*          # files defining classes
+cat $FAI_CONFIGDIR/class/50-host-classes        # define classes depending on the host name
+grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | cut -d: -f2 | sort | uniq
+                                                # list all classes
+ls -1 $FAI_CONFIGDIR/class/*.var                # files defining variables
+ls -1 $FAI_CONFIGDIR/disk_config/ | grep  '^[A-Z0-9]*$'
+                                                # storage configuration files
+setup-storage -s -f $FAI_CONFIGDIR/disk_config/<class>
+                                                # check the syntax of a storage configuration
+ls -1 $FAI_CONFIGDIR/package_config/*.asc       # apt keys added during deployment
+ls -1 $FAI_CONFIGDIR/package_config/ | grep  '^[A-Z0-9]*$'
+                                                # package configuration files
+install_packages -H                             # list of command supported in package configuration
 ```
 
 ## Boot
@@ -77,34 +124,6 @@ KVM virtual machine for testing
 >>> chain tftp://10.1.1.27/fai/pxelinux.0       # chain load PXELINUX confgiuration from the FAI server using TFTP
 >>> chain http://10.1.1.27/fai/default          # chain load iPXE configuration from the FAI server over HTTP
 ## -- Shift-Up/Down to scroll con qemu console -- ##
-```
-
-## Configuration
-
-→ [The class concept](http://fai-project.org/fai-guide/#_a_id_classc_a_the_class_concept)  
-→ [Defining classes](http://fai-project.org/fai-guide/#defining%20classes)
-
-* Classes determine which configuration files to apply on a given node during installation
-* Multiple nodes sharing the same configuration by having the same classes associated
-* The order of the classes is important because it defines the priority of the classes from low to high
-* Class names: Uppercase, no hyphen, hash, semicolon, dot, but may contain underscores and digits
-
-```bash
-/etc/fai/fai.conf                               # gloabl configuration
-grep -rH FAI_CONFIGDIR /etc/fai/*               # where to find the FAI configuration
-ls -1 $FAI_CONFIGDIR/class/[0-9][0-9]*          # files defining classes
-cat $FAI_CONFIGDIR/class/50-host-classes        # define classes depending on the host name
-grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | cut -d: -f2 | sort | uniq
-                                                # list all classes
-ls -1 $FAI_CONFIGDIR/class/*.var                # files defining variables
-ls -1 $FAI_CONFIGDIR/disk_config/ | grep  '^[A-Z0-9]*$'
-                                                # storage configuration files
-setup-storage -s -f $FAI_CONFIGDIR/disk_config/<class>
-                                                # check the syntax of a storage configuration
-ls -1 $FAI_CONFIGDIR/package_config/*.asc       # apt keys added during deployment
-ls -1 $FAI_CONFIGDIR/package_config/ | grep  '^[A-Z0-9]*$'
-                                                # package configuration files
-install_packages -H                             # list of command supported in package configuration
 ```
 
 ## Installation
