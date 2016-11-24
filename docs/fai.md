@@ -35,11 +35,17 @@ Stand alone ISO CD images for off-line deployment on target node:
 
 ## Configuration
 
-Custom FAI configuration including a configuration space, an NFS root directory for the live system and the boot configuration:
+Custom FAI configuration folder **`FAI_CONFIG`** includes:
+
+* NFS root directory for the live-system booted during installation
+* The configuration-space used during installation
+* The boot configuration used to boot over the network
+
+Note: It is recommended to keep this configuration in version control system
 
 ```bash
 >>> FAI_CONFIG=/srv/devops                      # path to the custom FAI configuration
->>> mkdir -p $FAI_CONFIG/{config,nfsroot,tftp,nfsroot-hooks} 
+>>> mkdir -p $FAI_CONFIG/{config,nfsroot,http,tftp,nfsroot-hooks} 
 >>> cp -a /usr/share/doc/fai-doc/examples/simple/* $FAI_CONFIG/config && cp -r /etc/fai/* $FAI_CONFIG/
                                                 # copy the default configuration
 >>> grep devops $FAI_CONFIG/nfsroot.conf        # adjust the configuration to custom path
@@ -74,7 +80,6 @@ Boot over HTTP with iPXE
 
 ```bash
 >>> apt -y install lighttpd                                  # install a web-server
->>> mkdir $FAI_CONFIG/http                                   # 
 >>> grep server.document-root /etc/lighttpd/lighttpd.conf    # configure the document root
 server.document-root        = "/srv/devops/http"
 >>> systemctl restart lighttpd                               # load ne configuration
@@ -87,8 +92,7 @@ kernel vmlinuz-3.16.0-4-amd64 ip=dhcp ro root=10.1.1.27:/srv/devops/nfsroot aufs
 boot
 ```
 
-→ [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs)  
-→ [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)  
+Kernel/init options → [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs) → [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)  
 
 ```bash
 console=tty0 console=ttyS1,115200n8                           # Configure the serial console
