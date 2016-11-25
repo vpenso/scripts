@@ -1,7 +1,7 @@
-Fully Automated Installation → [FAI](http://fai-project.org/)
+# [Fully Automated Installation](http://fai-project.org/)
 
-* System to automate the installation of a Linux based operating system using a pre-defined → [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)  
-* FAI boots a live system over the network into the memory of the node and follows a defined list of → [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage 
+* System to automate the installation of a Linux based operating system using a pre-defined [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)  
+* FAI boots a live system over the network into the memory of the node and follows a defined list of [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage 
 
 Basic FAI server deployment:
 
@@ -14,6 +14,7 @@ PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
 >>> sed -i -e 's/^#deb/deb/' /etc/fai/apt/sources.list
 >>> sed -i -e 's/#LOGUSER/LOGUSER/' /etc/fai/fai.conf
 >>> fai-setup -v                                 # build the NFS root directory in /srv/fai/nfsroot
+## -- following the FAI guide -- ##
 >>> cp -a /usr/share/doc/fai-doc/examples/simple/* /srv/fai/config/
                                                  # copy the example configiration space
 >>> grep fai /etc/exports                                                                                                           
@@ -31,6 +32,15 @@ Stand alone ISO CD images for off-line deployment on target node:
 >>> tree /srv/fai/mirror/                        # mirror package tree 
 >>> fai-make-nfsroot -l
 >>> fai-cd -m /srv/fai/mirror/ /srv/http/fai.iso # create a stand alone FAI CD for offline deployment
+```
+
+Variables:
+
+```bash
+FAI_CONFIGDIR                                   # defaults to /srv/fai/config on the server
+                                                # defaults to /var/lib/fai/config during installation
+LOGDIR                                          # defaults to /tmp/fai during deployment
+source $LOGDIR/variables.log                    # load the FAI environment for testing/debugging
 ```
 
 ## Configuration
@@ -92,7 +102,7 @@ kernel vmlinuz-3.16.0-4-amd64 ip=dhcp ro root=10.1.1.27:/srv/devops/nfsroot aufs
 boot
 ```
 
-Kernel/init options → [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs) → [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)  
+Kernel/init options [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs), [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)  
 
 ```bash
 console=tty0 console=ttyS1,115200n8                           # Configure the serial console
@@ -119,11 +129,13 @@ KVM virtual machine for testing
 * Class [definition](http://fai-project.org/fai-guide/#defining%20classes): Uppercase, no hyphen, hash, semicolon, dot, but may contain underscores and digits
 
 ```bash
-ls -1 $FAI_CONFIGDIR/class/[0-9][0-9]*          # files defining classes
-cat $FAI_CONFIGDIR/class/50-host-classes        # define classes depending on the host name
+ls -1 $FAI_CONFIGDIR/class/[0-9][0-9]*           # files defining classes
+cat $FAI_CONFIGDIR/class/50-host-classes         # define classes depending on the host name
 grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | cut -d: -f2 | sort | uniq
-                                                # list all classes
-ls -1 $FAI_CONFIGDIR/class/*.var                # files defining variables
+                                                 # list all classes
+ls -1 $FAI_CONFIGDIR/class/*.var                 # files defining variables
+fai-class $FAI_CONFIGDIR /tmp/fai/FAI_CLASSES    # script used to extract class definition from configuration
+$LOGDIR/fai.log                                  # common log information from the $FAI_NFSROOT/usr/sbin/fai 
 ```
 
 ### Storage
@@ -134,13 +146,10 @@ Configure RAIDs, LVM and partitions with **`setup-storage`**
 man -P 'less -p "^EXAMPLES"' setup-storage      # show example configuration in documentation
 ls -1 $FAI_CONFIGDIR/disk_config/ | grep '^[A-Z0-9]*$'
                                                 # list storage configuration files
-FAI_CONFIGDIR                                   # defaults to /srv/fai/config on the server
-                                                # defaults to /var/lib/fai/config during installation
 setup-storage -s -f $FAI_CONFIGDIR/disk_config/<class>
                                                 # check the syntax of a storage configuration file
 setup-storage -d -f $FAI_CONFIGDIR/disk_config/<class>
                                                 # execute storage configuration manually for testing
-LOGDIR                                          # defaults to /tmp/fai during deployment
 $LOGDIR/format.log                              # output of setup-storage during deployment
 grep -H disklist $LOGDIR/*                      # list of available drives in the system
 fai-disk-info                                   # called if $disklist unset
@@ -150,9 +159,11 @@ $LOGDIR/disk_vars.sh                            # consumed by $FAI_CONFIGDIR/scr
 
 ### Packages
 
-Define [additional packages to be installed](http://fai-project.org/fai-guide/#_a_id_packageconfig_a_software_package_configuration) by **`install_packages`** 
+Define  [additional packages to be installed](http://fai-project.org/fai-guide/#_a_id_packageconfig_a_software_package_configuration) by **`install_packages`** 
 
 ```bash
+ls -1 $FAI_CONFIGDIR/debconf | grep '^[A-Z0-9]*$' | sort
+                                                # pressed configuratin for packages
 ls -1 $FAI_CONFIGDIR/package_config/*.asc       # apt keys added during deployment
 ls -1 $FAI_CONFIGDIR/package_config/ | grep '^[A-Z0-9]*$'
                                                 # package configuration files
@@ -161,14 +172,18 @@ install_packages -l                             # list packages which will be in
 FAI_ROOT                                        # defaults to /target mount-point for local file-systems
 ```
 
+### Scripts
 
-## Installation
+Custom code executed during installation by **`fai-do-scripts`**
 
+* Each class uses a dedicated script directory which will be executed in alphabetical order
+* Copy files with `fcopy`, extract archive s with `ftar`, appending lines to files with `ainsl` 
 
 ```bash
-fai-class $FAI_CONFIGDIR /tmp/fai/FAI_CLASSES    # script used to extract class definition from configuration
-/tmp/fai/fai.log                                 # common log information from the $FAI_NFSROOT/usr/sbin/fai 
-source /tmp/fai/variables.log                    # load the FAI environment
+ls -1 $FAI_CONFIGDIR/scripts/<class>/[0-9][0-9]* # scripts for a particular class
 fai-do-scripts /var/lib/fai/config/scripts       
-/tmp/fai/shell.lo`                               # common log for post-installation scripts
+$LOGDIR/shell.log                                # common logger location for executed scripts
 ```
+
+
+
