@@ -111,16 +111,6 @@ FAI_FLAGS=[…],sshd,createvt                                   # enable SSH log
                                                               # access another console with ALT-F2, and ALT-F3
 ```
 
-KVM virtual machine for testing
-
-```bash
->>> qemu-img create -f qcow2 disk.img 100G  # disk image for the test virtual machine
->>> virsh-config -Nv -m 02:FF:0A:0A:06:1C libvirt_instance.xml
-## ---  Hit CTRL-B to enter the iPXE shell -- ##
->>> dhcp                                        # enable the network interface
->>> chain http://10.1.1.27/default              # chain load iPXE configuration from the FAI server over HTTP
-## -- Shift-Up/Down to scroll con qemu console -- ##
-```
 ### Classes
 
 * [Classes](http://fai-project.org/fai-guide/#_a_id_classc_a_the_class_concept) determine which configuration files to apply on a given node during installation
@@ -184,6 +174,37 @@ ls -1 $FAI_CONFIGDIR/scripts/<class>/[0-9][0-9]* # scripts for a particular clas
 fai-do-scripts /var/lib/fai/config/scripts
 $LOGDIR/shell.log                                # common logger location for executed scripts
 ```
+
+## Test
+
+Make sure to understand how to build [development and test environments with virtual machine](libvirt.md).
+
+```bash
+>>> qemu-img create -f qcow2 disk.img 100G  # disk image for the test virtual machine
+>>> virsh-config -Nv -m 02:FF:0A:0A:06:1C libvirt_instance.xml
+>>> virsh create libvirt_instance.xml
+## ---  Hit CTRL-B to enter the iPXE shell -- ##
+>>> dhcp                                        # enable the network interface
+>>> chain http://10.1.1.27/default              # chain load iPXE configuration from the FAI server over HTTP
+## -- Shift-Up/Down to scroll con qemu console -- ##
+```
+
+Forward port of a virtual machine instance running a FAI server:
+
+```bash
+>>> for p in 80 111 2049 ; do virsh-instance-port-forward add lxdev01:$p $p ; done
+>>> virsh-instance-port-forward list lxdev01
+NAT rules:
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:10.1.1.27:80
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:111 to:10.1.1.27:111
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:2049 to:10.1.1.27:2049
+Forward rules:
+ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:2049
+ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:111
+ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:80
+>>> for p in 80 111 2049 ; do virsh-instance-port-forward drop lxdev01:$p $p ; done
+```
+
 
 ## Examples
 
