@@ -1,0 +1,188 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+class System 
+  def self.exec(command)
+    # Remove line-feed and leading white-space
+    #
+    command = command.gsub(/^  */,'').gsub(/\n/,' ')
+    # Redirect error stream
+    command + ' 2>&-'
+    $logger.debug "Exec [#{command}]"
+    return String.new if $options.dry_run
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
+  end
+  def self.run(command)
+    command = command.gsub(/^  */,'').gsub(/\n/,' ').lstrip
+    $logger.debug "Run [#{command}]"
+    system(command) unless $options.dry_run
+  end
+end
+
+module VirshInstance
+
+  module Forward
+
+    module_function
+
+    def port(target,d_port,opts = 'add')
+      raise('Malformed target defined') unless target =~ /^[a-z0-9]*\:[0-9]*$/
+      name, s_port = target.split(':')
+      ip = ::VirshInstance.ip(name) 
+      # Always drop rules, this prevent duplicates 
+      System::exec("sudo iptables -D PREROUTING -t nat -i eth0 -p tcp --dport #{d_port} -j DNAT --to #{ip}:#{s_port}")
+      System::exec("sudo iptables -D FORWARD -p tcp -d #{ip} --dport #{d_port} -j ACCEPT")
+      # Set new rules
+      if opts == 'add'
+        System::exec("sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport #{d_port} -j DNAT --to #{ip}:#{s_port}") 
+        System::exec("sudo iptables -I FORWARD 1 -p tcp -d #{ip} --dport #{d_port} -j ACCEPT")
+      end
+      # List current rules
+      list(ip)
+    end
+
+    def list(ip = '10.1.1')
+      $stdout.puts "NAT rules:"
+      $stdout.puts System::exec("sudo iptables -L -n -t nat | grep '#{ip}'")
+      $stdout.puts "Forward rules:"
+      $stdout.puts System::exec("sudo iptables -L FORWARD -n | grep '#{ip}'")
+    end
+
+  end
+
+  module_function
+
+  def ip(name)
+    # Don't use System::exec here!
+    System::exec("virsh-nat-bridge lookup #{name}").split(' ')[1]
+  end
+
+end
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] <command> [<arguments>]
+
+<command>
+  a, add <name>:<port> <port>           Create port forwarding for instance
+  d, drop <name>:<port> <port>          Remove port forwarding for instance
+  l, list [<name>]                      List forward rules                        
+
+<options>
+  -d, --debug                           Show stacktraces in case of errors.
+  -h, --help                            Show this help information.
+  -v, --version                         Print version number.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::FATAL
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  command = ARGV.shift || raise('No command given!')
+  case command
+  when 'add','a','drop','d'
+    target = ARGV.shift || raise('Expecting target virtual machine instance <name>:<port>') 
+    port = ARGV.shift || raise('Expecting host port number to use')
+    if %w(add a).include? command
+      VirshInstance::Forward.port(target,port)
+    else
+      VirshInstance::Forward.port(target,port,'drop')
+    end
+  when 'list','l'
+    if ARGV.length == 0
+      VirshInstance::Forward.list()
+    else 
+      VirshInstance::Forward.list(VirshInstance.ip(ARGV.shift))
+    end
+  else
+    raise("Command #{command} not supported")
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
