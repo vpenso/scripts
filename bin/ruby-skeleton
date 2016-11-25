@@ -22,28 +22,15 @@ require 'logger'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-Synopsis
-========
+#{exec_name} [<options>] <command> [<arguments>]
 
-Explain in one sentance whta this cript does.
+<command>
+   List commands
 
-Usage
------
-
-#{exec_name} [OPTIONS] ARGUMENT 
-
-  ARGUMENT
-    Describe what this parameter does.
-
-Options
--------
-
-  --debug, -d
-    Show stacktraces in case of errors.
-  --help, -h
-    Show this help information.
-  --version, -v
-    Print version number.
+<options>
+  -d, --debug                           Show stacktraces in case of errors.
+  -h, --help                            Show this help information.
+  -v, --version                         Print version number.
 EOF
 
 begin
@@ -91,7 +78,7 @@ begin
     end
   end
 
-  command = ARGV[0] || raise('No command given!')
+  command = ARGV.shift || raise('No command given!')
 
 rescue => exc
   $stderr.puts "ERROR: #{exc.message}"
