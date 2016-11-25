@@ -1,12 +1,12 @@
 # [Fully Automated Installation](http://fai-project.org/)
 
-* System to automate the installation of a Linux based operating system using a pre-defined [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)  
-* FAI boots a live system over the network into the memory of the node and follows a defined list of [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage 
+* System to automate the installation of a Linux based operating system using a pre-defined [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)
+* FAI boots a live system over the network into the memory of the node and follows a defined list of [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage
 
 Basic FAI server deployment:
 
 ```bash
->>> grep -i pretty /etc/os-release 
+>>> grep -i pretty /etc/os-release
 PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
 >>> wget -O - http://fai-project.org/download/074BCDE4.asc | apt-key add -
 >>> echo "deb http://fai-project.org/download jessie koeln" > /etc/apt/sources.list.d/fai.list
@@ -17,11 +17,11 @@ PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
 ## -- following the FAI guide -- ##
 >>> cp -a /usr/share/doc/fai-doc/examples/simple/* /srv/fai/config/
                                                  # copy the example configiration space
->>> grep fai /etc/exports                                                                                                           
+>>> grep fai /etc/exports
 /srv/fai/nfsroot *(async,ro,no_subtree_check,no_root_squash)
 /srv/fai/config *(async,ro,no_subtree_check,no_root_squash)
 >>> systemctl restart nfs-kernel-server
->>> exportfs 
+>>> exportfs
 ```
 
 Stand alone ISO CD images for off-line deployment on target node:
@@ -29,7 +29,7 @@ Stand alone ISO CD images for off-line deployment on target node:
 ```bash
 >>> fai-mirror -c LINUX,AMD64,FAIBASE,DEBIAN,GRUB_PC -v /srv/fai/mirror | tee /var/log/fai-mirror.log
                                                  # Create a package mirror for a FAI CD
->>> tree /srv/fai/mirror/                        # mirror package tree 
+>>> tree /srv/fai/mirror/                        # mirror package tree
 >>> fai-make-nfsroot -l
 >>> fai-cd -m /srv/fai/mirror/ /srv/http/fai.iso # create a stand alone FAI CD for offline deployment
 ```
@@ -55,7 +55,7 @@ Note: It is recommended to keep this configuration in version control system
 
 ```bash
 >>> FAI_CONFIG=/srv/devops                      # path to the custom FAI configuration
->>> mkdir -p $FAI_CONFIG/{config,nfsroot,http,tftp,nfsroot-hooks} 
+>>> mkdir -p $FAI_CONFIG/{config,nfsroot,http,tftp,nfsroot-hooks}
 >>> cp -a /usr/share/doc/fai-doc/examples/simple/* $FAI_CONFIG/config && cp -r /etc/fai/* $FAI_CONFIG/
                                                 # copy the default configuration
 >>> grep devops $FAI_CONFIG/nfsroot.conf        # adjust the configuration to custom path
@@ -97,12 +97,12 @@ server.document-root        = "/srv/devops/http"
                                                              # copy the kernel and init RAM disk
 >>> cat $FAI_CONFIG/http/default                             # default iPXE configuration
 #!ipxe
-initrd initrd.img-3.16.0-4-amd64 
+initrd initrd.img-3.16.0-4-amd64
 kernel vmlinuz-3.16.0-4-amd64 ip=dhcp ro root=10.1.1.27:/srv/devops/nfsroot aufs FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.1.27/srv/devops/config FAI_ACTION=install
 boot
 ```
 
-Kernel/init options [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs), [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)  
+Kernel/init options [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs), [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)
 
 ```bash
 console=tty0 console=ttyS1,115200n8                           # Configure the serial console
@@ -135,7 +135,7 @@ grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | 
                                                  # list all classes
 ls -1 $FAI_CONFIGDIR/class/*.var                 # files defining variables
 fai-class $FAI_CONFIGDIR /tmp/fai/FAI_CLASSES    # script used to extract class definition from configuration
-$LOGDIR/fai.log                                  # common log information from the $FAI_NFSROOT/usr/sbin/fai 
+$LOGDIR/fai.log                                  # common log information from the $FAI_NFSROOT/usr/sbin/fai
 ```
 
 ### Storage
@@ -159,7 +159,7 @@ $LOGDIR/disk_vars.sh                            # consumed by $FAI_CONFIGDIR/scr
 
 ### Packages
 
-Define  [additional packages to be installed](http://fai-project.org/fai-guide/#_a_id_packageconfig_a_software_package_configuration) by **`install_packages`** 
+Define  [additional packages to be installed](http://fai-project.org/fai-guide/#_a_id_packageconfig_a_software_package_configuration) by **`install_packages`**
 
 ```bash
 ls -1 $FAI_CONFIGDIR/debconf | grep '^[A-Z0-9]*$' | sort
@@ -177,12 +177,36 @@ FAI_ROOT                                        # defaults to /target mount-poin
 Custom code executed during installation by **`fai-do-scripts`**
 
 * Each class uses a dedicated script directory which will be executed in alphabetical order
-* Copy files with `fcopy`, extract archive s with `ftar`, appending lines to files with `ainsl` 
+* Copy files with `fcopy`, extract archive s with `ftar`, appending lines to files with `ainsl`
 
 ```bash
 ls -1 $FAI_CONFIGDIR/scripts/<class>/[0-9][0-9]* # scripts for a particular class
-fai-do-scripts /var/lib/fai/config/scripts       
+fai-do-scripts /var/lib/fai/config/scripts
 $LOGDIR/shell.log                                # common logger location for executed scripts
+```
+
+## Examples
+
+### InfiniBand
+
+Install support for a InfiniBand host channel adapter:
+
+```bash
+## List of packages required
+>>> cat $FAI_CONFIGDIR/package_config/INFINIBAND
+PACKAGES install
+libibcommon1
+libibmad1
+libibumad1
+libopensm2
+infiniband-diags
+ibutils
+## Load Infiniband kernel modules during boot
+>>> cat $FAI_CONFIGDIR/scripts/INFINIBAND/10-etc_modules
+#!/bin/bash
+for module in mlx4_core mlx4_ib ib_umad ib_ipoib rdma_ucm; do
+    ainsl -a $target/etc/modules "^$module$"
+done
 ```
 
 
