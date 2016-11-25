@@ -113,13 +113,10 @@ KVM virtual machine for testing
 ```
 ### Classes
 
-→ [The class concept](http://fai-project.org/fai-guide/#_a_id_classc_a_the_class_concept)  
-→ [Defining classes](http://fai-project.org/fai-guide/#defining%20classes)
-
-* Classes determine which configuration files to apply on a given node during installation
+* [Classes](http://fai-project.org/fai-guide/#_a_id_classc_a_the_class_concept) determine which configuration files to apply on a given node during installation
 * Multiple nodes sharing the same configuration by having the same classes associated
 * The order of the classes is important because it defines the priority of the classes from low to high
-* Class names: Uppercase, no hyphen, hash, semicolon, dot, but may contain underscores and digits
+* Class [definition](http://fai-project.org/fai-guide/#defining%20classes): Uppercase, no hyphen, hash, semicolon, dot, but may contain underscores and digits
 
 ```bash
 ls -1 $FAI_CONFIGDIR/class/[0-9][0-9]*          # files defining classes
@@ -127,14 +124,41 @@ cat $FAI_CONFIGDIR/class/50-host-classes        # define classes depending on th
 grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | cut -d: -f2 | sort | uniq
                                                 # list all classes
 ls -1 $FAI_CONFIGDIR/class/*.var                # files defining variables
-ls -1 $FAI_CONFIGDIR/disk_config/ | grep  '^[A-Z0-9]*$'
-                                                # storage configuration files
+```
+
+### Storage
+
+Configure RAIDs, LVM and partitions with **`setup-storage`**
+
+```bash
+man -P 'less -p "^EXAMPLES"' setup-storage      # show example configuration in documentation
+ls -1 $FAI_CONFIGDIR/disk_config/ | grep '^[A-Z0-9]*$'
+                                                # list storage configuration files
+FAI_CONFIGDIR                                   # defaults to /srv/fai/config on the server
+                                                # defaults to /var/lib/fai/config during installation
 setup-storage -s -f $FAI_CONFIGDIR/disk_config/<class>
-                                                # check the syntax of a storage configuration
+                                                # check the syntax of a storage configuration file
+setup-storage -d -f $FAI_CONFIGDIR/disk_config/<class>
+                                                # execute storage configuration manually for testing
+LOGDIR                                          # defaults to /tmp/fai during deployment
+$LOGDIR/format.log                              # output of setup-storage during deployment
+grep -H disklist $LOGDIR/*                      # list of available drives in the system
+fai-disk-info                                   # called if $disklist unset
+$LOGDIR/fstab                                   # generated afer successful storage setup
+$LOGDIR/disk_vars.sh                            # consumed by $FAI_CONFIGDIR/scripts/GRUB_PC/10-setup
+```
+
+### Packages
+
+Define [additional packages to be installed](http://fai-project.org/fai-guide/#_a_id_packageconfig_a_software_package_configuration) by **`install_packages`** 
+
+```bash
 ls -1 $FAI_CONFIGDIR/package_config/*.asc       # apt keys added during deployment
-ls -1 $FAI_CONFIGDIR/package_config/ | grep  '^[A-Z0-9]*$'
+ls -1 $FAI_CONFIGDIR/package_config/ | grep '^[A-Z0-9]*$'
                                                 # package configuration files
 install_packages -H                             # list of command supported in package configuration
+install_packages -l                             # list packages which will be installed
+FAI_ROOT                                        # defaults to /target mount-point for local file-systems
 ```
 
 
@@ -145,10 +169,6 @@ install_packages -H                             # list of command supported in p
 fai-class $FAI_CONFIGDIR /tmp/fai/FAI_CLASSES    # script used to extract class definition from configuration
 /tmp/fai/fai.log                                 # common log information from the $FAI_NFSROOT/usr/sbin/fai 
 source /tmp/fai/variables.log                    # load the FAI environment
-setup-storage -d -f /var/lib/fai/config/disk_config/<class>
-                                                 # execute storage configuration
-/tmp/fai/format.log                              # log for the storage configuration
-/target                                          # mount of the local file-systems
 fai-do-scripts /var/lib/fai/config/scripts       
 /tmp/fai/shell.lo`                               # common log for post-installation scripts
 ```
