@@ -100,7 +100,7 @@ config/general.h
 config/console.h
 ```
 
-### Chainloading
+### Chain-Loading
 
 Chain load over TFTP by configuring `dhcp.conf`:
 

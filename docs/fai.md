@@ -189,7 +189,10 @@ Make sure to understand how to build [development and test environments with vir
 ## -- Shift-Up/Down to scroll con qemu console -- ##
 ```
 
-Forward port of a virtual machine instance running a FAI server:
+Connect external nodes to the virtual machine instance running a FAI server:
+
+* Configure  → [Network booting with PXE](pxe.md) to target the virtual machine instance host
+* Use port forwarding to make the TFTP-, HTTP-, and NFS-Server accessible 
 
 ```bash
 >>> for p in 69 80 111 2049 ; do virsh-instance-port-forward add lxdev01:$p $p ; done
@@ -207,7 +210,6 @@ ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:69
 >>> for p in 69 80 111 2049 ; do virsh-instance-port-forward drop lxdev01:$p $p ; done
 ```
 
-→ [Network booting with PXE](pxe.md)
 
 ## Examples
 
