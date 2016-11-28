@@ -100,9 +100,9 @@ config/general.h
 config/console.h
 ```
 
-### Chain-Loading
+### DHCP configuration
 
-Chain load over TFTP by configuring `dhcp.conf`:
+**Chain-Loading** iPXE from TFTP by configuring `dhcp.conf`:
 
 ```
 host ... {
@@ -111,6 +111,16 @@ host ... {
   filename "undionly.kpxe";
 }
 ```
+
+Load iPXE configuration from an HTTP-server with Mellanox FlexBoot on an Infiniband HCA:
+
+```
+host ... {
+  filename "http://<ip-address>/<path>";
+  option vendor-class-identifier "PXEClient";
+}
+```
+
 
 ### Test
 

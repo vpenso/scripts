@@ -191,8 +191,8 @@ Make sure to understand how to build [development and test environments with vir
 
 Connect external nodes to the virtual machine instance running a FAI server:
 
-* Configure  → [Network booting with PXE](pxe.md) to target the virtual machine instance host
-* Use port forwarding to make the TFTP-, HTTP-, and NFS-Server accessible 
+* Configure [network booting with PXE](pxe.md) to target the host of the virtual machine instance 
+* Use port forwarding to make the TFTP-, HTTP-, and NFS-Server accessible
 
 ```bash
 >>> for p in 69 80 111 2049 ; do virsh-instance-port-forward add lxdev01:$p $p ; done
