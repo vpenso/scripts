@@ -192,9 +192,10 @@ Make sure to understand how to build [development and test environments with vir
 Forward port of a virtual machine instance running a FAI server:
 
 ```bash
->>> for p in 80 111 2049 ; do virsh-instance-port-forward add lxdev01:$p $p ; done
+>>> for p in 69 80 111 2049 ; do virsh-instance-port-forward add lxdev01:$p $p ; done
 >>> virsh-instance-port-forward list lxdev01
 NAT rules:
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:69 to:10.1.1.27:69
 DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:10.1.1.27:80
 DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:111 to:10.1.1.27:111
 DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:2049 to:10.1.1.27:2049
@@ -202,9 +203,11 @@ Forward rules:
 ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:2049
 ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:111
 ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:80
->>> for p in 80 111 2049 ; do virsh-instance-port-forward drop lxdev01:$p $p ; done
+ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:69
+>>> for p in 69 80 111 2049 ; do virsh-instance-port-forward drop lxdev01:$p $p ; done
 ```
 
+→ [Network booting with PXE](pxe.md)
 
 ## Examples
 

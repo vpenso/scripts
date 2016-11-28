@@ -64,38 +64,24 @@ chain tftp://<ip>/<path>/pxelinux.0    # load PXE configuration from ip/path
 sanboot http://.../img.iso             # boot ISO image over HTTP
 ```
 
-**USB Image**
 
 Build from the [ipxe.org](http://ipxe.org) repository
 
 ```bash
-apt-get install build-essential genisoimage
-git clone git://git.ipxe.org/ipxe.git git.ipxe.org
-cd git.ipxe.org/src/
-make bin/ipxe.iso
-make bin/ipxe.usb
-ls -1 ../bin/ipxe.[iu]* 
+>>> apt -y install build-essential liblzma-dev genisoimage git-core
+>>> git clone git://git.ipxe.org/ipxe.git ipxe             # get the iPXE source
+>>> cd src 
+>>> make                                                   # build
+>>> make bin/ipxe.iso                                      # build ISO image
+>>> make bin/ipxe.usb                                      # build USB image
+>>> make bin/undionly.kpxe                                 # build a chainloadable iPXE image
+>>> ls -1 bin/*.{iso,usb,kpxe}
+bin/ipxe.iso
+bin/ipxe.usb
+bin/undionly.kpxe
 ```
 
-Eventually uncomment defines for commands like `nslookup`, `ping` (cf. [ipxe.org/buildcfg](http://ipxe.org/buildcfg))
-
-```bash
-config/general.h
-config/console.h
-```
-
-Move images to the `ipxe/` sub-directory.
-
-Run the iPXE image in a virtual machine for development and testing
-
-```bash
-kvm -m 512 ipxe.usb
-virt-install --ram 2048 --cdrom=ipxe.iso --nodisk --name ipxetest
-```
-
-**Floppy Disks**
-
-Prepare an image file (usable as virtual device over IPMI):
+Prepare an floppy file (usable as virtual device over IPMI):
 
 ```bash
 sudo apt-get install dosfstools
@@ -106,6 +92,35 @@ sudo dd if=ipxe/ipxe.usb of=/dev/loop0               # write iPXE to floopy
 sudo umount mnt/
 cp floopy.img ipxe/ipxe.floopy
 ```
+
+Eventually uncomment defines for commands like `nslookup`, `ping` (cf. [ipxe.org/buildcfg](http://ipxe.org/buildcfg))
+
+```bash
+config/general.h
+config/console.h
+```
+
+### Chainloading
+
+Chain load over TFTP by configuring `dhcp.conf`:
+
+```
+host ... {
+  ...
+  next-server <tftp-server-ip-address>;
+  filename "undionly.kpxe";
+}
+```
+
+### Test
+
+Run the iPXE image in a virtual machine for development and testing
+
+```bash
+kvm -m 512 ipxe.usb
+virt-install --ram 2048 --cdrom=ipxe.iso --nodisk --name ipxetest
+```
+
 
 
 
