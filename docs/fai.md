@@ -215,7 +215,107 @@ ACCEPT     tcp  --  0.0.0.0/0            10.1.1.27            tcp dpt:69
 
 ### InfiniBand
 
-Install support for a InfiniBand host channel adapter:
+Support for Infiniband to the live system:
+
+```bash
+>>> cat NFSROOT
+PACKAGES install
+...
+libmlx4-1
+>>> fai-make-nfsroot -vk -C $FAI_CONFIG
+>>> source $FAI_CONFIG/nfsroot.conf 
+>>> mount -t proc proc $NFSROOT/proc && mount -t sysfs sys $NFSROOT/sys && mount -o bind /dev $NFSROOT/dev
+>>> chroot $NFSROOT /bin/bash
+tail -n +1 /usr/lib/dracut/modules.d/39infiniband/*       
+==> /usr/lib/dracut/modules.d/39infiniband/infiniband.sh <==
+#!/bin/bash
+
+load_modules()
+{
+modprobe mlx4_core
+modprobe mlx4_ib
+modprobe ib_ipoib
+modprobe ib_core
+modprobe ib_mad
+modprobe ib_sa
+modprobe ib_addr
+modprobe iw_cm
+modprobe ib_cm
+modprobe rdma_cm
+modprobe rdma_ucm
+modprobe ib_ucm
+modprobe ib_uverbs
+modprobe ib_umad
+modprobe rdma_cm
+modprobe ib_cm
+modprobe iw_cm
+modprobe ib_sa
+modprobe ib_mad
+modprobe ipv6
+modprobe rds
+modprobe ib_srp
+modprobe ib_iser
+modprobe rdma_cm
+modprobe ib_uverbs
+modprobe rdma_ucm
+}
+
+load_modules
+
+==> /usr/lib/dracut/modules.d/39infiniband/module-setup.sh <==
+#!/bin/bash
+
+check() {
+    return 0 # Include the dracut module in the initramfs.
+}
+
+install() {
+    inst_hook pre-udev 39 "$moddir/infiniband.sh"
+}
+
+installkernel() {
+    instmods mlx4_core
+    instmods mlx5_ib
+    instmods mlx4_ib
+    instmods ib_ipoib
+    instmods ib_core
+    instmods ib_mad
+    instmods ib_sa
+    instmods ib_addr
+    instmods iw_cm
+    instmods ib_cm
+    instmods rdma_cm
+    instmods rdma_ucm
+    instmods ib_ucm
+    instmods ib_uverbs
+    instmods ib_umad
+    instmods rdma_cm
+    instmods ib_cm
+    instmods iw_cm
+    instmods ib_sa
+    instmods ib_mad
+    instmods ipv6
+    instmods rds
+    instmods ib_srp
+    instmods ib_iser
+    instmods rdma_cm
+    instmods ib_uverbs
+    instmods rdma_ucm
+    instmods mst_pciconf
+    instmods mst_pci
+    instmods eth_ipoib
+    instmods mlx4_core
+    instmods mlx4_en
+    instmods mlx5_core
+}
+>>> dracut --add-drivers 'mlx4_en mlx4_ib mlx5_ib' -v -m nfs -m infiniband -f
+>>> lsinitrd /boot/initramfs-3.16.0-4-amd64.img 
+>>> exit
+>>> umount $NFSROOT/proc $NFSROOT/sys $NFSROOT/dev
+>>> cp -v $FAI_CONFIG/nfsroot/boot/{initrd,vmlinuz}* $FAI_CONFIG/http
+```
+
+InfiniBand support in the installed system: 
 
 ```bash
 ## List of packages required
