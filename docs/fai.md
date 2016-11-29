@@ -181,7 +181,7 @@ Make sure to understand how to build [development and test environments with vir
 
 ```bash
 >>> qemu-img create -f qcow2 disk.img 100G  # disk image for the test virtual machine
->>> virsh-config -Nv -m 02:FF:0A:0A:06:1C libvirt_instance.xml
+>>> virsh-config -CNv -m 02:FF:0A:0A:06:1C libvirt_instance.xml
 >>> virsh create libvirt_instance.xml
 ## ---  Hit CTRL-B to enter the iPXE shell -- ##
 >>> dhcp                                        # enable the network interface
