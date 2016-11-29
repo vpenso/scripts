@@ -2,7 +2,7 @@
 
 Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell environment.
 
-* [bin/][bin/] – scripts for various purposes developed to make my life easier.
+* [bin/](bin/) – scripts for various purposes developed to make my life easier.
 * [docs/](docs/) – collects notes about work with It infrastructure 
 
 ## License
