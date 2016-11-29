@@ -1,12 +1,11 @@
-# Description
+## Description
 
-`bin/` contains scripts for various purposes developed to make my life easier.
+Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell environment.
 
-Use [source_me.sh](source_me.sh) to add aliases and scripts to your environment.
+* [bin/][bin/] – scripts for various purposes developed to make my life easier.
+* [docs/](docs/) – collects notes about work with It infrastructure 
 
-`docs/` not about woek with It infrastructure 
-
-# License
+## License
 
 Copyright 2012-2016 Victor Penso
 
