@@ -312,7 +312,8 @@ installkernel() {
 >>> lsinitrd /boot/initramfs-3.16.0-4-amd64.img 
 >>> exit
 >>> umount $NFSROOT/proc $NFSROOT/sys $NFSROOT/dev
->>> cp -v $FAI_CONFIG/nfsroot/boot/{initrd,vmlinuz}* $FAI_CONFIG/http
+>>> cp -v $FAI_CONFIG/nfsroot/boot/{initramfs,vmlinuz}* $FAI_CONFIG/http 
+>>> chmod a+r $FAI_CONFIG/http/{initramfs,vmlinuz}*
 ```
 
 InfiniBand support in the installed system: 
