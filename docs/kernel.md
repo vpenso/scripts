@@ -1,26 +1,9 @@
 
+→ [www.kernel.org](https://www.kernel.org/)  
 ↴ [var/aliases/kernel.sh](../var/aliases/kernel.sh)
 
-Minimal Debian user-space:
-
 ```bash
->>> ostree=/tmp/ostree osimg=/tmp/os.img ; mkdir $ostree
->>> sudo debootstrap <suite> $ostree                                 # minimal Debian user-space
->>> dd if=/dev/zero of=$osimg bs=1M seek=4095 count=1                # crate an disk image file
->>> sudo mkfs.ext4 -F $osimg                                         # initialize a file-system
->>> sudo mount -o loop $osimg /mnt                                   # mount the disk image
->>> sudo cp -a $ostree/. /mnt                                        # copy user-space
-## -- Modify the user-space image with chroot -- ##
->>> sudo chroot /mnt /bin/bash                                       # in order to modify the disk image
-chroot> sed -i '/^root/ { s/:x:/::/ }' /etc/passwd                   # make root passwordless 
-...
-chroot> exit
->>> sudo umount /mnt
-```
-
-Build Linux from [kernel.org](https://www.kernel.org/) with a minimal configuration for a virtual machine:
-
-```bash
+## -- Build a Linux kernel -- ##
 apt -y install libncurses5-dev gcc make git exuberant-ctags bc libssl-dev
 wget -qO- https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.8.11.tar.xz | tar -xvJ
 make x86_64_defconfig                                   # x86_64 configuration 
@@ -31,8 +14,20 @@ cp -v arch/x86/boot/bzImage $kernel && cp -v .config ${kernel}.config
                                                         # save kernel and its configuration
 make modules                                            # compiles modules
 make modules_install INSTALL_MOD_PATH=${kernel}.modules # installs kernel modules
+## -- Minimal Debian user-space -- ##
+sudo debootstrap testing /tmp/rootfs                             # minimal Debian user-space
+rootfs=$ROOTFS/debian-testing.img
+dd bs=1M seek=4095 count=1 if=/dev/zero of=$rootfs               # crate an disk image file
+sudo mkfs.ext4 -F $rootfs                                        # initialize a file-system
+sudo mount -o loop $rootfs /mnt                                  # mount the disk image
+sudo cp -a /tmp/rootfs/. /mnt                                    # copy user-space
+sudo cp -a ${kernel}.modules/. /mnt                              # copy kernel modules
+sudo chroot /mnt /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
+                                                                 # make root passwordless 
+sudo umount /mnt     
+## -- Boot custom kernel with with a dedicated root file-system -- ##
+kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic /srv/rootfs/debian-testing.img
 ```
-
 
 ## Dracut
 
