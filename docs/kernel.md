@@ -3,18 +3,16 @@
 Minimal Debian user-space:
 
 ```bash
->>> ostree=/tmp/jessie osimg=/tmp/os.img
->>> mkdir $ostree && debootstrap jessie $ostree                      # minimal Debian user-space
+>>> ostree=/tmp/ostree osimg=/tmp/os.img ; mkdir $ostree
+>>> sudo debootstrap <suite> $ostree                                 # minimal Debian user-space
 >>> dd if=/dev/zero of=$osimg bs=1M seek=4095 count=1                # crate an disk image file
 >>> sudo mkfs.ext4 -F $osimg                                         # initialize a file-system
 >>> sudo mount -o loop $osimg /mnt                                   # mount the disk image
 >>> sudo cp -a $ostree/. /mnt                                        # copy user-space
->>> sudo chroot /mnt /bin/bash                                       # in order to modify the disk image
 ## -- Modify the user-space image with chroot -- ##
+>>> sudo chroot /mnt /bin/bash                                       # in order to modify the disk image
 chroot> sed -i '/^root/ { s/:x:/::/ }' /etc/passwd                   # make root passwordless 
-chroot> cat /etc/network/interfaces.d/eth0                           # enable networking
-auto eth0
-iface eth0 inet dhcp
+...
 chroot> exit
 >>> sudo umount /mnt
 ```
