@@ -20,17 +20,16 @@ chroot> exit
 Build Linux from [kernel.org](https://www.kernel.org/) with a minimal configuration for a virtual machine:
 
 ```bash
->>> apt -y install libncurses5-dev gcc make git exuberant-ctags bc libssl-dev 
->>> wget -qO- https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.8.11.tar.xz | tar -xvJ
-                                                            # get the Linux kernel source code
->>> make x86_64_defconfig && make kvmconfig                 # x86_64 confgiuration with KVM support
->>> make -jX                                                # compile on multi-core
->>> kvm -kernel arch/x86/boot/bzImage -drive file=$osimg,if=virtio -nographic -append "console=ttyS0 root=/dev/vda rw"
-                                                            # boot the kernel
-        -netdev user,id=net0 -device virtio-net-pci,netdev=net0
-                                                            # enable networking
+apt -y install libncurses5-dev gcc make git exuberant-ctags bc libssl-dev 
+wget -qO- https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.8.11.tar.xz | tar -xvJ
+make x86_64_defconfig                                   # x86_64 configuration 
+make kvmconfig                                          # enable KVM support
+make -j4                                                # compile on multi-core
+cp arch/x86/boot/bzImage /srv/kernel/linux-4.8.11-basic
+cp .config /srv/kernel/linux-4.8.11-basic.config
 ```
-[kernel parameters](https://www.kernel.org/doc/Documentation/kernel-parameters.txt)
+
+↴ [var/aliases/kvm.sh](../var/aliases/kvm.sh)
 
 ## Dracut
 
@@ -51,15 +50,7 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 * Uses `udev` to create device nodes
 * Functionality provided by generator modules, cf. `dracut.modules`
 * Configuration passed by kernel parameters, cf. `dracut.cmdline`
-
-Internal flow of execution:
-
-1. Basic Setup (hooks: cmdline, pre-udev)
-2. Start Udev (hook: pre-trigger)
-3. Trigger Udev – **Initqueue**
-4. Wait for job or Udev settled – **Initqueue-{settled,finished}**
-5. Found root device (hooks: pre-mount, mount, pre-pivot)
-6. Cleanup, switch root
+* Init with [systemd](systemd.md), cf. `dracut.bootup` 
 
 ```bash
 dracut --help | grep Version                   # show program version
