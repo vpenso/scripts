@@ -1,4 +1,5 @@
 
+↴ [var/aliases/kernel.sh](../var/aliases/kernel.sh)
 
 Minimal Debian user-space:
 
@@ -20,16 +21,18 @@ chroot> exit
 Build Linux from [kernel.org](https://www.kernel.org/) with a minimal configuration for a virtual machine:
 
 ```bash
-apt -y install libncurses5-dev gcc make git exuberant-ctags bc libssl-dev 
+apt -y install libncurses5-dev gcc make git exuberant-ctags bc libssl-dev
 wget -qO- https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.8.11.tar.xz | tar -xvJ
 make x86_64_defconfig                                   # x86_64 configuration 
 make kvmconfig                                          # enable KVM support
 make -j4                                                # compile on multi-core
-cp arch/x86/boot/bzImage /srv/kernel/linux-4.8.11-basic
-cp .config /srv/kernel/linux-4.8.11-basic.config
+kernel=$KERNEL/linux-4.8.11-basic
+cp -v arch/x86/boot/bzImage $kernel && cp -v .config ${kernel}.config
+                                                        # save kernel and its configuration
+make modules                                            # compiles modules
+make modules_install INSTALL_MOD_PATH=${kernel}.modules # installs kernel modules
 ```
 
-↴ [var/aliases/kvm.sh](../var/aliases/kvm.sh)
 
 ## Dracut
 
