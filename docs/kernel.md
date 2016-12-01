@@ -2,6 +2,8 @@
 → [www.kernel.org](https://www.kernel.org/)  
 ↴ [var/aliases/kernel.sh](../var/aliases/kernel.sh)
 
+Cf. [bootstrap](bootstrap.md) to create a rootfs
+
 ```bash
 ## -- Build a Linux kernel -- ##
 apt -y install libncurses5-dev gcc make git exuberant-ctags bc libssl-dev
@@ -14,20 +16,9 @@ cp -v arch/x86/boot/bzImage $kernel && cp -v .config ${kernel}.config
                                                         # save kernel and its configuration
 make modules                                            # compiles modules
 make modules_install INSTALL_MOD_PATH=${kernel}.modules # installs kernel modules
-## -- Minimal Debian user-space -- ##
-sudo debootstrap testing /tmp/rootfs                             # minimal Debian user-space
-rootfs=$ROOTFS/debian-testing.img
-dd bs=1M seek=4095 count=1 if=/dev/zero of=$rootfs               # crate an disk image file
-sudo mkfs.ext4 -F $rootfs                                        # initialize a file-system
-sudo mount -v -o loop $rootfs /mnt                               # mount the disk image
-sudo cp -a /tmp/rootfs/. /mnt                                    # copy user-space
-sudo cp -a ${kernel}.modules/. /mnt                              # copy kernel modules
-sudo chroot /mnt /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
-                                                                 # make root passwordless 
-sudo umount /mnt     
 ## -- Boot custom kernel with with a dedicated root file-system -- ##
-kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic /srv/rootfs/debian-testing.img
-kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic /srv/rootfs/debian-testing.img -initrd /srv/kernel/linux-4.8.11-basic.initramfs
+kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic $rootfs
+kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic $rootfs -initrd /srv/kernel/linux-4.8.11-basic.initramfs
 ```
 
 ## Dracut
