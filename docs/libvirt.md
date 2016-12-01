@@ -118,9 +118,6 @@ virt-builder --root-password password:root -o $VM_INSTANCE_PATH/lxdev01.devops.t
 
 Virtual machine instance [lifecycle](http://wiki.libvirt.org/page/VM_lifecycle):
 
-* **Transient** "undefined" virtual machines exist until they are shutdown
-* **Persistent** virtual machines have a permanent "defined" configuration
-
 ```bash
 vm (c)reate|(l)ist|(s)tart                  # alias to manage virtual machine life cycle
    (d)efine|(u)ndefine
@@ -129,14 +126,9 @@ virsh-instance list                         # list template images
 virsh-instance clone <image> <name>         # start copied instance from image
 virsh-instance shadow <image> <name>        # start shadow instance from image
 virsh-instance remove <name>                # undefine/stop instance
-virsh list --all                            # list vm insatnces in all states
-virsh shutdown <name|id>                    # graceful halt
-virsh destroy <name|id>                     # force immediate stop
-virsh dumpxml <name|id>                     # show instance XML configuration
-virsh undefine <name|id>                    # remove persistent configuration
 ```
 
-### Example
+Example:
 
 * Select a network configuration, and a template image
 * Start a VM instance with selected configuration, and login
@@ -167,9 +159,9 @@ Domain lxdev01.devops.test destroyed
 Domain lxdev01.devops.test has been undefined
 ```
 
-### Login
+### Access
 
-↴ [ssh-instance][ssh-instance] creates SSH configuration for password-less
+Login with ↴ [ssh-instance][ssh-instance] password-less SSH configuration
 
 * Uses `instance` as target hostname, and `devops` as login
 * Requires an pre-generated SSH key-pair without password lock
@@ -181,12 +173,6 @@ ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
 ssh-instance -i keys/id_rsa 10.1.1.26       # custom SSH configuration written to ssh_config
 ssh -F ssh_config instance -C […]
                                             # use custom SSH configuration to connect 
-## -- Enable password-less login to the VM insatnce -- ## 
-ssh-exec "su -lc 'apt install rsync sudo'"
-ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
-ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
-ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
-ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 ```
 
 ↴ [ssh-exec][ssh-exec] and ↴ [ssh-sync][ssh-sync] use `ssh_config` if present in the working directory:
@@ -200,7 +186,30 @@ ssh-sync <spath> :<dpath>                   # rsync local path into VM instance
 ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local path as root
 ```
 
-Mount the root file-system of the virtual machine instance with ↴ [ssh-fs][ssh-fs]
+Example
+
+```bash
+ssh-exec "su -lc 'apt install rsync sudo'"
+ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
+ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
+ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
+ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
+```
+
+### Management
+
+* **Transient** "undefined" virtual machines exist until they are shutdown
+* **Persistent** virtual machines have a permanent "defined" configuration
+
+```bash
+virsh list --all                            # list vm insatnces in all states
+virsh shutdown|destroy <name|id>            # graceful halt, force immediate stop
+virsh dumpxml <name|id>                     # show instance XML configuration
+virsh define <xml_config>                   # create persistent configuration
+virsh undefine <name|id>                    # remove persistent configuration
+virt-df                                     # list file-systems of VM instances
+virt-ls -l -d <name> <path> [<path>]        # list files on VM instance device
+```
 
 # Provisioning
 
