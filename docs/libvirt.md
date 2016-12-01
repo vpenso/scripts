@@ -41,30 +41,20 @@ virsh-nat-bridge config                             # show XML configuration fil
 virsh-nat-bridge start                              # sue this configuration
 virsh net-list                                      # list networks
 brctl show nbr0                                     # show bridge state
-virsh-nat-bridge list                               # list DNS configuration
-virsh-nat-bridge lookup <node>                      # show hostname, IP- and MAC-address triplet
 virsh-nat-bridge --network 192.168.0 --bridge br0 --nodes node1,node2[…]
                                                     # configure custom NAT bridge
 ```
 
-## Templates
+↴ [virsh-config][virsh-config] creates custom virtual machine [XML configuration](http://libvirt.org/formatdomain.html)
 
 ```bash
-virt-install --ram 2048 --name install --graphics vnc \
-             --os-type linux --virt-type kvm \
-             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
-virt-install -c qemu+ssh://root@lxhvs01.devops.test/system --noautoconsole […]
-                                                 #  no VNC for remote servers
-virt-install --bridge br124 --mac 02:FF:0A:0A:18:6F --boot network […]
-                                                 # network boot
-virt-builder -l                                  # list os templates
-virt-builder --print-cache | grep cached         # list cached os templates
-ls -1 ~/.cache/virt-builder/                     # list cache directory
-virt-builder --root-password password:root -o $VM_INSTANCE_PATH/lxdev01.devops.test/disk.img debian-8
-                                                 # build a new VM insatnce from os template
-
+virsh-nat-bridge list                                    # list DNS configuration
+virsh-nat-bridge lookup <name>                           # show hostname, IP- and MAC-address triplet
+virsh-config -n <name> -m <mac> […] libvirt_instance.xml # create XML configuration
+virsh create|define libvirt_instance.xml                 # start/define VM instance
 ```
+
+## Templates
 
 ↴ [virsh-instance][virsh-instance] manages virtual machine template images and instance: 
 
@@ -90,7 +80,6 @@ Set the following configuration options during installation:
 * Username is `devops`
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
-↴ [virsh-config][virsh-config] creates custom XML configuration files for virtual machines 
 
 ```bash
 virsh-config -v -n $name -m 02:FF:0A:0A:06:1A $VM_IMAGE_PATH/$name/libvirt_instance.xml
@@ -105,6 +94,24 @@ Template image customization:
 apt update && apt install openssh-server sudo rsync chef haveged   # basic services
 echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-less sudo for the devops user
 ## -- Configure systemd, NTP, PAM, etc if required -- # 
+```
+
+Other tools providing similar functionality:
+
+```bash 
+virt-install --ram 2048 --name install --graphics vnc \
+             --os-type linux --virt-type kvm \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
+virt-install -c qemu+ssh://root@lxhvs01.devops.test/system --noautoconsole […]
+                                                 #  no VNC for remote servers
+virt-install --bridge br124 --mac 02:FF:0A:0A:18:6F --boot network […]
+                                                 # network boot
+virt-builder -l                                  # list os templates
+virt-builder --print-cache | grep cached         # list cached os templates
+ls -1 ~/.cache/virt-builder/                     # list cache directory
+virt-builder --root-password password:root -o $VM_INSTANCE_PATH/lxdev01.devops.test/disk.img debian-8
+                                                 # build a new VM insatnce from os template
 ```
 
 ## Instances
@@ -129,52 +136,36 @@ vm (c)reate|(l)ist|(s)tart                  # alias to manage virtual machine li
 
 ↴ [ssh-instance][ssh-instance] creates SSH configuration for password-less
 
+* Uses `instance` as target hostname, and `devops` as login
+* Requires an pre-generated SSH key-pair without password lock
+
 ```bash
-mkdir -p 
+cd $VM_IMAGE_PATH/$name                    
 ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
-    » ssh-instance -i keys/id_rsa 10.1.1.26 
-    /srv/vms/images/debian64-8/ssh_config written.
-    » ssh -F ssh_config instance -C […]
+                                            # password-less SSH key-pair
+ssh-instance -i keys/id_rsa 10.1.1.26       # custom SSH configuration written to ssh_config
+ssh -F ssh_config instance -C […]
+                                            # use custom SSH configuration to connect 
+## -- Enable password-less login to the VM insatnce -- ## 
+ssh-exec "su -lc 'apt install rsync sudo'"
+ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
+ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
+ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
+ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 ```
 
-**Several scripts described below read `ssh_config` files present in their execution directory by default.** Thus the addressed remote node is automatically determined and the required login credentials used. By convention the _Host_ in the SSH configuration file needs to be called `instance`.
+↴ [ssh-exec][ssh-exec] and ↴ [ssh-sync][ssh-sync] use `ssh_config` if present in the working directory:
 
+```bash
+ssh-exec                                    # login as devops
+ssh-exec -s                                 # login as devops, and sudo to root shell
+ssh-exec -r                                 # login as root
+ssh-exec […]                                # execute command as devops
+ssh-sync <spath> :<dpath>                   # rsync local path into VM instance
+ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local path as root
+```
 
-
-The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers around the `ssh` and `rsync` commands. They automatically use an `ssh_config` file if it is present in the working directory:
-
-    » ssh-exec "su -lc 'apt install rsync sudo'"
-    » ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
-    » ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
-    » ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
-    » ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
-
-
-The three command above will install Rsync and Sudo (unless installed already), as well as deploy the SSH public key. Note that these scripts aren't limited to local virtual machines instances. It is possible to use password protected keys with an _ssh-agent_ and any remote node (not a virtual machine necessarily).
-
-## Customization 
-
-The ↴[virsh-config][virsh-config] scripts creates simple libvirt [XML configuration](http://libvirt.org/formatdomain.html) files for virtual machines. Use a MAC- and IP-address pair from the `virsh-nat-bridge`, write a configuration file, and start a new virtual machine instance:
-
-    » virsh-nat-bridge lookup lxdev02
-    lxdev02.devops.test 10.1.1.25 02:FF:0A:0A:06:19
-    » virsh-config -h | grep '\-\-'
-      -b,--bridge name
-      -c,--vcpu num
-      -D,--debug
-      -d, --disks path[,path,...]
-      -h,--help
-      -m,--mac-address mac
-      -M,--memory bytes
-      -n,--name name
-      -N,--net-boot
-      -O,--overwrite
-      -p,--vnc-port num
-      -v,--vnc 
-      --version
-    » virsh-config -n debian64-7.1.0-basic -m 02:FF:0A:0A:06:19 […] libvirt_instance.xml
-    » virsh create libvirt_instance.xml
-    […]
+Mount the root file-system of the virtual machine instance with ↴ [ssh-fs][ssh-fs]
 
 # Instances
 
@@ -219,44 +210,7 @@ The libvirt and SSH configuration is created automatically:
 
 Use the command `remove` to drop the virtual machine instance. Note that this will stop and undefine the virtual machine instance, but not delete the corresponding file from *VM_INSTANCE_PATH*.
 
-# Access
 
-Once you have started a virtual machine instance, change to its directory and login with the [ssh-exec][ssh-exec] command. Unless when parameters are provided, the script will login with the **devops** account. You can use the `--sudo` option to login as devops and immediately switch user to become root:
-
-    » cd /srv/vms/instances/lxfs01.devops.test
-    » ssh-exec     
-    devops@wheezy:~$
-    » ssh-exec --sudo       
-    root@wheezy:/home/devops#
-
-In case you just want to execute a single command add parameters to `ssh-exec`:
-
-    » ssh-exec -s ifconfig | grep HWaddr              
-    eth0      Link encap:Ethernet  HWaddr 02:ff:0a:0a:06:1c
-
-All parameters to the `ssh-exec` command will be executed as associated command lines using a login-shell inside the virtual machine. This means you can also execute interactive commands like:
-
-    » ssh-exec -s passwd
-    Enter new UNIX password: 
-    Retype new UNIX password: 
-    passwd: password updated successfully
-
-# Sharing Data
-
-The script ↴[ssh-sync][ssh-sync] wraps the Rsync command and allows differential synchronisation of files and directories:
-
-    » ssh-sync /etc/hostname :/tmp
-    […]
-    » ssh-exec 'cat /tmp/hostname'
-     depc307
-
-Remote path need to be prefixed with colon, e.g. `:/absolute/remote/path`.
-
-    » ssh-sync :/etc/network /tmp
-    » ls /tmp/network               
-    if-down.d/  if-post-down.d/  if-pre-up.d/  if-up.d/  interfaces  run/
-
-Mount the root file-system of the virtual machine instance with ↴[ssh-fs][ssh-fs].
 
 # Provisioning
 
