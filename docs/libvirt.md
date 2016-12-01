@@ -1,238 +1,85 @@
 **Guide to use virtual machines for development and testing on the local workstation**, based on tools available in all modern Linux distributions: [KVM](http://www.linux-kvm.org), [Libvirt](http://libvirt.org/), [SSH](http://www.openssh.com/), [Rsync](http://rsync.samba.org/i), [SSHfs](http://fuse.sourceforge.net/sshfs.html), and [Chef](https://wiki.opscode.com).
 
-# Basics
-
-Check if your CPU supports virtualization:
-
-    » egrep --color '(vmx|svm)' /proc/cpuinfo
-
-If the flags are missing enabled support for virtualization in the BIOS/EFI.
-
-Required packages on **Debian**
-
-    » sudo apt-get -y install libvirt-bin virt-manager virt-viewer \
-       virt-top virtinst qemu-utils qemu-kvm
-    […]
-
-Installing the _dnsmasq_ package (as dependency of _libvirt-bin_) will start automatically an instance of a _dnsmasq_ daemon. Before you continue make sure to shut it down and disable it from the boot process.
-
-    » sudo service dnsmasq stop
-    » sudo update-rc.d dnsmasq disable
-
-Required packages on **Fedora** (>=22)
-
-    » dnf groupinfo virtualization 
-    […]
-    » sudo dnf -y group install with-optional virtualization
-    » sudo systemctl start libvirtd && sudo systemctl enable libvirtd
-
-Check with `lsmod` if the KVM modules are loaded:
-
-    » lsmod | grep kvm
-    […]
-
-
-Enable your user account to manage virtual machines:
-
-    » sudo usermod -a -G libvirt,kvm `id -un`
-
-**Re-login to activate these group rights.** 
-
-Configure **user** in `/etc/libvirt/qemu.conf` and restart the service:
-
-    » sudo grep '^user =' /etc/libvirt/qemu.conf
-    user = "vpenso"
-    » sudo systemctl restart libvirtd && sudo systemctl status libvirtd
-
-## Libvirt
-
-Use the `--connect` or `-c` options for <kbd>virsh</kbd> to specify the libvirtd instance to connect to:
-
-    » virsh --connect qemu:///system list
-    […]
-    » virsh -c qemu:///session list --all
-
-The `//system` URI connect to a libvirtd running as root, while `//session` launches a user specific libvirtd instance with limitations in network connectivity. Define the default connection with:
-
-    » export LIBVIRT_DEFAULT_URI=qemu:///system
-
-→ [var/aliases/libvirt.sh](../var/aliases/libvirt.sh)
-
-Connect to a remote libvirt instance (read the [URI Reference](http://libvirt.org/remote.html#Remote_URI_reference)):
-
-    » virsh -c qemu+ssh://root@lxhvs01.devops.test/system list 
-
-It is possible to use the connection option with most of the libvirt tools:
-
-    » virt-manager -c qemu+ssh://root@lxhvs01.devops.test/system
-    » virt-top -c qemu+ssh://root@lxhvs01.devops.test/system
-
-## Virtual Machines
-
-The <kbd>virt-install</kbd> program is used to install virtual machine images:
-
-    » virt-install --ram 2048 --name install --graphics vnc \
-       --os-type linux --virt-type kvm \
-       --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-       --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
-
-The `--location` option defines a **remote source** holding the installation files like an official Debian FTP server. Alternatively install using an **ISO image as source** with option `--cdrom`. When installing on a remote server or for **unattended deployments** use option `--noautoconsole` to prevent automatic opening of a VNC connection.
-
-    » virt-install -c qemu+ssh://root@lxhvs01.devops.test/system --noautoconsole […]
-
-The **default location** for virtual machine images is `/var/lib/libvirt/images/`. Installation via PXE is enable with the option `--boot` network:
-
-    » virt-install --bridge br124 --mac 02:FF:0A:0A:18:6F --boot network […]
-
-## Mount Images
-
-Use `qemu-nbd` (package "qemu-utils" in Debian) to mount a qcow2 virtual machine disk image (requires root):
-
-1. Load the `nbd` (network block device) kernel module
-2. Connect a qcow2 file as a network block device with `qemu-nbd -c dev path`
-3. List all disk partitions with `fdisk -l dev`
-4. `mount` the required partition
-5. `chroot` (package _coreutils_) to work with the file-system namespace
-6. `umount` partition
-7. Disconnect the disk device `qemu-nbd -d dev`
-
-Follow these steps:
-
-    » modprobe nbd max_part=8
-    » qemu-nbd --connect=/dev/nbd0 /srv/vms/images/debian32-7.2-basic/disk.img
-    » fdisk /dev/nbd0 -l | grep ^/dev
-    /dev/nbd0p1   *        2048    78125055    39061504   83  Linux
-    » mount /dev/nbd0p1 /mnt
-    » chroot /mnt
-    […]
-    » umount /mnt
-    » qemu-nbd --disconnect /dev/nbd0
-    /dev/nbd0 disconnected
-
-
-## Life Cycle
-
-Basically two types of virtual machines are distinguished. **Transient** "undefined" virtual machines exist until they are shutdown. **Persistent** virtual machines have a permanent "defined" configuration, and support for example automatic start on host reboot. Virtual machines installed with `virt-install` are defined by default. In order to **list** all defined virtual machines (including not running instances) use the option `--all`:
-
-    » virsh list --all
-     Id    Name                           State
-    ----------------------------------------------------
-     1     lxdev01.devops.test            running
-     -     lxhvs01.devops.test            shut off
-
-Use **shutdown** for a graceful halt of the virtual machine instance or **destroy** to force immediate stop. To remove a persistent virtual machine configuration from the system use **undefine**:
-
-    » virsh shutdown lxhvs01.devops.test
-    » virsh undefine lxhvs01.devops.test
-
-Create a new virtual machine instance (define and start) from an existing image with `virt-install`. Copy the original image file and boot from the disk image with option `--boot hd`:
-
-    » virt-install --ram=2048 --name lxdev02.devops.test --os-type=linux \
-      --disk path=/var/lib/libvirt/lxdev02.devops.test.img,format=qcow2,bus=virtio \
-      --graphics vnc --virt-type kvm --noautoconsole --boot hd
-    » virsh list
-     Id    Name                           State
-     ----------------------------------------------------
-      8     lxdev02.devops.test            running
-    » virt-viewer 8
-
-The libvirtd stores the XML configuration for defined virtual machine instances in `/etc/libvirt/qemu/`. Alternatively print the current configuration with the `dumpxml` command:
-
-    » virsh dumpxml lxdev01.devops.test | head
-    <domain type='kvm' id='8'>
-      <name>lxdev01.devops.test</name>
-      <uuid>591923d7-96db-89fe-0f35-95662662ae9b</uuid>
-      <memory unit='KiB'>2097152</memory>
-      <currentMemory unit='KiB'>2097152</currentMemory>
-      <vcpu placement='static'>1</vcpu>
-      <os>
-        <type arch='x86_64' machine='pc-i440fx-1.4'>hvm</type>
-        <boot dev='hd'/>
-      </os>
-
-Read [VM Lifecycle](http://wiki.libvirt.org/page/VM_lifecycle) for a in detail explanation.
-
-# Network
-
-For development it is recommended to use a host **internal network bridged to the external LAN using a NAT**. This allows communication between the local virtual machine instances, and at the same time protects these from external access as well as prevents accidental interference of local services with the LAN. 
-
-The script ↴[virsh-nat-bridge][virsh-nat-bridge] helps you to setup a libvirt network configuration called **nat_bridge**. It deploys a bridge called `nbr0` operating as a NAT to connect local virtual machine instances to the external network.  Use **config** to print the default XML configuration passed to libvirt. The default network is **10.1.1.0/24** and MAC addresses are prefixed with **02:FF**. The internal domain is called **devops.test**:
-
-    » virsh-nat-bridge config 
-    <network> 
-      <name>nat_bridge</name>
-      <bridge name="nbr0" />
-      <forward mode="nat"/>
-      <domain name="devops.test"/>
-      <dns>
-    […]
-
-The argument **start** will deploy the configuration and start the network:
-
-
-    » virsh-nat-bridge start
-    » virsh net-list 
-     Name                 State      Autostart     Persistent
-    ----------------------------------------------------------
-     default              active     yes           yes
-     nat_bridge           active     yes           yes
-    » brctl show nbr0 
-    bridge name     bridge id               STP enabled     interfaces
-    nbr0            8000.525400001f4c       yes             nbr0-nic
-
-The configuration contains a **pre-defined set of DNS host names with associated IP and MAC-addresses**.  Print a listing of all defined host names with the **list** command.
-
-    » virsh-nat-bridge list
-    lxdns01.devops.test 10.1.1.5
-    lxdns02.devops.test 10.1.1.6
-    lxcm01.devops.test 10.1.1.7
-    lxcm02.devops.test 10.1.1.8
-    lxcc01.devops.test 10.1.1.9
-    lxcc02.devops.test 10.1.1.10
-    […]
-    » virsh-nat-bridge lookup lxdev03
-    lxdev03.devops.test 10.1.1.26 02:FF:0A:0A:06:1A
-
-Show the configuration for a single host with the **lookup** command. 
-
-    » virsh-nat-bridge --network 192.168.0 --bridge br0 --nodes alice,bob […]
-
-
-# Configuration 
-
-The basic concept is to maintain a **dedicated directory for each node and its configuration files** (like the login credentials, or file for the configuration management). Below you can see an example directory listing:
-
-    $ ls $VM_INSTANCE_PATH/lxdev01.devops.test
-    chef_attributes.json  
-    chef_config.rb  
-    cookbooks/
-    disk.img  
-    keys/  
-    libvirt_instance.xml
-    libvirt_install.xml
-    roles/
-    ssh_config
-
-The `VM_INSTANCE_PATH` environment variable defines the **base directory** used by ↴[virsh-instance][virsh-instance] to deploy virtual machines instances (by default `/srv/vms/instances`). The directory are called like the host name (FQDN) of the virtual machine instance. 
-
-## Images
-
-One of the advantages of using virtual machines is the convenience of cloning them as many times as needed. **It is recommended to maintain a set of basic virtual machine images used to clone new virtual machine instances from**. The environment variable `VM_IMAGE_PATH` is used by the `virsh-instance` command to locate these virtual machine images. 
-
-Use the command **install** to create a new virtual machine images. Internally this script uses `virt-install` (as described above) to install Debian stable 64Bit.
-
-    » export VM_IMAGE_PATH=/srv/vms/images
-    » virsh-instance install debian64-8 $VM_IMAGE_PATH/debian64-8/disk.img
-    […]
-    » virsh-instance install \
-        --location http://ftp.de.debian.org/debian/dists/stable/main/installer-i386
-        debian32-7.2-basic $VM_IMAGE_PATH/debian32-7.2-basic/disk.img 
-    […]
-    » virsh-instance install --cdrom /srv/isos/debian-7.1-amd64-netinst.iso […]
-    […]
-    » virt-viewer debian64-7.1-basic
-
-Installations from ISO CD images are enabled with option `--cdrom`. By default the disk image will have a maximum size of 40GB, overwrite this using the option `--disk-size`. **Connect to the console** with `virt-viewer` to proceed with the installation. While you follow the installation menu we propose to always create a minimal system configuration, which is the same across all images your create.
+# Libvirt 
+
+Deployment and configuration of [libvirt](http://libvirt.org/docs.html) on a workstation
+
+```bash
+sudo apt-get -y install libvirt-bin virt-manager virt-viewer virt-top virtinst qemu-utils qemu-kvm libguestfs-tools
+                                                 # related packages in Debian
+sudo dnf -y group install with-optional virtualization
+                                                 # related packages in Fedora
+sudo usermod -a -G libvirt,kvm `id -un`          # enable your user account to manage virtual machines
+                                                 # re-login to activate these group rights
+sudo grep '^user =' /etc/libvirt/qemu.conf       # should contain $USER
+sudo systemctl restart libvirtd && sudo systemctl enable libvirtd
+                                                 # libvirtd service
+```
+
+Connect with the libvirt service ↴ [var/aliases/libvirt.sh](../var/aliases/libvirt.sh)
+
+```
+virsh -c qemu:///session […]                     # connect with user session
+virsh -c qemu:///system […]                      # connect with system session
+export LIBVIRT_DEFAULT_URI=qemu:///system        # define the default connection
+virsh -c qemu+ssh://root@lxhvs01.devops.test/system list
+                                                 # connect to a remote session
+virt-manager -c qemu+ssh://root@lxhvs01.devops.test/system
+virt-top -c qemu+ssh://root@lxhvs01.devops.test/system
+```
+
+## Network
+
+↴ [virsh-nat-bridge][virsh-nat-bridge] creates a configuration **nat_bridge**:
+
+* NAT Bridge `nbr0` connects virtual machine instances to the external network
+* Default network **10.1.1.0/24**, MAC-addresses prefix **02:FF**
+* Domain is called **devops.test**:
+
+```bash
+virsh-nat-bridge config                             # show XML configuration file
+virsh-nat-bridge start                              # sue this configuration
+virsh net-list                                      # list networks
+brctl show nbr0                                     # show bridge state
+virsh-nat-bridge list                               # list DNS configuration
+virsh-nat-bridge lookup <node>                      # show hostname, IP- and MAC-address triplet
+virsh-nat-bridge --network 192.168.0 --bridge br0 --nodes node1,node2[…]
+                                                    # configure custom NAT bridge
+```
+
+## Templates
+
+```bash
+virt-install --ram 2048 --name install --graphics vnc \
+             --os-type linux --virt-type kvm \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
+virt-install -c qemu+ssh://root@lxhvs01.devops.test/system --noautoconsole […]
+                                                 #  no VNC for remote servers
+virt-install --bridge br124 --mac 02:FF:0A:0A:18:6F --boot network […]
+                                                 # network boot
+virt-builder -l                                  # list os templates
+virt-builder --print-cache | grep cached         # list cached os templates
+ls -1 ~/.cache/virt-builder/                     # list cache directory
+virt-builder --root-password password:root -o $VM_INSTANCE_PATH/lxdev01.devops.test/disk.img debian-8
+                                                 # build a new VM insatnce from os template
+
+```
+
+↴ [virsh-instance][virsh-instance] manages virtual machine template images and instance: 
+
+```bash
+$VM_IMAGE_PATH                                   # path to the VM template images (default /srv/vms/images)
+$VM_INSTANCE_PATH                                # path to the VM instances (default /srv/vms/instances)
+name=debian8                                     # select a name for the VM template, e.g. "debian8"
+virsh-instance install $name  $VM_IMAGE_PATH/$name/disk.img
+                                                 # install debian stable the offical FTP server into qcow2 image
+virsh-instance install --location http://ftp.de.debian.org/debian/dists/stable/main/installer-i386 […]
+                                                 # select a custom mirror
+virsh-instance install --cdrom <path_to_iso> […] # install from a ISO image
+virt-viewer $name                                # connect to VNC of the installing template image
+virsh undefine $name                             # remove template virtial machine after the installation is finished
+```
 
 Set the following configuration options during installation:
 
@@ -243,49 +90,56 @@ Set the following configuration options during installation:
 * Username is `devops`
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
-Once the operating system is installed make sure to boot it another time to check if everything is working. Use a MAC- and IP-address pair from the `virsh-nat-bridge` and create a libvirt configuration with ↴[virsh-config][virsh-config]:
+↴ [virsh-config][virsh-config] creates custom XML configuration files for virtual machines 
 
-    […]
-    » virsh undefine debian64-8
-    » cd /srv/vms/images/debian64-8
-    » virsh-config -n debian64-8 -m 02:FF:0A:0A:06:1A libvirt_instance.xml
-    » virsh create libvirt_instance.xml
-    […]
+```bash
+virsh-config -v -n $name -m 02:FF:0A:0A:06:1A $VM_IMAGE_PATH/$name/libvirt_instance.xml
+                                                  # create a configuration for the virtual machine
+virsh create $VM_IMAGE_PATH/$name/libvirt_instance.xml
+                                                  # start the virtual machine to customize the installation
+```
 
-Customize your installation for example by installing packages like SSH, Sudo and Rsync:
+Template image customization:
 
-    » apt update
-    […]
-    » apt install openssh-server sudo rsync chef haveged
-    […]
+```bash
+apt update && apt install openssh-server sudo rsync chef haveged   # basic services
+echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-less sudo for the devops user
+## -- Configure systemd, NTP, PAM, etc if required -- # 
+```
 
-Elevate the _devops_ user to be able to run all commands with Sudo:
+## Instances
 
-    » echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
+Virtual machine instance [lifecycle](http://wiki.libvirt.org/page/VM_lifecycle):
 
-Configure [systemd](systemd.md) basics for NTP, PAM, etc.
+* **Transient** "undefined" virtual machines exist until they are shutdown
+* **Persistent** virtual machines have a permanent "defined" configuration
 
-## Login
+```bash
+virsh list --all                            # list vm insatnces in all states
+virsh shutdown <name|id>                    # graceful halt
+virsh destroy <name|id>                     # force immediate stop
+virsh dumpxml <name|id>                     # show instance XML configuration
+virsh undefine <name|id>                    # remove persistent configuration
+vm (c)reate|(l)ist|(s)tart                  # alias to manage virtual machine life cycle
+   (d)efine|(u)ndefine
+   (r)emove|s(h)utdown|(k)ill
+```
 
-Enable password-less login using an SSH configuration file `ssh_config`. Defining the login account name (e.g. "devops"), the SSH key to use, and the node IP address:
+### Login
 
-    Host instance
-      User devops
-      HostName 10.1.1.26
-      UserKnownHostsFile /dev/null
-      StrictHostKeyChecking no
-      IdentityFile /srv/vms/images/debian64-7.1-basic/keys/id_rsa
+↴ [ssh-instance][ssh-instance] creates SSH configuration for password-less
 
-**Several scripts described below read `ssh_config` files present in their execution directory by default.** Thus the addressed remote node is automatically determined and the required login credentials used. By convention the _Host_ in the SSH configuration file needs to be called `instance`.
-
-Use the script ↴[ssh-instance][ssh-instance] to create the SSH configuration files (targeting a host called "instance" by default). The option `-i path` points to the SSH key used for password-less login, followed by the instance IP-address.
-
-    » cd /srv/vms/images/debian64-8
-    […]
-    » ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
+```bash
+mkdir -p 
+ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
     » ssh-instance -i keys/id_rsa 10.1.1.26 
     /srv/vms/images/debian64-8/ssh_config written.
     » ssh -F ssh_config instance -C […]
+```
+
+**Several scripts described below read `ssh_config` files present in their execution directory by default.** Thus the addressed remote node is automatically determined and the required login credentials used. By convention the _Host_ in the SSH configuration file needs to be called `instance`.
+
+
 
 The scripts ↴[ssh-exec][ssh-exec] and ↴[ssh-sync][ssh-sync] are wrappers around the `ssh` and `rsync` commands. They automatically use an `ssh_config` file if it is present in the working directory:
 

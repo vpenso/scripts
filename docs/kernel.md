@@ -19,7 +19,7 @@ sudo debootstrap testing /tmp/rootfs                             # minimal Debia
 rootfs=$ROOTFS/debian-testing.img
 dd bs=1M seek=4095 count=1 if=/dev/zero of=$rootfs               # crate an disk image file
 sudo mkfs.ext4 -F $rootfs                                        # initialize a file-system
-sudo mount -o loop $rootfs /mnt                                  # mount the disk image
+sudo mount -v -o loop $rootfs /mnt                               # mount the disk image
 sudo cp -a /tmp/rootfs/. /mnt                                    # copy user-space
 sudo cp -a ${kernel}.modules/. /mnt                              # copy kernel modules
 sudo chroot /mnt /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
@@ -27,6 +27,7 @@ sudo chroot /mnt /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
 sudo umount /mnt     
 ## -- Boot custom kernel with with a dedicated root file-system -- ##
 kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic /srv/rootfs/debian-testing.img
+kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic /srv/rootfs/debian-testing.img -initrd /srv/kernel/linux-4.8.11-basic.initramfs
 ```
 
 ## Dracut
@@ -53,6 +54,7 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 ```bash
 dracut --help | grep Version                   # show program version
 /etc/dracut.conf                               # configuration file
+dracut --list-modules | sort                   # list all available modules
 ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric prefix, run in ascending sort order
 ```
 
