@@ -122,14 +122,49 @@ Virtual machine instance [lifecycle](http://wiki.libvirt.org/page/VM_lifecycle):
 * **Persistent** virtual machines have a permanent "defined" configuration
 
 ```bash
+vm (c)reate|(l)ist|(s)tart                  # alias to manage virtual machine life cycle
+   (d)efine|(u)ndefine
+   (r)emove|s(h)utdown|(k)ill
+virsh-instance list                         # list template images
+virsh-instance clone <image> <name>         # start copied instance from image
+virsh-instance shadow <image> <name>        # start shadow instance from image
+virsh-instance remove <name>                # undefine/stop instance
 virsh list --all                            # list vm insatnces in all states
 virsh shutdown <name|id>                    # graceful halt
 virsh destroy <name|id>                     # force immediate stop
 virsh dumpxml <name|id>                     # show instance XML configuration
 virsh undefine <name|id>                    # remove persistent configuration
-vm (c)reate|(l)ist|(s)tart                  # alias to manage virtual machine life cycle
-   (d)efine|(u)ndefine
-   (r)emove|s(h)utdown|(k)ill
+```
+
+### Example
+
+* Select a network configuration, and a template image
+* Start a VM instance with selected configuration, and login
+* Remove the VM instance 
+
+```bash
+>>> virsh-nat-bridge lookup lxdev01
+lxdev01.devops.test 10.1.1.27 02:FF:0A:0A:06:1B
+>>> virsh-instance list | grep debian
+  debian64-8
+  debian64-9
+  debian8
+  debian8-xfs
+>>> virsh-instance shadow debian64-9 lxdev01
+/srv/vms/instances/lxdev01.devops.test/libvirt_instance.xml written.
+/home/vpenso/vms/instances/lxdev01.devops.test/ssh_config written.
+Domain lxdev01.devops.test defined from /home/vpenso/vms/instances/lxdev01.devops.test/libvirt_instance.xml
+Domain lxdev01.devops.test started
+>>> ls -1 $VM_INSTANCE_PATH/lxdev01.devops.test
+disk.img
+keys/
+libvirt_instance.xml
+ssh_config
+>>> virsh-instance login lxdev01
+[…]
+>>> virsh-instance remove lxdev01           
+Domain lxdev01.devops.test destroyed
+Domain lxdev01.devops.test has been undefined
 ```
 
 ### Login
@@ -166,51 +201,6 @@ ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local pa
 ```
 
 Mount the root file-system of the virtual machine instance with ↴ [ssh-fs][ssh-fs]
-
-# Instances
-
-It is possible to start as many virtual machines instances as your hardware can sustain. Basically it's limited by memory. Before you start a virtual machine instance you need to select the host name to use.
-
-    » virsh-nat-bridge lookup lxdev01
-    lxdev01.devops.test 10.1.1.24 02:FF:0A:0A:06:18
-
-The _virsh-instance_ command will **list** all available virtual machine images:
-
-    » virsh-instance list
-    Images in /srv/vms/images:
-      debian64-7.1.0-basic
-      debian64-7.0.0-chef-client-0.10.12
-      debian64-7.1.0-chef-client-0.10.12
-      debian64-7.rc1-basic
-      debian64-7.0.0-storage
-
-There are two different modes of creating a virtual machine instance, cloning and shadowing. Using the command **clone** will create an independent copy of the source virtual machine image, using potentially a lot of disk space. In contrast **shadow** will create a differentials disk image, thus saving local storage space. 
-
-    » virsh-instance shadow debian64-7.1.0-chef-client-0.10.12 lxdev01.devops.test
-    Overwrite /srv/vms/instances/lxdev01.devops.test? (Enter/Y/y to continue) 
-    Overwrite /srv/vms/instances/lxdev01.devops.test/libvirt_instance.xml? (Enter/Y/y to continue) 
-    /srv/vms/instances/lxdev01.devops.test/libvirt_instance.xml written.
-    Overwrite /srv/vms/instances/lxdev01.devops.test/ssh_config? (Enter/Y/y to continue) 
-    /srv/vms/instances/lxdev01.devops.test/ssh_config written.
-    Domain lxdev01.devops.test defined from /srv/vms/instances/lxdev01.devops.test/libvirt_instance.xml
-    Domain lxdev01.devops.test started
-    Shadow create in /srv/vms/instances/lxdev01.devops.test
-
-The libvirt and SSH configuration is created automatically:
-
-    » cd /srv/vms/instances/lxdev01.devops.test
-    » ls
-    disk.img  keys/  libvirt_instance.xml  ssh_config
-    » ssh-exec
-    devops@lxdev01:~$
-    […]
-    » virsh-instance remove lxdev01.devops.test
-    Domain lxdev01.devops.test is being shutdown
-    Domain lxdev01.devops.test has been undefined
-
-Use the command `remove` to drop the virtual machine instance. Note that this will stop and undefine the virtual machine instance, but not delete the corresponding file from *VM_INSTANCE_PATH*.
-
-
 
 # Provisioning
 
