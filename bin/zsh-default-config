@@ -19,12 +19,11 @@
 mkdir ~/.zsh 2>/dev/null
 
 # Antigen package management for zsh plug-ins
-ANTIGEN=https://raw.githubusercontent.com/zsh-users/antigen/master/antigen.zsh
+ANTIGEN=https://cdn.rawgit.com/zsh-users/antigen/v1.2.3/bin/antigen.zsh
 if [ ! -f ~/.zsh/antigen.zsh ] ; then
   curl --silent $ANTIGEN > ~/.zsh/antigen.zsh
   echo "ZSH anitgen installed to ~/.zsh/"
 fi
-
 
 ##
 ## Zsh configuration file
@@ -48,7 +47,7 @@ export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
 
 setopt append_history
-setopt hist_expire_dups_first
+ource ~/.zsh/antigen.zshetopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt hist_verify
