@@ -27,7 +27,9 @@ name=$(udevadm test /sys/class/net/* 2>&- | grep ID_NET_NAME_SLOT | cut -d= -f2)
 echo -e "[Match]\nName=$name\n[Network]\nDHCP=yes" > /etc/systemd/network/$name.network
 systemctl restart systemd-networkd && systemctl enable systemd-networkd
                                                            # configure systemd network
-apt install grub2                                          # install bootloader
+apt -y install grub2                                       # install bootloader
+echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
+                                                           # configure root mount on boot
 kvm -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
                                                            # boot from the image
 ```

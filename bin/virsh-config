@@ -30,9 +30,10 @@ HELP = <<EOF
 <options>
   -b,--bridge <name>               Network birdge (default nbr0)
   -c,--vcpu <num>                  Number of vCPUs (default 1)
-  -C, --console                    Enable serial console
+  -C,--console                     Enable serial console
   -D,--debug                       Show stacktraces in case of errors.
-  -d, --disks <path>[,<path>]      Disk images to uses (default `disk*.img`)
+  -d,--disks <path>[,<path>]       Disk images to uses (default `disk*.img`)
+  -t,--disk-type qcow2|raw         Disk device type (default qcow2) 
   -h,--help                        Show this help information.
   -m,--mac-address <address>       MAC-address (default 02:FF:0A:0A:06:00)
   -M,--memory <size>               Memory in GB
@@ -77,7 +78,7 @@ class Virsh
     disks_list.sort.map do |disk|
       disks << %Q[
         <disk type="file" device="disk">
-          <driver name="qemu" type="qcow2"/>
+          <driver name="qemu" type="#{$options.disk_type}"/>
           <target dev="vd#{id}" bus="virtio"/>
           <source file="#{disk}"/>
         </disk>].gsub(/^    /,'')
@@ -122,12 +123,14 @@ begin
   $options.name = nil
   $options.netboot = false
   $options.disks = Array.new
+  $options.disk_type = 'qcow2'
 
   GetoptLong.new(
     ['--bridge','-b',GetoptLong::REQUIRED_ARGUMENT],
     ['--console','-C',GetoptLong::NO_ARGUMENT],
     ['--debug','-D',GetoptLong::NO_ARGUMENT],
     ['--disks','-d',GetoptLong::REQUIRED_ARGUMENT],
+    ['--disk-type','-t',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--mac-address','-m',GetoptLong::REQUIRED_ARGUMENT],
     ['--name','-n',GetoptLong::REQUIRED_ARGUMENT],
@@ -150,6 +153,9 @@ begin
       arg.split(',').each do |disk|
         $options.disks << disk
       end
+    when '--disk-type'
+      raise("Disk type #{arg} not supported") unless %w(qcow2 raw).include? arg
+      $options.disk_type = arg 
     when '--help'
       $stdout.puts HELP
       exit 0

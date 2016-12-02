@@ -80,7 +80,6 @@ Set the following configuration options during installation:
 * Username is `devops`
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
-
 ```bash
 virsh-config -v -n $name -m 02:FF:0A:0A:06:1A $VM_IMAGE_PATH/$name/libvirt_instance.xml
                                                   # create a configuration for the virtual machine
@@ -96,7 +95,7 @@ echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-le
 ## -- Configure systemd, NTP, PAM, etc if required -- # 
 ```
 
-Other tools providing similar functionality:
+Alternatively [bootstrap](bootstrap.md), or [guestfs](http://libguestfs.org/guestfs.3.html):
 
 ```bash 
 virt-install --ram 2048 --name install --graphics vnc \
