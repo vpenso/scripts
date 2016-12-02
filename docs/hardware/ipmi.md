@@ -1,135 +1,63 @@
-The term **Platform Management** is used to refer to the monitoring and control functions that are built in to the platform hardware and primarily used for the purpose of monitoring the health of a computer system. _Intelligent Platform Management Interface (IPMI)_ defines standardized, abstracted interfaces to the platform management subsystem. The term _Intelligent Platform Management (IPM)_ refers to autonomous monitoring and recovery features implemented directly in platform management hardware and firmware, which is **independent of the main processors, BIOS, and operating system**.
 
 → [IPMI Specification v2 rev1.1](http://www.intel.com/content/dam/www/public/us/en/documents/product-briefs/ipmi-second-gen-interface-spec-v2-rev1-1.pdf)  
 → [IPMI Technical Resources](http://www.intel.com/content/www/us/en/servers/ipmi/ipmi-technical-resources.html)
 
-At the heart of the IPMI architecture is a micro controller called the _Baseboard Management Controller (BMC)_ providing the interface between system management software and the platform management hardware.Typically BMCs register with the BIOS after POST (Power-On Self-Test), which enables system administrators to use a dedicated _BMC Network Configuration_ section in the BIOS menu. Many BMCs have a dedicated Ethernet interface, and support Ethernet connections using the main-board network interface utilizing the _System Management Bus_ (SMBus) also. 
+* **Platform Management** – hardware monitoring/control functions
+  -  _Intelligent Platform Management Interface (IPMI)_ standard, abstracted interfaces
+  - _Intelligent Platform Management (IPM)_ autonomous monitoring and recovery 
+* _Baseboard Management Controller_ **BMC** – interface system management software with platform management hardware
+  - Registers with BIOS after POST (Power-On Self-Test), cf. _BMC Network Configuration_ section in the BIOS menu. 
+  - Dedicated main-board network interface utilizing the _System Management Bus_ (SMBus)
+* BMCs access with 
+  - Web-interface HTTP(S)
+  - Secure command line interface (SSH)
+  - Remote KVM ("keyboard, video and mouse") over IP (graphic)
+  - Remote _Serial Port Console Redirection_ over LAN (SOL) (text only) 
+* **OpenIPMI** Linux device drivers, and library (kernel >=3.10 auto-load  modules)
+* **IPMItool** and GNU **FreeIPMI**, CLI interfaces (users IPMI-over-LAN, OpenIPMI)
+* Firefox support for WebUI
+  - Required packages `openjdk-7-jre icedtea-plugin icedtea-netx`
+  - HTTP proxy settings can prevent the download from JAR archives in your browser!
+  - Eventually configure Firefox to start JNLP files with `/usr/bin/javaws` (by selecting it manually from the open-file dialog). 
 
-SMBus (also known as _Intelligent Platform Management Bus/Bridge (IPMB)_)  interfaces are common on power and peripheral control chips, allowing IPMI management and control. The interface also provides access to serial nonvolatile storage devices.
+```bash
+apt install openipmi freeipmi-tools ipmitool
+lsmod | grep ipmi                                  # list IPMI kernel modules
+ipmitool -I lanplus -U ADMIN -a sol activate -H <ip>
+ipmi-console -u ADMIN -h <ip>                      # serial over LAN (SOL) console
+```
 
-# Access
+### Configuration
 
-BMCs may support access by following methods, depending on the vendor:
+```bash
+ipmitool mc info                                    # BMC spec
+ipmitool user list 1                                # list user accounts
+ipmitool user set name <id> <name>                  # add user 
+ipmitool user set password <id>                     # set user password                         
+ipmitool lan print | grep -e 'IP Address' -e 'MAC Address' -e 'Gateway IP'
+                                                    # show BMC network configuration
+ipmitool lan set 1 ipsrc static                     # set static network configuration
+ipmitool lan set 1 ipaddr 10.1.2.3                  
+ipmitool lan set 1 netmask 255.255.255.0
+ipmitool lan set 1 defgw ipaddr 10.1.0.1
+ipmitool raw 0x30 0x45 0                            # get current fan mode
+ipmitool raw 0x30 0x45 1 <NUM>                      # sst fand speed to mode with number
+```
 
-- Web-interface HTTP(S)
-- Secure command line interface (SSH)
-- Remote KVM ("keyboard, video and mouse") over IP (graphic)
-- Remote _Serial Port Console Redirection_ over LAN (SOL) (text only) 
+### Operation
 
-## Tools
-
-    » apt install openipmi freeipmi-tools ipmitool
-
-**OpenIPMI** implements device drivers that go into the Linux kernel, and a user-level library that provides a higher-level abstraction of IPMI and generic services that can be used on any operation system.
-
-Kernel 3.10 and later will auto load OpenIPMI modules
-
-    » lsmod | grep ipmi
-    ipmi_watchdog          21915  0 
-    ipmi_si                48709  2 
-    ipmi_poweroff          13197  0 
-    ipmi_devintf           17053  0 
-    ipmi_msghandler        39917  4 ipmi_devintf,ipmi_poweroff,ipmi_watchdog,ipmi_si
-
-**IPMItool** and GNU **FreeIPMI** provide command-line programs that interfaces with an IPMI using IPMI-over-LAN or the Linux driver and library from OpenIPMI.
-
-
-
-## Browser
-
-Most IPMI web-interfaces provide access to console via an Java applet, before you can use this **remote console** install:
-
-    » apt install openjdk-7-jre icedtea-plugin icedtea-netx
-
-- HTTP proxy settings can prevent the download from JAR archives in your browser!
-- Eventually configure Firefox to start JNLP files with `/usr/bin/javaws` (by selecting it manually from the open-file dialog). 
-
-## Serial Over LAN
-
-Connects to the serial over LAN (SOL) console with:
-
-    » ipmitool -I lanplus -U ADMIN -a sol activate -H <ip>
-    » ipmi-console -u ADMIN -h <ip>
-
-`~.` to exit the console session.
-
-# Configuration
-
-    » ipmitool mc info
-    […]
-    Firmware Revision         : 1.70
-    IPMI Version              : 2.0
-    […]
-
-## Accounts
-
-List user accounts, and use the IDs to configure name and password:
-
-    » ipmitool user list 1
-    » ipmitool user set name 2 <name>
-    » ipmitool user set password 2
-
-## Network
-
-Belows command will print the network settings:
-
-    » ipmitool lan print | grep -e 'IP Address' -e 'MAC Address' -e 'Gateway IP'
-    IP Address Source       : DHCP Address
-    IP Address              : 10.6.4.212
-    MAC Address             : 10:c3:7b:e6:f9:ee
-    Default Gateway IP      : 10.6.0.1
-    Backup Gateway IP       : 0.0.0.0
-
-Network configuration can be set by <kbd>ipmitool</kbd>:
-
-    » ipmitool lan set 1 ipsrc static
-    » ipmitool lan set 1 ipaddr 10.1.2.3
-    » ipmitool lan set 1 netmask 255.255.255.0
-    » ipmitool lan set 1 defgw ipaddr 10.1.0.1
-
-# Operation
-
-## BMC Reset
-
-Without management access a BMC reset is only possible by removing the power plugs.
-
-Otherwise use the web-interface or <kbd>ipmitool</kbd>:
-
-    » ipmitool mc reset cold
-    […]
- 
-
-## Power Management
-
-Power management with <kbd>ipmitool</kbd>, `cycle` is equivalent to power-off, wait 1 second, and power-on, while `reset` refers to cold reset. 
-
-    » ipmitool chassis status
-    System Power         : on
-    […]
-    » ipmitool chassis power off|on
-    » ipmitool chassis reset|cycle
-
-
-<kbd>ipmipower</kbd> controls power state of nodes via the service module
-
-    » nodeset-ipmi() { /usr/sbin/ipmipower -u ADMIN -h $(NODES).mng.devops.test $@ }
-    » nodeset-ipmi -P -s
-    Password: 
-    sm-lxbk0001.itm.gsi.de: on
-    sm-lxbk0004.itm.gsi.de: on
-    […]
-
-| Options        |     Description                           |
-|----------------|-------------------------------------------|
-| `-P`           | Prompt for a login password               |
-| `-p password`  | Set a login password (non-interactive)    |
-| `-[n,f,c,r,s]` | o(n) – of(f) – (c)ycle – (r)eset – (s)tat |
-
-Search for nodes in certain power state and fold a new node set
-
-    » nodeset-ipmi -s -p […] | grep off | cut -d. -f1 | cut -d- -f2 | nodeset -f
-    lxbk[0012-0043,0067,0102-0106]
-
+```bash
+ipmitool mc reset cold                             # reset BMC modules
+ipmitool chassis status                            # power state
+ipmitool chassis power off|on                      
+ipmitool chassis reset                             # hot reset
+ipmitool chassis cycle                             # cold reset (off, wait 1sec, on)
+nodeset-ipmi() { /usr/sbin/ipmipower -u ADMIN -h $(NODES).mng.devops.test $@ }
+nodeset-ipmi -P -[n,f,c,r,s]                       # prompt for password, and
+                                                   # o(n) – of(f) – (c)ycle – (r)eset – (s)tat
+nodeset-ipmi -s -p […] | grep off | cut -d. -f1 | cut -d- -f2 | nodeset -f
+                                                   # find nodes in state off
+```
 
 # Sensors
 
