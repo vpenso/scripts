@@ -1,15 +1,45 @@
 
+## Disk Images
+
 Prepare a `rootfs` file-system disk image:
 
 ```
 rootfs=/tmp/rootfs.img
-dd bs=1M seek=4095 count=1 if=/dev/zero of=$rootfs         # crate an disk image file
-qemu-img create -f raw $rootfs 100G                        # sparse disk image file
+dd bs=1M seek=4095 count=1 if=/dev/zero of=$rootfs         # create an disk image file
+qemu-img create -f raw $rootfs 100G                        # create sparse disk image file
 sudo mkfs.ext4 -F $rootfs                                  # initialize a file-system
 sudo mount -v -o loop $rootfs /mnt ; df -h /mnt            # mount the disk image file
 ## -- work with the mount-point -- ##
 sudo umount /mnt                                           
 ```
+
+**Qcow2** adds an over layer to support snapshots among other features
+
+```bash
+qemu-img create -f qcow2 $rootfs 100G            # create a copy-on-write image file
+virt-format --partition=mbr --filesystem=ext4 -a $rootfs         
+                                                 # create a file-system in the image file
+virt-filesystems -lh --uuid -a $rootfs           # list file-systems in image file
+sudo guestmount --rw -a $rootfs -m /dev/sda1 /mnt
+## -- work with the mount-point -- ##
+sudo guestunmount /mnt
+```
+
+Alternatively use `qemu-nbd` to exports a disk image as a "network block device (nbd)":
+
+```bash
+sudo modprobe nbd max_part=16 ; lsmod | grep nbd # load the kernel module
+sudo qemu-nbd -c /dev/nbd0 $rootfs 
+sudo parted /dev/nbd0 print                      # show the partitions
+sudo partprobe /dev/nbd0                         # expose the disk partitions, if missing
+ls -a /dev/nbd0*                                 # list the devices created for each partition
+sudo mount /dev/nbd0p? /mnt                      # mount a parititon, e.g. nbd0p1
+## -- work with the mount-point -- ##
+sudo umount /mnt
+qemu-nbd -d /dev/nbd0                           
+```
+
+## Bootstrap
 
 Bootstrap the operating system Debian
 
