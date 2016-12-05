@@ -1,7 +1,12 @@
 
-## Disk Images
+## Images
 
-Prepare a `rootfs` file-system disk image:
+```bash
+qemu-img info <image>                                      # print details about a disk image
+```
+
+
+### Raw
 
 ```
 rootfs=/tmp/rootfs.img
@@ -13,14 +18,16 @@ sudo mount -v -o loop $rootfs /mnt ; df -h /mnt            # mount the disk imag
 sudo umount /mnt                                           
 ```
 
-**Qcow2** adds an over layer to support snapshots among other features
+### Qcow2
+
+Adds an over-layer to support snapshots among other features
 
 ```bash
 qemu-img create -f qcow2 $rootfs 100G            # create a copy-on-write image file
 virt-format --partition=mbr --filesystem=ext4 -a $rootfs         
                                                  # create a file-system in the image file
 virt-filesystems -lh --uuid -a $rootfs           # list file-systems in image file
-sudo guestmount --rw -a $rootfs -m /dev/sda1 /mnt
+sudo guestmount --rw -a $rootfs -m /dev/sda1 /mnt -o dev ; mount | grep /mnt
 ## -- work with the mount-point -- ##
 sudo guestunmount /mnt
 ```
