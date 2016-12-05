@@ -221,6 +221,7 @@ loginctl enable-linger <user>                   # make user sessions (boot) pers
 ### File-System Mount
 
 ```bash
+/etc/fstab                                      # translated by systemd-fstab-generator into units
 /etc/systemd/system/*.mount                     # mount units
 systemctl --all -t mount                        # show mounts
 systemctl daemon-reload && systemctl start <name>.mount

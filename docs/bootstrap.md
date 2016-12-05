@@ -30,6 +30,8 @@ systemctl restart systemd-networkd && systemctl enable systemd-networkd
 apt -y install grub2                                       # install bootloader
 echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
                                                            # configure root mount on boot
+echo -e "domain devops.test\nsearch devops.test\nnameserver 10.1.1.1" > /etc/resolv.conf
+                                                           # configure name resolution
 kvm -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
                                                            # boot from the image
 ```
