@@ -21,6 +21,8 @@ kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic $rootfs
 kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic $rootfs -initrd /srv/kernel/linux-4.8.11-basic.initramfs
 ```
 
+Kernel instrumentation [BBC](https://github.com/iovisor/bcc)
+
 ## Dracut
 
 Loaded into memory during Linux boot and used as intermediate root file-system (aka. early user space):
