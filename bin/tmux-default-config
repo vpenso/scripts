@@ -13,9 +13,12 @@ set -g default-terminal "screen-256color"
 set-option -g default-shell /bin/zsh
 
 # uncomment for GUI support
-set -g mode-mouse on
-setw -g mouse-select-window on
-setw -g mouse-select-pane on
+set -g mouse on
+## -- version prior 2.1 -- 
+#set -g mode-mouse on
+#setw -g mouse-select-window on
+#setw -g mouse-select-pane on
+
 setw -g monitor-activity on
 set -g visual-activity on
 setw -g automatic-rename
@@ -54,7 +57,10 @@ set -g pane-border-fg colour249
 set -g pane-active-border-fg colour244
 set -g message-fg colour88
 set -g message-bg default
-set -g status-utf8 on
+
+##-- versions prior 2.1 --##
+#set -g status-utf8 on
+
 set -g status-left '#[fg=colour252,bg=colour237,bold] #H '
 set -g status-right ''
 set -g window-status-separator ''
