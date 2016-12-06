@@ -19,7 +19,7 @@
 mkdir ~/.zsh 2>/dev/null
 
 # Antigen package management for zsh plug-ins
-ANTIGEN=https://cdn.rawgit.com/zsh-users/antigen/v1.2.3/bin/antigen.zsh
+ANTIGEN=https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh
 if [ ! -f ~/.zsh/antigen.zsh ] ; then
   curl --silent $ANTIGEN > ~/.zsh/antigen.zsh
   echo "ZSH anitgen installed to ~/.zsh/"
