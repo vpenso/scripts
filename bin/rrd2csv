@@ -1,0 +1,210 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'date'
+
+TIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
+
+#
+# Interface to the command-line environment
+#
+module System
+
+  module_function
+
+  ##
+  # Execute a command passed as parameter an return the output
+  # on success. Otherwise the method returns Nil indicating
+  # a problem on execution.
+  def exec(command, file = '')
+    if file.empty?
+      command << ' 2>&1'
+    # Users can optionally provide a file to store the output into
+    #
+    else
+      # Avoid piping the content threw the Ruby process
+      #
+      command << " 1> #{file}"
+    end
+    $logger.info "<#{self.class}##{__method__.to_s}> #{command}"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "<#{self.class}##{__method__.to_s}> returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "<#{self.class}##{__method__.to_s}> failed to execute [#{command}]"
+      return nil
+    end
+  end
+
+  ##
+  # Execute a command and transform the output line by line
+  # into an array splitting each line using a delimiter into
+  # a second level array.
+  #
+  def self.exec_split_lines(command, delimiter = ' ')
+    r_val = Array.new
+    # Remove line-feed and leading white-space
+    #
+    command = command.gsub(/^  */,'').gsub(/\n/,' ')
+    # Execute the command and split the output by line
+    #
+    output = System::exec(command)
+    $logger.info "<#{self.class}##{__method__.to_s}> split lines by field separator"
+    output.each_line do |line|
+      # Use the defined delimiter to split the fields per line
+      #
+      r_val << line.split(delimiter).map(&:strip)
+    end
+    # Pass the output multi-dimensional array to the caller
+    #
+    r_val
+  end
+
+end
+
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] <rrd_file>
+
+<options>
+  -c,--cf <func>                        RRA consolidation function
+  -D,--debug                            Show stacktraces in case of errors.
+  -d,--delimiter <char>                 Custom field delimiter (default ',')
+  -e,--end <time>                       Date with format #{TIME_FORMAT}
+  -H,--help                             Show this help information.
+  -R,--readable                         Human readable output
+  -s,--start <time>                     date with format #{TIME_FORMAT}
+  -V,--version                          Print version number.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.start = (Date.today - 1).to_time.to_i  # yesterday
+  $options.end = Time.now.to_i
+  $options.c_func = 'AVERAGE' # RRA consolidation function 
+  $options.readable = false
+  $options.delimiter = ','
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  GetoptLong.new(
+    ['--cfunc','-c',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-D',GetoptLong::NO_ARGUMENT],
+    ['--delimiter','-d',GetoptLong::REQUIRED_ARGUMENT],
+    ['--end','-e',GetoptLong::REQUIRED_ARGUMENT],
+    ['--help','-H',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--readable','-R',GetoptLong::NO_ARGUMENT],
+    ['--start','-s',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-V',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--cfunc'
+      raise("Consolidation function: #{arg} not supported") unless %w(MAX MIN AVERAGE LAST).include? arg
+      $options.c_func = arg 
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--delimiter'
+      $options.delimiter = arg
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--end'
+      $options.end = Date.strptime(arg,TIME_FORMAT).to_time.to_i
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--readable'
+      $options.readable = true
+    when '--start'
+      $options.start = Date.strptime(arg,TIME_FORMAT).to_time.to_i
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  rrd_file = ARGV.shift || raise('No command given!')
+
+
+  command = "rrdtool fetch #{rrd_file} --start #{$options.start} --end #{$options.end} #{$options.c_func} | tail -n+3"
+  System::exec_split_lines(command,':').each do |elem|
+    epoch, values = elem
+    # convert epoch to human readable time format
+    epoch = Time.at(epoch.to_i).strftime(TIME_FORMAT) if $options.readable
+    values = values.split(' ')
+    # remove numbers with scientific notation
+    if $options.readable
+      values.map! do |value| 
+        if value == '-nan'
+          value
+        else
+          "%.0f" % value
+        end
+      end
+    end 
+    $stdout.puts %Q[#{epoch}#{$options.delimiter}#{values.join($options.delimiter)}] 
+  end
+
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
