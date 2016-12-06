@@ -47,7 +47,6 @@ export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
 
 setopt append_history
-source ~/.zsh/antigen.zshetopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt hist_verify
