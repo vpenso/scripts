@@ -265,4 +265,29 @@ TimeoutSec=10s
 WantedBy=multi-user.target
 ```
 
+### Containers
+
+
+```bash
+systemd-nspawn -D <path>                         # chroot to container
+systemd-nspawn -b -D <path>                      # boot container in path 
+
+```
+
+Firefox in a container, [bootstrap](bootstrap.md) Debian to `$rootfs`:
+
+```
+# install Firefox and audio
+sudo chroot $rootfs /bin/bash -c "apt-get install iceweasel pulseaudio -y && echo enable-shm=no >> /etc/pulse/client.conf"
+# create a user account
+sudo chroot $rootfs /bin/bash -c "useradd -u $(id -u) -m -U -G audio $USER"
+# start firefox in a container
+sudo systemd-nspawn --setenv=DISPLAY=unix$DISPLAY \
+                    --bind /run/user/$(id -u)/pulse:/run/pulse \
+                    --setenv=PULSE_SERVER=/run/pulse/native \
+                    --bind /dev/shm \
+                    --bind /dev/snd \
+                    -u $USER -D $rootfs firefox
+```
+
 
