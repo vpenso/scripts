@@ -267,7 +267,7 @@ WantedBy=multi-user.target
 
 ### Containers
 
-Cf. [bootstrap][bootstrap.md] to create root file-systems for containers
+Cf. [bootstrap](bootstrap.md) to create root file-systems for containers
 
 ```bash
 apt -y install systemd-container                 # install container support 
@@ -275,10 +275,18 @@ man systemd.nspaw                                # container settings documentat
 {/etc,/run}/systemd/nspawn/*.nspawn              # nspawn container settings files
 /var/lib/machines/                               # container images & container settings 
 systemd-nspawn -D <rootfs>                       # chroot to container
-systemd-nspawn -b -D <rootfs>                    # boot container in path 
-machinectl list                                  # list running containers
+               -b -D <rootfs>                    # boot container in path 
 machinectl pull-raw --verify=no <url>            # download container archive 
-machinectl list-images                           # list container images
-machinectl image-status <name>                   # status information about container image
-machinectl show-image <name>                     # properties of container image
+           import-tar $archive                   # import rootfs from an archive
+           list-images                           # list container images
+           image-status <image>                  # status information about container image
+           show-image <image>                    # properties of container image
+           clone <src_image> <dst_image>         # clone a container image
+           remove <image>                        # delete a continer image
+           start <image>                         # start container
+           list                                  # list running containers
+           status <image>                        # process tree in container
+           shell <user>@<image> /bin/bash        # start a shell in the container
+           poweroff <image>                      # shutdown container
+journalctl -M <image>                            # show log of container
 ```
