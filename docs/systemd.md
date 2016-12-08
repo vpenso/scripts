@@ -273,7 +273,7 @@ Cf. [bootstrap](bootstrap.md) to create root file-systems for containers
 apt -y install systemd-container                 # install container support 
 man systemd.nspaw                                # container settings documentation
 {/etc,/run}/systemd/nspawn/*.nspawn              # nspawn container settings files
-/var/lib/machines/                               # container images & container settings 
+findmnt /var/lib/machines                        # container images & container settings
 systemd-nspawn -D <rootfs>                       # chroot to container
                -b -D <rootfs>                    # boot container in path 
 machinectl pull-raw --verify=no <url>            # download container archive 
@@ -289,4 +289,14 @@ machinectl pull-raw --verify=no <url>            # download container archive
            shell <user>@<image> /bin/bash        # start a shell in the container
            poweroff <image>                      # shutdown container
 journalctl -M <image>                            # show log of container
+```
+
+Unit skeleton for a container in `/etc/systemd/system/${name}.service`
+
+```
+[Unit]
+Description= # name of the container
+
+[Service]
+ExecStart=/usr/bin/systemd-nspawn -bD <rootfs>  # command to start the container           
 ```

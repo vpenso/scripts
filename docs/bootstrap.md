@@ -41,36 +41,44 @@ qemu-nbd -d /dev/nbd0
 Create a minimal Debian container image with `debootstrap`
 
 ```bash
+apt install debootstrap fakechroot fakeroot      
 suite=testing ; rootfs=$suite ; archive=/tmp/debian-${suite}-$(date +%Y%m%dT%H%M%S).tar.gz
+fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
 debootstrap $suite $rootfs && cd $rootfs ; tar -cvzf $archive .
                                                  # create an compressed archive 
             --include=linux-image-amd64 $suite $rootfs    
                                                  # include a kernel
-chroot $rootfs /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
-                                                 # remove the root password for tests
+## -- Work with the root file-system -- ##
+fakeroot fakechroot chroot ...                   # run chroot in user space
+chroot $rootfs /bin/bash                         # chroot into a shell
+chroot $rootfs /bin/bash -c "<command>"          # execute a command in a chroot 
+systemd-nspawn -D $rootfs                        # similar to chroot
 ```
 
-Create a minimal Debian virtual machine image including bootloader:
+Boot a root file-system with `kvm`:
 
 ```bash
+# -- boot a VM with rootfs and external kernel & initrd -- ##
 cp -v $rootfs/boot/vmlinuz* /tmp/kern && cp -v $rootfs/boot/initrd* /tmp/init
-                                                 # copy kernel and initramfs
 kvm -nographic -kernel /tmp/kern -initrd /tmp/init -append "console=ttyS0 root=/dev/vda rw" \
     -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
-                                                 # boot the configuration
+# -- boot a VM from an image bootloader -- ##
+kvm -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
+```
+
+Basic customization for root file-system:
+
+```bash
+sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"      # remove the root password for tests
+apt -y install zsh ; adduser --shell /bin/zsh devops
+                                                 # add a test user devops
+# -- configure the network interface -- ##
 name=$(udevadm test /sys/class/net/* 2>&- | grep ID_NET_NAME_SLOT | cut -d= -f2)
                                                  # primary network interface
 echo -e "[Match]\nName=$name\n[Network]\nDHCP=yes" > /etc/systemd/network/$name.network
 systemctl restart systemd-networkd && systemctl enable systemd-networkd
-                                                 # configure systemd network
-apt -y install grub2                             # install bootloader
 echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
                                                  # configure root mount on boot
 echo -e "domain devops.test\nsearch devops.test\nnameserver 10.1.1.1" > /etc/resolv.conf
                                                  # configure name resolution
-kvm -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
-                                                 # boot from the image
 ```
-
-
-
