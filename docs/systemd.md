@@ -267,27 +267,18 @@ WantedBy=multi-user.target
 
 ### Containers
 
+Cf. [bootstrap][bootstrap.md] to create root file-systems for containers
 
 ```bash
-systemd-nspawn -D <path>                         # chroot to container
-systemd-nspawn -b -D <path>                      # boot container in path 
-
+apt -y install systemd-container                 # install container support 
+man systemd.nspaw                                # container settings documentation
+{/etc,/run}/systemd/nspawn/*.nspawn              # nspawn container settings files
+/var/lib/machines/                               # container images & container settings 
+systemd-nspawn -D <rootfs>                       # chroot to container
+systemd-nspawn -b -D <rootfs>                    # boot container in path 
+machinectl list                                  # list running containers
+machinectl pull-raw --verify=no <url>            # download container archive 
+machinectl list-images                           # list container images
+machinectl image-status <name>                   # status information about container image
+machinectl show-image <name>                     # properties of container image
 ```
-
-Firefox in a container, [bootstrap](bootstrap.md) Debian to `$rootfs`:
-
-```
-# install Firefox and audio
-sudo chroot $rootfs /bin/bash -c "apt-get install iceweasel pulseaudio -y && echo enable-shm=no >> /etc/pulse/client.conf"
-# create a user account
-sudo chroot $rootfs /bin/bash -c "useradd -u $(id -u) -m -U -G audio $USER"
-# start firefox in a container
-sudo systemd-nspawn --setenv=DISPLAY=unix$DISPLAY \
-                    --bind /run/user/$(id -u)/pulse:/run/pulse \
-                    --setenv=PULSE_SERVER=/run/pulse/native \
-                    --bind /dev/shm \
-                    --bind /dev/snd \
-                    -u $USER -D $rootfs firefox
-```
-
-

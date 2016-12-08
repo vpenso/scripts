@@ -5,7 +5,6 @@
 qemu-img info <image>                                      # print details about a disk image
 ```
 
-
 ### Raw
 
 ```
@@ -48,13 +47,13 @@ qemu-nbd -d /dev/nbd0
 
 ## Bootstrap
 
-Bootstrap the operating system Debian
+Bootstrap the operating system Debian with `debootstrap`
 
 ```bash
-sudo debootstrap --include=linux-image-amd64 testing /mnt  # minimal Debian testing user space
-sudo chroot /mnt /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
+debootstrap --include=linux-image-amd64 testing $rootfs    # minimal Debian testing user space
+chroot $rootfs /bin/bash -c "sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"
                                                            # remove the root password
-cp -v /mnt/boot/vmlinuz* /tmp/kern && cp -v /mnt/boot/initrd* /tmp/init
+cp -v $rootfs/boot/vmlinuz* /tmp/kern && cp -v $rootfs/boot/initrd* /tmp/init
                                                            # copy kernel and initramfs
 kvm -nographic -kernel /tmp/kern -initrd /tmp/init -append "console=ttyS0 root=/dev/vda rw" \
     -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
