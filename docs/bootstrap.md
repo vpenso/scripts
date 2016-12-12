@@ -1,17 +1,41 @@
 
 ## Images
 
-```bash
-## create and mount a RAW file system image -- ##
-rfsimg=/tmp/rootfs.img                                     # root file-system image path
-rootfs=/mnt                                                # path to mount root file-system
-dd bs=1M seek=4095 count=1 if=/dev/zero of=$rfsimg         # create an disk image file
-qemu-img create -f raw $rfsimg 100G                        # create sparse disk image file
 
+
+### Raw 
+
+* Plain binary image of the disk typically called **RAW**
+* Allocate only used space on file-systems that support sparse files 
+* GPT partition table with [Discoverable Partitions Specification](https://www.freedesktop.org/wiki/Specifications/DiscoverablePartitionsSpec/)
+
+```
+rfsimg=/tmp/rootfs.img rootfs=/mnt
+dd bs=1M seek=4095 count=1 if=/dev/zero of=$rfsimg         # create a binary image
+qemu-img create -f raw $rfsimg 100G                        # create a sparse binary image
+## -- initalize a file-system (no partition table) -- ##
 sudo mkfs.ext4 -F $rfsimg                                  # initialize a file-system
 sudo mount -v -o loop $rfsimg $rootfs ; df -h $rootfs      # mount the disk image file
-## -- work with the mount-point -- ##
-sudo umount $rootfs             
+# work with the mount-point
+sudo umount $rootfs
+## -- GPT partition table -- ##
+sgdisk -n 1:0M:+30G -t 1:4f68bce3-e8cd-4db1-96e7-fbcaf984b709 $rfsimg 
+                                                           # GPT based partition
+sgdisk -p -i 1 $rfsimg                                     # show configuration
+kpartx -a -v $rfsimg && ls -l /dev/mapper/loop*            # add parition mapping
+mkfs.ext4 /dev/mapper/loop0p1                              # create a file system, e.g. on the first partition
+mount /dev/mapper/loop0p1 $rootfs                         
+# work with the mount-point
+umount $rootfs                          
+kpartx -d -v $rfsimg                                       # remove partition mapping
+```
+
+### Qcow2
+
+QEMU copy-on-write format supports: Snapshots, sparse images without file-system support, AES encryption
+
+```bash
+rfsimg=/tmp/rootfs.img rootfs=/mnt
 ## -- qcow2 images with snapshot support -- ##
 qemu-img create -f qcow2 $rfsimg 100G            # create a copy-on-write image file
 qemu-img info $rfsimg                            # print details about a disk image
@@ -23,20 +47,7 @@ sudo guestmount --rw -a $rfsimg -m /dev/sda1 $rootfs -o dev ; mount | grep $root
 sudo guestunmount $rootfs
 ```
 
-GUID Partition Tables with [Discoverable Partitions Specification](https://www.freedesktop.org/wiki/Specifications/DiscoverablePartitionsSpec/)
-
-```
-qemu-img create -f raw $rfsimg 100G                        # create sparse disk image file
-sgdisk -n 1:0M:+30G -t 1:4f68bce3-e8cd-4db1-96e7-fbcaf984b709 $rfsimg 
-                                                           # GPT based partition
-sgdisk -p -i 1 $rfsimg                                     # show configuration
-kpartx -a -v $rfsimg && ls -l /dev/mapper/loop*            # add parition mapping
-mkfs.ext4 /dev/mapper/loop0p1                              # create a file system, e.g. on the first partition
-mount /dev/mapper/loop0p1 /mnt                             # mount the partition
-kpartx -d -v $rfsimg                                       # remove partition mapping
-```
-
-Alternatively use `qemu-nbd` to exports a disk image as a "network block device (nbd)":
+Use `qemu-nbd` to exports a disk image as a "network block device (nbd)":
 
 ```bash
 sudo modprobe nbd max_part=16 ; lsmod | grep nbd # load the kernel module
