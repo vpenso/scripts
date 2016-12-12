@@ -77,7 +77,6 @@ debootstrap $suite $rootfs && cd $rootfs ; tar -cvzf $archive .
 fakeroot fakechroot chroot ...                   # run chroot in user space
 chroot $rootfs /bin/bash                         # chroot into a shell
 chroot $rootfs /bin/bash -c "<command>"          # execute a command in a chroot 
-systemd-nspawn -D $rootfs                        # similar to chroot
 ```
 
 Boot a root file-system with `kvm`:
