@@ -18,7 +18,7 @@ Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with wi
 ```bash
 ## -- install firefox and audio support in the container -- ##
 echo "deb http://mozilla.debian.net/ jessie-backports firefox-release" > /etc/apt/sources.list.d/mozilla.list
-apt update && apt -y install iceweasel                     
+apt update && apt -y install -t jessie-backports pkg-mozilla-archive-keyring firefox
 apt -y install pulseaudio && echo enable-shm=no >> /etc/pulse/client.conf
 ## -------------------------------------------------------- ##
 sudo systemd-nspawn --setenv=DISPLAY=$DISPLAY \
