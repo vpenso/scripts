@@ -15,6 +15,8 @@ Plugins I'm using:
 
 Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with with GPT:
 
+↴ [bin/firefox-container](../../bin/firefox-container)
+
 ```bash
 ## -- install firefox and audio support in the container -- ##
 echo "deb http://mozilla.debian.net/ jessie-backports firefox-release" > /etc/apt/sources.list.d/mozilla.list
