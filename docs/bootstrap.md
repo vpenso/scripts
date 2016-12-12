@@ -7,6 +7,7 @@ rfsimg=/tmp/rootfs.img                                     # root file-system im
 rootfs=/mnt                                                # path to mount root file-system
 dd bs=1M seek=4095 count=1 if=/dev/zero of=$rfsimg         # create an disk image file
 qemu-img create -f raw $rfsimg 100G                        # create sparse disk image file
+
 sudo mkfs.ext4 -F $rfsimg                                  # initialize a file-system
 sudo mount -v -o loop $rfsimg $rootfs ; df -h $rootfs      # mount the disk image file
 ## -- work with the mount-point -- ##
@@ -20,6 +21,19 @@ virt-filesystems -lh --uuid -a $rfsimg           # list file-systems in image fi
 sudo guestmount --rw -a $rfsimg -m /dev/sda1 $rootfs -o dev ; mount | grep $rootfs
 ## -- work with the mount-point -- ##
 sudo guestunmount $rootfs
+```
+
+GUID Partition Tables with [Discoverable Partitions Specification](https://www.freedesktop.org/wiki/Specifications/DiscoverablePartitionsSpec/)
+
+```
+qemu-img create -f raw $rfsimg 100G                        # create sparse disk image file
+sgdisk -n 1:0M:+30G -t 1:4f68bce3-e8cd-4db1-96e7-fbcaf984b709 $rfsimg 
+                                                           # GPT based partition
+sgdisk -p -i 1 $rfsimg                                     # show configuration
+kpartx -a -v $rfsimg && ls -l /dev/mapper/loop*            # add parition mapping
+mkfs.ext4 /dev/mapper/loop0p1                              # create a file system, e.g. on the first partition
+mount /dev/mapper/loop0p1 /mnt                             # mount the partition
+kpartx -d -v $rfsimg                                       # remove partition mapping
 ```
 
 Alternatively use `qemu-nbd` to exports a disk image as a "network block device (nbd)":
