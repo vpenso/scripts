@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+#
+# Copyright 2013 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# exit if an uninitialised variable is used
+#set -o nonunset
+# exit of statement returns a non-true return value
+#set -o errexit
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"$SCRIPT [<options>]
+
+Start Firefox within a \`systemd-nspawn\` container: 
+
+<options>
+  -c,--clone                          clone the container image 
+  -b,--no-browser                     start the container only
+
+Environment variables:
+   FIREFOX_NSPAWN_CONTAINER           path to the container image"
+
+# enable line numbers for debug output
+if [ "$_DEBUG" = "true" ] ; then
+  export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
+fi
+
+function _debug() {
+  if [ "$_DEBUG" = "true" ]; then
+    echo 1>&2 "Debug: $@"
+  fi
+}
+
+function _error() {
+  echo 1>&2 "Error: $@"
+  echo "See \`$SCRIPT help\` for usage."
+}
+
+FIREFOX_NSPAWN_CONTAINER=${FIREFOX_NSPAWN_CONTAINER:-/srv/container/firefox.img}
+
+clone=false
+command=firefox
+# Parse the command line options
+ARGS=$(getopt -o hcb -l "help,clone,no-browser" -- "$@")
+eval set -- "$ARGS"
+while true; do
+  case "$1" in
+    -c|--clone)
+      # make a clone of the original container
+      FIREFOX_NSPAWN_RUNTIME=/tmp/firefox-$(date +%Y%m%dT%H%M%S).img
+      cp -v $FIREFOX_NSPAWN_CONTAINER $FIREFOX_NSPAWN_RUNTIME
+      clone=true # clone flag
+      shift ; break ;;
+    -h|--help)
+      echo "$HELP"
+      exit 0
+      ;;
+    -b|--no-browser)
+      command=''
+      shift ; break ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
+
+# use a clone if requested by the user
+FIREFOX_NSPAWN_RUNTIME=${FIREFOX_NSPAWN_RUNTIME:-$FIREFOX_NSPAWN_CONTAINER}
+
+sudo systemd-nspawn --quiet \
+                    --setenv=DISPLAY=$DISPLAY \
+                    --bind /run/user/$(id -u)/pulse:/run/pulse \
+                    --setenv=PULSE_SERVER=/run/pulse/native \
+                    --bind /dev/shm \
+                    --bind /dev/snd \
+                    --image $FIREFOX_NSPAWN_RUNTIME $command
+
+# Remove the clone if it was create
+if $clone ; then
+  rm -v $FIREFOX_NSPAWN_RUNTIME
+fi
+
+exit 0
+
+
