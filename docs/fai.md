@@ -1,7 +1,7 @@
 # [Fully Automated Installation](http://fai-project.org/)
 
 * System to automate the installation of a Linux based operating system using a pre-defined [configuration space](http://fai-project.org/fai-guide/#_a_id_c3_a_the_configuration_space_and_its_subdirectories)
-* FAI boots a live system over the network into the memory of the node and follows a defined list of [tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage
+* FAI boots a live system over the network into the memory of the node and follows a defined list of tasks to install on the local storage
 
 Basic FAI server deployment:
 
@@ -99,7 +99,6 @@ server.document-root        = "/srv/devops/http"
 #!ipxe
 initrd initrd.img-3.16.0-4-amd64
 kernel vmlinuz-3.16.0-4-amd64 ip=dhcp ro root=10.1.1.27:/srv/devops/nfsroot aufs FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.1.27/srv/devops/config FAI_ACTION=install
-boot
 ```
 
 Kernel/init options [Dracut NFS](https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html#_nfs), [FAI Flags](http://fai-project.org/fai-guide/#_a_id_faiflags_a_fai_flags)
@@ -109,6 +108,17 @@ console=tty0 console=ttyS1,115200n8                           # Configure the se
 rd.shell rd.debug log_buf_len=1M                              # Kernel debugging
 FAI_FLAGS=[…],sshd,createvt                                   # enable SSH login during deployment
                                                               # access another console with ALT-F2, and ALT-F3
+```
+
+### Tasks
+
+* Most tasks are defined in `/usr/lib/fai/subroutines`
+* [The list of tasks](http://fai-project.org/fai-guide/#tasks) to install on the local storage
+
+```bash
+grep ^task /usr/lib/fai/subroutines                           # get the list of tasks
+ls -1 /usr/lib/fai/task*                                      # list of external tasks
+source /usr/lib/fai/subroutines && task_<name>                # execute a task for debugging during deployment
 ```
 
 ### Classes
@@ -126,6 +136,21 @@ grep -H -oP '\b[A-Z0-9_]*[A-Z]+[A-Z0-9_]*\b' $FAI_CONFIGDIR/class/[0-9][0-9]* | 
 ls -1 $FAI_CONFIGDIR/class/*.var                 # files defining variables
 fai-class $FAI_CONFIGDIR /tmp/fai/FAI_CLASSES    # script used to extract class definition from configuration
 $LOGDIR/fai.log                                  # common log information from the $FAI_NFSROOT/usr/sbin/fai
+```
+
+### Variables
+
+* [Defining variables](http://fai-project.org/fai-guide/#_a_id_classvariables_a_defining_variables)
+* Hooks should add variables to the `/additional.var`
+
+```bash
+$FAI_CONFIGDIR/class/*.var                       # configuration files for variables 
+source /usr/lib/fai/subroutines && task_defvar   # debug the task
+$LOGDIR/additional.var                           # file read from task_defvar
+$LOGDIR/variables.log                            # file created by task_defvar
+/usr/sbin/fai                                    # reads from /proc/cmdline  with `eval_cmdline`
+/usr/lib/fai/get-boot-info                       # reads network configurationm called by `fai`
+$LOGDIR/boot.log                                 # written by `get-boot-info`
 ```
 
 ### Storage
