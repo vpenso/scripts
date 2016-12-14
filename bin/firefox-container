@@ -67,7 +67,8 @@ while true; do
     -c|--clone)
       # make a clone of the original container
       FIREFOX_NSPAWN_RUNTIME=/tmp/firefox-$(date +%Y%m%dT%H%M%S).img
-      cp -v $FIREFOX_NSPAWN_CONTAINER $FIREFOX_NSPAWN_RUNTIME
+      cp  $FIREFOX_NSPAWN_CONTAINER $FIREFOX_NSPAWN_RUNTIME
+      echo Runtime container at $FIREFOX_NSPAWN_RUNTIME
       clone=true # clone flag
       shift ; break ;;
     -h|--help)
@@ -85,17 +86,24 @@ done
 # use a clone if requested by the user
 FIREFOX_NSPAWN_RUNTIME=${FIREFOX_NSPAWN_RUNTIME:-$FIREFOX_NSPAWN_CONTAINER}
 
+FIREFOX_NSPAWN_RUNTIME_LOGGER=${FIREFOX_NSPAWN_RUNTIME/img/log}
+
+echo Writing log to $FIREFOX_NSPAWN_RUNTIME_LOGGER
+
 sudo systemd-nspawn --quiet \
                     --setenv=DISPLAY=$DISPLAY \
                     --bind /run/user/$(id -u)/pulse:/run/pulse \
                     --setenv=PULSE_SERVER=/run/pulse/native \
                     --bind /dev/shm \
                     --bind /dev/snd \
-                    --image $FIREFOX_NSPAWN_RUNTIME $command
+                    --image $FIREFOX_NSPAWN_RUNTIME \
+                    "$command" \
+                    2>&1 1>$FIREFOX_NSPAWN_RUNTIME_LOGGER
 
 # Remove the clone if it was create
 if $clone ; then
-  rm -v $FIREFOX_NSPAWN_RUNTIME
+  rm $FIREFOX_NSPAWN_RUNTIME
+  echo Runtime container $FIREFOX_NSPAWN_RUNTIME removed
 fi
 
 exit 0
