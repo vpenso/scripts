@@ -28,7 +28,7 @@ end
 
 def ssh_listen(node, port = 22)
   output = `netcat -zv #{node} #{port} 2>&1`
-  success = output.include? 'succeeded'
+  success = (output =~ /open|succeeded/)
   state = success ? 'listen' : 'closed'
   "#{node}:#{state}"
 end
