@@ -2,6 +2,7 @@
 ```bash
 apt-cache show gnome | grep Depends | cut -d: -f2- | tr -d ' ' | tr ',' "\n" | sort
                                                 # list packages installed by the gnome meta-package
+apt install --no-install-recommends xorg gnome-core
 ```
 
 ## Tracker
