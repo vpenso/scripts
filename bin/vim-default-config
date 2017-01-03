@@ -17,6 +17,7 @@
 #
 
 # Don't overwrite existing configurations
+#
 if [ -e $HOME/.vim ]
 then
   echo "Vim configuration in $HOME/.vim already exists!"
@@ -28,7 +29,21 @@ then
   exit 0
 fi
 
-# Install Vundle
+##
+# Installation
+#
+
+# Debian based platform...
+if command -v apt 2>&1 >/dev/null ; then
+  # required packages
+  sudo apt -qy install git-core vim fonts-inconsolata fonts-powerline
+  fc-cache # build font information cache files
+  echo "Select font »Inconsolata« in your terminal application"
+fi
+
+##
+# Configure
+#
 mkdir $HOME/.vim
 echo "Installing Vundle to $HOME/.vim"
 git clone -q https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
