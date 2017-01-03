@@ -23,7 +23,6 @@ require 'logger'
 class System 
   def self.exec(command)
     command = command.gsub(/\n/," ").strip.gsub(/\s+/,' ')
-    command << ' 2>&-' unless $options.debug
     $logger.debug "Exec [#{command}]"
     # Execute command as subprocess and return the exit code
     pipe = IO.popen(command)
@@ -119,7 +118,7 @@ begin
 
   if File.exist? $options.ssh_config
     ssh_options << "-F #{$options.ssh_config}"      
-    host = System::exec "grep ^Host ssh_config | cut -d' ' -f2"
+    host = System::exec "grep ^Host #{$options.ssh_config} | cut -d' ' -f2"
   else
     raise("Missing SSH configuration file, expecting #{$options.ssh_config}")
   end
