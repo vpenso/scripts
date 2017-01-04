@@ -32,6 +32,25 @@ dpkg -S <path>                                # find package containing file (if
 debsums -ce                                   # find configuration files changed from default 
 ```
 
+### Unattended Upgrade
+
+```bash
+apt install -y unattended-upgrades apt-listchanges && dpkg-reconfigure -plow unattended-upgrades
+/etc/apt/apt.conf.d/50unattended-upgrades     # update configurations
+/etc/apt/apt.conf.d/20auto-upgrades           # automatic execution of unattended-upgrades
+unattended-upgrades -v --dry-run              # execute the upgrade
+/var/log/unattended-upgrades/unattended-upgrades.log
+apt-config dump | sort | grep -i unatt        # dump configuration
+```
+
+Configuration in `/etc/apt/apt.conf.d/50unattended-upgrades`:
+
+```c++
+Unattended-Upgrade::Origins-Pattern { "o=*"; };             // Update all sources
+Unattended-Upgrade::Remove-Unused-Dependencies "true";      // equivalent to apt-get autoremove
+Unattended-Upgrade::AutoFixInterruptedDpkg "true";          // equivalent to dpkg --force-confold --configure -a
+```
+
 ### Sources
 
 ```bash
@@ -121,4 +140,5 @@ dch --local ~bpo8+ --distribution jessie-backports "Rebuild for jessie-backports
 fakeroot debian/rules binary                         # build the source
 dpkg-buildpackage -us -uc                            # build the package
 ```
+
 
