@@ -1,47 +1,36 @@
 #!/bin/zsh
 #
-## Copyright 2012 Victor Penso
-##
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program. If not, see <http://www.gnu.org/licenses/>.
-##
+# Copyright 2012-2016 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
 
-mkdir ~/.zsh 2>/dev/null
-
-# Antigen package management for zsh plug-ins
-ANTIGEN=https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh
-if [ ! -f ~/.zsh/antigen.zsh ] ; then
-  curl --silent $ANTIGEN > ~/.zsh/antigen.zsh
-  echo "ZSH anitgen installed to ~/.zsh/"
-fi
-
-##
-## Zsh configuration file
-##
+# Do not overwrite the existing configuration
 if [ -e $HOME/.zshrc ] ; then
-echo "Zsh configuration ~/.zshrc exists!"
+  echo "Zsh configuration ~/.zshrc exists!"
   exit 0
 fi
 
+# Debian based platform...
+if command -v apt 2>&1 >/dev/null ; then
+  # required packages
+  sudo apt -qy install zsh zsh-antigen
+fi
+
+mkdir ~/.zsh 2>/dev/null
+
 cat > $HOME/.zshrc <<'EOF'
-export ADOTDIR=~/.zsh
-source ~/.zsh/antigen.zsh
-
-antigen-bundle git
-antigen-bundle zsh-users/zsh-syntax-highlighting
-
-PROMPT='$(git_super_status)%F{253}»%f '
-
 export HISTSIZE=10000
 export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
@@ -55,6 +44,21 @@ setopt share_history
 
 bindkey -e
 
+##
+# Antigen plugin manager for ZSH - https://github.com/zsh-users/antigen
+#
+# loaded from the `zsh-antigen` Debian package
+source /usr/share/zsh-antigen/antigen.zsh
+
+antigen bundle git
+# https://github.com/zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-completions
+
+# https://github.com/zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-autosuggestions
+
+# https://github.com/zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-syntax-highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 ZSH_HIGHLIGHT_STYLES+=(
   reserved-word          'fg=27,bold'
@@ -68,7 +72,7 @@ ZSH_HIGHLIGHT_STYLES+=(
   double-quoted-argument 'fg=208,bold'
 )
 
-antigen-bundle olivierverdier/zsh-git-prompt
+antigen bundle olivierverdier/zsh-git-prompt
 __GIT_PROMPT_DIR=~/.zsh/repos/https-COLON--SLASH--SLASH-github.com-SLASH-olivierverdier-SLASH-zsh-git-prompt.git/
 export __GIT_PROMPT_DIR
 ZSH_THEME_GIT_PROMPT_PREFIX=""
