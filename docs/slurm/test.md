@@ -17,7 +17,7 @@ Slurm has the capability to simulate resources on execution nodes for testing:
 Create a virtual machine to host the database server called **lxdb01.devops.test**
 
 ```bash
->>> virsh-instance -O shadow debian64-9 lxdb01.devops.test
+>>> virsh-instance shadow debian64-9 lxdb01
 >>> cd $VM_INSTANCE_PATH/lxdb01.devops.test
 >>> ssh-exec -r 'echo lxdb01 > /etc/hostname ; hostname lxdb01 ; hostname -f'
 lxdb01.devops.test
@@ -50,73 +50,60 @@ mysql> quit
 Create a virtual machine to host the Slurm cluster controller called **lxrm01.devops.test** 
 
 ```bash
->>> virsh-instance -O shadow debian64-9 lxrm01.devops.test
->>> slurm-cc() { cd $VM_INSTANCE_PATH/lxrm01.devops.test ; ssh-exec -r $@ ; cd - >/dev/null }
->>> slurm-cc 'echo lxrm01 > /etc/hostname ; hostname lxrm01 ; hostname -f'
+>>> virsh-instance shadow debian64-9 lxrm01
+>>> virsh-instance exec lxrm01 'echo lxrm01 > /etc/hostname ; hostname lxrm01 ; hostname -f'
 lxrm01.devops.test
 ```
 
 Deploy role [cluster_controller][cluster_controller.rb], to install slurmctld, and slurmdbd
 
 ```bash
->>> cd $VM_INSTANCE_PATH/lxrm01.devops.test
->>> chef-remote cookbook sys 
->>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
->>> chef-remote -r "role[cluster_controller]" solo
+cd $VM_INSTANCE_PATH/lxrm01.devops.test
+chef-remote cookbook sys 
+chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
+chef-remote -r "role[cluster_controller]" solo
 ```
 
-Deploy a basic Slurm configuration from [slurm/basis][slurm_basic]
+Deploy a basic Slurm configuration from [slurm/basis][slurm_basic] and start the services
 
 ```bash
->>> slurm-cc -r 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
->>> ssh-sync -r $SCRIPTS/var/slurm/ :/etc/slurm-llnl
->>> slurm-cc 'systemctl restart slurmdbd'
+virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
+virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm-llnl
+virsh-instance exec lxrm01 'systemctl restart slurmdbd'
+virsh-instance exec lxrm01 'systemctl restart slurmctld && sinfo'
 ```
 
 Manage the account DB configuration: 
 
 ```bash
->>> ssh-sync $SCRIPTS/var/slurm/accounts.conf :/tmp/
->>> slurm-cc 'sacctmgr load /tmp/accounts.conf'
+# load the account configuration
+virsh-instance sync lxrm01 $SCRIPTS/var/slurm/accounts.conf :/tmp/
+virsh-instance exec lxrm01 'sacctmgr --immediate load /tmp/accounts.conf'
+# dump the account configuration
+virsh-instance exec lxrm01 'sacctmgr dump vega file=/tmp/accounts.conf'
+virsh-instance sync lxrm01 :/tmp/accounts.conf $SCRIPTS/var/slurm/
 ```
-```bash
->>> slurm-cc 'sacctmgr dump vega file=/tmp/accounts.conf'
->>> ssh-sync :/tmp/accounts.conf $SCRIPTS/var/slurm/
-```
-
-Start the controller:
-
-```bash
->>> slurm-cc 'systemctl restart slurmctld'
->>> slurm-cc sinfo
-```
-
 
 ## Execution Nodes
 
 Create a couple a virtual machines for the execution nodes called **lxb00[1,4].devops.test**
 
 ```bash
->>> NODES lxb00[1-4] 
->>> nodeset-loop "virsh-instance -O shadow debian64-9 {}.devops.test"
->>> nodeset-loop "cd $VM_INSTANCE_PATH/{}.devops.test ; ssh-exec -r 'echo {} > /etc/hostname ; hostname {} ; hostname -f' ; cd -"
-[…]
+NODES lxb00[1-4] 
+nodeset-loop "virsh-instance shadow debian64-9 {}"
+nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; hostname -f'"
 ```
 
 Deploy the Chef role [execution_node][execution_node.rb] to install _slurmd_
 
 ```bash
->>> slurm-en() { for d in $VM_INSTANCE_PATH/lxb* ; do cd $d ; $@ ; cd - >/dev/null ; done }
->>> slurm-en-exec() { slurm-en ssh-exec -r $@ }
+slurm-en() { for n in $(nodeset -e $NODES) ; do cd $VM_INSTANCE_PATH/$n ; $@ ; cd - >/dev/null ; done }
+slurm-en-exec() { slurm-en ssh-exec -r $@ }
+slurm-en chef-remote cookbook sys
+slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/execution_node.rb
+slurm-en chef-remote -r "role[execution_node]" solo
+slurm-en-exec 'systemctl reboot'
 ```
-```bash
->>> slurm-en chef-remote cookbook sys
->>> slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/execution_node.rb
->>> slurm-en chef-remote -r "role[execution_node]" solo
-[…]
->>> slurm-en-exec 'systemctl reboot'
-```
-
 
 # Tests
 

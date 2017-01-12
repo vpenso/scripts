@@ -15,14 +15,7 @@ Since 2013/12 the version numbers use the format year.month (like Ubuntu). Last 
 
 List available packages for all Debian releases with `rmadison` (from the _devscripts_ package):
 
-    » date
-    Thu Jun  9 12:34:04 CEST 2016
-    » rmadison slurm-wlm
-    slurm-wlm  | 14.03.9-5     | stable     | amd64, arm64, armel, armhf, i386, mips, mipsel, powerpc, ppc64el, s390x
-    slurm-wlm  | 15.08.11-1    | testing    | arm64, armel, armhf, i386, mips, mipsel, powerpc, ppc64el, s390x
-    slurm-wlm  | 15.08.11-1    | unstable   | arm64, armel, armhf, i386, mips, mips64el, mipsel, powerpc, ppc64el, s390x
-    slurm-wlm  | 15.08.11-1+b1 | testing    | amd64
-    slurm-wlm  | 15.08.11-1+b1 | unstable   | amd64
+→ [Debian Tracker](https://tracker.debian.org/pkg/slurm-llnl)
 
 ### CentOS
 
