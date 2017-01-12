@@ -19,6 +19,7 @@ export LIBVIRT_DEFAULT_URI=qemu:///system
 
 export VM_IMAGE_PATH=~/vms/images
 export VM_INSTANCE_PATH=~/vms/instances
+export VM_DOMAIN=devops.test
 
 alias vi=virsh-instance
 alias vc=virsh-config
@@ -26,6 +27,10 @@ alias vc=virsh-config
 function vm() {
   local command=$1
   case "$command" in
+  "cd")
+    shift
+    cd $VM_INSTANCE_PATH/$1.$VM_DOMAIN
+    ;;
   "create"|"c") 
     shift
     virsh create "$@" 
@@ -60,7 +65,7 @@ function vm() {
     virsh undefine "$@"
     ;;
   *) 
-    echo "Usage: vm (c)reate|(d)efine|s(h)utdown|(k)ill|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
+    echo "Usage: vm cd|(c)reate|(d)efine|s(h)utdown|(k)ill|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
     ;;
   esac
 }
