@@ -12,23 +12,22 @@ Slurm has the capability to simulate resources on execution nodes for testing:
 
 # Deployment
 
-## Account Database
-
-Create a virtual machine to host the database server called **lxdb01.devops.test**
-
 ```bash
->>> virsh-instance shadow debian64-9 lxdb01
->>> cd $VM_INSTANCE_PATH/lxdb01.devops.test
->>> ssh-exec -r 'echo lxdb01 > /etc/hostname ; hostname lxdb01 ; hostname -f'
-lxdb01.devops.test
+NODES lxrm01,lxdb01,lxb[001-004]
+nodeset-loop "virsh-instance remove {}"                 # clean up
+nodeset-loop "virsh-instance shadow debian64-9 {}"      # preapre the virtual machines
+nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; hostname -f'"
 ```
+
+## Account Database
 
 Deploy role [account_database][account_database.rb], to install a MySQL database. 
 
 ```bash
->>> chef-remote cookbook sys 
->>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
->>> chef-remote -r "role[account_database]" solo
+vm cd lxdb01
+chef-remote cookbook sys 
+chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
+chef-remote -r "role[account_database]" solo
 ```
 
 Grant the `slurm` user access to the database
@@ -47,18 +46,10 @@ mysql> quit
 ```
 ## Cluster Controller
 
-Create a virtual machine to host the Slurm cluster controller called **lxrm01.devops.test** 
-
-```bash
->>> virsh-instance shadow debian64-9 lxrm01
->>> virsh-instance exec lxrm01 'echo lxrm01 > /etc/hostname ; hostname lxrm01 ; hostname -f'
-lxrm01.devops.test
-```
-
 Deploy role [cluster_controller][cluster_controller.rb], to install slurmctld, and slurmdbd
 
 ```bash
-cd $VM_INSTANCE_PATH/lxrm01.devops.test
+vm cd lxrm01
 chef-remote cookbook sys 
 chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
 chef-remote -r "role[cluster_controller]" solo
@@ -85,14 +76,6 @@ virsh-instance sync lxrm01 :/tmp/accounts.conf $SCRIPTS/var/slurm/
 ```
 
 ## Execution Nodes
-
-Create a couple a virtual machines for the execution nodes called **lxb00[1,4].devops.test**
-
-```bash
-NODES lxb00[1-4] 
-nodeset-loop "virsh-instance shadow debian64-9 {}"
-nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; hostname -f'"
-```
 
 Deploy the Chef role [execution_node][execution_node.rb] to install _slurmd_
 
