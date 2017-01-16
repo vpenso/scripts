@@ -16,13 +16,13 @@
 Data rates:
 
 ```
-                                  SpeedxWidth Rate
+                                  SpeedxWidth Rate     Latency   Encoding    Eff.Speed
 1999    SDR   Single Data Rate    2.5Gbps x4  10Gbps   5usec        
-2004    DDR   Double Data Rate      5Gbps x4  20Gbps   2.5usec   8/10 bit  16 Gbps
-2008    QDR   Quadruple Data Rate  10Gbps x4  40Gbps   1.3 usec  8/10 bit  32 Gbps
-2011    FDR   Fourteen Data Rate   14Gbps x4  56Gbps   0.7usec   64/66 bit 54.6 Gbps
+2004    DDR   Double Data Rate      5Gbps x4  20Gbps   2.5usec   8/10 bit    16 Gbps
+2008    QDR   Quadruple Data Rate  10Gbps x4  40Gbps   1.3usec   8/10 bit    32 Gbps
+2011    FDR   Fourteen Data Rate   14Gbps x4  56Gbps   0.7usec   64/66 bit   54.6 Gbps
 2014    EDR   Enhanced Data Rate   25Gbps x4  100Gbps  0.5usec   64/66 bit    
-~2017   HDR   High Data Rate       50Gbps x4  200Gbps           
+2017    HDR   High Data Rate       50Gbps x4  200Gbps           
 ~2020   NDR   Next Data Rate 
 ```
 
@@ -73,14 +73,24 @@ Data rates:
 
 ```bash
 ibstat                           # link state of the HCA, LIDs, GUIDs
-       -d <card>                 # limit to card, e.g. mlx4_0
+ibstat -d <card>                 # limit to card, e.g. mlx4_0
 ibstatus                         # port GIDs
 ibaddr
 ibswitches                       # all switches, node GUIDs, number of ports, name
 ibhosts                          # all channel adapters, node GUIDs, name
 ibnodes                          # both of the above
 iblinkinfo                       # all links: local LID, port (speed,state) -> remote LID, port, name
-ibnetdiscover                    # all active ports 
+ibnetdiscover                    # all active ports
+ibtracert <lid> <lid>            # trace route between nodes
+ibroute <lid>                    # show switching table, LIDs in hex
+## measure latency ##
+ibping -S                        # start server
+ibping -L <lid>                  # ping the server
+sminfo                           # show master subnet manager LID, GUID
+saquery -s                       # show all subnet managers
+smpquery nodedesc <lid>          # get node description for LID
+ib_rdma_lat                      # tests the latency between two nodes
+ib_rdma_bw                       # test the bandwidth
 ```
 
 
