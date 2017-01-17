@@ -135,10 +135,21 @@ ibv_devices                       # list HCS, GUIDs
   - Based on 64/66bit encoding error correction 
   - No bandwidth loss
 
-```bash
+### Network Layer
 
-```
-  - 
+* Mellanox Infiniband Router SB7788 (up to 6 subnets)
+* Route packages between subnets 
+* Uses GIDs for each port included in the **Global Routing Header** (GRH)
 
+### Transport Layer
+
+* Message segmentation into multiple packages by the sender, reassembly on the receiver
+  - **Maximum Transfer Unit** (MTU) default 4096 Byte `openib.conf`
+* End-to-End communication service for applications **Virtual Channel**
+* **Queue Pairs** (QPs), dedicated per connection
+  - Send/receive queue structure to enable application to bypass kernel (RDMA write/read)
+  - Mode: connected vs. datagram; reliable vs. unreliable
+  - Datagram mode uses one QP for multiple connections
+  - Identified by 24bit Queue Pair Number (QPN)
 
 [02]: https://www.openfabrics.org/
