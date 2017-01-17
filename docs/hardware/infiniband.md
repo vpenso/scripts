@@ -85,8 +85,8 @@ Fabric Initialization by the **Subnet Manager** (SM)
 5. Ports and Switch configuration
 6. Subnet Activation
 
-Only one master SM allowed per subnet, can run on any node (or a managed switch)
-
+Only one master SM allowed per subnet, can run on any server
+* Or a managed switch on small fabrics 650 nodes
 * Routes determined algorithmically (SPF, MINHOP, FTREE, DOR, or LASH) `opensm.conf`
   - **Min-Hop** minimal number of switch hops between nodes (cannot avoid credit loops)
   - **Up-Down** Min-Hop plus core/spine ranking (for non pure fat-tree topologies)
@@ -107,12 +107,19 @@ SM monitors the fabric for a topology changes:
   - SMInfo attributes exchange information during discovery/polling to synchronize 
 
 ```bash
-sminfo                           # show master subnet manager LID, GUID, priority
-smpquery portinfo <lid> <port>   # query port information
-smpquery nodeinfo <lid>          # query node information
-smpquery -D nodeinfo <lid>       # ^ using direct route
-saquery -s                       # show all subnet managers
-ibroute <lid>                    # show switching table, LIDs in hex
+sminfo                              # show master subnet manager LID, GUID, priority
+smpquery portinfo <lid> <port>      # query port information
+smpquery nodeinfo <lid>             # query node information
+smpquery -D nodeinfo <lid>          # ^ using direct route
+saquery -s                          # show all subnet managers
+ibroute <lid>                       # show switching table, LIDs in hex
+/etc/opensm/opensm.conf             # global configuration file
+opensm -c /etc/opensm/opensm.conf   # create configuration file if missing
+/var/cache/opensm/guid2lid
+opensm -p <prio>                    # change priority of SM (when stopped!)
+opensm -R <engine>                  # change routeing algorithem 
+grep routing_engine /etc/opensm/opensm.conf
+ibdiagnet -r                        # check for routing issues
 ```
 
 ## Layers
