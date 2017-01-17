@@ -13,19 +13,6 @@
   - Includes Open Subnet Manager with diagnostic tools
   - IP over Infiniband (IPoIB), Infiniband Verbs/API
 
-Data rates:
-
-```
-                                  SpeedxWidth Rate     Latency   Encoding    Eff.Speed
-1999    SDR   Single Data Rate    2.5Gbps x4  10Gbps   5usec        
-2004    DDR   Double Data Rate      5Gbps x4  20Gbps   2.5usec   8/10 bit    16 Gbps
-2008    QDR   Quadruple Data Rate  10Gbps x4  40Gbps   1.3usec   8/10 bit    32 Gbps
-2011    FDR   Fourteen Data Rate   14Gbps x4  56Gbps   0.7usec   64/66 bit   54.6 Gbps
-2014    EDR   Enhanced Data Rate   25Gbps x4  100Gbps  0.5usec   64/66 bit    
-2017    HDR   High Data Rate       50Gbps x4  200Gbps           
-~2020   NDR   Next Data Rate 
-```
-
 ## Topology 
 
 * Network Topologies:
@@ -40,7 +27,25 @@ Data rates:
 * Non blocking (1:1) CLOS fabric, equal number of external and internal connections (balanced cross bisectional bandwidth)
 * **Blocking** (x:1), external connections is higher than internal connections, over subscription
 
-## Routes & Addresses
+## Addresses
+
+* **GUID** Globally Unique Identifier
+  - 64bit unique address assigned by vendor, persistent through reboot
+  - 3 types of GUIDs: Node, port(, and system image)
+* **LID** Local Identifier (48k unicast per subnet)
+  - 16bit layer 2 address, assigned by the SM when port becomes active
+  - Each HCA port has a LID; all switch ports share the same LID, director switches have one LID per ASIC
+* **GID** Global Identifier
+  - 128bit address unique across multiple subnets
+  - Based on the port GUID combined with 64bit subnet prefix
+  - Used in the Global Routing Header (GRH) (ignored by switches within a subnet)
+* **PKEY** Partition Identifier
+  - Fabric segmentation of nodes into different partitions
+  - Partitions unaware of each other: limited `0` (can't communicate between them selfs) , full `1` membership
+  - Ports may be member of multiple partitions
+  - Assign by listing port GUIDs in `partitons.conf` 
+
+## Routes
 
 **Deterministic Distributed Routing** (usually) configured by Open Subnet Manager (OpenSM) which calculates and sends the **Linear Forwarding Table** (LFT) to the switches.
 
@@ -52,24 +57,6 @@ Data rates:
 * Subnet Manager Query Message: node & port information
 * Subnet Manager Agent (SMA) required on each node
 
-**Fabric Addressing**
-
-* **GUID** Globally Unique Identifier
-  - 64bit unique address assigned by vendor, persistent through reboot
-  - 3 types of GUIDs: Node, port(, and system image)
-* **LID** Local Identifier (48k unicast per subnet)
-  - 16bit layer 2 address, assigned by the SM when port becomes active
-  - Each HCA port has a LID; all switch ports share the same LID, director switches have one LID per ASIC
-  - **LMC** LID Mask Controller, use multiple LIDs to load-balance traffic over multiple network paths
-* **GID** Global Identifier
-  - 128bit address unique across multiple subnets
-  - Based on the port GUID combined with 64bit subnet prefix
-  - Used in the Global Routing Header (GRH) (ignored by switches within a subnet)
-* **PKEY** Partition Identifier
-  - Fabric segmentation of nodes into different partitions
-  - Partitions unaware of each other: limited `0` (can't communicate between them selfs) , full `1` membership
-  - Ports may be member of multiple partitions
-  - Assign by listing port GUIDs in `partitons.conf` 
 
 ```bash
 ibstat                           # link state of the HCA, LIDs, GUIDs
@@ -92,6 +79,66 @@ smpquery nodedesc <lid>          # get node description for LID
 ib_rdma_lat                      # tests the latency between two nodes
 ib_rdma_bw                       # test the bandwidth
 ```
+
+## Layers
+
+### Physical Layer
+
+```
+            Speed                       Width Rate     Latency   Encoding    Eff.Speed
+---------------------------------------------------------------------------------------
+1999   SDR  Single Data Rate     2.5Gbps   x4 10Gbps   5usec        
+2004   DDR  Double Data Rate     5Gbps     x4 20Gbps   2.5usec   8/10 bit    16Gbps
+2008   QDR  Quadruple Data Rate  10Gbps    x4 40Gbps   1.3usec   8/10 bit    32Gbps
+2011   FDR  Fourteen Data Rate   14Gbps    x4 56Gbps   0.7usec   64/66 bit   54.6Gbps
+2014   EDR  Enhanced Data Rate   25Gbps    x4 100Gbps  0.5usec   64/66 bit   96.97Gbps 
+2017   HDR  High Data Rate       50Gbps    x4 200Gbps <0.5usec            
+~2020  NDR  Next Data Rate 
+```
+
+* Link Speed x Link Width = Link Rate
+* Bit Error Rate (BER) 10^15
+* **Virtual Lane** (VL), multiple virtual links on single physical link
+  - Mellanox 0-7 VLs each with dedicated buffers 
+  - Quality of Service, bandwidth management
+* Media for connecting two nodes
+  - Passive Copper Cables FDR max. 3m, EDR max. 2m
+  - Active Optical Cables (AOCs) FDR max. 300m, EDR max. 100m
+  - Connector QSFP
+
+```bash
+ibportstate                       # port configuration
+ibv_devices                       # list HCS, GUIDs
+```
+
+### Link Layer
+
+* Subnet may contain: 48K unicast & 16k multicast addresses
+* **Local Routing Header** (LRH) includes 16bit Destination LID (DLID) and port number
+* **LID Mask Controller** (LMC), use multiple LIDs to load-balance traffic over multiple network paths
+* **Credit Based Flow Control** between two nodes
+  - Independent for each virtual lane (to separate congestion/latency)
+  - Sender limited by credits granted by the receiver in 64byte units
+* **Service Level** (SL) to Virtual Lane (VL) mapping defined in `opensm.conf`
+  - Priority & weight value 0-255 indicate number 64byte units transported by a VL
+  - Guarantee performance to data flow to provide QoS
+* Data Integrity
+  - 16bit Variant CRC (VCRC) link level integrity between two hops 
+  - 32bit Invariant CRC (ICRC) end-to-end integrity
+* Link Layer Retransmission (LLR) 
+  - Mellanox SwitchX only, up to FDR, enabled by default
+  - Recovers problems on the physical layer
+  - Slight increase in latency
+  - Should remove all symbol errors
+* Forward Error Correction (FEC)
+  - Mellanox Switch-IB only, EDR forward
+  - Based on 64/66bit encoding error correction 
+  - No bandwidth loss
+
+```bash
+
+```
+  - 
 
 
 [02]: https://www.openfabrics.org/
