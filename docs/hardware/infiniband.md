@@ -1,4 +1,30 @@
-# Infiniband
+```bash
+ibstat                           # link state of the HCA, LIDs, GUIDs
+ibstat -d <card>                 # limit to card, e.g. mlx4_0
+ibstatus                         # port GIDs
+ibaddr
+ibportstate                      # port configuration
+ibv_devices                      # list HCS, GUIDs
+ibswitches                       # all switches, node GUIDs, number of ports, name
+ibhosts                          # all channel adapters, node GUIDs, name
+ibnodes                          # both of the above
+iblinkinfo                       # all links: local LID, port (speed,state) -> remote LID, port, name
+ibnetdiscover                    # all active ports
+ibtracert <lid> <lid>            # trace route between nodes
+ibroute <lid>                    # show switching table, LIDs in hex
+sminfo                           # show master subnet manager LID, GUID
+saquery -s                       # show all subnet managers
+smpquery nodedesc <lid>          # get node description for LID
+## measure latency ##
+ibping -S                        # start server
+ibping -L <lid>                  # ping the server
+## measure performance ##
+ib_rdma_lat                      # tests the latency between two nodes
+ib_rdma_bw                       # test the bandwidth
+ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
+```
+
+# Overview
 
 * InfiniBand Architecture (IBA)
   - Architecture for Interprocess Communication (IPC) networks
@@ -58,31 +84,20 @@
 * Subnet Manager Agent (SMA) required on each node
 
 
-```bash
-ibstat                           # link state of the HCA, LIDs, GUIDs
-ibstat -d <card>                 # limit to card, e.g. mlx4_0
-ibstatus                         # port GIDs
-ibaddr
-ibswitches                       # all switches, node GUIDs, number of ports, name
-ibhosts                          # all channel adapters, node GUIDs, name
-ibnodes                          # both of the above
-iblinkinfo                       # all links: local LID, port (speed,state) -> remote LID, port, name
-ibnetdiscover                    # all active ports
-ibtracert <lid> <lid>            # trace route between nodes
-ibroute <lid>                    # show switching table, LIDs in hex
-## measure latency ##
-ibping -S                        # start server
-ibping -L <lid>                  # ping the server
-sminfo                           # show master subnet manager LID, GUID
-saquery -s                       # show all subnet managers
-smpquery nodedesc <lid>          # get node description for LID
-ib_rdma_lat                      # tests the latency between two nodes
-ib_rdma_bw                       # test the bandwidth
-```
 
 ## Layers
 
 ### Physical Layer
+
+* Link Speed x Link Width = Link Rate
+* Bit Error Rate (BER) 10^15
+* **Virtual Lane** (VL), multiple virtual links on single physical link
+  - Mellanox 0-7 VLs each with dedicated buffers 
+  - Quality of Service, bandwidth management
+* Media for connecting two nodes
+  - Passive Copper Cables FDR max. 3m, EDR max. 2m
+  - Active Optical Cables (AOCs) FDR max. 300m, EDR max. 100m
+  - Connector QSFP
 
 ```
             Speed                       Width Rate     Latency   Encoding    Eff.Speed
@@ -96,20 +111,7 @@ ib_rdma_bw                       # test the bandwidth
 ~2020  NDR  Next Data Rate 
 ```
 
-* Link Speed x Link Width = Link Rate
-* Bit Error Rate (BER) 10^15
-* **Virtual Lane** (VL), multiple virtual links on single physical link
-  - Mellanox 0-7 VLs each with dedicated buffers 
-  - Quality of Service, bandwidth management
-* Media for connecting two nodes
-  - Passive Copper Cables FDR max. 3m, EDR max. 2m
-  - Active Optical Cables (AOCs) FDR max. 300m, EDR max. 100m
-  - Connector QSFP
 
-```bash
-ibportstate                       # port configuration
-ibv_devices                       # list HCS, GUIDs
-```
 
 ### Link Layer
 
@@ -147,9 +149,16 @@ ibv_devices                       # list HCS, GUIDs
   - **Maximum Transfer Unit** (MTU) default 4096 Byte `openib.conf`
 * End-to-End communication service for applications **Virtual Channel**
 * **Queue Pairs** (QPs), dedicated per connection
-  - Send/receive queue structure to enable application to bypass kernel (RDMA write/read)
+  - Send/receive queue structure to enable application to bypass kernel
   - Mode: connected vs. datagram; reliable vs. unreliable
   - Datagram mode uses one QP for multiple connections
   - Identified by 24bit Queue Pair Number (QPN)
+
+### Upper Layer
+
+* **Verbs** software interface to the HCA
+* Protocols: MPI, RDMA Storage Protocols, IPoIB
+* Management Services: Subnet Management Interface (SMI), General Service Interface (GSI)
+
 
 [02]: https://www.openfabrics.org/
