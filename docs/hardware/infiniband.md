@@ -11,10 +11,6 @@ ibnodes                          # both of the above
 iblinkinfo                       # all links: local LID, port (speed,state) -> remote LID, port, name
 ibnetdiscover                    # all active ports
 ibtracert <lid> <lid>            # trace route between nodes
-ibroute <lid>                    # show switching table, LIDs in hex
-sminfo                           # show master subnet manager LID, GUID
-saquery -s                       # show all subnet managers
-smpquery nodedesc <lid>          # get node description for LID
 ## measure latency ##
 ibping -S                        # start server
 ibping -L <lid>                  # ping the server
@@ -73,17 +69,51 @@ ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
 
 ## Routes
 
-**Deterministic Distributed Routing** (usually) configured by Open Subnet Manager (OpenSM) which calculates and sends the **Linear Forwarding Table** (LFT) to the switches.
+Fabric Initialization by the **Subnet Manager** (SM)
 
-* Routes in determined algorithmically (SPF, MINHOP, FTREE, DOR, or LASH)
-* Only one master SM allowed per subnet, can run on any node (or a managed switch)
-* Discovers subnet topology (time depends on network scale) and scans for subnet changes
-* Assigns **Local Identifiers** (LIDs) to all nodes
-* Calculate and programs switch chip forwarding tables
-* Subnet Manager Query Message: node & port information
-* Subnet Manager Agent (SMA) required on each node
+1. Subnet Discovery (after SM wakeup)
+  - Travers the network beginning with close neighbors
+  - Subnet Manager Packages (SMP) to initiate "conversation" 
+2. Information Gathering
+  - Find all links/switches/hosts on all connected ports to map topology
+  - Subnet Manager Query Message: direct routed information gathering for node/port information
+  - Subnet Manager Agent (SMA) required on each node
+3. LIDs assignment
+4. Paths establishment
+   - Best path calculation to identify **Shortest Path Table** (Min-Hop)
+   - Calculate **Linear Forwarding Table** (LFP) 
+5. Ports and Switch configuration
+6. Subnet Activation
 
+Only one master SM allowed per subnet, can run on any node (or a managed switch)
 
+* Routes determined algorithmically (SPF, MINHOP, FTREE, DOR, or LASH) `opensm.conf`
+  - **Min-Hop** minimal number of switch hops between nodes (cannot avoid credit loops)
+  - **Up-Down** Min-Hop plus core/spine ranking (for non pure fat-tree topologies)
+  - **ftree** congestion-free symmetric fat-tree
+
+SM monitors the fabric for a topology changes:
+
+* **Light Sweep**, every 10sec require node/port information
+  - Port status changes
+  - Search for other SMs, change priority
+* **Heavy Sweep** triggered by light sweep changes
+  - Fabric discovery from scratch
+  - Can be triggered by a IB TRAP from a status change on a switch
+  - Edge/host port state change impact is configurable 
+* SM failover & handover with SMInfo protocol 
+  - Election by priority (0-15) and lower GUID
+  - Heartbeat for stand-by SM polling the master
+  - SMInfo attributes exchange information during discovery/polling to synchronize 
+
+```bash
+sminfo                           # show master subnet manager LID, GUID, priority
+smpquery portinfo <lid> <port>   # query port information
+smpquery nodeinfo <lid>          # query node information
+smpquery -D nodeinfo <lid>       # ^ using direct route
+saquery -s                       # show all subnet managers
+ibroute <lid>                    # show switching table, LIDs in hex
+```
 
 ## Layers
 
@@ -111,8 +141,6 @@ ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
 ~2020  NDR  Next Data Rate 
 ```
 
-
-
 ### Link Layer
 
 * Subnet may contain: 48K unicast & 16k multicast addresses
@@ -139,9 +167,12 @@ ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
 
 ### Network Layer
 
-* Mellanox Infiniband Router SB7788 (up to 6 subnets)
-* Route packages between subnets 
+* Infiniband Routing
+  - Fault isolation (e.g topology changes)
+  - Increase security (limit attack scope within a network segment)
+  - Inter-subnet package routing (connect multiple topologies)
 * Uses GIDs for each port included in the **Global Routing Header** (GRH)
+* Mellanox Infiniband Router SB7788 (up to 6 subnets)
 
 ### Transport Layer
 
@@ -156,9 +187,19 @@ ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
 
 ### Upper Layer
 
-* **Verbs** software interface to the HCA
-* Protocols: MPI, RDMA Storage Protocols, IPoIB
-* Management Services: Subnet Management Interface (SMI), General Service Interface (GSI)
+* Protocols
+  - Native Infiniband RDMA Protocols
+  - MPI, RDMA Storage (iSER, SRP, NFS-RDMA), SDP (Socket Direct), RDS (Reliable Datagram)
+  - Legacy TCP/IP, transported by IPoIB
+* Software transport **Verbs** 
+  - Client interface to the transport layer, HCA
+  - Most common implementation is OFED
+* Subnet Manager Interface (SMI)
+  - Subnet Manager Packages (SMP) (on `QP0 VL15`, no flow control)
+  - LID routed or direct routed (before fabric initialisation using port numbers) 
+* General Service Interface (GSI)
+  - General Management Packages (GMP) (on `QP1`, subject to flow control)
+  - LID routed
 
 
 [02]: https://www.openfabrics.org/
