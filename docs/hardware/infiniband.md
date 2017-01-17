@@ -37,17 +37,30 @@ ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
 
 ## Topology 
 
-* Network Topologies:
-  - **All-to-All** (Star) topologies provide non-blocking high bisection lo latency bandwidth between all (end)nodes. They are limited in scale to the switch port count.
-  - **Fat-Tree** topologies provide (non-)blocking fabrics with consistent hop count, resulting in predictable latency. They do not scale linearly with cluster size.
-  - **Torus** (Cube/Mesh) topologies add orthogonal dimensions of interconnect as they grow, thus can support very large clusters. Can be optimized for localized and/or global communication within the cluster. They are limited to x:1 blocking configurations. Simple wiring using shorter cables, and expandable without re-cabling. 
-* Usually pyramid shaped topology, e.g. 2-Tier Fat Tree.
-  - The switches at the top of the pyramid are called **Spines**/Core
+### Fat-Tree
+
+**Fat-Tree** topologies provide (non-)blocking fabrics with consistent hop count, resulting in predictable latency. 
+  - They do not scale linearly with cluster size (max. 7 layers/tiers)
+  - The switches at the top of the pyramid shape are called **Spines**/Core
   - The switches at the bottom of the Pyramid are called **Leafs**/Lines/Edges
   - **External connections** connect nodes to edge switches.
   - **Internal Connections** connect core with edge switches. 
-* Non blocking (1:1) CLOS fabric, equal number of external and internal connections (balanced cross bisectional bandwidth)
+
+* **Constant Bisectional Bandwidth** (CBB)
+  - Non blocking (1:1 ratio) 
+  - Equal number of external and internal connections (balanced)
 * **Blocking** (x:1), external connections is higher than internal connections, over subscription
+
+### Torrus
+
+**Torus** (Cube/Mesh) 3D topologies, CBB ratio 1:6
+
+- Add orthogonal dimensions of interconnect as they grow
+- Support very large clusters with short cabling
+- Can be optimized for localized and/or global communication within the cluster
+- Limited to x:1 blocking configurations. 
+- Simple wiring using shorter cables, and expandable without re-cabling
+- Requires routing engine to handle loops
 
 ## Addresses
 
@@ -85,14 +98,7 @@ Fabric Initialization by the **Subnet Manager** (SM)
 5. Ports and Switch configuration
 6. Subnet Activation
 
-Only one master SM allowed per subnet, can run on any server
-* Or a managed switch on small fabrics 650 nodes
-* Routes determined algorithmically (SPF, MINHOP, FTREE, DOR, or LASH) `opensm.conf`
-  - **Min-Hop** minimal number of switch hops between nodes (cannot avoid credit loops)
-  - **Up-Down** Min-Hop plus core/spine ranking (for non pure fat-tree topologies)
-  - **ftree** congestion-free symmetric fat-tree
-
-SM monitors the fabric for a topology changes:
+SM monitors the fabric for a **topology changes**:
 
 * **Light Sweep**, every 10sec require node/port information
   - Port status changes
@@ -101,25 +107,50 @@ SM monitors the fabric for a topology changes:
   - Fabric discovery from scratch
   - Can be triggered by a IB TRAP from a status change on a switch
   - Edge/host port state change impact is configurable 
-* SM failover & handover with SMInfo protocol 
+* SM **failover & handover** with SMInfo protocol 
   - Election by priority (0-15) and lower GUID
   - Heartbeat for stand-by SM polling the master
   - SMInfo attributes exchange information during discovery/polling to synchronize 
 
+Only one master SM allowed per subnet, can run on any server
+
+* Or a managed switch on small fabrics 650 nodes
+* **Routeing Algorithm** (SPF, MINHOP, FTREE, DOR, or LASH) `opensm.conf`
+  - **Min-Hop** minimal number of switch hops between nodes (cannot avoid credit loops)
+  - **Up-Down** Min-Hop plus core/spine ranking (for non pure fat-tree topologies) [down-up routes not allowed] 
+  - **ftree** congestion-free symmetric fat-tree, shift communication pattern
+
 ```bash
+/etc/opensm/opensm.conf             # global configuration file
+/var/cache/opensm/guid2lid
+/var/log/opensm.log                 # SM logging
+opensm -c /etc/opensm/opensm.conf   # create configuration file if missing
+opensm -p <prio>                    # change priority of SM (when stopped!)
+opensm -R <engine>                  # change routeing algorithem 
+ibdiagnet -r                        # check for routing issues
 sminfo                              # show master subnet manager LID, GUID, priority
 smpquery portinfo <lid> <port>      # query port information
 smpquery nodeinfo <lid>             # query node information
 smpquery -D nodeinfo <lid>          # ^ using direct route
 saquery -s                          # show all subnet managers
+$IBDIAG/ibdiagnet*.sm               # SMs documented by ibdiagnet
 ibroute <lid>                       # show switching table, LIDs in hex
-/etc/opensm/opensm.conf             # global configuration file
-opensm -c /etc/opensm/opensm.conf   # create configuration file if missing
-/var/cache/opensm/guid2lid
-opensm -p <prio>                    # change priority of SM (when stopped!)
-opensm -R <engine>                  # change routeing algorithem 
-grep routing_engine /etc/opensm/opensm.conf
-ibdiagnet -r                        # check for routing issues
+```
+
+Enable up-down routing engine:
+
+```bash
+>>> grep -e routing_engine -e root_guid_file /etc/opensm/opensm.conf    
+#routing_engine (null)
+routing_engine updn
+#root_guid_file (null)
+root_guid_file /etc/opensm/rootswitches.list
+>>> head /etc/opensm/rootswitches.list
+0xe41d2d0300e512c0
+0xe41d2d0300e50bd0
+0xe41d2d0300e51af0
+0xe41d2d0300e52eb0
+0xe41d2d0300e52e90
 ```
 
 ## Layers
