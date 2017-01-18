@@ -21,7 +21,6 @@ ibstatus                         # port GIDs
 ibaddr
 ibportstate                      # port configuration
 ibv_devices                      # list HCS, GUIDs
-ibswitches                       # all switches, node GUIDs, number of ports, name
 ibhosts                          # all channel adapters, node GUIDs, name
 ibnodes                          # both of the above
 iblinkinfo                       # all links: local LID, port (speed,state) -> remote LID, port, name
@@ -34,6 +33,15 @@ ibping -L <lid>                  # ping the server
 ib_rdma_lat                      # tests the latency between two nodes
 ib_rdma_bw                       # test the bandwidth
 ibdump -d <card>                 # capture traffic to file (use Wireshark tool)
+```
+
+```bash
+ibswitches | cut -d' ' -f 2,10,5 | awk '{print $3,$1,$2}' | column -t
+                                 # switch LIDs, GUIDs, description
+smpquery -G switchinfo <guid>    # switch information by GUID
+smpquery switchinfo <lid>        # switch information by LID
+ibroute <lid>                    # show witch forwarding table
+perfquery <lid> <port>           # show counters for a given switch port
 ```
 
 ## Topology 
