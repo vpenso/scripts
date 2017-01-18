@@ -41,6 +41,7 @@ ibswitches | cut -d' ' -f 2,10,5 | awk '{print $3,$1,$2}' | column -t
 smpquery -G switchinfo <guid>    # switch information by GUID
 smpquery switchinfo <lid>        # switch information by LID
 ibroute <lid>                    # show witch forwarding table
+ibportstate <lid> <port>         # show link state of a given switch port
 perfquery <lid> <port>           # show counters for a given switch port
 ```
 
