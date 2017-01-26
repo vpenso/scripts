@@ -1,3 +1,4 @@
+# Router
 
 * **Router**: Forwards data packets between networks 
   - **Routing**: Select a path for traffic across multiple networks depending on the destination address
@@ -28,16 +29,17 @@ netstat -rn                                          # show routing table
 route -n
 ```
 
-### Default Gateway
+## Default Gateway
 
-* Handles packages with destinations outside the local connected networks (by definition a router)
+* Handles packages with destinations outside the local network segment
 * **Default Route**: forwarding rule to use when no specific route can be determined
   - Designated zero-address `0.0.0.0/0` (IPv4) `::/0` (IPv6) 
   - `/0` subnet mask specifies all networks
   - Lookups not matching any other route use the default route
+* Methods to configure the default gateway: DHCP, BOOTP, ICMP Router Discovery Protocol (IRDP), manual configuration
+* Only **one default gateway** can be configured
 
 ```bash
-echo "1" > /proc/sys/net/ipv4/ip_forward             # Turn on IPv4 packet forwarding 
 ip route add default via <ip>                        # configure/change the default route
 ip route change default via <ip> dev <int>
 ip route del default via <ip>                        # remove default gateway
@@ -45,7 +47,15 @@ ip route del default via <ip>                        # remove default gateway
 route add default gw <ip>                            # add a default route
 ```
 
-### Policy Routing
+## Gateway Redundancy
+
+* Protocol the enable default gateway redundancy
+  - **VRRP** (Virtual Router Redundancy Protocol)
+  - Cisco proprietary: GLBP (Gateway Load Balancing Protocol), HSRP (Hot Standby Router Protocol)
+* Gateways use one IP address as next hop for the network in an active-active or active-passive configuration
+* IRDP (ICMP Router Discovery Protocol)
+
+## Policy Routing
 
 Policy-based routing allows routing decisions based on criteria other than the destination address.
 
