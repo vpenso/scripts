@@ -346,7 +346,7 @@ module Sacct
       #
       # If the user does not provide a end date
       #
-      check_day_format?(@start_time])
+      check_day_format?(@start_time)
       check_day_format?(@end_time)
       #
       # Unfortunately Slurm uses dashes in its time notation
