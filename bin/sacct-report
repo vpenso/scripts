@@ -343,8 +343,11 @@ module Sacct
     end
 
     def by_day
-      check_day_format?(@start_time)        
-      check_day_format?(@end_time)            
+      #
+      # If the user does not provide a end date
+      #
+      check_day_format?(@start_time])
+      check_day_format?(@end_time)
       #
       # Unfortunately Slurm uses dashes in its time notation
       #
@@ -353,11 +356,11 @@ module Sacct
         end_date = Date.parse(@end_time)
       #
       # Loop over the defined time frame
-      # 
+      #
       loop do
         #
         # Path to the file storing the output
-        # 
+        #
         o_file = File.join ENV['PWD'], "#{date.strftime("%Y/%m/%d")}.psv"
         o_path = File.dirname o_file
         #
@@ -367,20 +370,20 @@ module Sacct
         #
         # Do not overwrite accounting data exported already
         #
-        if not File.exists? "o_file_zip"
+        if not File.exists? o_file
           #
           # Export data from the accounting database
           #
-          time_frame("#{date}T00:00:00","#{date}T23:59:59","> #{o_file}") 
+          time_frame("#{date}T00:00:00","#{date}T23:59:59","> #{o_file}")
           $logger.info "W #{o_file}"
-        
+
         else
           $logger.info "S #{o_file}"
         end
-        # 
+        #
         # Exit condition if end date is reached
         #
-        break if date == end_date   
+        break if date == end_date
         date = date.next_day
       end
 
@@ -394,7 +397,7 @@ module Sacct
       if date =~ /^20[0-9][0-9]-[0,1][0-9]-[0-3][0-9]$/
         true
       else
-        raise('Date not formated correctly: YYYY/MM/DD')
+        raise("#{date} does not match expected formated YYYY-MM-DD")
       end
     end
 
@@ -898,25 +901,35 @@ begin
     when '--users'
       $options.users = arg.split(',')
     when '--version'
-      $stdout.puts 0.4
+      $stdout.puts 0.5
       exit 0
     end
   end
 
   command = ARGV.shift || raise('No command given!')
   case command
+
   when 'e','export'
+
     export = Sacct::Export.new
-    # Users are required to define a start time
-    export.start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')        
-    # Users can optionally define an end time
-    export.end_time = ARGV.shift || ''
+
     if $options.by_day
-      export.by_day 
+      # Users are required to define a start time
+      start_day = ARGV.shift || String.new
+      export.start_time = start_day.empty? ? raise('Define a start day in the format YYYY-MM-DD') : start_day
+      # Users can optionally define an end time, otherwise it is assumed to limit the output to the start day
+      export.end_time = ARGV.shift || start_day
+      # dump data day-by-date for the defined time-frame
+      export.by_day
     else
+      # Users are required to define a start time
+      export.start_time = ARGV.shift || raise('Define a start time in the format YYYY-MM-DDTHH:MM:SS')
+      # Users can optionally define an end time
+      export.end_time = ARGV.shift || ''
       # dump data to the user
       $stdout.puts export.data
     end
+
   when 'f','format'
     data_path = ARGV.shift || raise('Specify the path to the source accounting data')
     data =  Sacct::Process.new(data_path)
