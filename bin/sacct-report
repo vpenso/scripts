@@ -327,7 +327,7 @@ module Sacct
     # Set beginning to time frame 
     #
     def start_time=(time)
-      @start_time = time
+      @start_time = time.gsub(/\//,'-')
     end
 
     # Couple of setters for options to the sacct command
@@ -335,7 +335,7 @@ module Sacct
     def end_time=(time = '')
       # If end time is not defined, this hour is used instead
       time = Time.now.strftime Sacct::TIME_FORMAT if time.empty?
-      @end_time = time
+      @end_time = time.gsub(/\//,'-')
     end
 
     def data
