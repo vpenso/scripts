@@ -24,6 +24,7 @@ systemctl                                       # list all units with state
 systemctl -t <unit_type>                        # list units with a given type, e.g. "service"
 systemctl list-unit-files -t service            # list unit files for a given unit type 
 systemctl cat <unit>                            # print unit configuration files
+systemctl show <unit>                           # dump entire configuration
 systemctl edit --full <unit>                    # edit a unit file, reload on close
 systemctl reenable <unit>                       # reconfigure existing unit
 systemctl --failed --all                        # list units in failed state
@@ -51,7 +52,19 @@ systemd-analyze blame                           # ^^ time by by unit
 systemd-analyze critical-chain                  
 ```
 
-### Network
+Skeleton for a custom service unit `/lib/systemd/system/*.service` to execute a program once:
+
+```
+[Unit]
+Description= # text
+
+[Service]
+Type=oneshot
+ExecStart= # absolute path to program, arguments
+```
+
+
+## Network
 
 **Predictable interface names** prefix `en` Ethernet `wl` WLAN with following types:
 
@@ -114,9 +127,7 @@ echo -e "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug" > /etc/systemd/system/s
 systemctl daemon-reload && systemctl restart systemd-networkd
 ```
 
-
-
-### Localization/Time
+## Localization/Time
 
 ```bash
 timedatectl                                     # show time and time zone configuration
@@ -131,7 +142,7 @@ localectl list-locales                          # list vailable keys configurati
 localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"
 ```
 
-### Journal/Logging
+## Journal/Logging
 
 ```bash
 man systemd-journald                            # docs for the journal daemon
@@ -170,8 +181,7 @@ Forward messages to a central log server with `syslog-ng`
 echo -e "[Journal]\nForwardToSyslog=yes" > /etc/systemd/journald.conf.d/forward_syslog.conf
 ```
 
-
-### Timers
+## Timers
 
 Timers `.timer` control services or events (similar to Cron) supporting calender/monotonic time 
 
@@ -192,7 +202,7 @@ systemctl status systemd-tmpfiles-clean.timer   # timer state
 ```
 
 
-### Login Management
+## Login Management
 
 ```bash
 systemctl status systemd-logind.service         # state of the login manager
@@ -218,7 +228,7 @@ ls ~<user>/.config/systemd/user                 # unit files for a given user
 loginctl enable-linger <user>                   # make user sessions (boot) persistant    
 ```
 
-### File-System Mount
+## File-System Mount
 
 ```bash
 /etc/fstab                                      # translated by systemd-fstab-generator into units
@@ -265,7 +275,30 @@ TimeoutSec=10s
 WantedBy=multi-user.target
 ```
 
-### Containers
+## Resource Limits
+
+Enforce resource policies (CPU, RAM, I/O) for units with Linux Control Groups (cgroups)
+
+```bash
+man systemd.resource-control                      # documentation about resource limits
+man systemd-system.conf                           # system wide defaults
+systemd-cgtop                                     # enumerate all cgroups of the system including resource usage
+systemd-cgls                                      # hierarchy of slices, scopes, and units  
+```
+
+Limits are defined in the service section:
+
+```
+[Service]
+ControlGroupAttribute=               # e.g. memory.swappiness 70
+CPUShares=<weight>                   # relative shares, e.g. 1024 (default)
+CPUQuota=<perc>                      # time in percent, e.g. 20%
+MemoryLimit=<bytes>                  # allocation limit, e.g. 1G
+MemorySoftLimit=<bytes>              # suffix K, M, G, T
+BlockIOWeight=<target> <weight>      # I/O bandwidth between 10 and 1000
+```
+
+## Containers
 
 Cf. [bootstrap](bootstrap.md) to create root file-systems for containers
 
