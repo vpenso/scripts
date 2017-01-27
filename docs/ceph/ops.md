@@ -21,9 +21,12 @@ ceph auth get-or-create client.<name> <caps>         # create a new user
 
 Maintain the cluster state quorum:
 
-* Provide the master copy of the CRUSH, OSD and MON maps
-  - **CRUSH map** used to compute data location
-  - **OSD map** reflect the OSD daemons operating in the cluster
+* Provide the **master copy** of the CRUSH, OSD and MON maps
+* **CRUSH map** (Controlled Replication Under Scalable Hashing (distributed hashing))
+  - No centralized authority, look-up table
+  - Data location algorithmically computed on clients
+  - MONs not involved in data I/O path
+* **OSD map** reflect the OSD daemons operating in the cluster
 * There must be on odd number >=3 to provide consensus of distributed decision-making (Paxos)
 * Non-quorate pools are unavailable
 
