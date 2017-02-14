@@ -5,13 +5,6 @@
   - Switch-based, point-to-point interconnection network 
   - low latency, high throughput, quality of service 
   - CPU offload, hardware based transport protocol, bypass of the kernel
-* [OpenFabrics][02] Alliance (OFA) 
-  - Builds open-source software: **OFED** (OpenFabrics Enterprise Distribution)
-  - Kernel-level drivers, channel-oriented RDMA and send/receive operations
-  - Kernel and user-level application programming interface (API) 
-  - Services for parallel message passing (MPI)
-  - Includes Open Subnet Manager with diagnostic tools
-  - IP over Infiniband (IPoIB), Infiniband Verbs/API
 * [Mellanox Community](https://community.mellanox.com/)
 
 ```bash
@@ -384,4 +377,3 @@ Restoring signature                     - OK
 >>> # flint -d /dev/mst/mt4099_pci_cr0 --mac 0x10c37be6fc12 sg
 ```
 
-[02]: https://www.openfabrics.org/
