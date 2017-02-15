@@ -1,12 +1,12 @@
 
-# Switch Fabric
+# Interconnect
 
 * **HPI** (High Performance Interconnect)
   - Equipment designed for very high bandwidth and extreme low latency
   - Inter-node communication supporting large (node counts) clusters
 * Technologies in the HPI market:
   - Ethernet, RoCE (RDMA over Converged Ethernet)
-  - Mellanox InfiniBand → [ib.md](ib.md)
+  - InfiniBand → [ib.md](ib.md)
   - Intel Omni-Path → [opa.md](opa.md)
   - Cray Aries XC
   - SGI NUMALink
@@ -15,7 +15,7 @@
   - Maximum requirements on link bandwidth
   - Sufficiently low latency
   - Load on node CPUs by the communication stack
-  - TcO of the equipment in relation to overall performance 
+  - TcO of the equipment in relation to overall performance
 
 ## Network vs. Fabric 
 
@@ -40,11 +40,28 @@
 * Network functions performed by hardware "**offload**" (Infiniband, RoCE), aka _Intelligent Interconnect_
   - Network hardware performs communication operations (including data aggregation)
   - Increases resource availability of the CPU (improves overall efficiency)
-* Trade-off: More capable network infrastructure (offload) vs. incrementally more CPUs on servers (onload) 
+  - Particularly advantageous in scatter,gather type collective problems
+* Trade-off
+  - More capable network infrastructure (offload) vs. incrementally more CPUs on servers (onload)
+  - Advantage of offloading increases with the size of the interconnected clusters (higher node count = more messaging)
 * Comparison of Infiniband & Omni-Path¹
   - Message rate test (excluding overheat of data polling) to understand impact of network protocol on CPU utilization
   - Result: InfiniBand CPU resource utilization <1%, Omni-Path >40%
 
+
+## Ethernet vs. Infiniband vs. Omni-Path
+
+* Ethernet 10/25/40/50/100G (200G in 2018/19)
+  - Widely in production, supported by many manufacturers (Cisco, Brocade, Juniper, etc.)
+  - Easy to deploy, widespread expert knowledge
+  - "High" latency (ms rather than ns)
+* InfiniBand 40/56/100G (200G 2017)
+  - Widely used in HPC, cf. TOP500
+  - De-facto lead by Mellanox
+* Omni-Path 100G (future roadmap?)
+  - Intel proprietary
+  - Still in its infancy (very few production installations)
+  - Claims better bandwidth/latency/message rate then InfiniBand
 
 ## Application Interface
 
@@ -77,12 +94,15 @@
 
 ### RDMA over Converged Ethernet
 
-* Advances in Ethernet hardware and priority queuing allow to build "lossless" Ethernet fabrics
+* Advances in Ethernet technology allows to build "lossless" Ethernet fabrics
+  - **PFC** (Priority-based Flow Control) prevents package loss due to buffer overflow at switches
   - Enables **FCoE** (Fibre Channel over Ethernet), **RoCE** (RDMA over Converged Ethernet)
-  - Ethernet NICs come with a variety of options for offloading 
+  - Ethernet NICs come with a variety of options for offloading
+* RoCE specification supported as annex to the IBTA
 * Implements Infiniband Verbs over Ethernet (OFED >1.5.1)
-  - Use Infiniband transport & network layer
-  - Swap link layer to Ethernet
+  - Use Infiniband transport & network layer, swaps link layer to use Ethernet frames
+  - IPv4/6 addresses set over the regular Ethernet NIC
+  - Control path RDMA-CM API, data path Verbs API
 
 ### OpenFabrics Interfaces (OFI)
 
@@ -112,3 +132,6 @@
 
 ⁴ Comparison of 40G RDMA and Traditional Ethernet Technology, Nichole Boscia, Harjot S. Sidhu (NASA, 2014/01)  
 <https://www.nas.nasa.gov/assets/pdf/papers/NAS_Technical_Report_NAS-2014-01.pdf>
+
+⁵ RDMA over Commodity Ethernet at Scale, Chuanxiong Guo (Microsoft, 2016)  
+<http://research.microsoft.com/en-us/um/people/padhye/publications/sigcomm2016-rdma.pdf>
