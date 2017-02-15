@@ -1,3 +1,6 @@
+
+# Switch Fabric
+
 * **HPI** (High Performance Interconnect)
   - Equipment designed for very high bandwidth and extreme low latency
   - Inter-node communication supporting large (node counts) clusters
@@ -14,7 +17,7 @@
   - Load on node CPUs by the communication stack
   - TcO of the equipment in relation to overall performance 
 
-### Network vs. Fabric 
+## Network vs. Fabric 
 
 * Network 
   - Designed as **universal interconnect**
@@ -24,9 +27,13 @@
   - Designed as **optimized interconnect**
   - Single-vendor solution (Mellanox InfiniBand, Intel Omni-Path)
   - Single system build for a specific application
-  - Performance & efficiency
+  - Spread network traffic across multiple physical links (multipath)
+  - Scalable fat-tree and mesh topologies 
+  - More sophisticated routing to allow redundancy and high-throughput
+  - Non-blocking (over-subscription) interconnect
+  - Low latency layer 2-type connectivity
 
-### Offload vs. Onload
+## Offload vs. Onload
 
 * Network functions performed mostly in software "**onload**" (Ethernet, Omni-Path)
   - Requires CPU resources ⇒ _decreases cycles available_ to hosted applications
@@ -38,16 +45,6 @@
   - Message rate test (excluding overheat of data polling) to understand impact of network protocol on CPU utilization
   - Result: InfiniBand CPU resource utilization <1%, Omni-Path >40%
 
-# Network Fabric
-
-* Network of compute nodes interconnected with high-speed links
-* Typically used in huge data-centers for IaaS and HPC
-* **Switching Fabric**
-  - Spread network traffic across multiple physical links (multipath)
-  - Scalable fat-tree and mesh topologies 
-  - More sophisticated routing to allow redundancy and high-throughput
-  - Non-blocking (over-subscription) interconnect
-  - Low latency layer 2-type connectivity
 
 ## Application Interface
 
