@@ -1,5 +1,6 @@
 # Intel Omni-Path Architecture (OPA)
 
+* InfiniPath (PathScale), acquired by QLogic rename to TrueScale, acquired by Intel rename to Omni-Path
 * Multi-lane, high-speed, low latency serial interconnect (copper & fiber)
   - Line speed: 100Gb/s (Link Rate)
 * **HFI** (Host Fabric Interface)

@@ -1,3 +1,18 @@
+* **HPI** (High Performance Interconnect)
+  - Equipment designed for very high bandwidth and extreme low latency
+  - Inter-node communication supporting large (node counts) clusters
+* Technologies in the HPI market:
+  - Ethernet, RoCE (RDMA over Converged Ethernet)
+  - Mellanox InfiniBand → [ib.md](ib.md)
+  - Intel Omni-Path → [opa.md](opa.md)
+  - Cray Aries XC
+  - SGI NUMALink
+* HPI evaluation criteria
+  - Reliability of inter-node communication
+  - Maximum requirements on link bandwidth
+  - Sufficiently low latency
+  - Load on node CPUs by the communication stack
+  - TcO of the equipment in relation to overall performance 
 
 ### Network vs. Fabric 
 
@@ -13,21 +28,15 @@
 
 ### Offload vs. Onload
 
-* **Onload**, network functions preformed by the host CPU (Ethernet, Omni-Path)
-  - Manages network operations utilizing the CPU, hence decreasing resources available to applications 
-* **Offload** network functions to the interconnect hardware (Infiniband)
-  - _"Intelligent Network Devices"_
+* Network functions performed mostly in software "**onload**" (Ethernet, Omni-Path)
+  - Requires CPU resources ⇒ _decreases cycles available_ to hosted applications
+* Network functions performed by hardware "**offload**" (Infiniband, RoCE), aka _Intelligent Interconnect_
   - Network hardware performs communication operations (including data aggregation)
   - Increases resource availability of the CPU (improves overall efficiency)
+* Trade-off: More capable network infrastructure (offload) vs. incrementally more CPUs on servers (onload) 
 * Comparison of Infiniband & Omni-Path¹
   - Message rate test (excluding overheat of data polling) to understand impact of network protocol on CPU utilization
-  - Result: InfiniBand CPU resource utilization <1%, Omni-Path >50%
-
-¹ Offloading vs. Onloading: The Case of CPU Utilization; Gilad Shainer (Mellanox), HPCWire
-<https://www.hpcwire.com/2016/06/18/offloading-vs-onloading-case-cpu-utilization/>
-
-
-
+  - Result: InfiniBand CPU resource utilization <1%, Omni-Path >40%
 
 # Network Fabric
 
@@ -69,6 +78,15 @@
   - Add Queue Pairs (QPs) concept to the kernel network stack to enable RDMA
   - Implement POSIX network semantics for Infiniband
 
+### RDMA over Converged Ethernet
+
+* Advances in Ethernet hardware and priority queuing allow to build "lossless" Ethernet fabrics
+  - Enables **FCoE** (Fibre Channel over Ethernet), **RoCE** (RDMA over Converged Ethernet)
+  - Ethernet NICs come with a variety of options for offloading 
+* Implements Infiniband Verbs over Ethernet (OFED >1.5.1)
+  - Use Infiniband transport & network layer
+  - Swap link layer to Ethernet
+
 ### OpenFabrics Interfaces (OFI)
 
 * Developed by the OFI Working Group, a subgroup of OFA
@@ -84,3 +102,16 @@
   - `useNIC` (user-space NIC) providers supports Cisco Ethernet hardware
   - PSM (Performance Scale Messaging) provider for Intel Omni-Path and Cray Aries 
 
+# Reference
+
+¹ Offloading vs. Onloading: The Case of CPU Utilization; Gilad Shainer (Mellanox)  
+<https://www.hpcwire.com/2016/06/18/offloading-vs-onloading-case-cpu-utilization/>
+
+² The Ultimate Debate – Interconnect Offloading Versus Onloading, Gilad Shainer (2016/04)  
+<https://www.hpcwire.com/2016/04/12/interconnect-offloading-versus-onloading/>
+
+³ The Interplay of HPC Interconnects and CPU Utilization, Gilad Shainer (2017/01)  
+<https://www.nextplatform.com/2017/01/13/interplay-hpc-interconnects-cpu-utilization/>
+
+⁴ Comparison of 40G RDMA and Traditional Ethernet Technology, Nichole Boscia, Harjot S. Sidhu (NASA, 2014/01)  
+<https://www.nas.nasa.gov/assets/pdf/papers/NAS_Technical_Report_NAS-2014-01.pdf>
