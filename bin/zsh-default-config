@@ -75,8 +75,8 @@ ZSH_HIGHLIGHT_STYLES+=(
 )
 
 antigen bundle olivierverdier/zsh-git-prompt
-__GIT_PROMPT_DIR=~/.zsh/repos/https-COLON--SLASH--SLASH-github.com-SLASH-olivierverdier-SLASH-zsh-git-prompt.git/
-export __GIT_PROMPT_DIR
+#__GIT_PROMPT_DIR=~/.zsh/repos/https-COLON--SLASH--SLASH-github.com-SLASH-olivierverdier-SLASH-zsh-git-prompt.git/
+#export __GIT_PROMPT_DIR
 ZSH_THEME_GIT_PROMPT_PREFIX=""
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
 ZSH_THEME_GIT_PROMPT_SEPARATOR=" %F{254}%f "
