@@ -135,3 +135,6 @@
 
 ⁵ RDMA over Commodity Ethernet at Scale, Chuanxiong Guo (Microsoft, 2016)  
 <http://research.microsoft.com/en-us/um/people/padhye/publications/sigcomm2016-rdma.pdf>
+
+⁶ Deconstructing the Tail at Scale Effect Across Network Protocols, Akshitha Sriraman (University of Michigan, Ann Arbor, 2017/01)  
+<https://arxiv.org/pdf/1701.03100.pdf>
