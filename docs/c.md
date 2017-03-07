@@ -246,7 +246,7 @@ f();                         // function call
 Each valid C program require a main function with on of the following signatures:
 
 ```
-void main(void)
+int main(void)
 int main(int argc, char **argv)
 int main(int argc, char *argv[])
 ```
@@ -316,4 +316,36 @@ s.u = v;                      // write structure member u
 
 * Use the **dot operator** `.` to access structure members
 * Write values to a member by using the dot operator on the left side of an assignment
+
+# Compile
+
+The **GCC** (GNU Compiler Collection) is one of the most widely used compilers for C.
+
+Simple C program `h.c`:
+
+```c
+#include<stdio.h>
+
+int main(void)
+{
+   printf("Hello");
+   return 0;
+}
+```
+
+The command `gcc` is used to compile code for the x86 architecture:
+
+```bash
+gcc h.c                         # compile, executable `a.out`
+    -v ...                      # print executed commands
+    -o h h.c                    # specifiy output file name with option -o
+    -Wall ...                   # enable all warnings
+    -Werror                     # convert warning into errors
+    -E h.c > h.i                # produce only the preprocessor output
+    -S h.c                      # produce only assembly code `h.s`
+    -C h.c                      # compile without linking
+    -save-temps h.c             # preservers intermediat files
+    -ansi ...                   # enable ISO C89 support
+    @opt_file                   # use an options file `opt_file` 
+```
 
