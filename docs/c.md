@@ -113,16 +113,16 @@ trim()                       remove all whitespace characters from a String.
 
 ### Type Cast
 
-* Used to coerce on data type into another data type
+Used to coerce on data type into another data type
+
 * Uses a cast operator in front of the data item 
 * The cast operator places the desired type between parentheses `(T)`
+* Prevent **silent casts** by always using a cast as assignment statement between two data types
 
 ```
 v = (int) w;                 variable W becomes an int before assignment to v
 v = (long) w;                cast into long
 ```
-
-* Prevent **silent casts** by always using a cast as assignment statement between two data types
 
 ## Operators
 
@@ -219,7 +219,7 @@ continue                     // skip one iteration of loop
 
 A function is a pointer to some code:
 
-* Must be declared before before they are use in the code
+* Must be declared before they are use in the code
 * Identified by a function **name** [f] followed by the function **arguments** [a] in parentheses
 * Use arguments to pass data into the function, multiple arguments are delineated by comma
 * Functions may `return` a value corresponding to the function **type specifier** [T]
@@ -243,7 +243,7 @@ f();                         // function call
 
 ### Program Main-Function
 
-Each valid C program require a main function with on of the following signatures
+Each valid C program require a main function with on of the following signatures:
 
 ```
 void main(void)
@@ -251,7 +251,7 @@ int main(int argc, char **argv)
 int main(int argc, char *argv[])
 ```
 
-* The main function is the starting point of the program
+**The main function is the starting point of the program.**
 
 Program parameters can be accessed as strings through the `argv` array with `argc` elements.
 
@@ -279,7 +279,7 @@ sprintf(s,p,...)              same, as printf, but to string s
 feof(f)                       return true if at end of file f
 ```
 
-Format specification [p] characters preceded by escape `%`
+**Format specification** [p] characters preceded by escape `%`
 
 ```
 %c                            character
@@ -297,7 +297,8 @@ Format specification [p] characters preceded by escape `%`
 
 ## Structure
 
-* Collect several data fields into a single logical _data structure_
+Collect several data fields into a single logical _data structure_:
+
 * Declare a data structure with the `struct` **keyword** followed by an **structure tag** (identifier)
 * The identifier follows the same rules as C variables
 * Within the braces _one or more variable definitions_ are expected, these are called **structure members**
