@@ -17,7 +17,7 @@ s;                           statement, C instruction, ends with semicolon
 
 ## Variables
 
-### Declaration & initialisation
+### Declaration & Initialisation
 
 * Must be **declared** before they can be used in a program
 * Have a name as **identifier** composed from the following characters `A-Za-z0-9_`
@@ -40,9 +40,9 @@ sizeof(v)                    return size of variable v in addressable units (byt
 * **Constant** variables are protected from change and declared with the keyword `const`
 * Basic data types support **arrays** of those types declared with suffix square braces "[]"
 
-### Data Types
+### Types
 
-Basic data types `T`:
+Basic data types [T]
 
 ```
 void                         type for functions returning nothing 
@@ -59,20 +59,20 @@ float                        –3.4028235E+38 to 3.4028235E+38
 
 ### Literals
 
-Basic literals for values `V`:
+Basic literals for values [V]:
 
-```
-0123                         octal
-0x1a                         hexadecimal
-42                           decimale
-42u                          unsigned int
-42l                          long
-42ul                         unsigned long
-4.2                          float
-4234E-5L                     float scientific notation
-'a'                          char (enclosed in single qoutes)
-'\t'                         char escape sequence, newline \n, tab \t
-'\u02C0'                     char unicode
+```c
+0123                         // octal
+0x1a                         // hexadecimal
+42                           // decimale
+42u                          // unsigned int
+42l                          // long
+42ul                         // unsigned long
+4.2                          // float
+4234E-5L                     // float scientific notation
+'a'                          // char (enclosed in single qoutes)
+'\t'                         // char escape sequence, newline \n, tab \t
+'\u02C0'                     // char unicode
 ```
 
 ### Strings
@@ -253,7 +253,8 @@ int main(int argc, char *argv[])
 
 **The main function is the starting point of the program.**
 
-Program parameters can be accessed as strings through the `argv` array with `argc` elements.
+* Program parameters can be accessed as strings through the `argv` array with `argc` elements. (#1 program file name)
+* The integer `return`-value of main() is send to the operating system es **exit status**.
 
 ### Common I/O Functions
 
