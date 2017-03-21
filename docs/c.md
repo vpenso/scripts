@@ -39,6 +39,9 @@ sizeof(v)                    return size of variable v in addressable units (byt
 * The variable value can be changed at any time, hence is **volatile**
 * **Constant** variables are protected from change and declared with the keyword `const`
 * Basic data types support **arrays** of those types declared with suffix square braces "[]"
+* `static` variable inside a function keep their value between invocations.
+* `static` global variable (or a function) is "seen" only in the file it's declared in
+
 
 ### Types
 
