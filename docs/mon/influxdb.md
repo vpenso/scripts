@@ -5,13 +5,16 @@
 - Used to record operations and application performance metrics
 - Implementation in Go, without external dependencies 
 - SQL like language to querying a data structure composed of measurements, series, and points (indexed by their time)
+- Clears historical data following retention policies
+
+InfluxDB is a **schemaless database**. You can add new measurements, tags, and fields at any time.
 
 ### Data Structure 
 
 Organized in time series with zero to many **points** consisting of:
 
 * `time`: a **time-stamp** (in RFC3339 UTC)
-* `measurement`: acts as a container for tags, fields, its **name** is the description of the data associated
+* `measurement`: is a **name** and acts as a container for tags, fields,
   - `fields`: At least one key-value pair representing the measurement **data** (not indexed)
   - `tags` (optional): Zero to many key-value pairs containing **meta-data** (indexed)
 
@@ -19,11 +22,38 @@ A collection (multiple) field key-value pairs make up a **field set**.
 
 Similar a **tag set** is the collection of all tags from a measurement.
 
-Points are written using a **line protocol** with following format:
+A **series** is a collection of data that shares retention policy, measurement, and a tag set.
+
+### Line Protocol
+
+Points are written using a line protocol with following format:
 
 ```
 <measurement>[,<tag-key>=<tag-value>...] <field-key>=<field-value>[,<field2-key>=<field2-value>...] [unix-nano-timestamp]
 ```
+
+Cf. [Line Protocol Reference](https://docs.influxdata.com/influxdb/v1.2/write_protocols/line_protocol_reference/)
+
+### Storage Format
+
+The storage engine uses **TSM** (Time Structured Merge tree) files:
+
+- Read-only files mapped to memory
+- Contain sorted, compressed time series data
+- Optimized to write data in time ascending order
+- Periodic compaction to optimize storage layout for read 
+
+Data is organized into **shards**:
+
+- Contain specific sets of time series for a given time period
+- Determine the representation of data in files on storage
+
+**Shard groups** is a container for one or more shards:
+
+- Have a defined retention policy
+- Have a defined replication factor 
+
+
 
 ## Usage
 
@@ -38,6 +68,9 @@ Configuration, services and interfaces:
 
 ```bash
 /etc/influxdb/influxdb.conf        # local configuration
+/var/lib/influxdb/data             # data storage location (TSM files)
+/var/lib/influxdb/wal              # write log storage location
+~/.influx_history                  # user command history
 influxd config                     # view configuration
 influx                             # start interactive shell
 influx -precision rfc3339
@@ -45,6 +78,9 @@ influx -execute '<influxql>'       # execute query without database specificatio
 influx -database <db-name> ...     # select a database to query
        -format=json -pretty        # select output format
        -format=csv
+# export all data
+influx_inspect export -waldir $INFLUXDB_WAL -datadir $INFLUXDB_DATA -out /tmp/influxdb.txt
+influx_inspect dumptsm <tsm-file>  # show time range and statistics
 ```
 
 ### InfluxQL
@@ -85,6 +121,9 @@ show diagnostics                   # build information, uptime, hostname,
 
 Managing databases:
 
+- Send a **POST** request to the `/query` endpoint
+- Set the `q=<statement>` URL parameter 
+
 ```bash
 export INFLUXDB_URL=http://localhost:8086/query
 # get the list of databases, and parse the output with `jq`
@@ -93,11 +132,16 @@ curl -s -XPOST $INFLUXDB_URL --data-urlencode "q=show databases"  | jq '.results
 curl -i -XPOST $INFLUXDB_URL --data-urlencode "q=create database nyx"
 ```
 
-Working with a database
+Writing data, cf. [API Reference](https://docs.influxdata.com/influxdb/v1.2/tools/api/#write)
+
+- Send a **POST** requests to the `/write` endpoint
+- Specify an existing database in the `db` query parameter(, optionally a retention policy with `rp`)
+- The body contains the time-series data using the **line-protocol**, or points to a properly-formatted file
 
 ```bash
 # target a specific database
 export INFLUXDB_URL=http://localhost:8086/write?db=<db-name>
-curl -i -XPOST $INFLUXDB_URL --data-binary 
+curl -i -XPOST $INFLUXDB_URL --data-binary '<line-protocol>'
+                             --data-binary @<path_to_file>
 ```
 
