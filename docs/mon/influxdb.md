@@ -5,7 +5,8 @@
 - Used to record operations and application performance metrics
 - Implementation in Go, without external dependencies 
 - SQL like language to querying a data structure composed of measurements, series, and points (indexed by their time)
-- Clears historical data following retention policies
+- Down-samples data following retention policies
+- Line protocol to store data through HTTP, TCP or UDP
 
 InfluxDB is a **schemaless database**. You can add new measurements, tags, and fields at any time.
 
@@ -91,26 +92,32 @@ Managing databases:
 show databases                     # display all existing databases
 create database <db-name>          # create a database
 use <db-name>                      # select database for all future requests
+drop database <db-name             # remove a database
 ```
 
 Working with a database
 
 ```
 show measurements
+drop measurement <measurement_name> # drops all data and series in the measurement  
 show series                        
 show tag keys
 show field keys
-inset <line-protocol>              # insert a single time-series datapoint
+inset <line-protocol>               # insert a single time-series datapoint
 select ["<tag-key>",...,]"<field-key>",["<field-key>",..] from "<measurement-name>"
-                                   # query from a database
+                                    # query from a database
 show retention policies
 ```
 
 Management & metrics:
 
 ```bash
+show shards                        # list shards, shard-groups, and associated retention policies
+drop shard <shard_id_number>       # deletes a shard
 show queries                       # query id, text, database, duration
 kill query <qid>                   # stop currently running query
+show retention policies            # list of retention policies
+show retention policies on <db-name>
 show stats                         # performance statistics
 show diagnostics                   # build information, uptime, hostname, 
                                    # server configuration, memory usage, 
