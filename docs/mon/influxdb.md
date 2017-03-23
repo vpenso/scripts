@@ -19,9 +19,9 @@ Organized in time series with zero to many **points** consisting of:
   - `fields`: At least one key-value pair representing the measurement **data** (not indexed)
   - `tags` (optional): Zero to many key-value pairs containing **meta-data** (indexed)
 
-A collection (multiple) field key-value pairs make up a **field set**.
+A collection of multiple field key-value pairs makes up a **field set**.
 
-Similar a **tag set** is the collection of all tags from a measurement.
+Similar a **tag set** is a collection of all tags from a measurement.
 
 A **series** is a collection of data that shares retention policy, measurement, and a tag set.
 
