@@ -9,6 +9,14 @@ wget https://dl.influxdata.com/telegraf/releases/telegraf_1.2.1_amd64.deb
 dpkg -i telegraf_1.2.1_amd64.deb
 ```
 
+Cf. [Telegraf Configuration](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md)
+
 ```bash
 /etc/telegraf/telegraf.conf         # local configuration
+/etc/telegraf/telegraf.d/           # additional custom configuration
+# debug the local configuration
+telegraf -debug -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d/
 ```
+
+Files in `/etc/telegraf/telegraf.d/` require to  matching `*.conf`.
+

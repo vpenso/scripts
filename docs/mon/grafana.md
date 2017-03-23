@@ -26,6 +26,7 @@ Configuration, services and interfaces:
 /etc/grafana/grafana.ini                      # local configuration
 /var/log/grafana/                             # log files 
 /var/lib/grafana/grafana.db                   # database
+/usr/share/grafana                            # root directory
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
                                               # redirect HTTP port 80
 ```
@@ -41,6 +42,6 @@ grafana-cli plugins update-all
 grafana-cli plugins remove <plugin-name>
 ```
 
-
+**Import** dashboard from the [Official & community built dashboards](https://grafana.com/dashboards)
 
 
