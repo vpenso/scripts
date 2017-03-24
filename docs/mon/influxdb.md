@@ -86,6 +86,8 @@ influx_inspect dumptsm <tsm-file>  # show time range and statistics
 
 ### InfluxQL
 
+Cf. [InfluxQL Reference](https://docs.influxdata.com/influxdb/v1.2/query_language/spec/)
+
 Managing databases:
 
 ```bash
@@ -102,10 +104,8 @@ show measurements
 drop measurement <measurement_name> # drops all data and series in the measurement  
 show series                        
 show tag keys
-show field keys
+show field keys [from <measurement>]
 inset <line-protocol>               # insert a single time-series datapoint
-select ["<tag-key>",...,]"<field-key>",["<field-key>",..] from "<measurement-name>"
-                                    # query from a database
 show retention policies
 ```
 
@@ -123,6 +123,15 @@ show diagnostics                   # build information, uptime, hostname,
                                    # server configuration, memory usage, 
                                    # and Go runtime diagnostics
 ```
+
+```
+select ["<tag-key>",...,]"<field-key>",["<field-key>",..] from "<measurement-name>"
+                                    # query from a database
+```
+
+| Function | Description |
+|----------|-------------|
+| count()  | Number of non-null values in a single field |
 
 ### HTTP API
 
