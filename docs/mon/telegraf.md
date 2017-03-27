@@ -32,3 +32,6 @@ At least on output target is required:
   urls = ["http://lxdev01.devops.test:8086"]
   database = "telegraf"
 ```
+
+Use data provided by this sensor in Grafana with [Telegraf system overview](https://grafana.com/dashboards/914)
+

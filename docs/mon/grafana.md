@@ -43,5 +43,3 @@ grafana-cli plugins remove <plugin-name>
 ```
 
 **Import** dashboard from the [Official & community built dashboards](https://grafana.com/dashboards)
-
-
