@@ -15,9 +15,20 @@
   - Mechanisms for data retention/aggregation of historical data
 * List of databases:
   - [RRDtool](https://github.com/oetiker/rrdtool-1.x)
-  - [Graphite](https://github.com/graphite-project)
+  - Graphite [Whisper](http://graphite.readthedocs.io/en/latest/whisper.html)
   - [InfluxDB](https://github.com/influxdata/influxdb)
   - [KairosDB](https://github.com/kairosdb/kairosdb)
   - [OpenTSDB](https://github.com/OpenTSDB)
   - [Prometheus](https://prometheus.io/)
   - [Druid](http://druid.io/)
+  - [DalmatinerDB](https://dalmatiner.io/)
+  - [SiriDB](https://github.com/transceptor-technology/siridb-server) 
+
+## Time Series Visualisation
+
+* List of Tools:
+  - [RRDGraph](https://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
+  - [Graphite](https://github.com/graphite-project)
+  - [Grafana](https://grafana.com/)
+  - [MetricsGraphics.js](https://www.metricsgraphicsjs.org/)
+  - [Kibana](https://www.elastic.co/products/kibana) Timelion
