@@ -40,7 +40,8 @@ file -s <device>                               # read partition info from device
 ### File-Systems
 
 ```bash
-mkfs.<type> <partition>                   # init fs on partition 
+mkfs.<type> <partition>                   # init fs on partition
+mount -o umask=000 <device> <mnt-point>   # mount a USB stick readable for all
 /proc/self/mountinfo                      # mount information
 findmnt                                   # show tree all file systems
 findmnt -l                                # list all file systems
@@ -51,7 +52,7 @@ findmnt -T <path>                         # by mount point
 findmnt -t <type>,...                     # by type, e.g. nfs
 ```
 
-### Performance
+# Performance
 
 Performance Indicators:
 
@@ -61,16 +62,16 @@ Performance Indicators:
 
 Throughput and transaction rate are proportional (Block size (Bs))
 
-    Tp [MB/s] = Tr [IO/s] × Bs [MB] 
+    Tp [MB/s] = Tr [IO/s] × Bs [MB]
     Tr [IO/s] = Tp [MB/s] ÷ Bs [MB]
 
 Number of Worker Threads (Wt), Parallel I/Os (P)
 
     Al [ms] = 10³ × Wt × P ÷ Tr [IO/s]
 
-Data transfered with is done in multiples of the block size. It is (usually) the unit of allocation on the device. 
+Data transfered with is done in multiples of the block size. It is (usually) the unit of allocation on the device.
 
-### Throughput
+## Throughput
 
 The simples test is to write to the file-system with `dd`:
 
@@ -86,7 +87,7 @@ The simples test is to write to the file-system with `dd`:
 
 Similarly `hdparm` can run a quit I/O test.
 
-### Metrics
+## Metrics
 
 `/proc/diskstats`, I/O statistics of block devices. Each line contains the following 14 fields:
 
@@ -105,7 +106,7 @@ Similarly `hdparm` can run a quit I/O test.
     13 - time spent doing I/Os (ms)
     14 - weighted time spent doing I/Os (ms)
 
-<kbd>iostat</kbd>, I/O statistics for partitions. Option `-k` prints values in kilobytes.
+**iostat**, I/O statistics for partitions. Option `-k` prints values in kilobytes.
 
     » iostat -xk 1  | awk '/sda/ {print $6,$7}'                  
     14.36 162.23
@@ -113,11 +114,11 @@ Similarly `hdparm` can run a quit I/O test.
     0.00 3028.00
     […]
 
-<kbd>iotop</kbd>, list of processes/threads consuming IO bandwidth. In interactive mode use the arrow keys to select the column used for sorting. "o" limits the view to active processes, and "a" accumulates the I/O counters.
+**iotop**, list of processes/threads consuming IO bandwidth. In interactive mode use the arrow keys to select the column used for sorting. "o" limits the view to active processes, and "a" accumulates the I/O counters.
 
 Limit output with option `-Po` for active processes only. Option `-a` accumulates I/O `-b` enables non-interactive batch mode:
 
-    » iotop -bPao -u $USER 
+    » iotop -bPao -u $USER
     Total DISK READ:       0.00 B/s | Total DISK WRITE:       0.00 B/s
       PID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN      IO    COMMAND
     25722 be/4 vpenso        0.00 B      8.14 M  0.00 %  0.00 % root.exe […]
@@ -126,9 +127,9 @@ Limit output with option `-Po` for active processes only. Option `-a` accumulate
     25739 be/4 vpenso        0.00 B      8.57 M  0.00 %  0.00 % root.exe […]
     […]
 
-Option `-t` adds timestamps, and options `-q`, `-qq` prevent column headers. 
+Option `-t` adds timestamps, and options `-q`, `-qq` prevent column headers.
 
-<kbd>pidstat</kbd>i, I/O statistics for executbales: 
+**pidstat**, I/O statistics for executables:
 
     » pidstat -C "root.exe" -d -p ALL
     Linux 3.2.0-4-amd64 (lxdv111)   07/29/2014      _x86_64_        (8 CPU)
@@ -142,5 +143,3 @@ Option `-t` adds timestamps, and options `-q`, `-qq` prevent column headers.
     05:09:42 PM     22615      0.27      0.04      0.00  root.exe
     05:09:42 PM     22623      0.29      0.04      0.00  root.exe
     05:09:42 PM     22628      0.12      0.04      0.00  root.exe
-
-
