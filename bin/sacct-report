@@ -49,6 +49,14 @@ class Array
     return val
   end
 
+  def sum
+    inject(0.0) { |result, el| result + el }
+  end
+
+  def mean
+    sum/size
+  end
+
 end
 
 #
@@ -136,7 +144,7 @@ class HTML
   STEALBLUE_1    = '#63B8FF'
   LIGTHSKYBLUE_2 = '#A4D3EE'
   SLATEGRAY_2    = '#B9D3EE'
-  
+
   PALETTE = [
     DARKGREEN,
     PURPLE_4,
@@ -416,7 +424,7 @@ module Sacct
 
     def initialize(data_path)
       @data_path = data_path
-      @data_files = Dir.glob("#{@data_path}") 
+      @data_files = Dir.glob("#{@data_path}")
       # This is the default used with options --parsable2
       @delimiter = '|'
       # Read the input data from the file given by the user
@@ -428,10 +436,10 @@ module Sacct
     def to_json
       JSON.pretty_generate @objects
     end
-   
+
     ##
     # Read the input data and store it into an internal data structure
-    # 
+    #
     private def process_input_data
       # Iterate over the list of input files
       @data_files.each do |data_file|
@@ -467,7 +475,7 @@ module Sacct
           end
           j_state = line[Sacct::field_index 'state']
           j_state = Sacct::state(j_state)
-          
+
           ##
           # Store the statistics
           #
@@ -484,12 +492,21 @@ module Sacct
             @objects[key][value][runtimes_key(runtime)] += 1
             # This is expensive in terms of the memory foot print!
             if $options.format.include? 'qwmedian'
-              qwmedian = waittime(
+              qwmedian = elapsed_time(
                 line[Sacct::field_index 'submit'],
                 line[Sacct::field_index 'start']
               )
               if qwmedian < 31449600 or qwmedian > 0
                 @objects[key][value]['qwmedian'] << qwmedian 
+              end
+            end
+            # Build a field of all job run-times if enabled by format option 
+            if $options.format.include? 'avgetime'
+              if j_state == 'completed'
+                @objects[key][value]['avgetime'] <<  elapsed_time(
+                  line[Sacct::field_index 'start'],
+                  line[Sacct::field_index 'end']
+                )
               end
             end
           end
@@ -501,6 +518,7 @@ module Sacct
     # Calculate summery statistics using aggregated data
     #
     def post_process_data
+      return if $options.no_post_process
       OBJECTS.each do |key|
         $logger.debug "<#{self.class}##{__method__.to_s}> #{key}"
         @objects[key].each do |value,data|
@@ -514,7 +532,18 @@ module Sacct
           if $options.format.include? 'qwmedian'
             $logger.debug "<#{self.class}##{__method__.to_s}> median #{data['qwmedian'].length} elements"
             # calculate median wait time and transform to a human readable time format
-            @objects[key][value]['qwmedian'] = humanize_secs data['qwmedian'].median
+            if data['qwmedian'].empty?
+              @objects[key][value]['qwmedian'] = '-'
+            else
+              @objects[key][value]['qwmedian'] = humanize_secs data['qwmedian'].median
+            end
+          end
+          if $options.format.include? 'avgetime'
+            if data['avgetime'].empty?
+              @objects[key][value]['avgetime'] = '-'
+            else
+              @objects[key][value]['avgetime'] = humanize_secs data['avgetime'].mean.round
+            end
           end
         end
       end
@@ -598,6 +627,7 @@ module Sacct
         'jobs' => 0,
         'partitions' => Array.new,
         'runtime' => 0,
+        'avgetime' => Array.new,
         'users' => Array.new,
         'qwmedian' => Array.new
       }
@@ -618,11 +648,10 @@ module Sacct
     ##
     # Time in seconds between start and end time in YYYY-MM-DDTHH:MM:SS
     #
-    def waittime(start_time,end_time)
+    def elapsed_time(start_time,end_time)
       submit_epoch = DateTime.strptime(start_time,'%Y-%m-%dT%H:%M:%S')
       start_epoch = DateTime.strptime(end_time,'%Y-%m-%dT%H:%M:%S')
-      wait_time_secs = start_epoch.to_time.to_i - submit_epoch.to_time.to_i
-      return wait_time_secs
+      return start_epoch.to_time.to_i - submit_epoch.to_time.to_i
     end
 
   end
@@ -661,8 +690,9 @@ class Format
     users:      'Name of a user',
     partitions: 'Name of a partition',
     useperc:    'Relative use in percent',
-    qwmedian:   'Median time jobs waited in the queue, format [DD-]HH:MM',
     runtime:    'Total run-time in seconds',
+    qwmedian:   'Median time jobs waited in the queue, format [DD-]HH:MM',
+    avgetime:   'Average elapsed time of completed jobs',
     jobs:       'Total number of jobs',
     completed:  'Total number of completed jobs',
     cancelled:  'Total number of canceled jobs',
@@ -679,7 +709,6 @@ class Format
     gt_7d:      'Number of jobs with a run-time longer then 7 days'
   }
 
-  
    def initialize(data)
      @data = data
      group_by()
@@ -736,9 +765,9 @@ class Format
    end
 
    def data
-     return @data 
+     return @data
    end
- 
+
 end
 
 exec_name = File.split(__FILE__)[-1]
@@ -753,18 +782,21 @@ HELP = <<EOF
   -d, --debug                             enable debugging output, and stacktraces
   -D, --dry-run                           implicit option -d, do not execute commands
   -h, --help                              show this help information.
+  -j, --json                              JSON instead of a clear text table
+  -L, --log-level                         verbosity levels: fatal,warn,info,debug
+      --no-post-process                   disable statistics (for debugging)
       --version                           print version number.
 
 export <start_time> [<end_time>]:
-  <start_time>                            YYYY-MM-DD[THH:MM[:SS]], begin of time-frame 
+  <start_time>                            YYYY-MM-DD[THH:MM[:SS]], begin of time-frame
                                           to be queried from the accounting database
-  <end_time>                              YYYY-MM-DD[THH:MM[:SS]], end time-frame to be 
-                                          queried from the accounting database (defaults 
+  <end_time>                              YYYY-MM-DD[THH:MM[:SS]], end time-frame to be
+                                          queried from the accounting database (defaults
                                           to current hour)
       --by-day                            one file per day for given time-frame
 
 format <options> <files>:
-  <files>                                 list of input file holding data exported 
+  <files>                                 list of input file holding data exported
                                           from the accounting database
   -a, --accounts <name>[,<name>]          list of accounts to include
   -A, --exclude-accounts <name>[,<name>]  list of accounts to exclude
@@ -799,7 +831,9 @@ begin
   $options.format_all = false
   $options.group_by = 'account'
   $options.html = false
+  $options.json = false
   $options.node_header = false
+  $options.no_post_process = false
   $options.partitions = Array.new
   $options.sort_by = 'runtime'
   $options.users = Array.new
@@ -827,8 +861,10 @@ begin
     ['--group-by','-g',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--html','-H',GetoptLong::NO_ARGUMENT],
+    ['--json','-j',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--no-header','-N',GetoptLong::NO_ARGUMENT],
+    ['--no-post-process',GetoptLong::NO_ARGUMENT],
     ['--partitions','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--sort-by','-s',GetoptLong::REQUIRED_ARGUMENT],
     ['--users','-u',GetoptLong::REQUIRED_ARGUMENT],
@@ -880,6 +916,8 @@ begin
       exit 0
     when '--html'
       $options.html = true
+    when '--json'
+      $options.json = true
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -893,6 +931,8 @@ begin
        end
     when '--no-header'
       $options.no_header = true
+    when '--no-post-process'
+      $options.no_post_process = true
     when '--partitions'
       $options.partitions = arg.split(',')
     when '--sort-by'
@@ -901,7 +941,7 @@ begin
     when '--users'
       $options.users = arg.split(',')
     when '--version'
-      $stdout.puts 0.5
+      $stdout.puts 0.6
       exit 0
     end
   end
@@ -940,8 +980,10 @@ begin
       html = HTML.new
       format = Format.new(data.objects)
       $stdout.puts ERB.new(DATA.read,nil,'-').result(binding)
+    elsif $options.json
+      $stdout.puts data.to_json
     #
-    # If the user provides a delimiter, print table 
+    # If the user provides a delimiter, print table
     # separated by this delimiter instead of spaces 
     #
     elsif not $options.delimiter.empty?
