@@ -475,6 +475,7 @@ module Sacct
           end
           j_state = line[Sacct::field_index 'state']
           j_state = Sacct::state(j_state)
+          alloccpus = line[Sacct::field_index 'alloccpus'].to_i
 
           ##
           # Store the statistics
@@ -490,6 +491,7 @@ module Sacct
             @objects[key][value]['partitions']           = (@objects[key][value]['partitions'] << partition).uniq
             @objects[key][value][j_state] += 1
             @objects[key][value][runtimes_key(runtime)] += 1
+            @objects[key][value]['alloccpus']           += alloccpus
             # This is expensive in terms of the memory foot print!
             if $options.format.include? 'qwmedian'
               qwmedian = elapsed_time(
@@ -625,6 +627,7 @@ module Sacct
       skel = {
         'accounts' => Array.new,
         'jobs' => 0,
+        'alloccpus' => 0,
         'partitions' => Array.new,
         'runtime' => 0,
         'avgetime' => Array.new,
@@ -693,6 +696,7 @@ class Format
     runtime:    'Total run-time in seconds',
     qwmedian:   'Median time jobs waited in the queue, format [DD-]HH:MM',
     avgetime:   'Average elapsed time of completed jobs, format [DD-]HH:MM',
+    alloccpus:  'Total number of allocated CPUs',
     jobs:       'Total number of jobs',
     completed:  'Total number of completed jobs',
     cancelled:  'Total number of canceled jobs',
