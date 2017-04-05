@@ -686,26 +686,26 @@ class Format
   )
 
   OPTIONS = {
-    accounts:   'Name of a Slurm account',
-    users:      'Name of a user',
-    partitions: 'Name of a partition',
+    accounts:   'Name of a Slurm account, or number of accounts',
+    users:      'Name of a user, or number of users',
+    partitions: 'Name of a partition, or number of partitions',
     useperc:    'Relative use in percent',
     runtime:    'Total run-time in seconds',
     qwmedian:   'Median time jobs waited in the queue, format [DD-]HH:MM',
-    avgetime:   'Average elapsed time of completed jobs',
+    avgetime:   'Average elapsed time of completed jobs, format [DD-]HH:MM',
     jobs:       'Total number of jobs',
     completed:  'Total number of completed jobs',
     cancelled:  'Total number of canceled jobs',
     failed:     'Total number of failed jobs',
     node_fail:  'Total number of node failers',
     timeout:    'Total number of jobs ended by time out',
-    lt_5m:      'Number of jobs with a run-time sorter then 5 minutes',
-    lt_1h:      'Number of jobs with a run-time sorter then 1 hour',
-    lt_4h:      'Number of jobs with a run-time sorter then 4 hours',
-    lt_8h:      'Number of jobs with a run-time sorter then 8 hours',
-    lt_12h:     'Number of jobs with a run-time sorter then 12 hours',
-    lt_1d:      'Number of jobs with a run-time sorter then 1 day',
-    lt_7d:      'Number of jobs with a run-time sorter then 7 days',
+    lt_5m:      'Number of jobs with a run-time shorter then 5 minutes',
+    lt_1h:      'Number of jobs with a run-time shorter then 1 hour',
+    lt_4h:      'Number of jobs with a run-time shorter then 4 hours',
+    lt_8h:      'Number of jobs with a run-time shorter then 8 hours',
+    lt_12h:     'Number of jobs with a run-time shorter then 12 hours',
+    lt_1d:      'Number of jobs with a run-time shorter then 1 day',
+    lt_7d:      'Number of jobs with a run-time shorter then 7 days',
     gt_7d:      'Number of jobs with a run-time longer then 7 days'
   }
 
