@@ -23,6 +23,8 @@
   - [Druid](http://druid.io/)
   - [DalmatinerDB](https://dalmatiner.io/)
   - [SiriDB](https://github.com/transceptor-technology/siridb-server) 
+  - [TimescaleDB](https://github.com/timescale/timescaledb)
+  - [Timely](https://github.com/NationalSecurityAgency/timely)
 
 ## Time Series Visualisation
 

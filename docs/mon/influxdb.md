@@ -129,10 +129,6 @@ select ["<tag-key>",...,]"<field-key>",["<field-key>",..] from "<measurement-nam
                                     # query from a database
 ```
 
-| Function | Description |
-|----------|-------------|
-| count()  | Number of non-null values in a single field |
-
 ### HTTP API
 
 Managing databases:
