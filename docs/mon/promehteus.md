@@ -88,3 +88,5 @@ source /etc/default/prometheus-node-exporter ; prometheus-node-exporter $ARGS
 systemctl start prometheus-node-exporter && systemctl status prometheus-node-exporter
                                         # start as systemd unit
 ```
+
+Grafana [supports](https://prometheus.io/docs/visualization/grafana/) Prometheus as data-source, and a dashboard [plugin](https://grafana.com/dashboards/1860) is available for the metrics published by the node exporter.

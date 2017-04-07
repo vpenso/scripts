@@ -20,8 +20,6 @@ Time series **analysis** methods extract meaningful information from time series
 
 ### Time Series Database
 
-TSDB (Time Series Database)
-
 * Data storage optimized to handle time series data (values indexed by time)
 * Interfaces to efficiently create, enumerate, update and destroy various time series
 * Support for basic calculations that work on time series
@@ -41,7 +39,7 @@ List of databases:
 * [TimescaleDB](https://github.com/timescale/timescaledb)
 * [Timely](https://github.com/NationalSecurityAgency/timely)
 
-## Time Series Visualisation
+### Time Series Visualisation
 
 List of Tools:
 

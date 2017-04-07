@@ -12,9 +12,10 @@
 ## Usage
 
 ```bash
+apt install -y curl apt-transport-https
 curl https://packagecloud.io/gpg.key | sudo apt-key add -
 echo "deb https://packagecloud.io/grafana/stable/debian/ jessie main" > /etc/apt/sources.list.d/grafana.list
-apt update && apt-get install -y apt-transport-https grafana
+apt update && apt-get install -y grafana
 systemctl start grafana-server
 ```
 
