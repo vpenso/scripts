@@ -15,7 +15,7 @@ go env GOPATH            # prints the effective current GOPATH
 $GOPATH/src/             # source files in multiple VCS repos
 go get                   # install dependencies into src/
 $GOPATH/bin/             # executable commands
-go install               # install binaries to bin/ or cache in pkg/ 
+go install               # install binaries to bin/ or cache in pkg/
 godoc -http=:6060        # access local documentation
 ```
 
@@ -31,7 +31,7 @@ func main() {
 >>> go run src/examples/hello.go    # compile and run code
 Hello World
 >>> go build src/examples/hello.go  # explicitly compile code
->>> ./hello                         # run the code 
+>>> ./hello                         # run the code
 Hello World
 ```
 
@@ -43,20 +43,20 @@ Hello World
 
 I.e. an example project with import path `github.com/$USER/example/hello`
 
-```
+```bash
 >>> mkdir -p src/github.com/$USER/example
->>> cat src/github.com/$USER/example/hello/hello.go 
+>>> cat src/github.com/$USER/example/hello/hello.go
 package main
 import "fmt"
 func main() {
     fmt.Printf("Hello, world\n")
 }
 >>> go install src/github.com/vpenso/example/hello
->>> bin/hello 
+>>> bin/hello
 Hello World
 ```
 
-## Packages 
+## Packages
 
 Reusable code is packaged as **shared library**:
 
@@ -68,12 +68,12 @@ Reusable code is packaged as **shared library**:
 package p             // declare a package with name p
 import "p"            // include a single package p
 import (              // include a list of packages p,q
-  "p" 
-  "q" 
+  "p"
+  "q"
 )
-import (              // alias a,b for packages p,q 
+import (              // alias a,b for packages p,q
   a "p"
-  b "q" 
+  b "q"
 )
 ```
 
@@ -110,7 +110,7 @@ bool                   false,true
 string                 UTF-8-encoded text
 ```
 
-List of basic **literls**:
+List of basic **literals**:
 
 ```go
 1                       // decimal
@@ -119,11 +119,11 @@ List of basic **literls**:
 0X1A
 0.                      // float
 .25
-1.2 
+1.2
 01.2
 1e+0                    // scientific notation
-1.234e-11 
-1E6 
+1.234e-11
+1E6
 .123E+5
 'c'                     // rune (character)
 '\n'                    // escapes
@@ -134,17 +134,31 @@ List of basic **literls**:
 "\""
 ```
 
-Variables can't be declared twice, `no new variables on left side of :=`
+### Declaration, Initialization, Assignment and Type-casting
+
+* Variables can't be declared twice, `no new variables on left side of :=`
+* Data type conversion with `T(v)` to convert the value v to data type T
+* Use the package [strconv](https://golang.org/pkg/strconv/) for basic string conversion
 
 ```go
-var v T               // declare a new variable v of type T
-v = V                 // assign a value V to declared variable v
-var v T = x           // initalize a variable v of type T with x
-v := V                // assign a value V by declareing a variable v using type inference
-v := new(T)           // allocate a zeroed T value and return a pointer
+_                           // underscore used as blank identifier, where the value is discarded
+var v T                     // declare a new variable v of type T
+const V = v                 // declare constant V (capitalized) with value v
+v = V                       // assign a value V to declared variable v
+var v T = x                 // initialize a variable v of type T with x
+v := V                      // assign a value V by declaring a variable v using type inference
+v := new(T)                 // allocate a zeroed T value and return a pointer
+float32(i)                  // int to float
+float64(i)
+uint(f)                     // float to int
+string(b[:])                // convert []byte to string
+strconv.ParseFloat(s,p)     // string to float with precision p
+strconv.Atoi(s)             // string to integer
 ```
 
-Structures `struct` are typed collections of fields:
+### Structures
+
+`struct` is a typed collections of fields:
 
 ```go
 type S struct {       // declare structure S with two fields F,G of type t,s
@@ -162,7 +176,10 @@ s := &S{              // create instance and assign values
 s.F = 1               // access field f of structure
 ```
 
-Slices are dynamically-sized arrays:
+
+### Slices
+
+Dynamically-sized arrays:
 
 ```go
 []T                              // slice with elements of type T
@@ -172,14 +189,14 @@ a[i]                             // access element i of slice a
 a[i:j]                           // access elements i to element j
 a[i:]                            // access elements from i to len(a)
 a[:j]                            // access elements from 0 to j
-a := make([]T, l)                // create slice a with elements of type T with lenght l 
+a := make([]T, l)                // create slice a with elements of type T with length l
 a := make([]T, l, c)             // same as above, with capacity c
-for i, v := range a {}           // iterate over slice a, defining index i and value v 
+for i, v := range a {}           // iterate over slice a, defining index i and value v
 for _, v := range a {}           // skip the index
-for i := range a {}              // drop the value 
+for i := range a {}              // drop the value
 ```
 
-Maps
+### Maps
 
 ```go
 m := make(map[T1]T2)              // create a map m with keys of type T1 and values of type T2
@@ -188,8 +205,9 @@ m[k] = v                          // assign value v to key k of map m
 m[k]                              // access value of key k
 len(m)                            // length of map m
 delete(m,k)                       // remove key k of map m
-_,p := m[k]                       // optional return value p insdicates presents of kay key in map m
-if _,p := m[k]; p {}              // if key k is present in map m
+_,p := m[k]                       // optional return value p indicates presents of key in map m
+if v,ok := m[k]; ok {}            // if key k is present in map m, assign the value of k to v
+                                  // evaluate ok if true
 ```
 
 ## Functions
@@ -200,7 +218,7 @@ Cf. Go [build-in functions](https://golang.org/pkg/builtin/) i.e. `print`, `pani
 func f(a,b T) R {}                // function f with arguments a,b of type T and return type R
 func f(a T, b S) R {}             // individual types T,S for arguments a,b
 func f(a T) r R {}                // name return value r of type R
-func f() (T,R) { return x,y }     // mutliple return values x,y of type T,R
+func f() (T,R) { return x,y }     // multiple return values x,y of type T,R
 f := func(a T) R {}               // function value f with argument a of type T with return type R
 func c() func(T) R {}             // function c returns closure with argument of type T and return type R
 type C T                          // define type C of type T in your package
@@ -212,20 +230,22 @@ c := &C{} ; c.g()                 // avoid copying the value
 
 ## Control Structures
 
-```
-if C { }                          // execute block if condition c evaluates to true
+```go
+if c { }                          // execute block if condition c evaluates to true
+if c { } else { }                 // with else block
+if c { } else if d { } else { }   // with else condition
 for { }                           // endless loop
 for c { }                         // execute block as long as condition c is true
 break                             // stop a loop
-continue                          // skip to next loop itertion
-switch v { case a: ; case f(): }  // evaluate from top to buttom, stopping on success
+continue                          // skip to next loop iteration
+switch v { case a: ; case f(): }  // evaluate from top to bottom, stopping on success
 default:                          ///as default case
 ```
 
-## Concurrency 
+## Concurrency
 
 ```go
-go f(a,b,c)                       // light-weigth thread managed by go
+go f(a,b,c)                       // light-weight thread managed by go
 c := make(chan T)                 // create channel c of type T
 c := make(chan T, s)              // create channel c of type T with buffer size s
 func f(a T, c chan R) {}          // function f() with second argument channel c of type R
@@ -234,5 +254,3 @@ v := <-c                          // receive from channel c and assign to v
 v,s := <-c                        // like above but indicates chancel state in s
 for v := range c {}               // loop over channel c until it is closed
 ```
-
-
