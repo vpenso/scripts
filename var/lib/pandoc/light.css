@@ -1,5 +1,10 @@
 <style type="text/css">
 
+html {
+  margin:    0 auto;
+  max-width: 900px;
+}
+
 body {
   padding: 2em; 
   font-size: 1.1em; 
@@ -19,12 +24,12 @@ body {
 }
 
 
-h1 { font-size: 2.4em; font-weight: 300; }
-h2 { font-size: 1.8em; font-weight: 400; }
-h3 { font-size: 1.5em; font-weight: 500; }
+h1 { font-size: 2em;   font-weight: 300; border-bottom: 1px solid lightgray }
+h2 { font-size: 1.6em; font-weight: 400; border-bottom: 1px solid lightgray }
+h3 { font-size: 1.4em; font-weight: 500; }
 h4 { font-size: 1.2em; font-weight: 600; }
 h5 { font-size: 1.1em; font-weight: 600; }
-h6 { font-size: 1em; font-weight: 600; }
+h6 { font-size: 1em;   font-weight: 600; }
 
 li { list-style: disc; }
 li li { list-style: circle; }
@@ -42,6 +47,11 @@ blockquote p {
 
 blockquote strong {
   font-weight: 600;
+}
+
+img {
+  display:block;
+  margin: 0 auto;
 }
 
 /*
