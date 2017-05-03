@@ -421,8 +421,9 @@ begin
     # Path to the virtual machine disk image
     path = ARGV.shift || raise('Expecting disk image path as argument!')
 
+    
     # Append domain name if missing
-    name = Virsh::instance(name)
+    #name = Virsh::instance(name)
 
     # Use a URL for bootstrapping by default 
     source = if not $options.cdrom.nil?
