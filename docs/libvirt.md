@@ -193,7 +193,8 @@ ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local pa
 Example
 
 ```bash
-ssh-exec "su -lc 'apt install rsync sudo'"
+ssh-exec "su -lc 'apt install rsync sudo'"  # Debian
+ssh-exec -r 'yum install rsync sudo'        # Centos
 ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
 ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
 ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
