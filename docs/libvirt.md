@@ -111,6 +111,11 @@ virt-builder --print-cache | grep cached         # list cached os templates
 ls -1 ~/.cache/virt-builder/                     # list cache directory
 virt-builder --root-password password:root -o $VM_INSTANCE_PATH/lxdev01.devops.test/disk.img debian-8
                                                  # build a new VM insatnce from os template
+## Install Centos 7 from a mirror
+virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
+             --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
 ```
 
 ## Instances
