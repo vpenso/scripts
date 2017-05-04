@@ -29,23 +29,13 @@ systemctl stop firewalld && systemctl disable firewalld
 
 # Yum
 
-Files and directories:
-
-```bash
-/etc/yum.conf                     # local main configuration file
-/etc/yum.repos.d/*.repo           # configure individual repositories
-/var/log/yum.log                  # log file
-/var/cache/yum/                   # local package cache
-```
-
-Commands:
-
 ```
 yum repolist all                  # list package repositories
 yum list                          # list all available packages
 yum list <package>                # search for the specific package with name
 yum search <package>              # search all the available packages to match a name
 yum info <package>                # information of a package
+repoquery -l <package>            # list files in a package
 yum -y install <package>          # install package by name (assume yes)
 yum remove <package>              # delete package
 yum check-update                  # find how many of installed packages have updates available
@@ -63,12 +53,37 @@ yum clean all                     # clean up all the cache
 yum history                       # transaction history
 ```
 
+## Configuration
+
+```bash
+/etc/yum.conf                     # local main configuration file
+/etc/yum.repos.d/*.repo           # configure individual repositories
+/var/log/yum.log                  # log file
+/var/cache/yum/                   # local package cache
+```
+
 Configure package repositories:
 
 ```bash
 yum-config-manager --add-repo <url>     # add a repository
 yum-config-manager --enable <repo>      # enable a repository
 yum-config-manager --disable <repo>     # disable a repository
+```
+
+## Unattended Update
+
+Keep repository metadata up to date, and check for, download, and apply updates
+
+```bash
+>>> yum install -y yum-cron      # install the package
+# start/enable the service
+>>> systemctl start yum-cron.service && systemctl enable yum-cron.service
+# basic configuration
+>>> egrep -v '^#|^$' /etc/yum/yum-cron-hourly.conf | grep update
+update_cmd = security
+update_messages = yes
+download_updates = yes
+apply_updates = yes
 ```
 
 # DNF
