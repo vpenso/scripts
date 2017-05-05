@@ -13,26 +13,33 @@ Packages use following name specification:
 Mirror CentOS packages on a (private) local mirror:
 
 ```bash
-yum -y install yum-utils createrepo                       # install the tools
-path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
+>>> yum -y install yum-utils createrepo                       # install the tools
+>>> path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
 ## repeat for all repo IDs to mirror
-yum repolist                                              # list repo IDs
-mkdir -p $path && createrepo $path                        # intialize CentOS base repo
-reposync -gml --download-metadata -r base -p $path        # sync repo
-createrepo -v --update $path/base -g comps.xml            # update repo after each sync
+>>> yum repolist                                              # list repo IDs
+>>> mkdir -p $path && createrepo $path                        # intialize CentOS base repo
+>>> reposync -gml --download-metadata -r base -p $path        # sync repo
+>>> createrepo -v --update $path/base -g comps.xml            # update repo after each sync
 # deploy a web-server to host the repos
-yum -y install httpd && systemctl enable httpd && systemctl start httpd
+>>> yum -y install httpd && systemctl enable httpd && systemctl start httpd
 # Grant access to the HTTP port, or disable the firewall 
-firewall-cmd --permanent --add-service=http && firewall-cmd --reload
-systemctl stop firewalld && systemctl disable firewalld   
+>>> firewall-cmd --permanent --add-service=http && firewall-cmd --reload
+>>> systemctl stop firewalld && systemctl disable firewalld
+# Disable SELinux
+>>> grep ^SELINUX= /etc/selinux/config
+SELINUX=disabled
+>>> setenforce 0 && sestatus
 ```
 
 # Yum
 
 ```
 yum repolist all                  # list package repositories
+yum repolist enabled              # list enabled packages only
 yum list                          # list all available packages
 yum list <package>                # search for the specific package with name
+yum --disablerepo='*' list available --enablerepo=<repo>
+                                  # list package provided by a given repo
 yum search <package>              # search all the available packages to match a name
 yum info <package>                # information of a package
 repoquery -l <package>            # list files in a package
@@ -56,18 +63,23 @@ yum history                       # transaction history
 ## Configuration
 
 ```bash
-/etc/yum.conf                     # local main configuration file
-/etc/yum.repos.d/*.repo           # configure individual repositories
-/var/log/yum.log                  # log file
-/var/cache/yum/                   # local package cache
+/etc/yum.conf                       # local global configuration file
+/etc/yum.repos.d/*.repo             # configure individual repositories
+/var/log/yum.log                    # log file
+/var/cache/yum/                     # local package cache
 ```
 
 Configure package repositories:
 
 ```bash
+yum-config-manager                      # display the current values of global yum options
+yum-config-manager | grep '\[.*\]'      # list only the sections
 yum-config-manager --add-repo <url>     # add a repository
 yum-config-manager --enable <repo>      # enable a repository
 yum-config-manager --disable <repo>     # disable a repository
+yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
+                                        # show URLs to the repositories 
+yum clean metadata                      # delete all package repository metadata
 ```
 
 ## Unattended Update
