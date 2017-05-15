@@ -19,18 +19,25 @@ List available packages for all Debian releases with `rmadison` (from the _devsc
 
 ### CentOS
 
-Build [Munge][munge] RPM packages:
+Latest Munge release: <https://github.com/dun/munge/releases>
 
-    » yum groupinstall "Development Tools"
-    » yum install rpm-build bzip2-devel openssl-devel zlib-devel
-    […]
-    » wget https://munge.googlecode.com/files/munge-0.5.11.tar.bz2
-    […]
-    » rpmbuild -tb --clean munge-0.5.11.tar.bz2
-    […]
-    » ls /root/rpmbuild/RPMS/x86_64/
-    munge-0.5.11-1.el6.x86_64.rpm            munge-devel-0.5.11-1.el6.x86_64.rpm
-    munge-debuginfo-0.5.11-1.el6.x86_64.rpm  munge-libs-0.5.11-1.el6.x86_64.rpm
+```bash
+# install the tool chain
+>>> yum groupinstall "Development Tools"
+>>> yum -y install rpm-build bzip2-devel openssl-devel zlib-devel wget
+# download the latest verison of Munge
+>>> wget https://github.com/dun/munge/releases/download/munge-0.5.12/munge-0.5.12.tar.xz
+# build the packages
+>>> rpmbuild -tb --clean munge-0.5.12.tar.xz
+>>> ls ~/rpmbuild/RPMS/x86_64/*
+/root/rpmbuild/RPMS/x86_64/munge-0.5.12-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/munge-debuginfo-0.5.12-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/munge-devel-0.5.12-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/munge-libs-0.5.12-1.el7.centos.x86_64.rpm
+# publish packages in local repository
+>>> cp ~/rpmbuild/RPMS/x86_64/*.rpm /var/www/html/repo/
+>>> createrepo --update /var/www/html/repo/
+```
 
 Build Slurm RPM packages:
 
