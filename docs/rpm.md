@@ -58,6 +58,8 @@ yum search <package>              # search all the available packages to match a
 yum info <package>                # information of a package
 repoquery -l <package>            # list files in a package
 yum -y install <package>          # install package by name (assume yes)
+yum -y install --nogpgcheck <package> 
+                                  # install unsigned packages by name (assume yes)
 yum remove <package>              # delete package
 yum check-update                  # find how many of installed packages have updates available
 yum check-update --security       # check for security-related updates
@@ -70,7 +72,8 @@ yum groupupdate <package>         # update group package
 yum groupremove <package>         # delete a group package
 yum list installed                # list installed packages
 yum provides <path>               # find which package a specific file belongs to
-yum clean all                     # clean up all the cache
+yum makecache                     # update metadata for the currently enabled repositories
+yum clean all                     # clean up all the repository metadata caches
 yum history                       # transaction history
 ```
 
