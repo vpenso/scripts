@@ -86,7 +86,7 @@ yum history                       # transaction history
 /var/cache/yum/                     # local package cache
 ```
 
-Configure package repositories:
+Configure package repositories with:
 
 ```bash
 yum-config-manager                      # display the current values of global yum options
@@ -98,6 +98,17 @@ yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
                                         # show URLs to the repositories 
 yum clean metadata                      # delete all package repository metadata
 ```
+
+Simple repository configuration file:
+
+```
+>>> cat /etc/yum.repos.d/site-local.repo
+[site-local]
+baseurl=http://lxdev01.devops.test/repo
+enabled=1
+gpgcheck=0
+```
+
 
 ## Unattended Update
 
