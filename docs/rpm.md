@@ -47,9 +47,9 @@ Install and configure a web-server similar to the package mirror above.
 
 # Yum
 
-```
+```bash
 yum repolist all                  # list package repositories
-yum repolist enabled              # list enabled packages only
+yum repolist enabled              # list enabled repos only
 yum list                          # list all available packages
 yum list <package>                # search for the specific package with name
 yum --disablerepo='*' list available --enablerepo=<repo>
@@ -88,7 +88,7 @@ Configure package repositories:
 ```bash
 yum-config-manager                      # display the current values of global yum options
 yum-config-manager | grep '\[.*\]'      # list only the sections
-yum-config-manager --add-repo <url>     # add a repository
+yum-config-manager --add-repo <url>     # add a repository to /etc/yum.repos.d/
 yum-config-manager --enable <repo>      # enable a repository
 yum-config-manager --disable <repo>     # disable a repository
 yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
