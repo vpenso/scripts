@@ -34,25 +34,30 @@ Latest Munge release: <https://github.com/dun/munge/releases>
 /root/rpmbuild/RPMS/x86_64/munge-debuginfo-0.5.12-1.el7.centos.x86_64.rpm
 /root/rpmbuild/RPMS/x86_64/munge-devel-0.5.12-1.el7.centos.x86_64.rpm
 /root/rpmbuild/RPMS/x86_64/munge-libs-0.5.12-1.el7.centos.x86_64.rpm
-# publish packages in local repository
+```
+
+Latest Slurm release: <https://www.schedmd.com/downloads.php>
+
+```bash
+# install dependencies
+>>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel
+>>> rpm -i ~/rpmbuild/RPMS/x86_64/*.rpm  # install munge including the development package
+# download the latest version of slurm
+>>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.3.tar.bz2
+# build the Slurm packages
+>>> rpmbuild -tb --clean slurm-17.02.3.tar.bz2
+[…]
+» ls -1 /root/rpmbuild/RPMS/x86_64/slurm*
+/root/rpmbuild/RPMS/x86_64/slurm-14.11.2-1.el6.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-devel-14.11.2-1.el6.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-munge-14.11.2-1.el6.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-pam_slurm-14.11.2-1.el6.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-perlapi-14.11.2-1.el6.x86_64.rpm
+[…]
+# publish packages on a local repository
 >>> cp ~/rpmbuild/RPMS/x86_64/*.rpm /var/www/html/repo/
 >>> createrepo --update /var/www/html/repo/
 ```
-
-Build Slurm RPM packages:
-
-    » rpm -i /root/rpmbuild/RPMS/x86_64/munge-devel-0.5.11-1.el6.x86_64.rpm
-    » yum install readline-devel perl-ExtUtils-MakeMaker pam-devel
-    […]
-    » rpmbuild -tb --clean slurm-14.11.2.tar.bz2
-    […]
-    » ls -1 /root/rpmbuild/RPMS/x86_64/slurm*
-    /root/rpmbuild/RPMS/x86_64/slurm-14.11.2-1.el6.x86_64.rpm
-    /root/rpmbuild/RPMS/x86_64/slurm-devel-14.11.2-1.el6.x86_64.rpm
-    /root/rpmbuild/RPMS/x86_64/slurm-munge-14.11.2-1.el6.x86_64.rpm
-    /root/rpmbuild/RPMS/x86_64/slurm-pam_slurm-14.11.2-1.el6.x86_64.rpm
-    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-14.11.2-1.el6.x86_64.rpm
-    […]
 
 ## Source
 
