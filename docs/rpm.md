@@ -47,6 +47,8 @@ Install and configure a web-server similar to the package mirror above.
 
 # Yum
 
+Yum is the Red Hat package manager 
+
 ```bash
 yum repolist all                  # list package repositories
 yum repolist enabled              # list enabled repos only
@@ -71,10 +73,22 @@ yum groupinstall <package>        # install a group package
 yum groupupdate <package>         # update group package
 yum groupremove <package>         # delete a group package
 yum list installed                # list installed packages
+yum list available [<regex>]      # list all packages in all enabled repositories available to install
 yum provides <path>               # find which package a specific file belongs to
 yum makecache                     # update metadata for the currently enabled repositories
 yum clean all                     # clean up all the repository metadata caches
-yum history                       # transaction history
+```
+
+Transaction history
+
+```bash
+/var/lib/yum/history/                # history DB
+yum history                          # list of twenty most recent transaction
+yum history info <id>                # examine a particular transaction
+yum history undo <id>                # revert slected transaction
+yum history stats                    # overall statistics about the currently used history DB
+yum history sync                  
+yum history package-list <package>   # Trace history of a package
 ```
 
 ## Configuration
