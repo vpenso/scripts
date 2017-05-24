@@ -31,6 +31,29 @@ SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
 
+Periodic package mirror sync with Systemd units:
+
+```bash
+>>> cat /etc/systemd/system/reposync.service
+[Unit]
+Description=Mirror package repository
+
+[Service]
+ExecStart=/usr/bin/reposync -gml --download-metadata -r base -p /var/www/html/centos/7/os/x86_64/
+ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/7/os/x86_64/base -g comps.xml
+Type=oneshot
+>>> cat /etc/systemd/system/reposync.timer 
+[Unit]
+Description=Periodically execute package mirror sync
+
+[Timer]
+OnStartupSec=300s
+OnUnitInactiveSec=2h
+
+[Install]
+WantedBy=multi-user.target
+>>> systemctl start reposync.timer
+``` 
 ## Local Repository
 
 Create a local repository to host RPM packages:
