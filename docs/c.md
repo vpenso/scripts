@@ -248,14 +248,47 @@ break                        // exit from a loop
 continue                     // skip one iteration of loop
 ```
 
+## Pointers
+
+Every variable in C has:
+
+- **Name**: The identifier of the variable
+- **Value**: Data associated to the variable
+- **Address**: Location of its value in memory
+- **Type**: Interpretation of the value
+
+Pointers are variables that contain the **address of another variable in memory**:
+
+- A pointer must us the same associated type as variable it points to
+- Pointers must be initialized before being used.
+- Declare a pointer with the unary `*` (asterisk) operator
+- `NULL` indicates that a pointer does not point anywhere
+- Pointers are given a value with the `&` (ampersand) operator
+- Pointers are dereferenced with the `*` operator
+- Casting pointers changes its type but not its value
+- Pointers can point to functions
+
+```c
+T *p;                           // declare pointer p of type T
+NULL                            // null pointer constant
+*p                              // object pointed to by pointer p
+&x                              // address of object x 
+p = &x;                         // assign address of object x to pointer p
+T v = *p;                       // assign value to variable v addressed by pointer p of type T
+T *p[N];                        // pointer p is an array of size N of pointers to T
+T **p;                          // p is a pointer to a pointer to a value of type T
+T *f();                         // f is a function returning a pointer of type T
+T (*pf)();                      // pf is a pointer to a function returning type T
+```
+
 ## Functions
 
 A function is a pointer to some code:
 
 * Must be declared before they are use in the code
-* Identified by a function **name** [f] followed by the function **arguments** [a] in parentheses
+* Identified by a function **name** [`f`] followed by the function **arguments** [`a`] in parentheses
 * Use arguments to pass data into the function, multiple arguments are delineated by comma
-* Functions may `return` a value corresponding to the function **type specifier** [T]
+* Functions may `return` a value corresponding to the function **type specifier** [`T`]
 * The statement code block associated to the function is called function **body**
 * The function body can `return` a value `v` to the function caller
 * Functions without a return value use `void` as type specifier
@@ -271,48 +304,7 @@ f();                         // function call
 * Function return type, name, and arguments are called the function **signature**
 * **Overloaded** functions have the same name, but differ in their return type and/or argument list
 * Functions should use _task-oriented names_ to reflect their purpose
-* A _cohesive function_ is designed to accomplish a single taskQ
-* Functions use the **call by value** method send values of a variable argument
-
-### Main-Function
-
-Each valid C program require a main function with on of the following signatures:
-
-```c
-int main(void)
-int main(int argc, char **argv)
-int main(int argc, char *argv[])
-```
-
-**The main function is the starting point of the program.**
-
-* Program parameters can be accessed as strings through the `argv` array with `argc` elements. (#1 program file name)
-* The integer `return`-value of main() is send to the operating system es **exit status**.
-
-Program to print arguments from the command line:
-
-```c
-#include <stdio.h>
-
-int main(int argc, char **argv)
-{
-   int i;
-   printf("argc = %d\n", argc);
-   for (i=0; i < argc; ++i)
-     printf("argv[%d]: %s\n", i, argv[i]);
-   return 0;
-}
-```
-```bash
->>> ./args 1 "ab" 2 "cd"
-argc = 5
-argv[0]: ./args
-argv[1]: 1
-argv[2]: ab
-argv[3]: 2
-argv[4]: cd
-```
-
+* A _cohesive function_ is designed to accomplish a single task
 
 ### Common I/O Functions
 
@@ -374,6 +366,7 @@ s.u = v;                      // write structure member u
 
 * Use the **dot operator** `.` to access structure members
 * Write values to a member by using the dot operator on the left side of an assignment
+
 
 # Compile
 
@@ -473,3 +466,43 @@ Conditional compilation:
   ...
 #endif
 ```
+
+## Main Function
+
+Each valid C program require a main function with on of the following signatures:
+
+```c
+int main(void)
+int main(int argc, char **argv)
+int main(int argc, char *argv[])
+```
+
+**The main function is the starting point of the program.**
+
+* Program parameters can be accessed as strings through the `argv` array with `argc` elements. (#1 program file name)
+* The integer `return`-value of main() is send to the operating system es **exit status**.
+
+Program to print arguments from the command line:
+
+```c
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+   int i;
+   printf("argc = %d\n", argc);
+   for (i=0; i < argc; ++i)
+     printf("argv[%d]: %s\n", i, argv[i]);
+   return 0;
+}
+```
+```bash
+>>> ./args 1 "ab" 2 "cd"
+argc = 5
+argv[0]: ./args
+argv[1]: 1
+argv[2]: ab
+argv[3]: 2
+argv[4]: cd
+```
+
