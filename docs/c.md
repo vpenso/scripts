@@ -358,12 +358,14 @@ gcc h.c                         # compile, executable `a.out`
     @opt_file                   # use an options file `opt_file` 
 ```
 
-Workflow of the compiler staring from the source code to create a platform binary:
+## Workflow
 
-1. **Preprocessor**: Macro substitution, include header files
-2. **Assembly**: Compile each C file into assembly language
-3. **Object Code**: Assemble each file into object code
-4. **Linker**: Link object files into program binary
+From source code to an executable binary:
+
+1. **Preprocessor**: Macro substitution, include header files.
+2. **C Compiler**: Compile each C file into assembly language.
+3. **Assembler**: Assemble each file into object code.
+4. **Linker**: Link object files into program binary (executable code).
 
 ```bash
 >>> gcc -save-temps -o h h.c && ls -1
@@ -376,4 +378,46 @@ h.s                   # assembly code
 Hello
 ```
 
+Assembly code vs Machine code vs Object code:
 
+* **Maschine Code**: Binary code (1's and 0's) that can be executed directly by the CPU.
+* **Object Code**: Machine code not linked into a complete program yet. May contain information (placeholders, relocation information, symbol tables) used by the linker to build the executable.
+* **Assembly Code**: Human read-able code mostly direct 1:1 analog with (hardware specific) machine instructions. This is accomplished using mnemonics for the actual instructions/registers/other resources. (Unlike Machine Code, the CPU does not understand Assembly Code.)
+
+## Preprocessor
+
+Include "header" files in the source code:
+
+* Basic mechanism to define an _Application Programming Interface_ (API)
+* Included files can include other files
+
+```c
+#include <f.h>           // <> used for system headers
+#include "g.h"           // "" used for application specific headers
+```
+
+Token-based macro substitution:
+
+```c
+#define I T             // object-like macro replacing identifier I with replacment token list T
+#define I(p) T          // function-like macro with a parameters list p
+#undef I                // delete the macro by identifier I
+// Examples:
+#define PI 3.14159      // create symbolic names for constants
+#define INC(x) (x+1)    // function-like macro
+INC(2)                  // replaced with 2+1 (not 3)
+```
+
+Conditional compilation:
+
+```c
+#if e                   // evaluates expression e
+#ifdef I                // if identifier I is defined
+#ifndef I               // if identifier I is not defined
+  ...
+#elif e                 // evaluate expression e
+  ...
+#else
+  ...
+#endif
+```
