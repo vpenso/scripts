@@ -1,13 +1,16 @@
 # C Programming Language
 
-* Code for compilation in files with suffix `*.c`
-* Shared declarations (included with `#include`) in _header files_ with suffix `*.h`
+A C program is characterized by:
+
+* Code stored in files with suffix `*.c`
+* Shared declarations (included with `#include`) in **header** with suffix `*.h`
 * Whitespace (space, tab, blank line, etc ) is ignores, with minor exceptions
 * C is **case-sensitive**
 * Keywords are lower case, can't be used for any other purpose
 * **Statements**, C instructions must end with comma `;` (statement terminator)
 
 ```
+;                            statement terminator
 e                            expression, combination of operands & operators
 s;                           statement, C instruction, ends with semicolon
 {}                           statement block, groups of statements
@@ -327,11 +330,14 @@ The **GCC** (GNU Compiler Collection) is one of the most widely used compilers f
 Simple C program `h.c`:
 
 ```c
-#include<stdio.h>
+#include <stdio.h>      // header file including library functions
 
+// Every program has to have a "main" function
 int main(void)
 {
-   printf("Hello");
+   // Generic function for printing formatted strings
+   printf("Hello\n");
+   // Exit the main function
    return 0;
 }
 ```
@@ -351,4 +357,23 @@ gcc h.c                         # compile, executable `a.out`
     -ansi ...                   # enable ISO C89 support
     @opt_file                   # use an options file `opt_file` 
 ```
+
+Workflow of the compiler staring from the source code to create a platform binary:
+
+1. **Preprocessor**: Macro substitution, include header files
+2. **Assembly**: Compile each C file into assembly language
+3. **Object Code**: Assemble each file into object code
+4. **Linker**: Link object files into program binary
+
+```bash
+>>> gcc -save-temps -o h h.c && ls -1
+h*                    # executable binary
+h.c                   # source code
+h.i                   # preprocessor output
+h.o                   # object code
+h.s                   # assembly code
+>>> ./h    
+Hello
+```
+
 
