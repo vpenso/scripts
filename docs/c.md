@@ -48,14 +48,17 @@ sizeof(v)                    return size of variable v in addressable units (byt
 
 ### Types
 
-Basic data types [T]
+Basic data types [`T`]
+
+* Boolean values are just integers (false → 0 (zero), true → anything non-zero)
+* Integers are signed by default use `signed`/`unsigned` to clarify
 
 ```
 void                         type for functions returning nothing 
-bool                         logic true, false
 char                         -128 to 127
 unsigned char                0 - 255
 byte                         0 - 255
+bool                         logic true, false
 int                          -32768 to 32768
 unsigned int                 0 to 65535
 long                         –2147483648 to 2147483647
@@ -65,7 +68,7 @@ float                        –3.4028235E+38 to 3.4028235E+38
 
 ### Literals
 
-Basic literals for values [V]:
+Basic literals for values [`V`]:
 
 ```c
 0123                         // octal
@@ -79,6 +82,20 @@ Basic literals for values [V]:
 'a'                          // char (enclosed in single qoutes)
 '\t'                         // char escape sequence, newline \n, tab \t
 '\u02C0'                     // char unicode
+```
+
+### Array
+
+Finite set of variables with the same type:
+
+* The C compiler **does not** check array bounds!
+* Size `N` (number of elements) declared in square brackets `[]`
+* Array elements are indexed starting with 0 (zero), last element is N-1
+
+```c
+T a[N];                      // declare array a of type T with N elements
+a[i] = v;                    // assign value v to array a element i
+T v = a[0];                  // assign first element of array a to variable v
 ```
 
 ### Strings
@@ -121,13 +138,16 @@ trim()                       remove all whitespace characters from a String.
 
 Used to coerce on data type into another data type
 
-* Uses a cast operator in front of the data item 
+* Most C types can be cast to another
+* Use a **cast operator** in front of the data item 
 * The cast operator places the desired type between parentheses `(T)`
 * Prevent **silent casts** by always using a cast as assignment statement between two data types
 
 ```
-v = (int) w;                 variable W becomes an int before assignment to v
-v = (long) w;                cast into long
+T v = (T) w;                    // cast w to type T before assignment
+// Examples
+int v = (int) w;                // variable W becomes an int before assignment to v
+long v = (long) w;              // cast into long
 ```
 
 ## Operators
