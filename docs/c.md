@@ -50,11 +50,12 @@ sizeof(v)                    return size of variable v in addressable units (byt
 
 Basic data types [`T`]
 
+* `void` is a type with no value (untyped pointers, function with no return value)
 * Boolean values are just integers (false → 0 (zero), true → anything non-zero)
 * Integers are signed by default use `signed`/`unsigned` to clarify
 
 ```
-void                         type for functions returning nothing 
+void                         no value
 char                         -128 to 127
 unsigned char                0 - 255
 byte                         0 - 255
@@ -96,6 +97,12 @@ Finite set of variables with the same type:
 T a[N];                      // declare array a of type T with N elements
 a[i] = v;                    // assign value v to array a element i
 T v = a[0];                  // assign first element of array a to variable v
+T a[N][M];                   // declare a multidimensional array of size NxM
+// Examples
+int a[3] = {0,1,2};          // define & initialize
+int a[4] = {0,1};            // initialize 0,1,0,0
+float a[10] = {0};           // all elements 0.0
+int a[2][2] = {{1,2},{3,4}}  // define & initialize a 2-dimensional array
 ```
 
 ### Strings
@@ -267,11 +274,11 @@ f();                         // function call
 * A _cohesive function_ is designed to accomplish a single taskQ
 * Functions use the **call by value** method send values of a variable argument
 
-### Program Main-Function
+### Main-Function
 
 Each valid C program require a main function with on of the following signatures:
 
-```
+```c
 int main(void)
 int main(int argc, char **argv)
 int main(int argc, char *argv[])
@@ -281,6 +288,31 @@ int main(int argc, char *argv[])
 
 * Program parameters can be accessed as strings through the `argv` array with `argc` elements. (#1 program file name)
 * The integer `return`-value of main() is send to the operating system es **exit status**.
+
+Program to print arguments from the command line:
+
+```c
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+   int i;
+   printf("argc = %d\n", argc);
+   for (i=0; i < argc; ++i)
+     printf("argv[%d]: %s\n", i, argv[i]);
+   return 0;
+}
+```
+```bash
+>>> ./args 1 "ab" 2 "cd"
+argc = 5
+argv[0]: ./args
+argv[1]: 1
+argv[2]: ab
+argv[3]: 2
+argv[4]: cd
+```
+
 
 ### Common I/O Functions
 
