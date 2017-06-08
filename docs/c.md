@@ -1,26 +1,17 @@
 # C Programming Language
 
-A C program is characterized by:
+Building blocks of the C programming language:
 
-* Code stored in files with suffix `*.c`
-* Shared declarations (included with `#include`) in **header** with suffix `*.h`
-* Whitespace (space, tab, blank line, etc ) is ignores, with minor exceptions
-* C is **case-sensitive**
-* Keywords are lower case, can't be used for any other purpose
-* **Statements**, C instructions must end with comma `;` (statement terminator)
-
-```
-;                            statement terminator
-e                            expression, combination of operands & operators
-s;                           statement, C instruction, ends with semicolon
-{}                           statement block, groups of statements
-/**/                         multi-line comment
-//                           line comment
-```
+* **Variables**
+* **Operators**
+* **Expressions**
+* **Statements**
+* **Statement Blocks**
+* **Function Blocks**
 
 ## Variables
 
-A variable is a symbolic name for (or reference to) information. The information  associated to (value of) the variable can changes while the variable name is the same in a program.
+_A variable is a symbolic name for (or reference to) information. The information associated to (value of) the variable can changes while the variable name is the same in a program._
 
 Variables properties:
 
@@ -100,9 +91,6 @@ Basic literals for values [`V`]:
 '\u02C0'                     // unicode character
 ```
 
-
-
-
 ### Declaration
 
 A variable must be declared before it can be used in a program:
@@ -113,12 +101,11 @@ A variable must be declared before it can be used in a program:
 * A value `V` can be derived from a constant, literal, expression or statement.
 
 ```
-T v                          declare variable with identifier v of data type T
-T v,w,x,y,z                  declare multiple variables
-T v = V                      initialize variable v with value V
-const T v                    declare contat variable
-T a[S]                       declare array a of type T with size S
-sizeof(v)                    return size of variable v in addressable units (bytes)
+T v;                         define a variable with identifier v of data type T
+T v,w,x,y,z;                 define multiple variables
+T v = V;                     declare variable v with value V
+const T v;                   define contat variable
+T a[S];                      define array a of type T with size S
 ```
 
 * The variable value can be changed at any time, hence is **volatile**.
@@ -126,9 +113,7 @@ sizeof(v)                    return size of variable v in addressable units (byt
 * `static` variable inside a function keep their value between invocations.
 * `static` global variable (or a function) is "seen" only in the file it's declared in
 
-
-
-### Array
+### Arrays
 
 Finite set of variables with the same type:
 
@@ -200,36 +185,19 @@ int v = (int) w;                // variable W becomes an int before assignment t
 long v = (long) w;              // cast into long
 ```
 
+# Expressions 
+
+An expression is created by combining operands and operators.
+
+* **Operand**: A piece of data that is acted on by an operator.
+* **Operator**: Mathematical or logical performed on one or more operands. 
+* **Operator precedence**: Order in which complex expressions are resolved
+
 ## Operators
 
-Arithmetic, relational, logic and binary operators
+### Assignment
 
-```
-+        plus
--        minus
-*        multiply
-/        divide
-%        modulus
-++       increment
---       decrement
->        greater than
->=       greater than or equal to
-<        less than
-<=       less than or equal to
-==       equal to
-!=       not equal to
-&&       logic and
-||       logic or
-!        logic not (negate)
-&        binary and
-|        binary or
-^        binary xor
-~        binary complement (bit flip)
-<<       binary left shift
->>       binary right shift
-```
-
-Assignment operators
+List of assignment operators:
 
 ```
 =        simple
@@ -244,6 +212,70 @@ Assignment operators
 ^=       exclusive or
 |=       inclusive or
 ```
+
+* All assignment operators include the **equal sign `=`**
+* Used to assign a value to a variable.
+* Operates on two operands: L-Value and R-Value (left/right of the equal sign)
+* Lower precedence than other available operators
+
+For example:
+
+```c
+int v = 1;     // assign value 1 to variable v
+v += 1;        // v = v + 1
+```
+
+### Arithmetic
+
+```
++        plus
+-        minus
+*        multiply
+/        divide
+%        modulus
+++       increment
+--       decrement
+```
+
+### Relational
+
+List of relational operators:
+
+```
+>        greater than
+>=       greater than or equal to
+<        less than
+<=       less than or equal to
+==       equal to
+!=       not equal to
+&&       logic and
+||       logic or
+!        logic not (negate)
+```
+
+* Compare the state of two or more pieces of data.
+* Result is either logic true or false
+
+For example:
+
+```c
+2 > 1    // true
+2 < 1    // false
+2 == 1   // false
+2 != 1   // true
+```
+
+### Binary 
+
+```
+&        and
+|        or
+^        xor
+~        complement (bit flip)
+<<       left shift
+>>       right shift
+```
+
 
 ## Control Structures
 
@@ -439,6 +471,9 @@ gcc h.c                         # compile, executable `a.out`
     -ansi ...                   # enable ISO C89 support
     @opt_file                   # use an options file `opt_file` 
 ```
+
+* Source code stored in files with suffix `.c`
+* Shared declarations (included with `#include`) stored in **header** files with suffix `.h`
 
 ## Workflow
 
