@@ -20,70 +20,113 @@ s;                           statement, C instruction, ends with semicolon
 
 ## Variables
 
-### Declaration & Initialisation
+A variable is a symbolic name for (or reference to) information. The information  associated to (value of) the variable can changes while the variable name is the same in a program.
 
-* Must be **declared** before they can be used in a program
-* Have a name as **identifier** composed from the following characters `A-Za-z0-9_`
-* Each variable is of a specific **data-type**
-* Declared variables must be **initialized** using the assignment operator "="
-* The assigning **value** can be derived from a constant, literal, expression or statement
+Variables properties:
 
-```
-T v;                         declare variable with identifier v of data type T
-T v,w,x,y,z;                 declare multiple variables
-T v = V;                     initialize variable v with value V
-const T v;                   declare contat variable
-T a[S];                      declare array a of type T with size S
-sizeof(v)                    return size of variable v in addressable units (bytes)
-&v                           return address of variable
-*v                           pointer to variable v
-```
+* **Name**: The identifier of the variable
+* **Value**: Data associated to the variable
+* **Address**: Location of its value in memory
+* **Type**: Interpretation of the value (its "kind" of data)
+* **Scope**:  Region of the program where a defined variable is visible
 
-* The variable value can be changed at any time, hence is **volatile**
-* **Constant** variables are protected from change and declared with the keyword `const`
-* Basic data types support **arrays** of those types declared with suffix square braces "[]"
-* `static` variable inside a function keep their value between invocations.
-* `static` global variable (or a function) is "seen" only in the file it's declared in
+Interaction with a variable:
 
+* **Declaration**: States the type of a variable, along with its name.
+  - Variables can be declared only once.
+  - A variable requires to be declared before assigning a value.
+* **Initialization**: The first assignment of a value to a variable.
+* **Assignment**: Overwriting the value of a variable.
+* **Access**: Read the stored value of a variable.
 
 ### Types
 
-Basic data types [`T`]
+A type defines the kind of possible values a variable can represent.
 
-* `void` is a type with no value (untyped pointers, function with no return value)
-* Boolean values are just integers (false → 0 (zero), true → anything non-zero)
-* Integers are signed by default use `signed`/`unsigned` to clarify
+- Numbers
+- Booleans (true/valus values)
+- Characters
+- Arrays (a list of data of the same type)
+- Structures (a collection of named data referring to a single entity)
+
+Incomplete list of [data types with value range in C](https://en.m.wikipedia.org/wiki/C_data_types):
 
 ```
-void                         no value
-char                         -128 to 127
-unsigned char                0 - 255
+int                          -32768 - 32768
+long                         –2147483648 - 2147483647
+float                        –3.4028235E+38 - 3.4028235E+38
+bool                         0 or1
+char                         -128 - 127
 byte                         0 - 255
-bool                         logic true, false
-int                          -32768 to 32768
-unsigned int                 0 to 65535
-long                         –2147483648 to 2147483647
-unsigned long                0 to 4294967295
-float                        –3.4028235E+38 to 3.4028235E+38
+unsigned char                0 - 255
+unsigned int                 0 - 65535
+unsigned long                0 - 4294967295
+void                         no value
 ```
+
+* `int` (integers) are natural numbers
+* `long` are integers with higher precision
+* `float` (floating point) are real numbers with a decimal point
+* `bool` values are just integers (`false` → 0 (zero), `true` → anything non-zero)
+* Integers are signed by default use `signed`/`unsigned` to clarify
+* `void` is a type with no value (untyped pointers, function with no return value)
 
 ### Literals
+
+A literal is a notation for representing a fixed value in source code
+
+* Often used to initialize variables.
+* **Suffixes** indicate the type i.e. `u` (unsigned)
+* **Prefixes** indicate the base (numeral system) `0` (octal), `0x` (hexadecimal).
+* Character literals use a single quote `'` for expressing the character
+* [Escape characters](https://en.m.wikipedia.org/wiki/Escape_character) alternate the interpretation of a character
 
 Basic literals for values [`V`]:
 
 ```c
+// decimal numbers
+42                           // integer literal
+42u                          // unsigned integer literal
+42l                          // long integer literal
+42ul                         // unsigned long integer literal
+4.2                          // float numbner
+4234E-5L                     // float scientific notation
+// other numeral systems
 0123                         // octal
 0x1a                         // hexadecimal
-42                           // decimale
-42u                          // unsigned int
-42l                          // long
-42ul                         // unsigned long
-4.2                          // float
-4234E-5L                     // float scientific notation
-'a'                          // char (enclosed in single qoutes)
+// characters
+'a'                          // enclosed in single qoutes
 '\t'                         // char escape sequence, newline \n, tab \t
-'\u02C0'                     // char unicode
+'\u02C0'                     // unicode character
 ```
+
+
+
+
+### Declaration
+
+A variable must be declared before it can be used in a program:
+
+* Identifier are composed from the following characters `A-Za-z0-9_`.
+* Each variable is of a specific data-type `T`
+* Declared variables must be initialized using the **assignment operator**.
+* A value `V` can be derived from a constant, literal, expression or statement.
+
+```
+T v                          declare variable with identifier v of data type T
+T v,w,x,y,z                  declare multiple variables
+T v = V                      initialize variable v with value V
+const T v                    declare contat variable
+T a[S]                       declare array a of type T with size S
+sizeof(v)                    return size of variable v in addressable units (bytes)
+```
+
+* The variable value can be changed at any time, hence is **volatile**.
+* Variable declared `const` (constant) can not be overwritten.
+* `static` variable inside a function keep their value between invocations.
+* `static` global variable (or a function) is "seen" only in the file it's declared in
+
+
 
 ### Array
 
@@ -250,12 +293,6 @@ continue                     // skip one iteration of loop
 
 ## Pointers
 
-Every variable in C has:
-
-- **Name**: The identifier of the variable
-- **Value**: Data associated to the variable
-- **Address**: Location of its value in memory
-- **Type**: Interpretation of the value
 
 Pointers are variables that contain the **address of another variable in memory**:
 
