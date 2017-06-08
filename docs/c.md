@@ -69,10 +69,8 @@ A literal is a notation for representing a fixed value in source code
 * Often used to initialize variables.
 * **Suffixes** indicate the type i.e. `u` (unsigned)
 * **Prefixes** indicate the base (numeral system) `0` (octal), `0x` (hexadecimal).
-* Character literals use a single quote `'` for expressing the character
-* [Escape characters](https://en.m.wikipedia.org/wiki/Escape_character) alternate the interpretation of a character
 
-Basic literals for values [`V`]:
+Basic number literals:
 
 ```c
 // decimal numbers
@@ -85,7 +83,15 @@ Basic literals for values [`V`]:
 // other numeral systems
 0123                         // octal
 0x1a                         // hexadecimal
-// characters
+```
+
+Character literals:
+
+* Use a single quote `'` for expressing the character
+* The character is encoded using the [ASCII](https://en.m.wikipedia.org/wiki/ASCII)
+* [Escape characters](https://en.m.wikipedia.org/wiki/Escape_character) alternate the interpretation of a character
+
+```c
 'a'                          // enclosed in single qoutes
 '\t'                         // char escape sequence, newline \n, tab \t
 '\u02C0'                     // unicode character
@@ -185,17 +191,24 @@ int v = (int) w;                // variable W becomes an int before assignment t
 long v = (long) w;              // cast into long
 ```
 
-# Expressions 
+# Expressions & Statements
 
-An expression is created by combining operands and operators.
+An expression is created by combining operands and operators:
 
 * **Operand**: A piece of data that is acted on by an operator.
 * **Operator**: Mathematical or logical performed on one or more operands. 
 * **Operator precedence**: Order in which complex expressions are resolved
 
-## Operators
+A statement is a complete C instruction for the computer:
+
+* Smallest element that expresses an action to be carried out
+* End with a semicolon `;` as **statement terminator**.
+
+Statements are **executed**, while expressions are **evaluated**.
 
 ### Assignment
+
+Assign the value on the right side of the equal sign to the operand on the left side.
 
 List of assignment operators:
 
@@ -215,8 +228,8 @@ List of assignment operators:
 
 * All assignment operators include the **equal sign `=`**
 * Used to assign a value to a variable.
-* Operates on two operands: L-Value and R-Value (left/right of the equal sign)
-* Lower precedence than other available operators
+* Operates on two operands: **L-Value** and **R-Value** (left/right of the equal sign).
+* Lower precedence than other available operators.
 
 For example:
 
@@ -259,10 +272,11 @@ List of relational operators:
 For example:
 
 ```c
-2 > 1    // true
-2 < 1    // false
-2 == 1   // false
-2 != 1   // true
+2 > 1             // true
+2 < 1             // false
+2 == 1            // false
+2 != 1            // true
+1 < 2 && 2 < 3    // true
 ```
 
 ### Binary 
@@ -276,8 +290,12 @@ For example:
 >>       right shift
 ```
 
+## Statement Blocks
 
-## Control Structures
+A statement block consists of one or more statements grouped together.
+
+* Often called control structures.
+* Start with opening brace character ~{~ and end with closing brace character `}`.
 
 **If** statement:
 
@@ -323,7 +341,7 @@ break                        // exit from a loop
 continue                     // skip one iteration of loop
 ```
 
-## Pointers
+# Pointers
 
 
 Pointers are variables that contain the **address of another variable in memory**:
@@ -350,7 +368,7 @@ T *f();                         // f is a function returning a pointer of type T
 T (*pf)();                      // pf is a pointer to a function returning type T
 ```
 
-## Functions
+# Functions
 
 A function is a pointer to some code:
 
