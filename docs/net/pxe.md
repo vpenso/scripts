@@ -64,16 +64,17 @@ chain tftp://<ip>/<path>/pxelinux.0    # load PXE configuration from ip/path
 sanboot http://.../img.iso             # boot ISO image over HTTP
 ```
 
+### Build
 
 Build from the [ipxe.org](http://ipxe.org) repository
 
 ```bash
 # Dependencies on Debian
 >>> apt -y install build-essential liblzma-dev genisoimage git-core
-# Dependencies on CentOs
->>> yum -y install gcc binutils make perl syslinux xz-devel git
+# Dependencies on CentOS
+>>> yum -y install gcc binutils make perl syslinux xz-devel genisoimage git
 >>> git clone git://git.ipxe.org/ipxe.git ipxe             # get the iPXE source
->>> cd src 
+>>> cd ipxe/src 
 >>> make                                                   # build
 >>> make bin/ipxe.iso                                      # build ISO image
 >>> make bin/ipxe.usb                                      # build USB image
@@ -83,6 +84,8 @@ bin/ipxe.iso
 bin/ipxe.usb
 bin/undionly.kpxe
 ```
+
+### Floppy
 
 Prepare an floppy file (usable as virtual device over IPMI):
 
