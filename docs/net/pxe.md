@@ -106,7 +106,22 @@ config/general.h
 config/console.h
 ```
 
-### DHCP configuration
+# DHCP configuration
+
+## Dnsmasq
+
+Example iPXE boot configuration `/etc/dnsmasq.d/ipxe.conf`
+
+```bash
+enable-tftp
+tftp-root=/var/lib/tftpboot
+dhcp-userclass=set:ipxe,iPXE
+## DHCP next server option
+dhcp-boot=tag:#ipxe,undionly.kpxe
+dhcp-boot=tag:ipxe,http://<server:port>/menu.ipxe
+```
+
+## ISC DHCP
 
 **Chain-Loading** iPXE from TFTP by configuring `dhcp.conf`:
 
@@ -128,14 +143,8 @@ host ... {
 ```
 
 
-### Test
 
-Run the iPXE image in a virtual machine for development and testing
 
-```bash
-kvm -m 512 ipxe.usb
-virt-install --ram 2048 --cdrom=ipxe.iso --nodisk --name ipxetest
-```
 
 
 
