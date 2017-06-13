@@ -1,15 +1,23 @@
 
+## DHCP
 
 Using `dnsmasq` as **DHCP server**:
 
-* Disable the service started by default during package deployment
-* Very simple DHCP only configuration in `/etc/dnsmasq.conf`
-* Start the server in foreground for debugging
-
 ```bash
->>> apt install dnsmasq # install the DHCP service package
->>> systemctl stop dnsmasq && systemctl disable dnsmasq
->>> cat /etc/dnsmasq.conf
+# install the DHCP service package
+apt install dnsmasq # Debian
+yum install dnsmasq # Centos
+# Configuration files..
+/etc/dnsmasq.conf         # local configuration file
+/etc/dnsmasq.d/           # custom configuration files
+dnsmasq --test            # syntax check the configuration
+dnsmasq --keep-in-foreground --no-daemon
+                          # run the daemon in debugging mode
+```
+
+Minimal example configuration file `/etc/dnsmasq.d/devops.conf`:
+
+```
 port=0               # diable DNS service
 log-dhcp             # extra verbose on DHCP requests
 domain=devops.test   # allow FQDNs
@@ -24,17 +32,9 @@ dhcp-host=02:FF:0A:0A:06:1D,lxdev03,10.1.1.29
 dhcp-host=02:FF:0A:0A:06:1E,lxdev04,10.1.1.30
 ## additonal options
 dhcp-option=option:router,10.1.1.1 # default gateway
->>> dnsmasq --test # syntax check the configuration
-dnsmasq: syntax check OK.
->>> dnsmasq --keep-in-foreground --no-daemon
-dnsmasq: started, version 2.76 DNS disabled
-dnsmasq: compile time options: IPv6 GNU-getopt DBus i18n IDN DHCP DHCPv6 no-Lua TFTP conntrack ipset auth DNSSEC loop-detect inotify
-dnsmasq-dhcp: DHCP, IP range 10.1.1.1 -- 10.1.1.254, lease time 12h
-dnsmasq-dhcp: ... DHCPDISCOVER(ens3) 02:ff:0a:0a:06:1b
-..
-dnsmasq-dhcp: ... DHCPOFFER(ens3) 10.1.1.27 02:ff:0a:0a:06:1b
-...
 ```
+
+## Client
 
 Use `dhcpcd` **DHCP client** to request a lease:
 
