@@ -41,17 +41,6 @@ dhcp-host=02:FF:0A:0A:06:1E,lxdev04,10.1.1.30
 dhcp-option=option:router,10.1.1.1 # default gateway
 ```
 
-Example iPXE boot configuration `/etc/dnsmasq.d/ipxe.conf`, cf. [pxe.md](pxe.md)
-
-```bash
-enable-tftp
-tftp-root=/var/lib/tftpboot
-dhcp-userclass=set:ipxe,iPXE
-## DHCP next server option
-dhcp-boot=tag:#ipxe,undionly.kpxe
-dhcp-boot=tag:ipxe,http://10.1.1.27:8080/boot.ipxe
-```
-
 ## Client
 
 Use `dhcpcd` **DHCP client** to request a lease:

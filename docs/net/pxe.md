@@ -110,6 +110,8 @@ config/console.h
 
 ## Dnsmasq
 
+Cf. [dnsmasq.md](dnsmasq.md)
+
 Example iPXE boot configuration `/etc/dnsmasq.d/ipxe.conf`
 
 ```bash
