@@ -11,8 +11,15 @@ yum install dnsmasq # Centos
 /etc/dnsmasq.conf         # local configuration file
 /etc/dnsmasq.d/           # custom configuration files
 dnsmasq --test            # syntax check the configuration
+# Run the daemon foreground
 dnsmasq --keep-in-foreground --no-daemon
-                          # run the daemon in debugging mode
+# Enable and start service 
+systemctl enable dnsmasq && systemctl start dnsmasq
+journalctl -u dnsmasq -f  # print dnsmasq log
+# Open the firewall on CentOS
+firewall-cmd --add-service=dns --permanent  # port 53
+firewall-cmd --add-service=dhcp --permanent # port 67
+firewall-cmd --reload                       # apply rules
 ```
 
 Minimal example configuration file `/etc/dnsmasq.d/devops.conf`:
@@ -32,6 +39,17 @@ dhcp-host=02:FF:0A:0A:06:1D,lxdev03,10.1.1.29
 dhcp-host=02:FF:0A:0A:06:1E,lxdev04,10.1.1.30
 ## additonal options
 dhcp-option=option:router,10.1.1.1 # default gateway
+```
+
+Example iPXE boot configuration `/etc/dnsmasq.d/ipxe.conf`, cf. [pxe.md](pxe.md)
+
+```bash
+enable-tftp
+tftp-root=/var/lib/tftpboot
+dhcp-userclass=set:ipxe,iPXE
+## DHCP next server option
+dhcp-boot=tag:#ipxe,undionly.kpxe
+dhcp-boot=tag:ipxe,http://10.1.1.27:8080/boot.ipxe
 ```
 
 ## Client

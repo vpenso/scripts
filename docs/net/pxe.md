@@ -68,7 +68,10 @@ sanboot http://.../img.iso             # boot ISO image over HTTP
 Build from the [ipxe.org](http://ipxe.org) repository
 
 ```bash
+# Dependencies on Debian
 >>> apt -y install build-essential liblzma-dev genisoimage git-core
+# Dependencies on CentOs
+>>> yum -y install gcc binutils make perl syslinux xz-devel git
 >>> git clone git://git.ipxe.org/ipxe.git ipxe             # get the iPXE source
 >>> cd src 
 >>> make                                                   # build
