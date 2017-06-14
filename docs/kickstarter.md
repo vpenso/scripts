@@ -65,91 +65,53 @@ inst.sshd                            # SSH login during installation
 inst.loglevel=<debug|info|warning|error|critical>
 ```
 
-Cf. [Kickstart Documentation](https://github.com/rhinstaller/pykickstart/blob/master/docs/kickstart-docs.rst)
 
 # Kickstarter
 
-Kickstart provides method to **automate** the installation of CentOS. 
+Cf. [Kickstart Documentation](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html)
 
+Kickstart provides method to **automate** the installation of CentOS. 
 
 The **kickstart file** contains answers for the Anaconda installer program:
 
 * Simple text file, containing a list of items, each identified by a keyword.
 * Omitting required installation items prompts the user for an interactive answer.
 
-Sections must be specified in order:
-
-| Section     | Description                        |
-|-------------|------------------------------------|
-| common      | Base configuration of the OS       |
-| %package    | Custom list of packages to install |
-| %pre, %post | Pre- & post-installation scripts   |
-
-## Common Section
-
-Install a new operating system to disk:
+Simple kickstart file:
 
 ```bash
-install # install a fresh system
-url --url="http://...."                 # install from a remote server over HTTP
-```
+install                       # install a fresh system
+url --url="http://...."       #  from a remote server over HTTP
+reboot                        # reboot automatically
 
-After successful installation following:
+keyboard --vckeymap=us        # keyboard layout
+lang en_US.UTF-8              # system language
+timezone Europe/Berlin        # system timezone
 
-```
-reboot                                  # reboot automatically
-halt                                    # (default) wait for operator input
-shutdown                                # shutdown
-poweroff                                # shutdown and power off
-```
-
-Localization:
-
-```bash
-keyboard --vckeymap=us                  # keyboard layout
-lang en_US.UTF-8                        # system language
-timezone Europe/Berlin                  # system timezone
-```
-
-Authentication and users:
-
-```bash
-auth --enableshadow --passalgo=sha512   # authentication options
 # dummy accounts for a test environment
+auth --enableshadow --passalgo=sha512
 rootpw --plaintext root
 user --name=devops --password=devops --plaintext
-rootpw --iscrypted <hash>
-```
 
+# enable DHPC, no IPv6
+network  --bootproto=dhcp --noipv6
 
-### Storage
-
-Access the storage log in the Anaconda text-UI with **CTRL+ALT+F4**
-
-```bash
-zerombr                                       # initialize invalid partition table
-ignoredisk --drives=sdc,sdd,sde               # ignore disk sdc,sdd,sde during installation
-ignoredisk --only-use=sda                     # ignore disks except of sda
-clearpart --none                              # do not remove partions
-clearpart --initlabel --all                   # overwrite all partitions
-clearpart --initlabel --drives=vda,vdb        # overwrite devices vda,vdb
-bootloader --location=mbr --boot-drive=vda    #how the boot loader should be installed
-```
-
-Partition a single disk:
-
-```bash
+## Storage
+#
+#
+zerombr                      # initialize invalid partition table
+ignoredisk --only-use=vda    # ingnore disks except of vda
+clearpart --initlabel --all  # overwrite all partitions
+# partition layout and file-systems
 part /     --ondisk=vda --asprimary --fstype=ext4 --size=8192
 part /var  --ondisk=vda             --fstype=ext4 --size=8192
 part /tmp  --ondisk=vda             --fstype=ext4 --size=8192 --maxsize=20480 --grow
 part /srv  --ondisk=vda --asprimary --fstype=ext4 --size=10240                --grow
-```
 
 ## Package Section
+#
 
-Minimal package configuration:
-
-```
+# minimal package list
 %packages --nobase --excludedocs
 @core --nodefaults
 %end
