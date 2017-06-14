@@ -68,7 +68,7 @@ inst.loglevel=<debug|info|warning|error|critical>
 
 # Kickstarter
 
-Cf. [Kickstart Documentation](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html)
+Cf. [Kickstart Documentation](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html), [Anaconda Logging](https://fedoraproject.org/wiki/Anaconda/Logging)
 
 Kickstart provides method to **automate** the installation of CentOS. 
 
@@ -80,6 +80,8 @@ The **kickstart file** contains answers for the Anaconda installer program:
 Simple kickstart file:
 
 ```bash
+## Common Section ##
+
 install                       # install a fresh system
 url --url="http://...."       #  from a remote server over HTTP
 reboot                        # reboot automatically
@@ -96,9 +98,6 @@ user --name=devops --password=devops --plaintext
 # enable DHPC, no IPv6
 network  --bootproto=dhcp --noipv6
 
-## Storage
-#
-#
 zerombr                      # initialize invalid partition table
 ignoredisk --only-use=vda    # ingnore disks except of vda
 clearpart --initlabel --all  # overwrite all partitions
@@ -108,10 +107,8 @@ part /var  --ondisk=vda             --fstype=ext4 --size=8192
 part /tmp  --ondisk=vda             --fstype=ext4 --size=8192 --maxsize=20480 --grow
 part /srv  --ondisk=vda --asprimary --fstype=ext4 --size=10240                --grow
 
-## Package Section
-#
+## Package Section ##
 
-# minimal package list
 %packages --nobase --excludedocs
 @core --nodefaults
 %end
