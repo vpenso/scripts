@@ -132,6 +132,7 @@ HELP = <<EOF
 > j, jobs                          state of jobs 
   l, limits                        association limits
   n, nodes                         state of execution nodes
+  p, partition                     state of the partitions
 
 jobs <subcommand>
   c,   completed-by-users          jobs completed by users
@@ -157,9 +158,12 @@ nodes <subcommand>
   drn, drain-nodeset <reason>      drain nodes in $NODES
   i,   idle                        nodes with available resources
   r,   resume <nodeset>            resume nodes
+> s,   state                       node states
   rn,  resume-nodeset              resume nodes in $NODES
-> s,   state                       overview nodes/CPUs state
   u,   users                       list users of each node
+
+partition <subcommand>
+> s,   state                       paritition states
 
 <options>
   -b, --begin-time <[0-9]*[hd]>    hours/days to look back in the accounting     
@@ -175,11 +179,11 @@ module Jobs
   module_function
 
   def running
-    Table.new(%w(Jobs State User Partition Account)).transform("
+    Table.new(%w(Jobs State User Partition)).transform("
       squeue
         --states RUNNING
-        --format '%9T %8u %9P %10a'
-        --sort 'u'
+        --format '%9T %8u %9P'
+        --sort 'u,P'
         --noheader
         | uniq -f2 -c
     ")
@@ -322,8 +326,8 @@ module Limits
 
 end
 
-module Nodes
-
+module Partition
+  
   module_function
 
   def state
@@ -334,6 +338,25 @@ module Nodes
         | tr -s ' ' 
         | cut -d' ' -f1-5,8-
     ])
+  end
+
+end
+
+module Nodes
+
+  module_function
+
+  def state
+    state = {}
+    System::exec(%q[ sinfo -o "%D|%T" -s 'T' --noheader ]).split("\n").each do |line|
+      n, s = line.split('|')
+      n = n.to_i
+      state[s] = 0 unless state.has_key? s
+      state[s] += n
+    end
+    state = state.to_a
+    state.unshift ['State','Nodes']
+    $stdout.puts CLI::Table.print state
   end
 
   def idle
@@ -457,7 +480,7 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--version'
-      $stdout.puts 1.0
+      $stdout.puts 1.1
       exit 0
     end
   end
@@ -499,6 +522,12 @@ begin
       Limits::by_user
     else
       raise("Sub-command #{subcommand} not supported") 
+    end
+  when 'p','partition'
+    subcommand = ARGV.shift || 'state'
+    case subcommand
+    when 's','state'
+      Partition::state
     end
   when 'n','nodes'
     subcommand = ARGV.shift || 'state'
