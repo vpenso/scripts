@@ -90,7 +90,8 @@ virsh create $VM_IMAGE_PATH/$name/libvirt_instance.xml
 Template image customization:
 
 ```bash
-apt update && apt install openssh-server sudo rsync chef haveged   # basic services
+apt update && apt install openssh-server sudo rsync chef haveged   # Debian packages
+yum -y install openssh-server sudo rsync                           # Centos packages
 echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-less sudo for the devops user
 ## -- Configure systemd, NTP, PAM, etc if required -- # 
 ```
@@ -98,24 +99,16 @@ echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-le
 Alternatively [bootstrap](bootstrap.md), or [guestfs](http://libguestfs.org/guestfs.3.html):
 
 ```bash 
-virt-install --ram 2048 --name install --graphics vnc \
-             --os-type linux --virt-type kvm \
-             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
-virt-install -c qemu+ssh://root@lxhvs01.devops.test/system --noautoconsole […]
-                                                 #  no VNC for remote servers
-virt-install --bridge br124 --mac 02:FF:0A:0A:18:6F --boot network […]
-                                                 # network boot
-virt-builder -l                                  # list os templates
-virt-builder --print-cache | grep cached         # list cached os templates
-ls -1 ~/.cache/virt-builder/                     # list cache directory
-virt-builder --root-password password:root -o $VM_INSTANCE_PATH/lxdev01.devops.test/disk.img debian-8
-                                                 # build a new VM insatnce from os template
 ## Install Centos 7 from a mirror
 virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
              --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
+## Install Debian 9 from a mirror
+virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
+             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
 ```
 
 ## Instances
