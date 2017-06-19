@@ -36,8 +36,8 @@ fi
 # Debian based platform...
 if command -v apt 2>&1 >/dev/null ; then
   # required packages
-  sudo apt -qy install git-core vim fonts-inconsolata fonts-powerline
-  fc-cache # build font information cache files
+  sudo apt -qy install git-core vim powerline fonts-inconsolata fonts-powerline
+  fc-cache -f # build font information cache files
   echo "Select font »Inconsolata« in your terminal application"
 fi
 
