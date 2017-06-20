@@ -19,12 +19,12 @@ Configure [Knife](https://docs.chef.io/knife.html) for the devops user:
 >>> cat .chef/knife.rb
 log_level                :info
 log_location             STDOUT
-node_name                'devops'
-client_key               "~/.chef/devops.pem"
+node_name                "#{ENV['USER']}"
+client_key               "~/.chef/#{ENV['USER']}.pem"
 chef_server_url          'https://lxrm01.devops.test/organizations/devops'
 ssl_verify_mode          :verify_none
 cache_type               'BasicFile'
-cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
+cache_options( :path => "~/.chef/checksums" )
 cookbook_path            ["~/chef/cookbooks"]
 ```
 
