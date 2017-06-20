@@ -111,6 +111,17 @@ virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network
              --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
 ```
 
+Install a configuration management system, i. e. [Chef](https://downloads.chef.io/chef):
+
+```bash
+## CentOS 7
+wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
+yum install chef-13.1.31-1.el7.x86_64.rpm
+## Debian 9
+apt install chef
+```
+
+
 ## Instances
 
 Virtual machine instance [lifecycle](http://wiki.libvirt.org/page/VM_lifecycle):
