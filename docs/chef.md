@@ -13,6 +13,8 @@ chef-server-ctl user-create devops dev ops dops@devops.test 'devops' --filename 
 chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops.pem
 ```
 
+## Knife
+
 Configure [Knife](https://docs.chef.io/knife.html) for the devops user:
 
 ```bash
@@ -26,6 +28,13 @@ ssl_verify_mode          :verify_none
 cache_type               'BasicFile'
 cache_options( :path => "~/.chef/checksums" )
 cookbook_path            ["~/chef/cookbooks"]
+```
+
+```bash
+## Create a new client for a node and store its private key to /tmp
+knife client create -d $fqdn 2>/dev/null >/tmp/${fqdn}.pem
+## Copy the private key to the target node
+scp /tmp/${fqdn}.pem root@${fqdn}:/etc/chef/client.pem
 ```
 
 ## Client
