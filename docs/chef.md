@@ -7,7 +7,13 @@ Dummy deployment for a [chef-server](https://downloads.chef.io/chef-server) pack
 ```bash
 wget https://packages.chef.io/files/stable/chef-server/12.15.7/el/7/chef-server-core-12.15.7-1.el7.x86_64.rpm
 yum -y install chef-server-core-12.15.7-1.el7.x86_64.rpm
+#3 Deploy the chef server
 chef-server-ctl reconfigure
+## open the firewall
+firewall-cmd --permanent --zone public --add-service http
+firewall-cmd --permanent --zone public --add-service https
+firewall-cmd --reload
+## dummy user and orga
 su devops -c 'mkdir ~/.chef'
 chef-server-ctl user-create devops dev ops dops@devops.test 'devops' --filename /home/devops/.chef/devops.pem
 chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops.pem
