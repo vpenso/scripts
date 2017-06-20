@@ -94,5 +94,6 @@ AccuracySec=300sec
 >>> systemctl start chef-client.timer && systemctl enable chef-client.timer
 ```
 
+Alternatively use the Chef base cookbook with the [chef_client.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/chef_client.rb) role.
 
 
