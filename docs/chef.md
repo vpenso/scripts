@@ -36,12 +36,6 @@ cache_options( :path => "~/.chef/checksums" )
 cookbook_path            ["~/chef/cookbooks"]
 ```
 
-```bash
-## Create a new client for a node and store its private key to /tmp
-knife client create -d $fqdn 2>/dev/null >/tmp/${fqdn}.pem
-## Copy the private key to the target node
-scp /tmp/${fqdn}.pem root@${fqdn}:/etc/chef/client.pem
-```
 
 ## Client
 
@@ -100,6 +94,11 @@ AccuracySec=300sec
 >>> systemctl start chef-client.timer && systemctl enable chef-client.timer
 ```
 
-Alternatively use the Chef base cookbook with the [chef_client.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/chef_client.rb) role.
+Alternatively use the Chef base cookbook with the [chef_client.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/chef_client.rb) role. **Note**: The client requires a private key to communicate with the server:
 
-
+```bash
+## Create a new client for a node and store its private key to /tmp
+knife client create -d $fqdn 2>/dev/null >/tmp/${fqdn}.pem
+## Copy the private key to the target node
+scp /tmp/${fqdn}.pem root@${fqdn}:/etc/chef/client.pem
+```
