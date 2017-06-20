@@ -34,7 +34,7 @@ Extract boot images from the official source, [CentOS mirros](http://isoredirect
 ```bash
 curl -o /tmp/centos.iso http://centos.mirror.net-d-sign.de/7/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso
 mount -o loop /tmp/centos.iso /mnt
-mkdir /var/www/html/centos && cp -r /mnt /var/www/html/centos/
+mkdir -p /var/www/html/centos/boot && cp -r /mnt/* /var/www/html/centos/boot
 umount /mnt
 ```
 
@@ -45,10 +45,10 @@ More then 1GB memory required for the CentOS LiveOS!
 Boot into the interactive installation:
 
 ```bash
->>> cat /var/www/html/menu.ipxe 
+>>> cat /var/www/html/centos/boot/menu.ipxe 
 #!ipxe
-set base http://lxdev01.devops.test/centos
-kernel ${base}/images/pxeboot/vmlinuz initrd=initrd.img inst.repo=${base} inst.text inst.ks=http://lxdev01.devops.test/ks.cfg
+set base http://lxdev01.devops.test/centos/boot
+kernel ${base}/images/pxeboot/vmlinuz initrd=initrd.img inst.repo=${base} inst.text inst.ks=http://lxdev01.devops.test/kickstart/base.cfg
 initrd ${base}/images/pxeboot/initrd.img
 boot || goto shell
 ```
@@ -113,3 +113,19 @@ part /srv  --ondisk=vda --asprimary --fstype=ext4 --size=10240                --
 @core --nodefaults
 %end
 ```
+
+Deploy a configuration management e.g. Chef:
+
+
+```bash
+## This repository should host the chef packages from chef.io
+repo --name=site --baseurl="http://lxdev01.devops.test/repo"
+
+## Add the client package to be installed
+%packages
+...
+chef
+%end
+```
+
+
