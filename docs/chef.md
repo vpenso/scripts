@@ -36,61 +36,14 @@ cache_options( :path => "~/.chef/checksums" )
 cookbook_path            ["~/chef/cookbooks"]
 ```
 
-### Bootstrap
-
-Knife [bootstrap](https://docs.chef.io/knife_bootstrap.html) installs and configures the chef-client on a remote node.
-
-Template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
-
-```erb
-bash -c '
-
-echo "Writing configuration to /etc/chef"
-mkdir -p /etc/chef
-
-<% if client_pem -%>
-cat > /etc/chef/client.pem <<'EOP'
-<%= ::File.read(::File.expand_path(client_pem)) %>
-EOP
-chmod 0600 /etc/chef/client.pem
-<% end -%>
-
-chmod 0600 /etc/chef/validation.pem
-cat > /etc/chef/client.rb <<'EOP'
-<%= config_content.concat "\nssl_verify_mode :verify_none" %>
-EOP
-
-cat > /etc/chef/first-boot.json <<'EOP'
-<%= first_boot.to_json %>
-EOP
-
-echo "Starting first Chef Client run..."
-<%= start_chef %>
-'
-```
-
-Bootstrap a node with a given template
-
-```bash
-# configure and execute chef-client
-knife bootstrap -N $fqdn $fqdn --bootstrap-template default
-# prepare cookbook & role for chef-client configuration
-mkdir -p chef/cookbooks
-git clone https://github.com/vpenso/chef-base.git chef/cookbooks/base
-knife cookbook upload base
-knife role from file ~/chef/cookbooks/base/test/roles/chef_client.rb
-# configure/execute chef-client to use a given role
-knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client]'
-```
-
-
-
 ## Client
 
 Official documentation from [docs.chef.io](http://docs.chef.io):
 
 → [chef-client](https://docs.chef.io/ctl_chef_client.html)  
 → [client.rb](https://docs.chef.io/config_rb_client.html)
+
+### Manual
 
 Chef-client configuration file example:
 
@@ -142,11 +95,50 @@ AccuracySec=300sec
 >>> systemctl start chef-client.timer && systemctl enable chef-client.timer
 ```
 
-Alternatively use the Chef base cookbook with the [chef_client.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/chef_client.rb) role. **Note**: The client requires a private key to communicate with the server:
+### Bootstrap
+
+Knife [bootstrap](https://docs.chef.io/knife_bootstrap.html) installs and configures the chef-client on a remote node.
+
+Template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
+
+```
+bash -c '
+
+echo "Writing configuration to /etc/chef"
+mkdir -p /etc/chef
+
+<% if client_pem -%>
+cat > /etc/chef/client.pem <<'EOP'
+<%= ::File.read(::File.expand_path(client_pem)) %>
+EOP
+chmod 0600 /etc/chef/client.pem
+<% end -%>
+
+chmod 0600 /etc/chef/validation.pem
+cat > /etc/chef/client.rb <<'EOP'
+<%= config_content.concat "\nssl_verify_mode :verify_none" %>
+EOP
+
+cat > /etc/chef/first-boot.json <<'EOP'
+<%= first_boot.to_json %>
+EOP
+
+echo "Starting first Chef Client run..."
+<%= start_chef %>
+
+'
+```
+
+Bootstrap a node with a given template
 
 ```bash
-## Create a new client for a node and store its private key to /tmp
-knife client create -d $fqdn 2>/dev/null >/tmp/${fqdn}.pem
-## Copy the private key to the target node
-scp /tmp/${fqdn}.pem root@${fqdn}:/etc/chef/client.pem
+# configure and execute chef-client
+knife bootstrap -N $fqdn $fqdn --bootstrap-template default
+# prepare cookbook & role for chef-client configuration
+mkdir -p chef/cookbooks
+git clone https://github.com/vpenso/chef-base.git chef/cookbooks/base
+knife cookbook upload base
+knife role from file ~/chef/cookbooks/base/test/roles/chef_client.rb
+# configure/execute chef-client to use a given role
+knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client]'
 ```
