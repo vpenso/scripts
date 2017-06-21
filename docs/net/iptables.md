@@ -18,13 +18,22 @@ Packet filter framework in Linux:
 * netfilter/xtables is the kernel-space component
 * iptables is the user-space tool
 
+Official documentation is available at [netfilter.org](https://www.netfilter.org/documentation/)
+
 ## Rules
 
-Properties of a **rule**:
+Packet filtering is based on rules with a basic syntax like:
 
-* **Chain** it belongs to
-* **Matches** classifying the desired packet characteristics 
-* **Target** action to take if a packet matches, i.e. `ACCEPT`, `DROP`, `RETURN`, `REJECT` 
+    iptables <options> <chain> <matches> <target>
+
+Properties of rules:
+
+| Property | Description                                                  |
+|----------|--------------------------------------------------------------|
+| Chain    | Rules are placed within a specific chain of a specific table |
+| Matches  | Criteria that a packet must meet for the associated action   |
+| Target   | Action triggered if a packet matches                         | 
+
 
 ## Chains
 
@@ -46,27 +55,47 @@ Chains are collections of rules for packet filtering:
 
 Tables are collections of chains:
 
-| Table  | Chains                                      | Comment                                      |
-|--------|---------------------------------------------|----------------------------------------------|
-| filter | INPUT,OUTPUT,FORWARD                        | (default) actual packet filtering            |
-| nat    | PREROUTING,OUTPUT,POSTROUTING               | rewrite packet source/destination            |
-| mangle | PREROUTING,INPUT,FORWARD,POSTROUTING,OUTPUT | alter packet headers/contents                |
-| raw    |                                             | avoid connection tracking                    |
+| Table    | Comment                                      |
+|----------|----------------------------------------------|
+| filter   | (default) actual packet filtering            |
+| nat      | rewrite packet source/destination            |
+| mangle   | alter packet headers/contents                |
+| raw      | avoid connection tracking                    |
+| security | SELinux internal                             |
+
+Chains implemented in each table:
+
+| Table↓/Chains→        | PREROUTING | INPUT | FORWARD |  OUTPUT | POSTROUTING |
+|-----------------------|------------|-------|---------|---------|-------------|
+| (routing decision)    |            |       |         | ✓       |             |
+| **raw**               | ✓          |       |         | ✓       |             |
+| (connection tracking) | ✓          |       |         | ✓       |             |
+| **mangle**            | ✓          | ✓     | ✓       | ✓       | ✓           |
+| **nat** (DNAT)        | ✓          |       |         | ✓       |             |
+| (routing decision)    | ✓          |       |         | ✓       |             |
+| **filter**            |            | ✓     | ✓       | ✓       |             |
+| **security**          |            | ✓     | ✓       | ✓       |             |
+| **nat** (SNAT)        |            | ✓     |         |         | ✓           |
 
 ## Usage
 
-Basic syntax for `iptables`:
+Store and/or restore a rule-set from a file:
 
-    iptables <options> <chain> <matches> <target>
+```bash
+iptables-save > /etc/iptables/iptables.rules
+iptables-restore < /etc/iptables/iptables.rules
+```
+
+Examine tables, chains and rules:
 
 ```bash
 iptables -L -n                                      # view current rules
 iptables -t filter --line-numbers -n --exact -v -L  # ^ in more details
 iptables -L INPUT -n -v                             # show specific chain i.e. INPUT
 iptables -t nat -L -v -n                            # show chain in the NAT table
-iptables-save > ~/iptables.rules                    # store all rules in file
-iptables-restore < ~/iptables.rules                 # restore rules from file
 ```
+
+
 
 ### Services
 
@@ -117,14 +146,11 @@ iptables -A OUTPUT -p tcp --dports 25,465,587 -j REJECT
 
 ### Sources & Destinations
 
-Block incoming traffic:
 
 ```bash
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT ACCEPT
-iptables -A INPUT -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -L -v -n
+iptables -A INPUT -p tcp -syn -j DROP       # drop incoming packets
+## previously initiated and accepted exchanges to bypass rule checking
+iptables -A INPUT -m state —state ESTABLISHED,RELATED -j ACCEPT
 ```
 
 Drop ICMP traffic:
@@ -133,7 +159,7 @@ Drop ICMP traffic:
 iptables -A OUTPUT -p icmp -j DROP
 ```
 
-**IP address**
+Control traffic to a given IP **address** (range):
 
 ```bash
 # accept incoming packets
