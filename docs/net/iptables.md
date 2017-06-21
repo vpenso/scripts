@@ -20,7 +20,7 @@ Packet filter framework in Linux:
 
 Official documentation is available at [netfilter.org](https://www.netfilter.org/documentation/)
 
-## Rules
+### Rules
 
 Packet filtering is based on rules with a basic syntax like:
 
@@ -35,13 +35,15 @@ Properties of rules:
 | Target   | Action triggered if a packet matches                         | 
 
 
-## Chains
+### Chains
 
 Chains are collections of rules for packet filtering:
 
 * Checked linearly (top to bottom)
 * If no rule matches the default is applied
 * Either built-in (i.e. INPUT) or user defined
+
+List of built-in chains
 
 | Chain       | Comment                                                  |
 |-------------|----------------------------------------------------------|
@@ -51,7 +53,7 @@ Chains are collections of rules for packet filtering:
 | PREROUTING  | packets traverse this chain before routing               |
 | POSTROUTING | packets traverse this chain after routing                |
 
-## Tables
+### Tables
 
 Tables are collections of chains:
 
@@ -95,7 +97,15 @@ iptables -L INPUT -n -v                             # show specific chain i.e. I
 iptables -t nat -L -v -n                            # show chain in the NAT table
 ```
 
+Examples
 
+```bash
+iptables -A INPUT -p tcp -syn -j DROP       # drop incoming packets
+## previously initiated and accepted exchanges to bypass rule checking
+iptables -A INPUT -m state —state ESTABLISHED,RELATED -j ACCEPT
+## drop ICMP traffic
+iptables -A OUTPUT -p icmp -j DROP
+```
 
 ### Services
 
@@ -146,51 +156,24 @@ iptables -A OUTPUT -p tcp --dports 25,465,587 -j REJECT
 
 ### Sources & Destinations
 
-
 ```bash
-iptables -A INPUT -p tcp -syn -j DROP       # drop incoming packets
-## previously initiated and accepted exchanges to bypass rule checking
-iptables -A INPUT -m state —state ESTABLISHED,RELATED -j ACCEPT
-```
-
-Drop ICMP traffic:
-
-```bash
-iptables -A OUTPUT -p icmp -j DROP
-```
-
-Control traffic to a given IP **address** (range):
-
-```bash
-# accept incoming packets
+# accept incoming packets from a specific IP
 iptables -A INPUT -s 1.2.3.4 -j ACCEPT       
-# drop incoming packets
+# drop incoming packets from a given IP
 iptables -A INPUT -s 1.2.3.4 -j DROP
 iptables -D INPUT -s 1.2.3.4 -j DROP          # unblock
 iptables -A INPUT -p tcp -s 1.2.3.4 -j DROP   # specific protocol
 iptables -A INPUT -s 1.2.3.4/24 -j DROP       # for an IP range
-# reject outgoing connection for a specific port
+# reject outgoing connection for a specific ip/port
 iptables -A OUTPUT -p tcp --dport 1234 -s 1.2.3.4 -j REJECT
-```
-
-**Ports**
-
-```bash
+# drop traffic from a MAC address
+iptables -A INPUT -m mac --mac-source 00:00:00:00:00:00 -j DROP
+# control traffic to a given port
 iptables -A INPUT -p tcp --dport 1234 -j ACCEPT               # allow incoming connections
 iptables -A OUTPUT -p tcp --dport 1234 -j DROP                # block outgoing connections
 iptables -A INPUT -p tcp -i eth0 -p tcp -dport 1234 -j DROP   # ^on selected interface
 iptables -A INPUT -p tcp -s ! 1.2.3.4/24 -dport 1234 -j DROP  # ^except a specific IP range 
-```
-
-**MAC address**
-
-```bash
-iptables -A INPUT -m mac --mac-source 00:00:00:00:00:00 -j DROP
-```
-
-Sites
-
-```bash
+# drop traffic from a given site
 iptables -A OUTPUT -p tcp -d www.google.com -j DROP
 iptables -A OUTPUT -p tcp -d goolge.com -j DROP
 ```
