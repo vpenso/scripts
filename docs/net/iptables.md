@@ -3,7 +3,7 @@ Enable IP forwarding in the kernel:
 
 ```bash
 # persistant configuration
->>> grep net.ipv4.ip_forward /etc/sysctl.conf
+>>> grep ^net.ipv4.ip_forward /etc/sysctl.conf && sysctl -p
 net.ipv4.ip_forward=1
 # enable with sysctl
 sysctl -w net.ipv4.ip.forward=1
@@ -78,14 +78,29 @@ iptables -A OUTPUT -p udp -o eth0 --dport 53 -j ACCEPT
 iptables -A INPUT -p udp -i eth0 --sport 53 -j ACCEPT
 ```
 
-HTTP (port 80):
+SSH (port 22):
 
 ```bash
-## Accept HTTP traffic
+# outgoing
+iptables -A OUTPUT -o eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+# incoming
+iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+# block logins after 3 failed attempts
+iptables -I INPUT -p tcp --dport 22 -i eth0 -m state --state NEW -m recent --set
+iptables -I INPUT -p tcp --dport 22 -i eth0 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 -j DROP
+```
+
+HTTP:
+
+```bash
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-## better
+# better
 iptables -A INPUT -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+# redirect 80 to 8080
+iptables -t nat -A OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 8080
 ```
 
 Mail:
@@ -100,7 +115,7 @@ iptables -A OUTPUT -p tcp --sport 110 -m state --state ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -p tcp --dports 25,465,587 -j REJECT
 ```
 
-### Lockdown
+### Sources & Destinations
 
 Block incoming traffic:
 
@@ -118,28 +133,36 @@ Drop ICMP traffic:
 iptables -A OUTPUT -p icmp -j DROP
 ```
 
-Block an **IP address**:
+**IP address**
 
 ```bash
+# accept incoming packets
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT       
+# drop incoming packets
 iptables -A INPUT -s 1.2.3.4 -j DROP
+iptables -D INPUT -s 1.2.3.4 -j DROP          # unblock
 iptables -A INPUT -p tcp -s 1.2.3.4 -j DROP   # specific protocol
-iptables -D INPUT -s 1.2.3.4 -j DROP          # unblock IP address
+iptables -A INPUT -s 1.2.3.4/24 -j DROP       # for an IP range
+# reject outgoing connection for a specific port
+iptables -A OUTPUT -p tcp --dport 1234 -s 1.2.3.4 -j REJECT
 ```
 
-Block a **port**:
+**Ports**
 
 ```bash
-iptables -A OUTPUT -p tcp --dport 1234 -j DROP    # block outgoing connections
-iptables -A INPUT -p tcp --dport 1234 -j ACCEPT   # allow incoming connections
+iptables -A INPUT -p tcp --dport 1234 -j ACCEPT               # allow incoming connections
+iptables -A OUTPUT -p tcp --dport 1234 -j DROP                # block outgoing connections
+iptables -A INPUT -p tcp -i eth0 -p tcp -dport 1234 -j DROP   # ^on selected interface
+iptables -A INPUT -p tcp -s ! 1.2.3.4/24 -dport 1234 -j DROP  # ^except a specific IP range 
 ```
 
-Block a **MAC address**:
+**MAC address**
 
 ```bash
 iptables -A INPUT -m mac --mac-source 00:00:00:00:00:00 -j DROP
 ```
 
-Block access to a site (i.e. Google):
+Sites
 
 ```bash
 iptables -A OUTPUT -p tcp -d www.google.com -j DROP
