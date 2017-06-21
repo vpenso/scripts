@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-alias se=ssh-exec
-alias sc=ssh-cmd
-alias ss='noglob ssh-sync'
+alias sexe=ssh-exec
+alias scmd=ssh-cmd
+alias ssync='noglob ssh-sync'
 alias sr='ssh -l root'
       shuttle() { sshuttle -r --dns $1 0/0 } # Launch SSH proxy
 alias rsync='rsync -avzrtp'  # Use archive mode by default
