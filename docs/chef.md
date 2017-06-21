@@ -36,6 +36,42 @@ cache_options( :path => "~/.chef/checksums" )
 cookbook_path            ["~/chef/cookbooks"]
 ```
 
+### Bootstrap
+
+Bootstrap template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
+
+```erb
+bash -c '
+
+echo "Writing configuration to /etc/chef"
+mkdir -p /etc/chef
+
+<% if client_pem -%>
+cat > /etc/chef/client.pem <<'EOP'
+<%= ::File.read(::File.expand_path(client_pem)) %>
+EOP
+chmod 0600 /etc/chef/client.pem
+<% end -%>
+
+chmod 0600 /etc/chef/validation.pem
+cat > /etc/chef/client.rb <<'EOP'
+<%= config_content.concat "\nssl_verify_mode :verify_none" %>
+EOP
+
+cat > /etc/chef/first-boot.json <<'EOP'
+<%= first_boot.to_json %>
+EOP
+
+echo "Starting first Chef Client run..."
+<%= start_chef %>
+'
+```
+
+```bash
+# boostrap a node with a given template
+knife bootstrap -N $fqdn $fqdn --bootstrap-template default
+```
+
 
 ## Client
 
