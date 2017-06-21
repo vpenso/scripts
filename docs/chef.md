@@ -38,7 +38,9 @@ cookbook_path            ["~/chef/cookbooks"]
 
 ### Bootstrap
 
-Bootstrap template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
+Knife [bootstrap](https://docs.chef.io/knife_bootstrap.html) installs and configures the chef-client on a remote node.
+
+Template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
 
 ```erb
 bash -c '
@@ -67,10 +69,20 @@ echo "Starting first Chef Client run..."
 '
 ```
 
+Bootstrap a node with a given template
+
 ```bash
-# boostrap a node with a given template
+# configure and execute chef-client
 knife bootstrap -N $fqdn $fqdn --bootstrap-template default
+# prepare cookbook & role for chef-client configuration
+mkdir -p chef/cookbooks
+git clone https://github.com/vpenso/chef-base.git chef/cookbooks/base
+knife cookbook upload base
+knife role from file ~/chef/cookbooks/base/test/roles/chef_client.rb
+# configure/execute chef-client to use a given role
+knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client]'
 ```
+
 
 
 ## Client
