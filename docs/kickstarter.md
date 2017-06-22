@@ -14,7 +14,7 @@ SELINUX=disabled
 
 Add an iPXE configuration to the DHCP server, cf. [pxe.md](pxe.md)
 
-```
+```bash
 >>> yum -y install tftp-server 
 >>> cat /etc/dnsmasq.d/ipxe.conf
 enable-tftp
