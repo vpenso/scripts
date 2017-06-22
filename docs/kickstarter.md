@@ -32,10 +32,12 @@ dhcp-boot=tag:ipxe,http://10.1.1.27:80/menu.ipxe
 Extract boot images from the official source, [CentOS mirros](http://isoredirect.centos.org/centos/7/isos/x86_64/)
 
 ```bash
+www=/var/www/html
 curl -o /tmp/centos.iso http://centos.mirror.net-d-sign.de/7/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso
 mount -o loop /tmp/centos.iso /mnt
-mkdir -p /var/www/html/centos/boot && cp -r /mnt/* /var/www/html/centos/boot
+mkdir -p ${www}/boot/centos/7/1611 && cp -r /mnt/* ${www}/boot/centos/7/1611
 umount /mnt
+ln -s ${www}/boot/centos/7/1611 ${www}/boot/centos/current
 ```
 
 More then 1GB memory required for the CentOS LiveOS!
