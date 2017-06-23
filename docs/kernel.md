@@ -41,7 +41,6 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 
 * Uses `udev` to create device nodes
 * Functionality provided by generator modules, cf. `dracut.modules`
-* Configuration passed by kernel parameters, cf. `dracut.cmdline`
 * Init with [systemd](systemd.md), cf. `dracut.bootup` 
 
 ```bash
@@ -51,8 +50,21 @@ dracut --list-modules | sort                   # list all available modules
 ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric prefix, run in ascending sort order
 ```
 
+Configuration passed by kernel parameters, cf. `dracut.cmdline`
 
+```bash
+rd.info rd.shell rd.debug                      # enable debugging
+console=tty0 console=ttyS1,115200n8            # serial console 
+```
 
+Unpack/repack an image file:
 
+```bash
+>>> file initrd.img
+initrd.img: XZ compressed data
+>>> xz -dc < initrd.img | cpio --quiet -i --make-directories
+...
+>>> find . 2>/dev/null | cpio --quiet -c -o | xz -9 --format=lzma >"new_initrd.img"
+```
 
 
