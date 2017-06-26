@@ -1,5 +1,8 @@
-export KERNEL=/srv/kernel
-export ROOTFS=/srv/rootfs
+export KERNEL=~/projects/kernel
+export ROOTFS=~/projects/rootfs
+
+mkdir -p $KERNEL >/dev/null
+mkdir -p $ROOTFS >/dev/null
 
 function kernel-boot-rootfs() {
   local kernel=${1:?Expecting path to kernel}
