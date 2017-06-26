@@ -1,3 +1,5 @@
+Cf. [kernel](kernel.md) to build a custom Linux kernel.
+
 # Initramfs
 
 Loaded into memory during Linux boot and used as intermediate root file-system (aka. early user space):
@@ -15,10 +17,51 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 → [Custom Ininitramfs](https://wiki.gentoo.org/wiki/Custom_Initramfs)  
 → [Initramfs Tutorial](http://nairobi-embedded.org/initramfs_tutorial.html)
 
+
+## Manual
+
+Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
+
+```bash
+### Download and extract busybox
+>>> version=1.26.2 ; curl https://busybox.net/downloads/busybox-${version}.tar.bz2 | tar xjf -
+### Configure and compile busybox
+>>> cd busybox-${version} ; mkdir _install
+>>> make O=./_install defconfig ; make menuconfig
+# → Busybox Settings → Build Options → Build BusyBox as a static binary (no shared libs)
+>>> make -j 4 2>&1 | tee build.log
+>>> make install
+```
+
+Build the initramfs file system
+
+```bash
+>>> initfs=/tmp/initramfs && mkdir -p $initfs 
+>>> mkdir -pv ${initfs}/{bin,sbin,etc,proc,dev,sys,usr/{bin,sbin},root}
+>>> sudo cp -va /dev/{null,console,tty} ${initfs}/dev/
+>>> cp -r {bin,sbin} $initfs && cp -r usr/{bin,sbin} $initfs/usr
+>>> cat ${initfs}/init
+#!/bin/sh
+
+mount -t proc none /proc
+mount -t sysfs none /sys
+
+echo -e "\nBoot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
+
+exec /bin/sh
+>>> chmod +x ${initfs}/init
+>>> find $initfs -print0 | cpio --null -ov --format=newc | gzip -9 > $KERNEL/initrd.img
+```
+
+Test using a virtual machine:
+
+```bash
+kvm -nographic -append "console=ttyS0" -kernel $KERNEL/linux-4.11.7-basic -initrd $KERNEL/initrd.img
+```
+
 ## Dracut
 
 [Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs, cf. `dracut`, [dracut.git](http://git.kernel.org/cgit/boot/dracut/dracut.git)
-
 
 
 ```bash

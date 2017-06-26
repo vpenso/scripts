@@ -1,4 +1,5 @@
 ↴ [var/aliases/kernel.sh](../var/aliases/kernel.sh)  
+Cf. [initramfs](initramfs.md) to create a RAM disk  
 Cf. [bootstrap](bootstrap.md) to create a rootfs
 
 Download the latest Linux from  [www.kernel.org](https://www.kernel.org/)
