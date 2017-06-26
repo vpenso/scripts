@@ -39,7 +39,7 @@ Build the initramfs file system
 >>> initfs=/tmp/initramfs && mkdir -p $initfs 
 >>> mkdir -pv ${initfs}/{bin,sbin,etc,proc,dev,sys,usr/{bin,sbin},root}
 >>> sudo cp -va /dev/{null,console,tty} ${initfs}/dev/
->>> cp -r {bin,sbin} $initfs && cp -r usr/{bin,sbin} $initfs/usr
+>>> cp -r _install/* $initfs/
 >>> cat ${initfs}/init
 #!/bin/sh
 
