@@ -25,6 +25,8 @@ Kernel instrumentation [BBC](https://github.com/iovisor/bcc)
 
 ## Dracut
 
+[Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs, cf. `dracut`, [dracut.git](http://git.kernel.org/cgit/boot/dracut/dracut.git)
+
 Loaded into memory during Linux boot and used as intermediate root file-system (aka. early user space):
 
 * Prepares device drivers required to mount the **final root file-system** (rootfs) if is loaded:
@@ -37,7 +39,20 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 * Bundled into a single compressed cpio archive
 * Mounted by the kernel to `/` if present, before executing `/init` 
 
-[Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs, cf. `dracut`, [dracut.git](http://git.kernel.org/cgit/boot/dracut/dracut.git)
+Steps during the boot:
+
+* The bootloader loads the kernel and its initramfs
+* The kernel boots and mounts the initramfs
+* Kernel runs the init ramfs:
+  - Basic setup (cmdline, pre-udev)
+  - Start udev (pre-trigger)
+  - Trigger udev (initqueue)
+  - Wait for jobs or udev settled (initqueue settled, finished)
+  - Found root device (pre-mount, mount, pre-pivot)
+  - Cleanup and switch to the new init (cleanup)
+* Systemd will in charge of the rest of the boot process
+
+### Usage
 
 * Uses `udev` to create device nodes
 * Functionality provided by generator modules, cf. `dracut.modules`
@@ -45,9 +60,20 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 
 ```bash
 dracut --help | grep Version                   # show program version
-/etc/dracut.conf                               # configuration file
+/etc/dracut.conf                               # configuration files
+/etc/dracut.conf.d/*.conf
 dracut --list-modules | sort                   # list all available modules
 ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric prefix, run in ascending sort order
+dracut -fv /tmp/initrd.img                     # create a new initramfs
+lsinitrd /tmp/initrd.img                       # inspect an initramfs
+```
+
+Enable logging with:
+
+```bash
+>>> cat /etc/dracut.conf.d/log.conf
+logfile=/var/log/dracut.log
+fileloglvl=6
 ```
 
 Configuration passed by kernel parameters, cf. `dracut.cmdline`
@@ -66,5 +92,4 @@ initrd.img: XZ compressed data
 ...
 >>> find . 2>/dev/null | cpio --quiet -c -o | xz -9 --format=lzma >"new_initrd.img"
 ```
-
 
