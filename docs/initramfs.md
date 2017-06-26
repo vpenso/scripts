@@ -70,6 +70,20 @@ ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric 
 dracut --list-modules | sort                   # list all available modules
 ```
 
+Create a network aware initramfs with the `dracut-network` package:
+
+* The root file-system is located on a network drive, i.e. NFS
+* Boot over the network with PXE
+
+All module installation information is in the file *`module-setup.sh`* with following functions:
+
+| Function        | Description                                             |
+|-----------------|---------------------------------------------------------|
+| check()         | Check if module should be included                      |
+| depends()       | List other required modules                             |
+| cmdline()       | Required kernel arguments                               |
+| install()       | Install non-kernel stuff (scripts, binaries, etc)       |
+| installkernel() | Install kernel related files (e.g drivers)              |
 
 
 
