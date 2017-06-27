@@ -132,9 +132,6 @@ All module installation information is in the file *`module-setup.sh`* with foll
 | installkernel() | Install kernel related files (e.g drivers)              |
 
 
-```bash
-```
-
 ### Network 
 
 Create a network aware initramfs with the `dracut-network` package:
@@ -146,7 +143,7 @@ Network related command-line arguments:
 
 ```bash
 rd.driver.post=mlx4_ib,ib_ipoib,ib_umad,rdma_ucm # load additional kernel modules
-ip=10.20.2.137:1:10.20.1.1:255.255.0.0:lxb001.devops.test:ib0:off
+ip=10.20.2.137::10.20.1.1:255.255.0.0:lxb001.devops.test:ib0:off
 nameserver=10.20.1.11 rd.route=10.20.0.0/16:10.20.1.1:ib0
 rd.neednet=1                # bring up networking interface without netroot=
 ks.device=ib0
