@@ -18,7 +18,7 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 → [Initramfs Tutorial](http://nairobi-embedded.org/initramfs_tutorial.html)
 
 
-## Manual
+### Manual
 
 Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
 
@@ -59,7 +59,7 @@ Test using a virtual machine:
 kvm -nographic -append "console=ttyS0" -kernel $KERNEL/linux-4.11.7-basic -initrd $KERNEL/initrd.img
 ```
 
-## Dracut
+# Dracut
 
 [Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs, cf. `dracut`, [dracut.git](http://git.kernel.org/cgit/boot/dracut/dracut.git)
 
@@ -80,56 +80,6 @@ logfile=/var/log/dracut.log
 fileloglvl=6
 ```
 
-Configuration passed by kernel parameters, cf. `dracut.cmdline`
-
-```bash
-rd.info rd.shell rd.debug                      # enable debugging
-console=tty0 console=ttyS1,115200n8            # serial console 
-```
-
-### Boot Stages
-
-The bootloader loads the kernel and its initramfs. When the kernel boots it unpacks the initramfs and executes `/init` (installed from `99base/init.sh` module). Init runs following phases:
-
-| Phase  | Hooks                       | Comment                                                                        |
-|--------|-----------------------------|--------------------------------------------------------------------------------|
-| Setup  | cmdline                     | Source `dracut-lib.sh`, start logging if requested, parse the kernel arguments |
-| Udev   | pre-udev, pre-trigger       | Start `udevd`, run `udevadm trigger`, load kernel modules                      |
-| Main   | initqueue                   | Wait for devices until `initqueue/finished`                                    |
-| Mount  | pre-mount, mount, pre-pivot | Mount root device, check for target /init                                      |
-| Switch | cleanup                     | Clean up, stop udev, stop logging. Start target /init                          |
-
-### Modules
-
-Dracut builds the initramfs out of modules:
-
-* Each prefixed with a number which determines the order during the build.
-* Lower number modules have higher priority (can't be overwritten by subsequent modules)
-* Builtin modules are numbered from 90-99
-
-```bash
-man dracut.modules                             # documentation
-ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric prefix, run in ascending sort order
-dracut --list-modules | sort                   # list all available modules
-```
-
-Create a network aware initramfs with the `dracut-network` package:
-
-* The root file-system is located on a network drive, i.e. NFS
-* Boot over the network with PXE
-
-All module installation information is in the file *`module-setup.sh`* with following functions:
-
-| Function        | Description                                             |
-|-----------------|---------------------------------------------------------|
-| check()         | Check if module should be included                      |
-| depends()       | List other required modules                             |
-| cmdline()       | Required kernel arguments                               |
-| install()       | Install non-kernel stuff (scripts, binaries, etc)       |
-| installkernel() | Install kernel related files (e.g drivers)              |
-
-
-
 ### Unpack/repack
 
 Xz compressed image:
@@ -142,4 +92,62 @@ initrd.img: XZ compressed data
 >>> find . 2>/dev/null | cpio --quiet -c -o | xz -9 --format=lzma >"new_initrd.img"
 ```
 
+## Boot Stages
 
+The bootloader loads the kernel and its initramfs. When the kernel boots it unpacks the initramfs and executes `/init` (installed from `99base/init.sh` module). Init runs following phases:
+
+| Phase  | Hooks                       | Comment                                                                        |
+|--------|-----------------------------|--------------------------------------------------------------------------------|
+| Setup  | cmdline                     | Source `dracut-lib.sh`, start logging if requested, parse the kernel arguments |
+| Udev   | pre-udev, pre-trigger       | Start `udevd`, run `udevadm trigger`, load kernel modules                      |
+| Main   | initqueue                   | Wait for devices until `initqueue/finished`                                    |
+| Mount  | pre-mount, mount, pre-pivot | Mount root device, check for target /init                                      |
+| Switch | cleanup                     | Clean up, stop udev, stop logging. Start target /init                          |
+
+## Modules
+
+Dracut builds the initramfs out of modules:
+
+* Each prefixed with a number which determines the order during the build.
+* Lower number modules have higher priority (can't be overwritten by subsequent modules)
+* Builtin modules are numbered from 90-99
+
+```bash
+man dracut.modules                             # documentation
+ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric prefix, run in ascending sort order
+dracut --list-modules | sort                   # list all available modules
+## within the build initramfs
+/usr/lib/dracut/hooks/                         # all hooks
+```
+
+
+All module installation information is in the file *`module-setup.sh`* with following functions:
+
+| Function        | Description                                             |
+|-----------------|---------------------------------------------------------|
+| check()         | Check if module should be included                      |
+| depends()       | List other required modules                             |
+| cmdline()       | Required kernel arguments                               |
+| install()       | Install non-kernel stuff (scripts, binaries, etc)       |
+| installkernel() | Install kernel related files (e.g drivers)              |
+
+
+```bash
+```
+
+### Network 
+
+Create a network aware initramfs with the `dracut-network` package:
+
+* The root file-system is located on a network drive, i.e. NFS
+* Boot over the network with PXE
+
+Network related command-line arguments:
+
+```bash
+rd.driver.post=mlx4_ib,ib_ipoib,ib_umad,rdma_ucm # load additional kernel modules
+ip=10.20.2.137:1:10.20.1.1:255.255.0.0:lxb001.devops.test:ib0:off
+nameserver=10.20.1.11 rd.route=10.20.0.0/16:10.20.1.1:ib0
+rd.neednet=1                # bring up networking interface without netroot=
+ks.device=ib0
+```
