@@ -28,7 +28,10 @@ begin
   confirm = STDIN.noecho(&:gets).chomp
   $stdout.puts
 
-  if password == confirm
+  puts password
+  puts confirm
+
+  unless "#{password}" == "#{confirm}"
     $stdout.puts 'Passwords not matching'
     exit 1
   end

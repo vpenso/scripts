@@ -108,7 +108,13 @@ part /     --ondisk=vda --asprimary --fstype=ext4 --size=8192
 part /var  --ondisk=vda             --fstype=ext4 --size=8192
 part /tmp  --ondisk=vda             --fstype=ext4 --size=8192 --maxsize=20480 --grow
 part /srv  --ondisk=vda --asprimary --fstype=ext4 --size=10240                --grow
+```
 
+## Package Section
+
+Minimal base system:
+
+```
 ## Package Section ##
 
 %packages --nobase --excludedocs
@@ -127,6 +133,17 @@ repo --name=site --baseurl="http://lxdev01.devops.test/repo"
 %packages
 ...
 chef
+%end
+```
+
+## Post Install Section
+
+Configure the hostname:
+
+```bash
+%post --log=/var/log/post-install.log
+echo "Write hostname to /etc/hostname"
+/bin/hostname -f > /etc/hostname
 %end
 ```
 
