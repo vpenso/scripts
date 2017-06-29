@@ -138,7 +138,7 @@ chef
 
 ## Post Install Section
 
-Configure the hostname:
+Add the FQDN to `/etc/hostname`:
 
 ```bash
 %post --log=/var/log/post-install.log
@@ -147,4 +147,17 @@ echo "Write hostname to /etc/hostname"
 %end
 ```
 
+Install custom SSH keys for the root user:
+
+```bash
+%post --log=/var/log/post-install.log
+echo "Install SSH keys for the root user"
+mkdir -m 0700 /root/.ssh/
+cat <<EOF >/root/.ssh/authorized_keys
+  ..........KEYS...........
+EOF
+chmod 0600 /root/.ssh/authorized_keys
+restorecon -R /root/.ssh/
+%end
+```
 
