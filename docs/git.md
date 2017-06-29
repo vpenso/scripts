@@ -16,6 +16,7 @@ git config --global --unset http.proxy
 git config --global --unset https.proxy      # disable network proxy
 ```
 
+
 ## Usage
 
 ```bash
@@ -64,6 +65,14 @@ git reset --hard <hash>                  # discard until specified commit
 git clean -f                             # recursivly remove file not in version control
 GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
                                           # Set the commiter for a single commit
+```
+
+Repository specific committer in at `.git/config` file:
+
+```
+[user]
+  name = devops
+  email = devops@devops.test
 ```
 
 ### Branch
