@@ -36,6 +36,14 @@ cache_options( :path => "~/.chef/checksums" )
 cookbook_path            ["~/chef/cookbooks"]
 ```
 
+Query Chefs index (infrastructure inventory) for nodes attributes, e.g.: 
+
+```bash
+knife search node "role:<foo>"    # node with a specific role
+knife search node "role:<foo> AND role:<bar>" -a <attribute>
+knife search node "name:<foo>*" -Fj -a ipaddress
+```
+
 ## Client
 
 Official documentation from [docs.chef.io](http://docs.chef.io):
