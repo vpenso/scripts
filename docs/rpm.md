@@ -113,6 +113,14 @@ yum versionlock <package>-<version>     # lock a package to a specific version
 yum versionlcok delete <package>        # remove a lock
 ```
 
+Exclude packages from updates in `/etc/yum.conf`:
+
+```conf
+[main]
+....
+exclude=<foo>* <bar>*
+```
+
 
 Transaction history
 
