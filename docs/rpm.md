@@ -102,6 +102,18 @@ yum makecache                     # update metadata for the currently enabled re
 yum clean all                     # clean up all the repository metadata caches
 ```
 
+Package rollback and package version lock:
+
+```bash
+yum --showduplicates list <package>     # show all versions of a package
+yum downgrade <package>-<version>       # rollback/downgrade a package to a specific version
+yum install yum-plugin-versionlock      # install package lock Yum plugin
+yum versionlock list                    # show all locks
+yum versionlock <package>-<version>     # lock a package to a specific version
+yum versionlcok delete <package>        # remove a lock
+```
+
+
 Transaction history
 
 ```bash
