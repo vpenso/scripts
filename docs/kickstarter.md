@@ -112,6 +112,11 @@ part /srv  --ondisk=vda --asprimary --fstype=ext4 --size=10240                --
 
 ## Package Section
 
+Lists the packages you would like to install:
+
+* `%packages` begins the section listing packages, must end with the `%end` 
+* Leading *dash* excludes packages//groups from the installation
+
 Minimal base system:
 
 ```
