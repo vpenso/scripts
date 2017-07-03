@@ -177,11 +177,13 @@ Keep repository metadata up to date, and check for, download, and apply updates
 >>> systemctl start yum-cron.service && systemctl enable yum-cron.service
 # basic configuration
 >>> egrep -v '^#|^$' /etc/yum/yum-cron-hourly.conf | grep update
-update_cmd = security
+update_cmd = default
 update_messages = yes
 download_updates = yes
 apply_updates = yes
 ```
+
+CentOS does not support `yum --security update` therefore the `update_cmd = default` is required.
 
 # DNF
 
