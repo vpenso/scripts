@@ -221,20 +221,20 @@ EndSection
 
 Retrieve the currently **running configuration** from the BMC with the command option `--checkout`. Configuration **modifications** can be loaded into the BMC with option `--commit --filename=PATH` providing a file argument.
 
-~~~
+```bash
 ipmi-pef-config --checkout > ipmi-pef.conf
 ipmi-pef-config --commit --filename=ipmi-pef.conf
-~~~
+```
 
 Single **event configuration** is possible with the options `--commit --key-pair="SECTION:KEY=VALUE"`, where section name and configuration key are delimited by a double point: 
 
-~~~
+```bash
 ipmi-pef-config -c -e Event_Filter_16:Sensor_Type=Temperature
 ipmi-pef-config -c -e Event_Filter_16:Event_Severity=Critical
 ipmi-pef-config -c -e Event_Filter_16:Event_Filter_Action_Power_Off=yes
 ipmi-pef-config -c -e Event_Filter_16:Enable_Filter=yes
-~~~
-~~~
+```
+```bash
 ipmi-pef-config -c -e Event_Filter_16:Generator_Id_Byte_1=0xFF
 ipmi-pef-config -c -e Event_Filter_16:Generator_Id_Byte_2=0xFF
 ipmi-pef-config -c -e Event_Filter_16:Sensor_Number=0xFF
@@ -243,6 +243,9 @@ ipmi-pef-config -c -e Event_Filter_16:Event_Data1_Offset_Mask=0xFFFF
 ipmi-pef-config -c -e Event_Filter_16:Event_Data1_Compare1=0xFF
 ipmi-pef-config -c -e Event_Filter_16:Event_Data2_Compare1=0xFF
 ipmi-pef-config -c -e Event_Filter_16:Event_Data3_Compare1=0xFF
-~~~
+```
+```bash
+ipmi-pef-config -c -e PEF_Conf:Enable_Power_Down_Action=Yes
+```
 
 
