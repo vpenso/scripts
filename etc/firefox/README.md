@@ -13,7 +13,9 @@ Plugins I'm using:
 
 ## Container
 
-Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with with GPT:
+→ [Firejail](https://firejail.wordpress.com/)
+
+Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with GPT:
 
 ↴ [bin/firefox-container](../../bin/firefox-container)
 
