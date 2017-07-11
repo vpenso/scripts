@@ -1,27 +1,37 @@
+# Open MPI (OMPI)
 
-Download an OpenMPI release archive from: 
+Main code sections:
+
+* **OMPI** (Open MPI layer) the MPI API and supporting logic
+* **ORTE** (Open MPI Run-Time Environment) interfaces the back-end run-time system
+* **OPAL** (Open Portability Access Layer) utility code for the operating system
+
+## Install
+
+Download a release archive from the official web site: 
 
 https://www.open-mpi.org/software/
 
 ```bash
 ## select a target location for the installation
 >>> prefix=$PWD/openmpi/2.1.1 && mkdir -p $prefix
-## change into a scratch directory i.e. /tmp
+## change into a scratch directory i.e. /tmp, download the archive and extract it
 >>> wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.1.tar.bz2 && tar -xvf openmpi-2.1.1.tar.bz2
 ## make sure to have the required compilers (in a given version) in the shell enironment
->>> ./configure --prefix=$prefix | tee $prefix/configure.log
-## adjust how many cores to use for the compilation
->>> make -j 8 | tee $prefix/make.log
->>> make install | tee $prefix/install.log
+>>> ./configure --prefix=$prefix 2>&1 | tee $prefix/configure.log
+## adjust how many cores to use for the compilation with option -j
+>>> make -j 8 2>&1 | tee $prefix/make.log
+>>> make install 2>&1 | tee $prefix/install.log
 ## create a file to source this installation into a shell environment
 >>> echo "export PATH=$prefix/bin:$PATH" >> $prefix/source_me.sh
 >>> echo "export LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH" >> $prefix/source_me.sh
+>>> echo "export MANPATH=$prefix/share/man:$MANPATH" >> $prefix/source_me.sh
 >>> source $prefix/source_me.sh
 ```
 
 ## Usage
 
-Following a simple OpenMPI example program `hello_world.c`: 
+Following a simple Open MPI example program `hello_world.c`: 
 
 ```c
 #include <stdio.h>
@@ -82,9 +92,26 @@ int main(int argc,char ** argv )
 }
 ```
 
-Compile the program an execute it locally:
+Compile the using `mpicc` an execute it locally with `mpirun`:
 
 ```bash
 >>> mpicc -o hello_world hello_world.c
->>> mpirun -np 4 hello_world
+>>> mpirun -np 4 hello_world              # run with 4 processes
 ```
+
+### MCA Parameters
+
+Change the behavior of code at run-time in following precedence:
+
+1. Command line arguments `mpirun -mca <name> <value>`
+2. Environment variables `export OMPI_MCA_<name>=<value>`
+3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
+4. Default value
+
+Use `ompi_info` to investigate the OMPI installation
+
+```bash
+ompi_info --param btl all       # show the BTL (Byte Transfer Layer) supported        
+```
+
+Cf. [Open MPI FAQ: General run-time tuning](https://www.open-mpi.org/faq/?category=tuning)
