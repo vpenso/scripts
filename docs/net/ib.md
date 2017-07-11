@@ -329,10 +329,10 @@ Restoring signature                     - OK
 
 ### FlexBoot
 
-* Based on the iPXE and allows **Boot over Infiniband** (BoIB)
-* Depending on the motherboard firmware enable "MLNX FlexBoot" as boot device, and adjust the boot order eventually.
-* FlexBoot is deployed as expansion ROM image `.mrom` file 
+Based on the iPXE and allows **Boot over Infiniband** (BoIB)
 
+* Depending on the motherboard firmware enable "MLNX FlexBoot" as boot device, and adjust the boot order
+* FlexBoot is deployed as expansion ROM image `.mrom` file 
 
 ```bash
 ## -- List firmware and PXE version
@@ -346,6 +346,18 @@ Restoring signature                     - OK
 Burning ROM image    - OK  
 Restoring signature  - OK
 ```
+
+Following is an example iPXE configuration:
+
+```bash
+#!ipxe
+set base http://mirror.centos.org/centos/7/os/x86_64
+set ks http://server/path/to/kickstart
+kernel ${base}/images/pxeboot/vmlinuz initrd=initrd.img inst.repo=${base} inst.text rd.shell rd.driver.post=mlx4_ib,ib_ipoib,ib_umad,rdma_ucm rd.neednet=1 rd.timeout=20 rd.retry=80 ip=${net0.dhcp/ip}::10.20.0.1:255.255.0.0:${net0.dhcp/hostname}.gsi.de:ib0:off nameserver=10.10.20.3 rd.route=10.20.0.0/16:10.20.0.1:ib0 ks.device=ib0 ks=${ks}/default.cfg
+initrd ${base}/images/pxeboot/initrd.img
+boot || goto shell
+```
+
 
 ### Change MAC Address
 
