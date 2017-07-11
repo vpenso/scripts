@@ -92,6 +92,8 @@ int main(int argc,char ** argv )
 }
 ```
 
+Cf. [Official OMPI Examples](https://github.com/open-mpi/ompi/tree/master/examples)
+
 Compile the using `mpicc` an execute it locally with `mpirun`:
 
 ```bash
