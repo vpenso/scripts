@@ -75,7 +75,7 @@ ZSH_HIGHLIGHT_STYLES+=(
 )
 
 antigen bundle olivierverdier/zsh-git-prompt
-antigen-apply
+antigen apply
 
 NEWLINE=$'\n'
 #PROMPT='%F{239}%n@%m%F{253}:%F{243}%~%k%f$NEWLINE$(git_super_status)%F{253}>>>%f '
