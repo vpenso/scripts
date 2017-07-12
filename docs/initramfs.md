@@ -17,6 +17,20 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 → [Custom Ininitramfs](https://wiki.gentoo.org/wiki/Custom_Initramfs)  
 → [Initramfs Tutorial](http://nairobi-embedded.org/initramfs_tutorial.html)
 
+Enable support in the Linux kernel configuration:
+
+```bash
+>>> grep -e BLK_DEV_INITRD -e BLK_DEV_RAM -e TMPFS -e INITRAMFS $kernel/linux.config
+CONFIG_BLK_DEV_INITRD=y
+CONFIG_INITRAMFS_SOURCE=""
+CONFIG_INITRAMFS_COMPRESSION=".gz"
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+# CONFIG_BLK_DEV_RAM is not set
+CONFIG_TMPFS=y
+CONFIG_TMPFS_POSIX_ACL=y
+CONFIG_TMPFS_XATTR=y
+```
 
 ### Manual
 

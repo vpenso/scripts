@@ -1,6 +1,4 @@
 ↴ [var/aliases/kernel.sh](../var/aliases/kernel.sh)  
-Cf. [initramfs](initramfs.md) to create a RAM disk  
-Cf. [bootstrap](bootstrap.md) to create a rootfs
 
 Download the latest Linux from  [www.kernel.org](https://www.kernel.org/)
 
@@ -29,10 +27,5 @@ build.log
 linux
 linux.config
 modules/
-## -- Boot custom kernel with with a dedicated root file-system -- ##
-kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic $rootfs
-kernel-boot-rootfs /srv/kernel/linux-4.8.11-basic $rootfs -initrd /srv/kernel/linux-4.8.11-basic.initramfs
 ```
-
-Kernel instrumentation [BBC](https://github.com/iovisor/bcc)
 
