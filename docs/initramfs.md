@@ -60,37 +60,49 @@ Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
 ### Download and extract busybox
 >>> version=1.26.2 ; curl https://busybox.net/downloads/busybox-${version}.tar.bz2 | tar xjf -
 ### Configure and compile busybox
->>> cd busybox-${version} ; mkdir _install
->>> make O=./_install defconfig ; make menuconfig
+>>> cd busybox-${version} 
+>>> make menuconfig
 # → Busybox Settings → Build Options → Build BusyBox as a static binary (no shared libs)
 >>> make -j 4 2>&1 | tee build.log
->>> make install
+>>> make install 2>&1 | tee -a build.log 
+>>> ls -1 _install
+bin/
+linuxrc@
+sbin/
+usr/
 ```
 
 Build the initramfs file system
 
 ```bash
 >>> initfs=/tmp/initramfs && mkdir -p $initfs 
->>> mkdir -pv ${initfs}/{bin,sbin,etc,proc,dev,sys,usr/{bin,sbin},root}
+>>> mkdir -pv ${initfs}/{bin,sbin,etc,proc,dev,sys,tmp,root}
 >>> sudo cp -va /dev/{null,console,tty} ${initfs}/dev/
->>> cp -r _install/* $initfs/
+### Copy the busybox binaries into the initramfs
+>>> cp -avR _install/* $initfs/
+>>> fakeroot mknod $initfs/dev/ram0 b 1 0
+>>> fakeroot mknod $initfs/dev/console c 5 0
+### check the busybox environment
+>>> fakeroot fakechroot /usr/sbin/chroot $initfs/ /bin/sh
 >>> cat ${initfs}/init
 #!/bin/sh
 
-mount -t proc none /proc
-mount -t sysfs none /sys
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/sbin/mdev -s
 
 echo -e "\nBoot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
 
 exec /bin/sh
 >>> chmod +x ${initfs}/init
->>> find $initfs -print0 | cpio --null -ov --format=newc | gzip -9 > $KERNEL/initrd.img
+>>> find $initfs -print0 | cpio --null -ov --format=newc | gzip -9 > /tmp/initrd.gz
 ```
 
 Test using a virtual machine:
 
 ```bash
-kvm -nographic -append "console=ttyS0" -kernel $KERNEL/linux-4.11.7-basic -initrd $KERNEL/initrd.img
+>>> cmdline='root=/dev/ram0 rootfstype=ramfs init=init debug console=ttyS0'
+>>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
 # Dracut
