@@ -32,6 +32,26 @@ CONFIG_TMPFS_POSIX_ACL=y
 CONFIG_TMPFS_XATTR=y
 ```
 
+### Custom Program
+
+Compile a simple C program an execute it as initrd payload:
+
+```bash
+>>> cat hello.c          
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/reboot.h>
+
+int main(void) {
+    printf("Hello, world!\n");
+    reboot(0x4321fedc);
+    return 0;
+}
+>>> gcc -o initrd/init -static hello.c
+>>> ( cd initrd/ && find . | cpio -o -H newc ) | gzip > initrd.gz
+>>> kvm -m 2048 -kernel ${KERNEL}/${version}/linux -initrd initrd.gz -append "debug console=ttyS0" -nographic
+```
+
 ### Manual
 
 Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
