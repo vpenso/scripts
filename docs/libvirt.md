@@ -56,7 +56,32 @@ virsh create|define libvirt_instance.xml                 # start/define VM insta
 
 ## Templates
 
-↴ [virsh-instance][virsh-instance] manages virtual machine template images and instance: 
+Use [bootstrap](bootstrap.md), or [guestfs](http://libguestfs.org/guestfs.3.html), i.e.:
+
+```bash 
+## Install Centos 7 from a mirror
+virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
+             --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
+## Install Debian 9 from a mirror
+virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
+             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
+```
+
+Install a configuration management system, i. e. [Chef](https://downloads.chef.io/chef):
+
+```bash
+## CentOS 7
+wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
+yum install chef-13.1.31-1.el7.x86_64.rpm
+## Debian 9
+apt install chef
+```
+
+Alternatively ↴ [virsh-instance][virsh-instance] manages virtual machine template images and instance: 
 
 ```bash
 $VM_IMAGE_PATH                                   # path to the VM template images (default /srv/vms/images)
@@ -96,30 +121,6 @@ echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-le
 ## -- Configure systemd, NTP, PAM, etc if required -- # 
 ```
 
-Alternatively [bootstrap](bootstrap.md), or [guestfs](http://libguestfs.org/guestfs.3.html):
-
-```bash 
-## Install Centos 7 from a mirror
-virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
-             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
-             --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
-## Install Debian 9 from a mirror
-virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
-             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
-             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
-```
-
-Install a configuration management system, i. e. [Chef](https://downloads.chef.io/chef):
-
-```bash
-## CentOS 7
-wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
-yum install chef-13.1.31-1.el7.x86_64.rpm
-## Debian 9
-apt install chef
-```
 
 
 ## Instances
@@ -176,7 +177,7 @@ Login with ↴ [ssh-instance][ssh-instance] password-less SSH configuration
 
 ```bash
 cd $VM_IMAGE_PATH/$name                    
-ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
+mkdir keys ; ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
                                             # password-less SSH key-pair
 ssh-instance -i keys/id_rsa 10.1.1.26       # custom SSH configuration written to ssh_config
 ssh -F ssh_config instance -C […]
