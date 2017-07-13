@@ -121,7 +121,7 @@ fi
 
 command="$sudo$command"
 _debug "Execute command [ssh -gt $options $host $command]"
-ssh -gt $options $host $command 2>/dev/null
+ssh -A -gt $options $host $command 2>/dev/null
 if [ $? -ne 0 ]
 then
   _error "Host [$host] failed to execute [$@]!"
