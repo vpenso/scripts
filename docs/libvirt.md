@@ -82,19 +82,16 @@ Set the following configuration options during installation:
 
 ```bash
 # Aditional Debian packages
-apt update && apt install openssh-server sudo rsync chef haveged   
+apt update && apt -y install openssh-server sudo rsync chef haveged   
 # Aditional CentOS packages
 yum -y install openssh-server sudo rsync                           
+wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
+yum install chef-13.1.31-1.el7.x86_64.rpm
 # password-less sudo for the devops user
 echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
 ##
 ## -- Configure systemd, NTP, PAM, etc if required -- # 
 ## 
-# Install Chef on CentOS 7
-wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
-yum install chef-13.1.31-1.el7.x86_64.rpm
-# Install Chef on Debian 9
-apt install chef
 ```
 
 Alternatively ↴ [virsh-instance][virsh-instance] manages virtual machine template images and instance: 
