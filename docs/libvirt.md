@@ -71,13 +71,29 @@ virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network
              --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
 ```
 
-Install a configuration management system, i. e. [Chef](https://downloads.chef.io/chef):
+Set the following configuration options during installation:
+
+* Keymap: English
+* Host name is the distribution nick-name (e.g squeeze or lucid)
+* Domain name `devops.test`
+* Single primary partition for `/` (no SWAP).
+* Passord "root" for the root account, and user `devops` password "devops"
+* Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
 ```bash
-## CentOS 7
+# Aditional Debian packages
+apt update && apt install openssh-server sudo rsync chef haveged   
+# Aditional CentOS packages
+yum -y install openssh-server sudo rsync                           
+# password-less sudo for the devops user
+echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
+##
+## -- Configure systemd, NTP, PAM, etc if required -- # 
+## 
+# Install Chef on CentOS 7
 wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
 yum install chef-13.1.31-1.el7.x86_64.rpm
-## Debian 9
+# Install Chef on Debian 9
 apt install chef
 ```
 
@@ -94,32 +110,12 @@ virsh-instance install --location http://ftp.de.debian.org/debian/dists/stable/m
 virsh-instance install --cdrom <path_to_iso> […] # install from a ISO image
 virt-viewer $name                                # connect to VNC of the installing template image
 virsh undefine $name                             # remove template virtial machine after the installation is finished
-```
-
-Set the following configuration options during installation:
-
-* Keymap: English
-* Host name is the distribution nick-name (e.g squeeze or lucid)
-* Domain name `devops.test`
-* Single disk partition, no SWAP!
-* Username is `devops`
-* Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
-
-```bash
 virsh-config -v -n $name -m 02:FF:0A:0A:06:1A $VM_IMAGE_PATH/$name/libvirt_instance.xml
                                                   # create a configuration for the virtual machine
 virsh create $VM_IMAGE_PATH/$name/libvirt_instance.xml
                                                   # start the virtual machine to customize the installation
 ```
 
-Template image customization:
-
-```bash
-apt update && apt install openssh-server sudo rsync chef haveged   # Debian packages
-yum -y install openssh-server sudo rsync                           # Centos packages
-echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops          # password-less sudo for the devops user
-## -- Configure systemd, NTP, PAM, etc if required -- # 
-```
 
 
 
