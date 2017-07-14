@@ -4,32 +4,26 @@
 Enable SSH access in a live-system and login as _root_ if working remote:
 
 ```bash
-pacman -Sy       
-pacman -S openssh
-systemctl start sshd.service
-passwd
+## Install OpenSSH, and start the server
+>>> pacman -Sy && pacman --noconfirm -S openssh
+>>> systemctl start sshd
+>>> passwd                                  # set a root password
 ```
 
-Select a local block device with `lsblk` to installation of the base system. Wipe an existing partition table with `sgdisk` if required.
+Prepare the target storage device, and install Archlinux:
 
 ```bash
-lsblk | grep '^.da*' 
-sgdisk --zap-all /dev/vda
-cgdisk /dev/vda
-parted -l /dev/vda
-mkfs.ext4 /dev/vda1
-mount /dev/vda1 /mnt ; df -h /mnt
+>>> lsblk | grep '^.da*'                    # identify the storage device
+>>> sgdisk --zap-all /dev/vda               # wipe it if required
+## Create a partion for /
+>>> parted /dev/vda mklabel gpt mkpart root ext4 1MiB 100%
+>>> parted -l /dev/vda
+>>> mkfs.ext4 /dev/vda1                     # create a file-system
+>>> mount /dev/vda1 /mnt ; df -h /mnt       # mount the new file-system
+>>> pacstrap -i /mnt base                   # install the base system
+## Regsiter the fils-system
+>>> genfstab -U -p /mnt >> /mnt/etc/fstab ; cat /mnt/etc/fstab
 ```
-
-Interactive partitioning with `cgdisk` to create a _root_ partition at least. Verify the result with `parted`.
-
-Install the base system with `pacstrap`, and generate `/etc/fstab` on the target file-system.
-
-```bash
-pacstrap -i /mnt base
-genfstab -U -p /mnt >> /mnt/etc/fstab ; cat /mnt/etc/fstab
-```
-
 Configuration
 
 ```bash
@@ -44,8 +38,8 @@ en_US.UTF-8 UTF-8
 >>> echo LANG=en_US.UTF-8 > /etc/locale.conf
 >>> locale-gen
 ## hostname
-» echo arch > /etc/hostname
-» cat /etc/hosts
+>>> echo arch > /etc/hostname
+>>> cat /etc/hosts
 127.0.0.1       arch.devops.test        arch
 ::1             arch.devops.test        arch
 >>> passwd                           # set the root password
@@ -62,6 +56,8 @@ Install the bootloader and MBR boot code. Configure the boot menu:
 
 ```bash
 >>> mkinitcpio -p linux
+>>> pacman --noconfirm -S grub
+>>> grub-install /dev/vda
 >>> pacman -S gptfdisk syslinux
 >>> syslinux-install_update -iam
 Syslinux BIOS install successful
