@@ -5,7 +5,7 @@
 Deployment and configuration of [libvirt](http://libvirt.org/docs.html) on a workstation
 
 ```bash
-sudo apt-get -y install libvirt-daemon-system libvirt-dev libvirt-clients virt-manager virt-viewer virt-top virtinst qemu-utils qemu-kvm libguestfs-tools
+sudo apt-get -y install libvirt-daemon-system libvirt-dev libvirt-clients virt-manager virt-viewer virt-top virtinst qemu-utils qemu-kvm libguestfs-tools ovmf
                                                  # related packages in Debian
 sudo dnf -y group install with-optional virtualization
                                                  # related packages in Fedora

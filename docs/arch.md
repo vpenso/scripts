@@ -1,5 +1,12 @@
+Start a virtual machine (with UEFI support):
 
-<https://www.archlinux.org/>
+```bash
+## Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
+virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --boot uefi --cdrom /tmp/archlinux-2017.07.01-x86_64.iso
+```
+
 
 Enable SSH access in a live-system and login as _root_ if working remote:
 
@@ -15,14 +22,26 @@ Prepare the target storage device, and install Archlinux:
 ```bash
 >>> lsblk | grep '^.da*'                    # identify the storage device
 >>> sgdisk --zap-all /dev/vda               # wipe it if required
-## Create a partion for /
->>> parted /dev/vda mklabel gpt mkpart root ext4 1MiB 100%
->>> parted -l /dev/vda
->>> mkfs.ext4 /dev/vda1                     # create a file-system
->>> mount /dev/vda1 /mnt ; df -h /mnt       # mount the new file-system
->>> pacstrap -i /mnt base                   # install the base system
+>>> cgdisk /dev/vda                         # partition the disk device
+1 100MB EFI partition # Hex code ef00
+2 250MB Boot partition # Hex code 8300
+3 100% size partiton # Hex code 8300
+## Create the file-systems in all partitions
+>>> mkfs.vfat -F32 /dev/vda1
+>>> mkfs.ext2 /dev/vda2
+>>> mkfs.ext4 /dev/vda3
+### Mount all partitions
+>>> mount /dev/vda3 /mnt ; df -h /mnt       
+>>> mkdir /mnt/boot && mount /dev/vda2 /mnt/boot
+>>> mkdir /mnt/boot/efi && mount /dev/vda1 /mnt/boot/efi
+>>> df | grep /mnt
+/dev/vda3       40668628  49180  38523888   1% /mnt
+/dev/vda2         247919   2063    233056   1% /mnt/boot
+/dev/vda1         100808   5807     95002   6% /mnt/boot/efi
+>>> pacstrap -i /mnt base vim               # install the base system
 ## Regsiter the fils-system
->>> genfstab -U -p /mnt >> /mnt/etc/fstab ; cat /mnt/etc/fstab
+>>> genfstab -pU /mnt >> /mnt/etc/fstab ; cat /mnt/etc/fstab
+>>> echo "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0" >> /mnt/etc/fstab
 ```
 Configuration
 
@@ -32,11 +51,7 @@ Configuration
 >>> ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime 
 >>> hwclock --systohc --utc
 ## localization 
->>> vi /etc/locale.gen               # uncomment "en_US.UTF-8 UTF-8"
->>> grep ^en_US /etc/locale.gen
-en_US.UTF-8 UTF-8
->>> echo LANG=en_US.UTF-8 > /etc/locale.conf
->>> locale-gen
+>>> echo LANG=en_US.UTF-8 >> /etc/locale.conf && echo LANGUAGE=en_US >> /etc/locale.conf && echo LC_ALL=C >> /etc/locale.conf
 ## hostname
 >>> echo arch > /etc/hostname
 >>> cat /etc/hosts
@@ -55,25 +70,11 @@ en_US.UTF-8 UTF-8
 Install the bootloader and MBR boot code. Configure the boot menu:
 
 ```bash
+>>> grep ^MODULES /etc/mkinitcpio.conf
+MODULES="ext4"
 >>> mkinitcpio -p linux
->>> pacman --noconfirm -S grub
->>> grub-install /dev/vda
->>> pacman -S gptfdisk syslinux
->>> syslinux-install_update -iam
-Syslinux BIOS install successful
-Attribute Legacy Bios Bootable Set - /dev/vda1
-Installed MBR (/mnt/usr/lib/syslinux/bios/gptmbr.bin) to /dev/vda
-## Adjust the boot menu
->>> grep -C 2 /dev/vda /boot/syslinux/syslinux.cfg 
-MENU LABEL Arch Linux
-LINUX ../vmlinuz-linux
-APPEND root=/dev/vda1 rw
-INITRD ../initramfs-linux.img
---
-MENU LABEL Arch Linux Fallback
-LINUX ../vmlinuz-linux
-APPEND root=/dev/vda1 rw
-INITRD ../initramfs-linux-fallback.img
+>>> pacman -S grub-efi-x86_64 efibootmgr 
+>>> grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub
 ```
 
 Exit, reboot. Login as root and start customization:
