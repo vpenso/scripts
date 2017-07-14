@@ -72,7 +72,7 @@ virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network
 ## Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
 virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --graphics none --console pty,target_type=serial --cdrom /tmp/archlinux-2017.07.01-x86_64.iso
+             --cdrom /tmp/archlinux-2017.07.01-x86_64.iso
 ```
 
 Set the following configuration options during installation:
