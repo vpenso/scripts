@@ -1,6 +1,4 @@
-
-
-Literals:
+## Literals
 
 ```python
 123             # integer
@@ -17,17 +15,21 @@ b'abc'          # bytes literal
 ...line"""      # here-document
 ```
 
-Casting:
+## Arithmetic
 
 ```python
-int("15")               # cast to integer
-int("3f",16)            # hex-decimal to integer
-int(1.23)               # float to integer truncates decimal part
-float("-11.24e8")       # scientific notation
-chr(64)                 # integer to character
+1+2             # 3
+1-2             # -1
+1*2             # 2
+1/2             # 0.5
+5%3             # 2 (remainder)
+2**3            # 8
+abs(-2.3)       # 2.3
+round(1.6666,2) # 1.67
+pow(2,3)        # 8
 ```
 
-Logic:
+## Logic
 
 ```python
 True            # logic true
@@ -46,7 +48,7 @@ False or False  # False
 'a' != 'a'      # False
 ```
 
-Variables:
+## Variables
 
 ```python
 x = 1.2 + 8     # assign right expression
@@ -57,6 +59,26 @@ a,*b = [1,2,3]  # unpacking a sequence
 del x           # remove variable
 x = None        # undefined value
 ```
+
+## Modules
+
+Load a module:
+
+```python
+import math
+math.pi          # 3.141592653589793
+math.sqrt(81)    # 9.0
+```
+
+Load module, and allow direct access to functions:
+
+```python
+from math import pi,e,sin,log
+sin(pi/4)       # 0.7071067811865475
+log(e**2)       # 2.0
+```
+
+Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
 
 # Built in Data Structures
 
