@@ -265,4 +265,28 @@ def h(x,**y):
 h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 ```
 
+## File I/O
+
+Use `open()` to store data in a file and read it back:
+
+* The **path** to the file is the first argument.
+* Followed by the access mode: `r` (read), `w` (write), `a` (append)
+* Encoding: 'ascii', 'utf8'
+
+```python
+txt = "1st line\n2nd line\n3rd line\n4th line"
+path = '/tmp/file.txt'
+## write into a file
+f = open(path,'w',encoding='utf8')
+f.write(txt)                   # write into the file
+f.flush()                      # write cache
+f.close()                      # close when finished
+f = open(path,'r')
+f.name                         # path ot the file '/tmp/file.txt'
+f.read()                       # read entire file
+# iterate over file content
+for l in f.readlines()         # by line
+for l in iter(f): 
+for l in f.read().split('\n')  # by seperator
+```
 
