@@ -1,30 +1,20 @@
 
 
-## Literals
+Literals:
 
 ```python
-123             # 123       integer
--123            # -123      negative sign
-9.23            # 9.23      float 
--1.7e-6         # -1.7e-6   scientific notation
+123             # integer
+-123            # negative signed integer
+9.23            # float 
+-1.7e-6         # scientific notation
 0b010           # 2         binary notation
-0o642           # 418       octal0o642
+0o642           # 418       octal
 0xf3            # 243       hexadecimal 
+b'abc'          # bytes literal
 "a\"bc"         # 'a"bc'    string (double quote)
 'a\'bc'         # "a'bc"    string (singel quote)
-b'abc'          # b'abc'    byte literal
-```
-
-## Variables
-
-```python
-x = 1.2 + 8     # 
-x = y = z = 0   # assign the same value to multiple variables
-x,y,z = 1,2,3   # multiple assignments
-x,y = y,x       # variable swap
-a,*b = [1,2,3]  # unpacking a sequence
-del x           # remove variable
-x = None        # undefined value
+"""Multi...
+...line"""      # here-document
 ```
 
 Casting:
@@ -37,19 +27,38 @@ float("-11.24e8")       # scientific notation
 chr(64)                 # integer to character
 ```
 
-Strings:
+Logic:
 
 ```python
-type("abc")             # str
-'a' + 'b'               # 'ab'      concatenation
-"%s, %s" % ('a','b')    # 'a, b'    format string
-'abc'[1]                # 'b'       slice access by index
-'abc'[:2]               # 'ab'      from the first character 
-'abc'[2:]               # 'c'       until las character
-'abcde'[2:4]            # 'cd'      absolute range
-"""Multi...
-...line"""              # here-document
+True            # logic true
+False           # logic fales
+not True        # False
+True and True   # True
+True and False  # False
+True or False   # True
+False or False  # False
+## comparison with boolean results
+1 < 2           # True
+1 > 2           # False
+1 <= 1          # True
+2 >= 3          # False
+'a' == 'a'      # True
+'a' != 'a'      # False
 ```
+
+Variables:
+
+```python
+x = 1.2 + 8     # assign right expression
+x = y = z = 0   # assign the same value to multiple variables
+x,y,z = 1,2,3   # multiple assignments
+x,y = y,x       # variable swap
+a,*b = [1,2,3]  # unpacking a sequence
+del x           # remove variable
+x = None        # undefined value
+```
+
+# Built in Data Structures
 
 ## Ordered Sequences
 
@@ -141,6 +150,56 @@ list("abcde")           # ['a', 'b', 'c', 'd', 'e']
 list((1,2,3,4,5,6))     # [1, 2, 3, 4, 5, 6]
 ```
 
+## Unordered Collections
 
+A **set** is a unordered collections of unique elements:
+
+```python
+{}
+{1,2,'a'}               # {1, 2, 'a'}
+{1,2,1,2,1}             # {1, 2}
+type({1,2})             # set
+# union
+{1,2} | {2,3,4}         # {1, 2, 3, 4}
+# intersection
+{1,2} & {2,3,4}         # {2}
+# difference
+{1,2} - {2,3,4}         # {1}
+# symmetric difference
+{1,2} ^ {2,3,4}         # {1, 3, 4}
+# does a value exists in set
+1 in {1,2,3}            # True
+'a' in {1,2,3}          # False
+# iterator
+for v in {1,2,3}:
+```
+
+A **dictionary** is a associative list with defined keys and values.
+
+```python
+{}
+{1:'a','b':2}          # {1: 'a', 'b': 2} 
+# add/remove elements
+d = {}
+d['a'] = 1             
+d['b'] = 2             
+d                      # {'a': 1, 'b': 2}
+d['b']                 # 2
+del d['a']
+d                      # {'b': 2}
+# merge 
+d.update({'c':3, 'd':4})
+d                      # {'b': 2, 'c': 3, 'd': 4}
+# remove element, return value
+d.pop('c')             # 3
+d                      # {'b': 2, 'd': 4}
+# iterators
+for k in d.keys()
+for v in d.values()
+for k,v in d.items()
+# conversion
+dict(a=1,b=2,c=3)                  # {'a': 1, 'b': 2, 'c': 3}
+dict(zip(['a','b'],[1,2]))         # {'a': 1, 'b': 2}
+```
 
 
