@@ -80,8 +80,6 @@ log(e**2)       # 2.0
 
 Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
 
-# Built in Data Structures
-
 ## Ordered Sequences
 
 A **tuple** is a immutable sequences of elements with an index number and a value.
@@ -201,12 +199,13 @@ A **dictionary** is a associative list with defined keys and values.
 ```python
 {}
 {1:'a','b':2}          # {1: 'a', 'b': 2} 
-# add/remove elements
+# add/change key/value
 d = {}
 d['a'] = 1             
 d['b'] = 2             
 d                      # {'a': 1, 'b': 2}
 d['b']                 # 2
+# remove element by key
 del d['a']
 d                      # {'b': 2}
 # merge 
@@ -215,6 +214,12 @@ d                      # {'b': 2, 'c': 3, 'd': 4}
 # remove element, return value
 d.pop('c')             # 3
 d                      # {'b': 2, 'd': 4}
+# get a value
+d.get('b')             # 2
+d                      # {'b': 2, 'd': 4}
+# remove all elements
+d.clear()
+d                      # {}
 # iterators
 for k in d.keys()
 for v in d.values()
@@ -222,6 +227,42 @@ for k,v in d.items()
 # conversion
 dict(a=1,b=2,c=3)                  # {'a': 1, 'b': 2, 'c': 3}
 dict(zip(['a','b'],[1,2]))         # {'a': 1, 'b': 2}
+```
+
+## Ranges
+
+Integer sequences:
+
+```python
+list(range(5))           # [0, 1, 2, 3, 4]
+tuple(range(4,12))       # (4, 5, 6, 7, 8, 9, 10, 11)
+tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
+tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
+```
+
+## Functions
+
+Functions are defined using the `def` keyword
+
+* Followed by the function **name**, i.e. `f`
+* **Arguments** given between parentheses followed by `:` (colon) 
+* The function **body** (blocks) must be indented
+* The `return` keyword passes values from the function 
+
+```python
+# inculde argument with default value
+def f(x,y,z=3)
+    """documentation"""
+    return (x,y,z)
+f(1,2)                        # (1, 2, 3)
+# variable positional arguments as tuple
+def g(x,*y):
+    return (x,y)
+g(1,2,3,4,5,6)                # (1, (2, 3, 4, 5, 6))
+# variable named arguments as dict
+def h(x,**y):
+    return [x,y]
+h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 ```
 
 
