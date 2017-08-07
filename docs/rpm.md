@@ -156,9 +156,9 @@ yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
 yum clean metadata                      # delete all package repository metadata
 ```
 
-Simple repository configuration file:
+Site local repository configuration file:
 
-```
+```bash
 >>> cat /etc/yum.repos.d/site-local.repo
 [site-local]
 baseurl=http://lxdev01.devops.test/repo
@@ -166,6 +166,14 @@ enabled=1
 gpgcheck=0
 ```
 
+[EPEL](https://fedoraproject.org/wiki/EPEL), install `epel-release` included in the CentOS Extras repository:
+
+```bash
+>>> yum -y install epel-release
+>>> ls -1 /etc/yum.repos.d/epel*
+/etc/yum.repos.d/epel.repo
+/etc/yum.repos.d/epel-testing.repo
+```
 
 ## Unattended Update
 
