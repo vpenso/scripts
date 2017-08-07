@@ -14,7 +14,9 @@ Python 3.5.3
 
 # Python
 
-## Literals
+## Numerical
+
+### Literals
 
 ```python
 123             # integer
@@ -24,7 +26,17 @@ Python 3.5.3
 0b010           # 2         binary notation
 0o642           # 418       octal
 0xf3            # 243       hexadecimal 
-b'abc'          # bytes literal
+```
+
+### Ranges
+
+Integer sequences:
+
+```python
+list(range(5))           # [0, 1, 2, 3, 4]
+tuple(range(4,12))       # (4, 5, 6, 7, 8, 9, 10, 11)
+tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
+tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
 ```
 
 ## Arithmetic
@@ -41,23 +53,40 @@ round(1.6666,2) # 1.67
 pow(2,3)        # 8
 ```
 
-## Logic
+### Logic
 
 ```python
-True            # logic true
-False           # logic fales
-not True        # False
-True and True   # True
-True and False  # False
-True or False   # True
-False or False  # False
-## comparison with boolean results
-1 < 2           # True
-1 > 2           # False
-1 <= 1          # True
-2 >= 3          # False
-'a' == 'a'      # True
-'a' != 'a'      # False
+True               # logic true
+False              # logic fales
+not True           # False
+True and True      # True
+True and False     # False
+True or False      # True
+False or False     # False
+## Comparison with boolean results
+1 < 2              # True
+1 > 2              # False
+1 <= 1             # True
+2 >= 3             # False
+1 == 1             # True
+1 != 1             # False
+## Ternary conditional statement
+1 if True else 2   # 1
+1 if False else 2  # 2
+```
+
+Conditional statements:
+
+* Can go with multiple `elif` followed by a single `else`
+* First true condition is executed
+
+```python
+if x < 2:
+    ...
+elif x > 2:
+    ...
+else:
+    ...
 ```
 
 ## Variables
@@ -70,8 +99,9 @@ x,y = y,x       # variable swap
 a,*b = [1,2,3]  # unpacking a sequence
 del x           # remove variable
 x = None        # undefined value
+id(x)           # return object memory address for variable x
+hex(id(x))      
 ```
-
 
 ## Ordered Sequences
 
@@ -286,22 +316,12 @@ format(10.0,"7.3g")                            # '     10'
 # Leading, trailing white-space management 
 " s ".strip()                      # 's'
 # Matching
-"st".startswith('s')               # True
 't' in 'str'                       # True
+"st".startswith('s')               # True
+'str'.endswith('r')                # True
+'strts'.find('r')                  # 2
 # Replacement
 'srtr'.replace('r','R')            # 'sRtR'
-```
-
-
-## Ranges
-
-Integer sequences:
-
-```python
-list(range(5))           # [0, 1, 2, 3, 4]
-tuple(range(4,12))       # (4, 5, 6, 7, 8, 9, 10, 11)
-tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
-tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
 ```
 
 ## Modules
