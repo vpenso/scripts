@@ -14,7 +14,21 @@ Python 3.5.3
 
 # Python
 
-## Numerical
+## Variables
+
+```python
+x = 1.2 + 8     # assign right expression
+x = y = z = 0   # assign the same value to multiple variables
+x,y,z = 1,2,3   # multiple assignments
+x,y = y,x       # variable swap
+a,*b = [1,2,3]  # unpacking a sequence
+del x           # remove variable
+x = None        # undefined value
+id(x)           # return object memory address for variable x
+hex(id(x))      
+```
+
+## Numbers
 
 ### Literals
 
@@ -39,7 +53,7 @@ tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
 tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
 ```
 
-## Arithmetic
+### Arithmetic
 
 ```python
 1+2             # 3
@@ -53,7 +67,7 @@ round(1.6666,2) # 1.67
 pow(2,3)        # 8
 ```
 
-### Logic
+## Logic
 
 ```python
 True               # logic true
@@ -89,23 +103,11 @@ else:
     ...
 ```
 
-## Variables
+## Sequences & Collections
 
-```python
-x = 1.2 + 8     # assign right expression
-x = y = z = 0   # assign the same value to multiple variables
-x,y,z = 1,2,3   # multiple assignments
-x,y = y,x       # variable swap
-a,*b = [1,2,3]  # unpacking a sequence
-del x           # remove variable
-x = None        # undefined value
-id(x)           # return object memory address for variable x
-hex(id(x))      
-```
+### Tuple
 
-## Ordered Sequences
-
-A **tuple** is a immutable sequences of elements with an index number and a value.
+A tuple is a immutable sequences of elements with an index number and a value.
 
 ```python
 # literals for tuples
@@ -143,7 +145,9 @@ tuple('abcd')           # ('a', 'b', 'c', 'd')
 tuple([1,2,3,4,5])      # (1, 2, 3, 4, 5)
 ```
 
-A **list** is a sequences (with dynamic length) of elements with an index number and a value. 
+### List
+
+A list is a sequences (with dynamic length) of elements with an index number and a value. 
 
 ```python
 type([1,'a',2])         # list
@@ -193,9 +197,9 @@ list("abcde")           # ['a', 'b', 'c', 'd', 'e']
 list((1,2,3,4,5,6))     # [1, 2, 3, 4, 5, 6]
 ```
 
-## Unordered Collections
+### Set
 
-A **set** is a unordered collections of unique elements:
+A set is a unordered collections of unique elements:
 
 ```python
 {}
@@ -217,7 +221,9 @@ type({1,2})             # set
 for v in {1,2,3}:
 ```
 
-A **dictionary** is a associative list with defined keys and values.
+### Dictionary
+
+A dictionary is a associative list with defined keys and values.
 
 ```python
 {}
