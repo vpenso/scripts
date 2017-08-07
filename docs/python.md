@@ -25,7 +25,21 @@ a,*b = [1,2,3]  # unpacking a sequence
 del x           # remove variable
 x = None        # undefined value
 id(x)           # return object memory address for variable x
-hex(id(x))      
+hex(id(x))      # ...hexadecimal memory address
+globals()       # dictionary of global variables
+```
+
+Naming Rules:
+
+```python
+var_with_sep    # underscore separated downcase letters
+_               # unused variable (i.e. within a loop)
+var             # public
+_var            # internal
+var_            # convention to avoid conflict keyword
+__var           # private use in class
+_var_           # protected use in class
+__var__         # "magic: method or attribute
 ```
 
 ## Numbers
@@ -42,6 +56,18 @@ hex(id(x))
 0xf3            # 243       hexadecimal 
 ```
 
+Types, and type-casting:
+
+```python
+type(1)                  # <class 'int'>
+type(1.2)                # <class 'float'>
+## String to numerical
+int('123')               # 123
+float('1.23')            # 1.23
+## Type check ##
+isinstance(10,int)       # True
+isinstance(1.234,float)  # True
+```
 ### Ranges
 
 Integer sequences:
@@ -56,15 +82,19 @@ tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
 ### Arithmetic
 
 ```python
-1+2             # 3
-1-2             # -1
-1*2             # 2
-1/2             # 0.5
-5%3             # 2 (remainder)
-2**3            # 8
-abs(-2.3)       # 2.3
-round(1.6666,2) # 1.67
-pow(2,3)        # 8
+1+2                       # 3
+1-2                       # -1
+1*2                       # 2
+1/2                       # 0.5
+5%3                       # 2 (remainder)
+2**3                      # 8
+## Built-in functions ##
+abs(-2.3)                 # 2.3
+round(1.6666,2)           # 1.67
+pow(2,3)                  # 8
+sum((1,2,3,4,5))          # 15
+max([1,2,3,4,5])          # 5
+min([1,2,3,4,5])          # 1
 ```
 
 ## Logic
@@ -269,11 +299,13 @@ Escape sequences interpreted according to rules similar to those used by Standar
 "a\"bc"                            # 'a"bc'
 # Single quote
 'a\'bc'                            # "a'bc"
-# Multi-line strings in triple (double/single) quotes
+## Multi-line strings in triple (double/single) quotes ##
 """string"""
-# Raw strings
+## Raw strings ##
 r"\t\n\\"                          # '\\t\\n\\\\'
 R"\"\n\""                          # '\\"\\n\\"'
+## Built-in function to get ASCII codes ##
+ord('a')                           # 97
 ```
 
 **Raw-string** prefixed with `r` or `R` use different rules for backslash escape sequences
@@ -319,15 +351,21 @@ format(10.0,"7.3g")                            # '     10'
 # return tuple, preserve the delimiter
 "s:r:t".partition(':')             # ('s', ':', 'r:t')
 "s:r:t".rpartition(':')            # ('s:r', ':', 't')
+# Join by separator
+':'.join('123')                    # '1:2:3'
 # Leading, trailing white-space management 
 " s ".strip()                      # 's'
 # Matching
 't' in 'str'                       # True
 "st".startswith('s')               # True
 'str'.endswith('r')                # True
+'   '.isspace()                    # True
+'12'.isdecimal()                   # True
+'1.2'.isdecimal()                  # False
 'strts'.find('r')                  # 2
 # Replacement
 'srtr'.replace('r','R')            # 'sRtR'
+'srtr'.replace('r','R',1)          # 'sRtr'
 ```
 
 ## Modules
@@ -412,5 +450,13 @@ f.read()                       # read entire file
 for l in f.readlines()         # by line
 for l in iter(f): 
 for l in f.read().split('\n')  # by seperator
+```
+
+Using a **context manager**:
+
+```python
+with open('/etc/hosts') as f:
+    for _ in f.readlines():
+        print(_)
 ```
 
