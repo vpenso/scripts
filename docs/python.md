@@ -224,7 +224,7 @@ dict(zip(['a','b'],[1,2]))         # {'a': 1, 'b': 2}
 
 ## Strings
 
-## Literals
+### Literals
 
 Escape sequences interpreted according to rules similar to those used by Standard C
 
@@ -242,7 +242,36 @@ R"\"\n\""                          # '\\"\\n\\"'
 
 **Raw-string** prefixed with `r` or `R` use different rules for backslash escape sequences
 
-## Manipulation
+
+### Format
+
+```python
+## format() method of the String class ##
+"{}|{}".format(1,2)                            # '1|2'
+# ...postional index
+"{1},{0},{2}".format('r','s','t')              # 's,r,t'
+# ...parameter names
+"{b}{a}".format(a='s',b='t')                   # 'ts'
+# ...nested data structures
+'{d[2]},{d[0]}'.format(d=['r','s','t'])        # 't,r'
+'{d[b]},{d[a]}'.format(d={'a':1,'b':2})        # '2,1'
+## Padding ##
+"{:4d}".format(123)                            # ' 123'
+'{:06.2f}'.format(3.14159)                     # '003.14'
+"{:>3}".format('s')                            # '  s'
+"{:.<4}".format('s')                           # 's...'
+"{:^5}".format('s')                            # '  s  '
+## Parametrized format ##
+'{:{a}{w}}'.format('s',a='>',w=5)              # '    s'
+# ...postional arguments
+'{:{}{}{}.{}}'.format(2.7182,'>','+',10,3)     # '     +2.72'
+## Global build in function ##
+format(10.0,"7.3g")                            # '     10'
+## Legacy format operator ##
+"%s, %s" % ('s','t')                           # 's, t'
+```
+
+### Manipulation
 
 ```python
 # Concatenation
@@ -262,32 +291,6 @@ R"\"\n\""                          # '\\"\\n\\"'
 # Replacement
 'srtr'.replace('r','R')            # 'sRtR'
 ```
-
-### Formate
-
-```python
-# String class format method
-"{}|{}".format(1,2)                      # '1|2'
-# ...postional index
-"{1},{0},{2}".format('r','s','t')        # 's,r,t'
-# ...parameter names
-"{b}{a}".format(a='s',b='t')             # 'ts'
-# ...nested data structures
-'{d[2]},{d[0]}'.format(d=['r','s','t'])  # 't,r'
-'{d[b]},{d[a]}'.format(d={'a':1,'b':2})  # '2,1'
-# Padding
-"{:4d}".format(123)                      # ' 123'
-'{:06.2f}'.format(3.14159)               # '003.14'
-"{:>3}".format('s')                      # '  s'
-"{:_<4}".format('s')                     # 's___'
-"{:^5}".format('s')                      # '  s  '
-# Global build in function
-format(10.0,"7.3g")                      # '     10'
-# Legacy format operator
-"%s, %s" % ('s','t')                     # 's, t'
-```
-
-
 
 
 ## Ranges
