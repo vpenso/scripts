@@ -1,3 +1,19 @@
+
+Make Python 3 the default on Debian:
+
+```bash
+>>> sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+update-alternatives: using /usr/bin/python3 to provide /usr/bin/python (python) in auto mode
+>>> update-alternatives --list python
+/usr/bin/python3
+>>> python --version
+Python 3.5.3
+# Revert this change...
+>>> sudo update-alternatives --remove python /usr/bin/python3
+```
+
+# Python
+
 ## Literals
 
 ```python
@@ -9,10 +25,6 @@
 0o642           # 418       octal
 0xf3            # 243       hexadecimal 
 b'abc'          # bytes literal
-"a\"bc"         # 'a"bc'    string (double quote)
-'a\'bc'         # "a'bc"    string (singel quote)
-"""Multi...
-...line"""      # here-document
 ```
 
 ## Arithmetic
@@ -60,25 +72,6 @@ del x           # remove variable
 x = None        # undefined value
 ```
 
-## Modules
-
-Load a module:
-
-```python
-import math
-math.pi          # 3.141592653589793
-math.sqrt(81)    # 9.0
-```
-
-Load module, and allow direct access to functions:
-
-```python
-from math import pi,e,sin,log
-sin(pi/4)       # 0.7071067811865475
-log(e**2)       # 2.0
-```
-
-Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
 
 ## Ordered Sequences
 
@@ -229,6 +222,74 @@ dict(a=1,b=2,c=3)                  # {'a': 1, 'b': 2, 'c': 3}
 dict(zip(['a','b'],[1,2]))         # {'a': 1, 'b': 2}
 ```
 
+## Strings
+
+## Literals
+
+Escape sequences interpreted according to rules similar to those used by Standard C
+
+```python
+# Double quote (escape with \)
+"a\"bc"                            # 'a"bc'
+# Single quote
+'a\'bc'                            # "a'bc"
+# Multi-line strings in triple (double/single) quotes
+"""string"""
+# Raw strings
+r"\t\n\\"                          # '\\t\\n\\\\'
+R"\"\n\""                          # '\\"\\n\\"'
+```
+
+**Raw-string** prefixed with `r` or `R` use different rules for backslash escape sequences
+
+## Manipulation
+
+```python
+# Concatenation
+"s" + "t"                          # 'st'
+# Cut by separator
+"s\nt\nr\n".splitlines()           # ['s', 't', 'r']
+"s|t".split("|")                   # ['s', 't']
+'p:q:r:s'.rsplit(':',2)            # ['p:q', 'r', 's']
+# return tuple, preserve the delimiter
+"s:r:t".partition(':')             # ('s', ':', 'r:t')
+"s:r:t".rpartition(':')            # ('s:r', ':', 't')
+# Leading, trailing white-space management 
+" s ".strip()                      # 's'
+# Matching
+"st".startswith('s')               # True
+'t' in 'str'                       # True
+# Replacement
+'srtr'.replace('r','R')            # 'sRtR'
+```
+
+### Formate
+
+```python
+# String class format method
+"{}|{}".format(1,2)                      # '1|2'
+# ...postional index
+"{1},{0},{2}".format('r','s','t')        # 's,r,t'
+# ...parameter names
+"{b}{a}".format(a='s',b='t')             # 'ts'
+# ...nested data structures
+'{d[2]},{d[0]}'.format(d=['r','s','t'])  # 't,r'
+'{d[b]},{d[a]}'.format(d={'a':1,'b':2})  # '2,1'
+# Padding
+"{:4d}".format(123)                      # ' 123'
+'{:06.2f}'.format(3.14159)               # '003.14'
+"{:>3}".format('s')                      # '  s'
+"{:_<4}".format('s')                     # 's___'
+"{:^5}".format('s')                      # '  s  '
+# Global build in function
+format(10.0,"7.3g")                      # '     10'
+# Legacy format operator
+"%s, %s" % ('s','t')                     # 's, t'
+```
+
+
+
+
 ## Ranges
 
 Integer sequences:
@@ -238,6 +299,39 @@ list(range(5))           # [0, 1, 2, 3, 4]
 tuple(range(4,12))       # (4, 5, 6, 7, 8, 9, 10, 11)
 tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
 tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
+```
+
+## Modules
+
+Load a module:
+
+```python
+import math
+math.pi          # 3.141592653589793
+math.sqrt(81)    # 9.0
+```
+
+Load module, and allow direct access to functions:
+
+```python
+from math import pi,e,sin,log
+sin(pi/4)       # 0.7071067811865475
+log(e**2)       # 2.0
+```
+
+Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
+
+## Runtime Environment
+
+Standard output, error, and input stream:
+
+```python
+import sys
+sys.argv                        # list of command line arguments
+sys.stdout.write(s)             # write string s to standard output
+sys.stderr.write(s)             # write string s to standard error
+s = sys.stdin.read()            # read from standard input
+sys.exit(i)                     # exit with error code i
 ```
 
 ## Functions
@@ -264,6 +358,7 @@ def h(x,**y):
     return [x,y]
 h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 ```
+
 
 ## File I/O
 
