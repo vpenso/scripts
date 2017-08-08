@@ -496,30 +496,34 @@ h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 
 ## Classes
 
-Empty class, **instances objects** and **instance data attributes**:
+Classes, instances, and data attributes:
 
-* Data attributes need not be declared, they are assigned on first used.
+* A class is defined with the keyword `class` followed by a name (capitalized) and colon
+* Class instantiation uses function notation to assign an class object (**instance**") to a variable
+* Class attributes are referenced with the **dot notation** `<object>.<attribute>` 
+* Class object **data attributes** need not be declared, they are assigned on first used.
 
 ```python
-class Human():
-    pass # for an empty class
+class Human():      # define a class called Human
+    pass            # Use pass for a class without attributes/methods
 
-# instances objects
+# create two instances of the class
 alice = Human()
 bob = Human()
 
-# set instance variables
+# set data attributes of both instances
 alice.age = 25
 bob.age = 31
 
-# get instance variables
+# print instance attributes
 print(bob.age,alice.age) # 31 25
 ```
 
-Class **constructor**, and class **methods**:
+Constructor and class methods:
 
-* Methods expect a class instance `self`  as first argument
-* The method `__init__()` is invoked on newly-created class instance
+* Class **methods** expect a class instance `self`  as first argument
+* The method `__init__()` (the constructor) is automatically invoked on newly-created class instances
+* Instance objects can use **attribute references** to data attributes and methods
 
 ```python
 class Human():
