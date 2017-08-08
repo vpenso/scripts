@@ -401,6 +401,15 @@ s = sys.stdin.read()            # read from standard input
 sys.exit(i)                     # exit with error code i
 ```
 
+Use following libraries:
+
+* [argparse](https://docs.python.org/3/library/argparse.html) to parse command-line options, arguments and sub-commands
+* [logging](https://docs.python.org/3/library/logging.html) for multi-level application logging
+
+Following script can be used as a starting point:
+
+↴ [python-skeleton](../bin/python-skeleton)
+
 ## Functions
 
 Functions are defined using the `def` keyword
