@@ -1,5 +1,7 @@
 
-Make Python 3 the default on Debian:
+## Configuration
+
+Make Python 3 the default on **Debian**:
 
 ```bash
 >>> sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
@@ -10,6 +12,28 @@ update-alternatives: using /usr/bin/python3 to provide /usr/bin/python (python) 
 Python 3.5.3
 # Revert this change...
 >>> sudo update-alternatives --remove python /usr/bin/python3
+```
+
+## Runtime Environment
+
+Use following libraries:
+
+* [argparse](https://docs.python.org/3/library/argparse.html) to parse command-line options, arguments and sub-commands
+* [logging](https://docs.python.org/3/library/logging.html) for multi-level application logging
+
+Following script can be used as a starting point:
+
+↴ [python-skeleton](../bin/python-skeleton)
+
+Runtime services in the [sys](https://docs.python.org/3/library/sys.html) library:
+
+```python
+import sys
+sys.argv                        # list of command line arguments
+sys.stdout.write(s)             # write string s to standard output
+sys.stderr.write(s)             # write string s to standard error
+s = sys.stdin.read()            # read from standard input
+sys.exit(i)                     # exit with error code i
 ```
 
 # Python
@@ -368,74 +392,6 @@ format(10.0,"7.3g")                            # '     10'
 'srtr'.replace('r','R',1)          # 'sRtr'
 ```
 
-## Modules
-
-Load a module:
-
-```python
-import math
-math.pi          # 3.141592653589793
-math.sqrt(81)    # 9.0
-```
-
-Load module, and allow direct access to functions:
-
-```python
-from math import pi,e,sin,log
-sin(pi/4)       # 0.7071067811865475
-log(e**2)       # 2.0
-```
-
-Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
-
-## Runtime Environment
-
-Standard output, error, and input stream:
-
-```python
-import sys
-sys.argv                        # list of command line arguments
-sys.stdout.write(s)             # write string s to standard output
-sys.stderr.write(s)             # write string s to standard error
-s = sys.stdin.read()            # read from standard input
-sys.exit(i)                     # exit with error code i
-```
-
-Use following libraries:
-
-* [argparse](https://docs.python.org/3/library/argparse.html) to parse command-line options, arguments and sub-commands
-* [logging](https://docs.python.org/3/library/logging.html) for multi-level application logging
-
-Following script can be used as a starting point:
-
-↴ [python-skeleton](../bin/python-skeleton)
-
-## Functions
-
-Functions are defined using the `def` keyword
-
-* Followed by the function **name**, i.e. `f`
-* **Arguments** given between parentheses followed by `:` (colon) 
-* The function **body** (blocks) must be indented
-* The `return` keyword passes values from the function 
-
-```python
-# inculde argument with default value
-def f(x,y,z=3)
-    """documentation"""
-    return (x,y,z)
-f(1,2)                        # (1, 2, 3)
-# variable positional arguments as tuple
-def g(x,*y):
-    return (x,y)
-g(1,2,3,4,5,6)                # (1, (2, 3, 4, 5, 6))
-# variable named arguments as dict
-def h(x,**y):
-    return [x,y]
-h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
-```
-
-
 ## File I/O
 
 Use `open()` to store data in a file and read it back:
@@ -468,4 +424,52 @@ with open('/etc/hosts') as f:
     for _ in f.readlines():
         print(_)
 ```
+
+## Modules
+
+Load a module:
+
+```python
+import math
+math.pi          # 3.141592653589793
+math.sqrt(81)    # 9.0
+```
+
+Load module, and allow direct access to functions:
+
+```python
+from math import pi,e,sin,log
+sin(pi/4)       # 0.7071067811865475
+log(e**2)       # 2.0
+```
+
+Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
+
+
+## Functions
+
+Functions are defined using the `def` keyword
+
+* Followed by the function **name**, i.e. `f`
+* **Arguments** given between parentheses followed by `:` (colon) 
+* The function **body** (blocks) must be indented
+* The `return` keyword passes values from the function 
+
+```python
+# inculde argument with default value
+def f(x,y,z=3)
+    """documentation"""
+    return (x,y,z)
+f(1,2)                        # (1, 2, 3)
+# variable positional arguments as tuple
+def g(x,*y):
+    return (x,y)
+g(1,2,3,4,5,6)                # (1, (2, 3, 4, 5, 6))
+# variable named arguments as dict
+def h(x,**y):
+    return [x,y]
+h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
+```
+
+
 
