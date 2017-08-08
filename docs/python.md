@@ -157,6 +157,22 @@ else:
     ...
 ```
 
+Python has no direct analogous to a switch-case statement. 
+
+Alternatively use a dictionary with a corresponding function for each case:
+
+```python
+def a():
+    return 'A'
+
+def b():
+    return 'B'
+
+switch = { 'a': a(), 'b': b() }
+
+print(switch['a'])                   # A
+```
+
 ## Sequences & Collections
 
 ### Tuple
