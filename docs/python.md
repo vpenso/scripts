@@ -498,9 +498,9 @@ h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 
 Classes, instances, and data attributes:
 
-* A class is defined with the keyword `class` followed by a name (capitalized) and colon
-* Class instantiation uses function notation to assign an class object (**instance**") to a variable
-* Class attributes are referenced with the **dot notation** `<object>.<attribute>` 
+* A class is defined with the keyword `class` followed by a name (capitalized) and colon.
+* Class instantiation uses function notation to assign an class object (**instance**") to a variable.
+* Class attributes are referenced with the **dot notation** `<object>.<attribute>`.
 * Class object **data attributes** need not be declared, they are assigned on first used.
 
 ```python
@@ -521,9 +521,9 @@ print(bob.age,alice.age) # 31 25
 
 Constructor and class methods:
 
-* Class **methods** expect a class instance `self`  as first argument
-* The method `__init__()` (the constructor) is automatically invoked on newly-created class instances
-* Instance objects can use **attribute references** to data attributes and methods
+* Class **methods** expect a class instance `self` as first argument.
+* The method `__init__()` (the constructor) is automatically invoked on newly-created class instances.
+* Instance objects can use **attribute references** to data attributes and methods.
 
 ```python
 class Human():
@@ -535,10 +535,11 @@ class Human():
     def who(self):
         return '{} {}'.format(self.name, self.age)
 
+# Iterate over to class objects
 for _ in (Human('alice',25),Human('bob',31)):
     # call the method of an object
     print(_.who())
-    # pass an object to a method 
+    # pass an object to a class method 
     print(Human.who(_))
 ```
 
