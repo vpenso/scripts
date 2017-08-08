@@ -162,6 +162,15 @@ Python has no direct analogous to a switch-case statement.
 Alternatively use a dictionary with a corresponding function for each case:
 
 ```python
+def switch(case):
+    return {
+        'a': 'A',
+        'b': 'B'
+    }.get(case,None)
+
+print(switch('a'))                   # A
+```
+```python
 def a():
     return 'A'
 
