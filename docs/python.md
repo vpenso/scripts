@@ -159,8 +159,6 @@ else:
 
 Python has no direct analogous to a switch-case statement. 
 
-Alternatively use a dictionary with a corresponding function for each case:
-
 ```python
 def switch(case):
     return {
@@ -494,6 +492,50 @@ g(1,2,3,4,5,6)                # (1, (2, 3, 4, 5, 6))
 def h(x,**y):
     return [x,y]
 h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
+```
+
+## Classes
+
+Empty class, **instances objects** and **instance data attributes**:
+
+* Data attributes need not be declared, they are assigned on first used.
+
+```python
+class Human():
+    pass # for an empty class
+
+# instances objects
+alice = Human()
+bob = Human()
+
+# set instance variables
+alice.age = 25
+bob.age = 31
+
+# get instance variables
+print(bob.age,alice.age) # 31 25
+```
+
+Class **constructor**, and class **methods**:
+
+* Methods expect a class instance `self`  as first argument
+* The method `__init__()` is invoked on newly-created class instance
+
+```python
+class Human():
+    # constructor
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    # method
+    def who(self):
+        return '{} {}'.format(self.name, self.age)
+
+for _ in (Human('alice',25),Human('bob',31)):
+    # call the method of an object
+    print(_.who())
+    # pass an object to a method 
+    print(Human.who(_))
 ```
 
 
