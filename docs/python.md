@@ -36,7 +36,21 @@ s = sys.stdin.read()            # read from standard input
 sys.exit(i)                     # exit with error code i
 ```
 
-# Python
+Python modules executable as main program also:
+
+* A source files executed as the main program have the variable `__name__` set to `__main__`
+* Call an optional `main()` function if not loaded by an `import <module>`
+
+```python
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
+```
+
+
+# Python Language
 
 ## Variables
 
