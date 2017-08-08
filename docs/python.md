@@ -499,9 +499,9 @@ h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 Classes, instances, and data attributes:
 
 * A class is defined with the keyword `class` followed by a name (capitalized) and colon.
-* Class instantiation uses function notation to assign an class object (**instance**") to a variable.
+* Class instantiation uses function notation to assign a class object (**instance**") to a variable.
 * Class attributes are referenced with the **dot notation** `<object>.<attribute>`.
-* Class object **data attributes** need not be declared, they are assigned on first used.
+* Object data attributes (**instance variables**) need not be declared, they are assigned on first used.
 
 ```python
 class Human():      # define a class called Human
@@ -519,9 +519,9 @@ bob.age = 31
 print(bob.age,alice.age) # 31 25
 ```
 
-Constructor and class methods:
+### Class Constructor & Instance Methods
 
-* Class **methods** expect a class instance `self` as first argument.
+* **Methods** automatically pass a class object `self` (by convention) as first argument.
 * The method `__init__()` (the constructor) is automatically invoked on newly-created class instances.
 * Instance objects can use **attribute references** to data attributes and methods.
 
@@ -533,9 +533,9 @@ class Human():
         self.age = age
     # method
     def who(self):
-        return '{} {}'.format(self.name, self.age)
+        return '{} age {}'.format(self.name, self.age)
 
-# Iterate over to class objects
+# Iterate over two class objects
 for _ in (Human('alice',25),Human('bob',31)):
     # call the method of an object
     print(_.who())
@@ -543,5 +543,48 @@ for _ in (Human('alice',25),Human('bob',31)):
     print(Human.who(_))
 ```
 
+### Class Variables & Class Methods
+
+Class variables:
+
+* Shared among all instances of a class
+* Accessible as `<class>.<attribute>` or as `<object>.<attribute>`
+
+Class methods:
+
+* Declared with a decorator `@classmethod`
+* Automatically pass a class as first argument called `cls` (by convention)
+* Typically use to build alternative constructors
+
+```python
+class Human():
+    # define a class variable
+    num = 0
+    # constructor
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        # increment the number of humans
+        Human.num += 1
+
+    # decorator to identify a class method
+    @classmethod
+    def from_str(cls, string):
+        name, age =  string.split(':')
+        return Human(name,age)
+
+    # method
+    def who(self):
+        # use self to access a class variable
+        return '{} age {} [of {}]'.format(self.name, self.age, self.num)
+
+humans = [
+  Human('alice',25),
+  Human('bob',31),
+  Human.from_str('joe:19')
+]
+
+print(humans[2].who())       # joe age 19 [of 3]
+```
 
 
