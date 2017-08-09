@@ -508,6 +508,59 @@ def h(x,**y):
 h(1,a=1,b=2)                  # [1, {'a': 1, 'b': 2}]
 ```
 
+### Lambda
+
+The [Lambda][lambda] expression (anonymous function) creates a function objects with following notation:
+
+    lambda: <<args,...>> : <<expression>>
+
+Semantically `lambda` is a shorthand for a function definition:
+
+* Lambda functions can be used wherever function objects are required.
+* It can have **any number of arguments** before the colon.
+* The function **body** is syntactically restricted to a **single expression**.
+* Typically used as nameless function as argument to a higher-order function.
+
+```python
+f = lambda x,y : x+y
+f(1,1)                        # 2
+f = lambda x: x**2 + 2*x - 5
+f(2)                          # 3
+# Fahrenheit to Celsius conversion
+f2c = lambda c: float('{:.2f}'.format((5.0 / 9) * ( c - 32 )))
+f2c(32)                       # 0
+```
+
+Lambda functions are used along with build-in function like `map()`, or `filter()`.
+
+[lambda]: https://docs.python.org/3.6/tutorial/controlflow.html#lambda-expressions
+
+### Map
+
+The `map()` function applies a function to every item in an sequence:
+
+It returns a list containing all the function call results.
+
+```python
+def sqr(x): return x ** 2
+list(map(sqr, [1, 2, 3, 4, 5]))                            # [1, 4, 9, 16, 25]
+# with a lambda expression
+list(map(lambda x: x+1, [1,2,3,4,5,6]))                    # [2, 3, 4, 5, 6, 7]
+list(map(lambda x: x**2, range(0,12,2)))                   # [0, 4, 16, 36, 64, 100]
+```
+
+### Filter
+
+The `filter()` function extracts each element in a sequence for which a function returns `True`.
+
+```python
+list(filter(lambda x: x<0,range(-5,5)))                     # [-5, -4, -3, -2, -1]
+list(filter(lambda x: (x%2==0), [1,5,4,6,8,11,3,12]))       # [4, 6, 8, 12]
+## intersection
+a,b = [1,2,3,5,7,9],[2,3,5,6,7,8]
+list(filter(lambda x: x in a,b))                            # [2, 3, 5, 7]
+```
+
 ## Classes
 
 Classes, instances, and data attributes:
