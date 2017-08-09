@@ -537,9 +537,7 @@ Lambda functions are used along with build-in function like `map()`, or `filter(
 
 ### Map
 
-The `map()` function applies a function to every item in an sequence:
-
-It returns a list containing all the function call results.
+The `map(<<func>>,<<sequence>>)` function applies a function to every item in an sequence. It returns a list containing all the function call results.
 
 ```python
 def sqr(x): return x ** 2
@@ -551,7 +549,7 @@ list(map(lambda x: x**2, range(0,12,2)))                   # [0, 4, 16, 36, 64, 
 
 ### Filter
 
-The `filter()` function extracts each element in a sequence for which a function returns `True`.
+The `filter(<<func>>,<<sequence>>)` function extracts each element in a sequence for which a function returns `True`.
 
 ```python
 list(filter(lambda x: x<0,range(-5,5)))                     # [-5, -4, -3, -2, -1]
@@ -559,6 +557,28 @@ list(filter(lambda x: (x%2==0), [1,5,4,6,8,11,3,12]))       # [4, 6, 8, 12]
 ## intersection
 a,b = [1,2,3,5,7,9],[2,3,5,6,7,8]
 list(filter(lambda x: x in a,b))                            # [2, 3, 5, 7]
+```
+
+### Reduce
+
+The `reduce()` function reduces a sequence to a single value by combining all elements via a defined function. 
+
+    reduce(<<func>>,<<sequence>>[,<<initializer>>])
+
+By default, the first item in the sequence initialized the starting value.
+
+```python
+from functools import reduce
+reduce(lambda x,y: x+y, [1,2,3,4])                          # 10
+reduce(lambda x,y: x*y, [2,3],2)                            # 12
+import operator
+reduce(operator.sub,[50,3,4,6])                             # 37
+## flatten a list
+reduce(list.__add__, [[1, 2, 3], [4, 5], [6, 7, 8]], [])    # [1, 2, 3, 4, 5, 6, 7, 8]
+## union of a list of sets
+reduce(operator.or_, ({1},{1,2},{1,3}))                     # {1, 2, 3}
+## intersection of a list of sets
+reduce(operator.and_, ({1},{1,2},{1,3}))                    # {1}
 ```
 
 ## Classes
