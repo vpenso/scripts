@@ -164,6 +164,8 @@ Deployment and configuration of the cluster controller:
 >>> firewall-cmd --permanent --zone=public --add-port=7321/tcp
 >>> firewall-cmd --permanent --zone=public --add-port=7321/tcp
 >>> firewall-cmd --reload
+>>> groupadd slurm && useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -g slurm -s /bin/bash slurm
+>>> mkdir -m 755 -p /var/spool/slurm/ctld && chown slurm:slurm /var/spool/slurm/ctld
 ## install on Debian
 >>> apt install slurmctld
 >>> zcat /usr/share/doc/slurm-llnl/examples/slurm.conf.simple.gz > /etc/slurm-llnl/slurm.conf
@@ -175,15 +177,9 @@ ControlMachine=lxrm01
 NodeName=lxb[001-004] Procs=1 State=UNKNOWN
 PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 ## create a Munge shared authentication key
->>> create-munge-key
-Generating a pseudo-random key using /dev/urandom completed.
-# or
 >>> dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
 ## start Munge
 >>> systemctl enable munge && systemctl start munge
-## slurm user configuration on CentOS
->>> groupadd slurm && useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -g slurm -s /bin/bash slurm
->>> mkdir -m 755 -p /var/spool/slurm/ctld && chown slurm:slurm /var/spool/slurm/ctld
 ## start the slurm controller
 >>> systemctl enable slurmctld && systemctl start slurmctld
 >>> scontrol show config
@@ -208,6 +204,31 @@ debug*       up   infinite      4    unk lxb[001-004]
 ## start the service
 >>> systemctl enable slurmdbd && systemctl start slurmdbd
 ```
+
+### File Storage
+
+The following configuration is only interesting for small deployments (testing).
+
+Enable accounting and resource limits in [slurm.conf][slurmconf] on all nodes of the cluster to collect data into plain text files.
+
+```bash
+>>> egrep '^JobAcctGatherType|^JobCompLoc|^JobCompType' /etc/slurm-llnl/slurm.conf
+JobAcctGatherType=jobacct_gather/linux
+JobCompLoc=/var/log/slurm-llnl/job_completions
+JobCompType=jobcomp/filetxt
+```
+
+The configuration above preservers basic job information (job name, user name, allocated nodes, start time, completion time, exit status). While the following configuration collects additional more detailed information:
+
+```bash
+>>> egrep '^AccountingStorageType|^AccountingStorageLoc' /etc/slurm-llnl/slurm.conf 
+AccountingStorageLoc=/var/log/slurm-llnl/accounting
+AccountingStorageType=accounting_storage/filetxt
+```
+
+Note: The accounting file needs to be shared among nodes to be used by the [sacct][sacct] command.
+
+If you are running with the accounting storage plug-in, use of the job completion plug-in is probably redundant. 
 
 ### Database Storage
 
@@ -275,27 +296,6 @@ AccountingStorageHost=lxrm01
 >>> sacctmgr -i add cluster virgo
 >>> systemctl restart slurmctld
 ```
-
-### File Storage
-
-The following configuration is only interesting for small deployments (testing).
-
-Enable accounting and resource limits in [slurm.conf][slurmconf] on all nodes of the cluster to collect data into plain text files.
-
-    » egrep '^JobAcctGatherType|^JobCompLoc|^JobCompType' /etc/slurm-llnl/slurm.conf
-    JobAcctGatherType=jobacct_gather/linux
-    JobCompLoc=/var/log/slurm-llnl/job_completions
-    JobCompType=jobcomp/filetxt
-
-The configuration above preservers basic job information (job name, user name, allocated nodes, start time, completion time, exit status). While the following configuration collects additional more detailed information:
-
-    » egrep '^AccountingStorageType|^AccountingStorageLoc' /etc/slurm-llnl/slurm.conf 
-    AccountingStorageLoc=/var/log/slurm-llnl/accounting
-    AccountingStorageType=accounting_storage/filetxt
-
-Note: The accounting file needs to be shared among nodes to be used by the [sacct][sacct] command.
-
-If you are running with the accounting storage plug-in, use of the job completion plug-in is probably redundant. 
 
 
 ## Slurmd
