@@ -157,6 +157,13 @@ Deployment and configuration of the cluster controller:
 ## install on CentOS
 >>> yum install -y slurm
 >>> cp /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf
+>>> firewall-cmd --permanent --zone=public --add-port=6817/udp
+>>> firewall-cmd --permanent --zone=public --add-port=6817/tcp
+>>> firewall-cmd --permanent --zone=public --add-port=6818/tcp
+>>> firewall-cmd --permanent --zone=public --add-port=6818/tcp
+>>> firewall-cmd --permanent --zone=public --add-port=7321/tcp
+>>> firewall-cmd --permanent --zone=public --add-port=7321/tcp
+>>> firewall-cmd --reload
 ## install on Debian
 >>> apt install slurmctld
 >>> zcat /usr/share/doc/slurm-llnl/examples/slurm.conf.simple.gz > /etc/slurm-llnl/slurm.conf
@@ -293,31 +300,20 @@ If you are running with the accounting storage plug-in, use of the job completio
 
 ## Slurmd
 
-Install **slurmd** on an execution node:
-
-    » apt install slurmd
-    […]
-    » scp lxrm01:/etc/slurm-llnl/slurm.conf /etc/slurm-llnl/slurm.conf
-    […]
-    » scp -r lxrm01:/etc/munge/munge.key /etc/munge/
-    […]
-    » chown munge:munge /etc/munge/munge.key
-    » service munge start
-    Starting MUNGE: munged.
-    » service slurm-llnl start
-    Starting slurm compute node daemon: slurmd.
-    » sinfo
-    PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-    debug*       up   infinite      3  down* lxb[002-004]
-    debug*       up   infinite      1   idle lxb001
-
-
-- Install the _slurmd_ package.
-- Copy the cluster configuration file `/etc/slurm-llnl/slurm.conf`.
-- Copy the authentication key `/etc/munge/munge.key` and adjust its permissions.
-- Start the `munge` and `slumrd` service daemons. 
-
-
+```bash
+## install on Debian
+>>> apt install slurmd
+>>> scp lxrm01:/etc/slurm-llnl/slurm.conf /etc/slurm-llnl/slurm.conf
+## install on CentOS
+>>> yum install -y slurm slurm-munge
+>>> groupadd slurm && useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -g slurm -s /bin/bash slurm
+>>> mkdir -m 755 -p /var/spool/slurm/d && chown slurm:slurm /var/spool/slurm/d
+>>> scp lxrm01:/etc/slurm/slurm.conf /etc/slurm/
+## configure Munge
+>>> scp -r lxrm01:/etc/munge/munge.key /etc/munge/ && chown munge:munge /etc/munge/munge.key
+>>> systemctl enable munge && systemctl start munge
+>>> systemctl enable slurmd && systemctl start slurmd
+```
 
 [slurmdevel]: https://groups.google.com/forum/#!forum/slurm-devel
 [munge]: https://dun.github.io/munge/ 
