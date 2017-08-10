@@ -40,7 +40,7 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 
 ```bash
 # install dependencies
->>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel
+>>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel mysql-devel
 >>> rpm -i /root/rpmbuild/RPMS/x86_64/munge*.rpm  # install munge including the development package
 # download the latest version of slurm
 >>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.6.tar.bz2
@@ -185,13 +185,22 @@ PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 debug*       up   infinite      4    unk lxb[001-004]
 ```
 
-## Slurmdbd
+## Accounting Database
 
-Copy the default configuration for slurmdbd daemon.
 
-    » apt install slurmdbd 
-    » zcat /usr/share/doc/slurmdbd/examples/slurmdbd.conf.simple.gz > /etc/slurm-llnl/slurmdbd.conf
-
+```bash
+## install on CentOS
+>>> yum -y install slurm-slurmdbd
+>>> mkdir -m 755 /var/log/slurm && chown slurm:slurm /var/log/slurm
+>>> cp /etc/slurm/slurmdbd.conf.example /etc/slurm/slurmdbd.conf
+# ... configure ...
+## install on Debian
+>>> apt install slurmdbd 
+>>> zcat /usr/share/doc/slurmdbd/examples/slurmdbd.conf.simple.gz > /etc/slurm-llnl/slurmdbd.conf
+# ... configure ...
+## start the service
+>>> systemctl enable slurmdbd && systemctl start slurmdbd
+```
 
 ### Database Storage
 
@@ -231,7 +240,7 @@ gpgcheck=1
 
 Grant Slurm access to the database:
 
-```msyql
+```sql
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01.devops.test' identified by '12345678' with grant option;
@@ -242,9 +251,14 @@ mysql> quit
 
 Adjust the following configuration options in [slurmdbd.conf][slurmdbdconf]:
 
-    » egrep '^StorageLoc|^StoragePass' /etc/slurm-llnl/slurmdbd.conf 
-    StorageLoc=slurm_acct_db
-    StoragePass=12345678
+```bash
+>>> grep ^Storage /etc/slurm*/slurmdbd.conf | sort
+StorageHost=lxdb01.devops.test
+StorageLoc=slurm_acct_db
+StoragePass=12345678
+StorageType=accounting_storage/mysql
+StorageUser=slurm
+```
 
 Adjust the following configuration options in [slurm.conf][slurmconf]:
 

@@ -161,7 +161,8 @@ Site local repository configuration file:
 ```bash
 >>> cat /etc/yum.repos.d/site-local.repo
 [site-local]
-baseurl=http://lxdev01.devops.test/repo
+name=site-local
+baseurl=http://lxrepo01.devops.test/repo
 enabled=1
 gpgcheck=0
 ```
