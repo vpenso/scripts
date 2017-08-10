@@ -12,11 +12,45 @@ Slurm has the capability to simulate resources on execution nodes for testing:
 
 # Deployment
 
+Local CentOS mirror and [package repository](../rpm.md) server:
+
+* The following example uses the [chef-base](https://github.com/vpenso/chef-base) cookbook.
+* Build the server using the Chef roles [yum_mirror](https://github.com/vpenso/chef-base/blob/master/test/roles/yum_mirror.rb) and [yum_repo](https://github.com/vpenso/chef-base/blob/master/test/roles/yum_repo.rb)
+* Build and the Slurm RPM packages to upload them to the local package repository (cf. [slurm/deploy](deploy.md), [rpm](../rpm.md))
+
 ```bash
-NODES lxrm01,lxdb01,lxb[001-004]
-nodeset-loop "virsh-instance remove {}"                 # clean up
-nodeset-loop "virsh-instance shadow debian64-9 {}"      # preapre the virtual machines
+>>> vi sh centos7 lxrepo01 && vm cd lxrepo01
+>>> chef-remote cookbook base
+>>> chef-remote role ~/projects/chef/cookbooks/base/test/roles/yum_mirror.rb
+>>> chef-remote role ~/projects/chef/cookbooks/base/test/roles/yum_repo.rb
+>>> chef-remote -r "role[yum_repo]" solo
+>>> ssh-exec -r  # login to the node
+# Download all required RPM packages to the local repository
+>>> scp lxdev01:/root/rpmbuild/RPMS/x86_64/* /var/www/html/repo
+>>> createrepo --update /var/www/html/repo/
+```
+
+Start all required virtual machine instances (cf. [clush](../clush.md)):
+
+```bash
+>>> NODES lxrm01,lxdb01,lxb[001-004]
+>>> nodeset-loop "virsh-instance remove {}" # clean up if requried
+## for CentOS nodes
+>>> nodeset-loop "virsh-instance shadow centos7 {}"
+## for Debian nodes
+>>> nodeset-loop "virsh-instance shadow debian9 {}"
 nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; hostname -f'"
+## basic node setup...
+>>> vm l        
+ Id    Name                           State
+----------------------------------------------------
+ 4     lxrepo01.devops.test           running
+ 6     lxb001.devops.test             running
+ 7     lxb002.devops.test             running
+ 8     lxb003.devops.test             running
+ 9     lxb004.devops.test             running
+ 10    lxdb01.devops.test             running
+ 11    lxrm01.devops.test             running
 ```
 
 ## Account Database
