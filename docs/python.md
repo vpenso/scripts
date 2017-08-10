@@ -626,7 +626,7 @@ class Human():
 for _ in (Human('alice',25),Human('bob',31)):
     # call the method of an object
     print(_.who())
-    # pass an object to a class method 
+    # pass an object to a method
     print(Human.who(_))
 ```
 
@@ -645,8 +645,9 @@ Class methods:
 
 ```python
 class Human():
-    # define a class variable
-    num = 0
+
+    num = 0 # define a class variable
+
     # constructor
     def __init__(self, name, age):
         self.name = name
@@ -674,4 +675,27 @@ humans = [
 print(humans[2].who())       # joe age 19 [of 3]
 ```
 
+### Class Properties
 
+A method used to get a value is decorated with `@property` before its definition.
+
+A method used to set a value is decorated with `@<<name>>.setter` before its definition.
+
+```python
+class C:
+
+    def __init__(self,v):
+        self._v = v
+    # getter
+    @property
+    def v(self):
+        return self._v
+    # setter
+    @v.setter
+    def v(self,__):
+        self._v = __
+
+c = C(123)
+c.v = 321         # set a value
+print(c.v)        # get a value
+```
