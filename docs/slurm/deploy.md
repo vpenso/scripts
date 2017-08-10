@@ -189,31 +189,42 @@ Copy the default configuration for slurmdbd daemon.
 
 ### Database Storage
 
-Install the Slurm database front-end **slurmdbd** and a mysql server on the controller machine. 
+Install MySQL on Debian:
 
-```
+```bash
 » apt-get -y install mysql-server
-```
-
-Allow remote access to the database:
-
-```
-» sed -i "s/^bind-address/#bind-address/" /etc/mysql/my.cnf
+## Allow remote access to the database:
+>>> sed -i "s/^bind-address/#bind-address/" /etc/mysql/my.cnf
 # or
-» sed -i "s/^bind-address/#bind-address/" /etc/mysql/mysql.conf.d/mysqld.cnf
+>>> sed -i "s/^bind-address/#bind-address/" /etc/mysql/mysql.conf.d/mysqld.cnf
+## login for configuration
+>>> grep -e '^user' -e '^password' /etc/mysql/debian.cnf
+>>> mysql -u debian-sys-maint -p
+## ...configure...
+>>> service mysql restart # restart the daemon
 ```
 
-Restart the daemon:
+Install MariaDB from the [upstream repository](https://downloads.mariadb.org/mariadb/repositories/#mirror=hs-esslingen&distro=CentOS&distro_release=centos7-amd64--centos7&version=10.2) on CentOS 7:
 
-```
-» service mysql restart
+```bash
+>>> cat /etc/yum.repos.d/MariaDB.repo
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.2/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+>>> yum -y install MariaDB-server MariaDB-client
+## allow remote access
+>>> sed -i "s/^#bind-address/bind-address/" /etc/my.cnf.d/server.cnf
+>>> systemctl start mariadb
+## login for configuration
+>>> mysql
+# ...configure...
 ```
 
 Grant Slurm access to the database:
 
-```
-» grep -e '^user' -e '^password' /etc/mysql/debian.cnf
-» mysql -u debian-sys-maint -p
+```msyql
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01.devops.test' identified by '12345678' with grant option;
@@ -221,9 +232,6 @@ mysql> select User,Host from mysql.user where User = 'slurm';
 […]
 mysql> quit
 ```
-
-
-
 
 Adjust the following configuration options in [slurmdbd.conf][slurmdbdconf]:
 
