@@ -155,10 +155,10 @@ Deployment and configuration of the cluster controller:
 
 ```bash
 ## install on CentOS
->>> yum install slurm
+>>> yum install -y slurm
 >>> cp /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf
 ## install on Debian
->>> apt install slurmctld munge-devel
+>>> apt install slurmctld
 >>> zcat /usr/share/doc/slurm-llnl/examples/slurm.conf.simple.gz > /etc/slurm-llnl/slurm.conf
 ```
 ```bash
@@ -190,7 +190,7 @@ debug*       up   infinite      4    unk lxb[001-004]
 
 ```bash
 ## install on CentOS
->>> yum -y install slurm-slurmdbd
+>>> yum -y install slurm-slurmdbd slurm-munge
 >>> mkdir -m 755 /var/log/slurm && chown slurm:slurm /var/log/slurm
 >>> cp /etc/slurm/slurmdbd.conf.example /etc/slurm/slurmdbd.conf
 # ... configure ...
@@ -231,8 +231,8 @@ gpgcheck=1
 >>> yum -y install MariaDB-server MariaDB-client
 ## allow remote access
 >>> sed -i "s/^#bind-address/bind-address/" /etc/my.cnf.d/server.cnf
->>> systemctl enable mariadb
->>> systemctl start mariadb
+>>> firewall-cmd --add-port=3306/tcp # open the firewall
+>>> systemctl enable mariadb && systemctl start mariadb
 ## login for configuration
 >>> mysql
 # ...configure...
@@ -249,7 +249,7 @@ mysql> select User,Host from mysql.user where User = 'slurm';
 mysql> quit
 ```
 
-Adjust the following configuration options in [slurmdbd.conf][slurmdbdconf]:
+Configure Slurm services to use the database:
 
 ```bash
 >>> grep ^Storage /etc/slurm*/slurmdbd.conf | sort
@@ -259,14 +259,15 @@ StoragePass=12345678
 StorageType=accounting_storage/mysql
 StorageUser=slurm
 ```
-
-Adjust the following configuration options in [slurm.conf][slurmconf]:
-
-    » egrep '^AccountingStorageHost|^AccountingStorageType|^JobAcctGatherType' /etc/slurm-llnl/slurm.conf 
-    AccountingStorageHost=lxrm01
-    AccountingStorageType=accounting_storage/slurmdbd
-    JobAcctGatherType=jobacct_gather/linux
-    » scontrol reconfigure
+```bash
+>>> egrep '^ClusterName|^AccountingStorageHost|^AccountingStorageType|^JobAcctGatherType' /etc/slurm*/slurm.conf
+ClusterName=virgo
+JobAcctGatherType=jobacct_gather/linux
+AccountingStorageType=accounting_storage/slurmdbd
+AccountingStorageHost=lxrm01
+>>> sacctmgr -i add cluster virgo
+>>> systemctl restart slurmctld
+```
 
 ### File Storage
 
