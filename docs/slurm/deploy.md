@@ -63,7 +63,7 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 >>> createrepo --update /var/www/html/repo/
 ```
 
-## Source
+## Source Code
 
 ### Munge
 
@@ -148,6 +148,10 @@ PartitionName=debug Nodes=lxdev[02-04] Default=YES MaxTime=INFINITE State=UP
 >>> slurmctld -D                                      # start the control daemon
 >>> sinfo                                             # pinrt state
 ```
+
+# Configuration
+
+Cf. [config.md](config.md) 
 
 ## Slurmctld
 
