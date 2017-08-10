@@ -41,11 +41,11 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 ```bash
 # install dependencies
 >>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel
->>> rpm -i ~/rpmbuild/RPMS/x86_64/*.rpm  # install munge including the development package
+>>> rpm -i /root/rpmbuild/RPMS/x86_64/munge*.rpm  # install munge including the development package
 # download the latest version of slurm
->>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.3.tar.bz2
+>>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.6.tar.bz2
 # build the Slurm packages
->>> rpmbuild -tb --clean slurm-17.02.3.tar.bz2
+>>> rpmbuild -tb --clean slurm-17.02.6.tar.bz2
 >>> ls -1 /root/rpmbuild/RPMS/x86_64/slurm*
 /root/rpmbuild/RPMS/x86_64/slurm-17.02.3-1.el7.centos.x86_64.rpm
 /root/rpmbuild/RPMS/x86_64/slurm-contribs-17.02.3-1.el7.centos.x86_64.rpm
