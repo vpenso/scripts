@@ -224,12 +224,13 @@ begin
     lxcm01 lxcm02 
     lxcc01 lxcc02
     lxrm01 lxrm02
-    lxb001 lxb002 lxb003 lxb004 lxb005 lxb006 lxb007 lxb008 lxb009
+    lxb001 lxb002 lxb003 lxb004 lxb005 lxb006 lxb007 lxb008 lxb009 lxb010
     lxmon01 lxmon02 lxmon03 lxmon04 lxmon05
     lxdev01 lxdev02 lxdev03 lxdev04
     lxfs01 lxfs02 lxfs03 lxfs04 lxfs05
     lxhvs01 lxhvs02 lxhvs03 lxhvs04
     lxdb01 lxdb02 lxdb03
+    lxrepo01 lxrepo02 lxrepo03
   )
   
   $logger = Logger.new($stderr)
