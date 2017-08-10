@@ -151,33 +151,39 @@ PartitionName=debug Nodes=lxdev[02-04] Default=YES MaxTime=INFINITE State=UP
 
 ## Slurmctld
 
-Install a cluster controller **slurmctld**:
+Deployment and configuration of the cluster controller:
 
-    » apt install slurmctld
-    […]
-    » zcat /usr/share/doc/slurm-llnl/examples/slurm.conf.simple.gz > /etc/slurm-llnl/slurm.conf
-    […]
-    » cat /etc/slurm-llnl/slurm.conf | egrep '^ControlMachine|^NodeName|^PartitionName'
-    ControlMachine=lxrm01
-    NodeName=lxb[001-004] Procs=1 State=UNKNOWN
-    PartitionName=debug Nodes=lxb[001-004] Default=YES MaxTime=INFINITE State=UP
-    » create-munge-key
-    Generating a pseudo-random key using /dev/urandom completed.
-    » service munge start
-    Starting MUNGE: munged.
-    » service slurm-llnl start
-    Starting slurm central management daemon: slurmctld.
-    » scontrol show config
-    […]
-    » sinfo
-    PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-    debug*       up   infinite      4    unk lxb[001-004]
-
-- Install the _slurmctld_ package.
-- Copy the example configuration to `/etc/slurm-llnl/slurm.conf`.
-- Define the controller and execution nodes in the Slurm configuration.
-- Execute create-munge-key to generate an authentication key.
-- Start the `munge` and `slurmctld` service daemons. 
+```bash
+## install on CentOS
+>>> yum install slurm
+>>> cp /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf
+## install on Debian
+>>> apt install slurmctld munge-devel
+>>> zcat /usr/share/doc/slurm-llnl/examples/slurm.conf.simple.gz > /etc/slurm-llnl/slurm.conf
+```
+```bash
+## configure the controller
+>>> egrep '^ControlMachine|^NodeName|^PartitionName' /etc/slurm*/slurm.conf
+ControlMachine=lxrm01
+NodeName=lxb[001-004] Procs=1 State=UNKNOWN
+PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+## create a Munge shared authentication key
+>>> create-munge-key
+Generating a pseudo-random key using /dev/urandom completed.
+# or
+>>> dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
+## start Munge
+>>> systemctl enable munge && systemctl start munge
+## slurm user configuration on CentOS
+>>> groupadd slurm && useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -g slurm -s /bin/bash slurm
+>>> mkdir -m 755 -p /var/spool/slurm/ctld && chown slurm:slurm /var/spool/slurm/ctld
+## start the slurm controller
+>>> systemctl enable slurmctld && systemctl start slurmctld
+>>> scontrol show config
+>>> sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+debug*       up   infinite      4    unk lxb[001-004]
+```
 
 ## Slurmdbd
 
@@ -216,6 +222,7 @@ gpgcheck=1
 >>> yum -y install MariaDB-server MariaDB-client
 ## allow remote access
 >>> sed -i "s/^#bind-address/bind-address/" /etc/my.cnf.d/server.cnf
+>>> systemctl enable mariadb
 >>> systemctl start mariadb
 ## login for configuration
 >>> mysql
