@@ -192,7 +192,7 @@ PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 debug*       up   infinite      4    unk lxb[001-004]
 ```
 
-## Accounting Database
+## Slurmdbd
 
 
 ```bash
