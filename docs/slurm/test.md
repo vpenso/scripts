@@ -55,29 +55,42 @@ nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; ho
 
 ## Account Database
 
-Deploy role [account_database][account_database.rb], to install a MySQL database. 
+Install and configure a MySQL/MariaDB server:
+
+On Debian 8/8 with the [sys](https://github.com/GSI-HPC/sys-chef-cookbook) Chef cookbook and the role [account_database.rb](../../var/chef/roles/debian/slurm/account_database.rb):
 
 ```bash
-vm cd lxdb01
-chef-remote cookbook sys 
-chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
-chef-remote -r "role[account_database]" solo
+>>> vm cd lxdb01
+>>> chef-remote cookbook sys 
+>>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
+>>> chef-remote -r "role[account_database]" solo
 ```
 
-Grant the `slurm` user access to the database
+Deploy a MariaDB server on CentOS 7 with [chef-base/test/roles/mariadb.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/mariadb.rb)
 
 ```bash
->>> ssh-exec -r 'sed -i "s/^bind-address/#bind-address/" /etc/mysql/mysql.conf.d/mysqld.cnf'
+>>> vm cd lxdb01
+>>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
+>>> chef-remote cookbook base
+>>> chef-remote -r "role[mariadb]" solo
+```
+
+Prepare the database for Slurm (cf. [deploy.md](deploy.md))
+
+```bash
+## Debian
 >>> ssh-exec -r "grep -e '^user' -e '^password' /etc/mysql/debian.cnf"
 >>> ssh-exec -r "mysql -u debian-sys-maint -p"
+## CentOS
+>>> ssh-exec -r 'mysql'
+# ..configure ...
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01.devops.test' identified by '12345678' with grant option;
-mysql> select User,Host from mysql.user where User = 'slurm';
-[…]
 mysql> quit
 >>> ssh-exec -r 'systemctl restart mysql'
 ```
+
 ## Cluster Controller
 
 Deploy role [cluster_controller][cluster_controller.rb], to install slurmctld, and slurmdbd
@@ -145,6 +158,5 @@ Execute jobs:
 
 [slurm_basic]: ../../var/slurm/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
-[account_database.rb]: ../../var/chef/roles/debian/slurm/account_database.rb
 [cluster_controller.rb]: ../../var/chef/roles/debian/slurm/cluster_controller.rb
 [execution_node.rb]: ../../var/chef/roles/debian/slurm/execution_node.rb
