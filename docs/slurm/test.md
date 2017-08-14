@@ -1,8 +1,6 @@
 
 Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
 
-The **configuration is deployed using Chef** with the [sys](https://github.com/GSI-HPC/sys-chef-cookbook) cookbook.
-
 Slurm has the capability to simulate resources on execution nodes for testing:
 
 * Set `FastSchedule=2` in order to emulate nodes with more resources then physically available by defining them with NodeName.
