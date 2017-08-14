@@ -112,21 +112,24 @@ CentOS 7, [base][base] Chef cookbook, role [slurmctld.rb](https://github.com/vpe
 
 Deploy a basic Slurm configuration from [slurm/basis][slurm_basic] and start the services
 
+* [slurm.conf](../../var/slurm/slurm.conf)
+* [slurm.confdbd](../../var/slurm/slurmdbd.conf)
+
 ```bash
-virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm
-virsh-instance exec lxrm01 'systemctl start slurmdbd'
-virsh-instance exec lxrm01 'systemctl start slurmctld && sinfo'
+>>> virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm
+>>> virsh-instance exec lxrm01 'systemctl start slurmdbd'
+>>> virsh-instance exec lxrm01 'systemctl start slurmctld && sinfo'
 ```
 
 Manage the account DB configuration: 
 
 ```bash
 # load the account configuration
-virsh-instance sync lxrm01 $SCRIPTS/var/slurm/accounts.conf :/tmp/
-virsh-instance exec lxrm01 'sacctmgr --immediate load /tmp/accounts.conf'
+>>> virsh-instance sync lxrm01 $SCRIPTS/var/slurm/accounts.conf :/tmp/
+>>> virsh-instance exec lxrm01 'sacctmgr --immediate load /tmp/accounts.conf'
 # dump the account configuration
-virsh-instance exec lxrm01 'sacctmgr dump vega file=/tmp/accounts.conf'
-virsh-instance sync lxrm01 :/tmp/accounts.conf $SCRIPTS/var/slurm/
+>>> virsh-instance exec lxrm01 'sacctmgr dump vega file=/tmp/accounts.conf'
+>>> virsh-instance sync lxrm01 :/tmp/accounts.conf $SCRIPTS/var/slurm/
 ```
 
 ## Execution Nodes
@@ -166,7 +169,6 @@ Execute jobs:
 
 [sys]: https://github.com/GSI-HPC/sys-chef-cookbook
 [base]: https://github.com/vpenso/chef-base
-[slurm_basic]: ../../var/slurm/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
 [cluster_controller.rb]: ../../var/chef/roles/debian/slurm/cluster_controller.rb
 [execution_node.rb]: ../../var/chef/roles/debian/slurm/execution_node.rb
