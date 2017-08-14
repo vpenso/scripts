@@ -57,7 +57,7 @@ nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; ho
 
 Install and configure a MySQL/MariaDB server:
 
-On Debian 8/8 with the [sys](https://github.com/GSI-HPC/sys-chef-cookbook) Chef cookbook and the role [account_database.rb](../../var/chef/roles/debian/slurm/account_database.rb):
+On Debian 8/9 with the [sys][sys] Chef cookbook and the role [account_database.rb](../../var/chef/roles/debian/slurm/account_database.rb):
 
 ```bash
 >>> vm cd lxdb01
@@ -93,22 +93,31 @@ mysql> quit
 
 ## Cluster Controller
 
-Deploy role [cluster_controller][cluster_controller.rb], to install slurmctld, and slurmdbd
+
+Debian 8/9, [sys][sys] Chef cookbooks, role [cluster_controller][cluster_controller.rb]:
 
 ```bash
-vm cd lxrm01
-chef-remote cookbook sys 
-chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
-chef-remote -r "role[cluster_controller]" solo
+>>> chef-remote cookbook sys 
+>>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
+>>> chef-remote -r "role[cluster_controller]" solo
+>>> virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
 ```
+
+CentOS 7, [base][base] Chef cookbook, role [slurmctld.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmctld.rb):
+
+```bash
+>>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
+>>> chef-remote cookbook base
+>>> chef-remote -r "role[slurmctld]" solo
+```
+
 
 Deploy a basic Slurm configuration from [slurm/basis][slurm_basic] and start the services
 
 ```bash
-virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
-virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm-llnl
-virsh-instance exec lxrm01 'systemctl restart slurmdbd'
-virsh-instance exec lxrm01 'systemctl restart slurmctld && sinfo'
+virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm
+virsh-instance exec lxrm01 'systemctl start slurmdbd'
+virsh-instance exec lxrm01 'systemctl start slurmctld && sinfo'
 ```
 
 Manage the account DB configuration: 
@@ -156,6 +165,9 @@ Execute jobs:
 […]
 ```
 
+
+[sys]: https://github.com/GSI-HPC/sys-chef-cookbook
+[base]: https://github.com/vpenso/chef-base
 [slurm_basic]: ../../var/slurm/slurm.conf
 [slurm_stress]: ../../bin/slurm-stress
 [cluster_controller.rb]: ../../var/chef/roles/debian/slurm/cluster_controller.rb
