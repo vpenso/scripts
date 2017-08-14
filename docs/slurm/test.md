@@ -98,6 +98,7 @@ Debian 8/9, [sys][sys] Chef cookbooks, role [cluster_controller][cluster_control
 >>> chef-remote cookbook sys 
 >>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
 >>> chef-remote -r "role[cluster_controller]" solo
+## ...configure...
 >>> virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
 ```
 
@@ -109,11 +110,10 @@ CentOS 7, [base][base] Chef cookbook, role [slurmctld.rb](https://github.com/vpe
 >>> chef-remote -r "role[slurmctld]" solo
 ```
 
-
-Deploy a basic Slurm configuration from [slurm/basis][slurm_basic] and start the services
+Deploy a basic Slurm configuration:
 
 * [slurm.conf](../../var/slurm/slurm.conf)
-* [slurm.confdbd](../../var/slurm/slurmdbd.conf)
+* [slurmdbd.conf](../../var/slurm/slurmdbd.conf)
 
 ```bash
 >>> virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm
