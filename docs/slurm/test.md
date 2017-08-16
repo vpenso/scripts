@@ -145,6 +145,14 @@ slurm-en chef-remote -r "role[execution_node]" solo
 slurm-en-exec 'systemctl reboot'
 ```
 
+CentOS 7, [base][base] Chef cookbook, role [slurmd.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmd.rb):
+
+```bash
+>>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
+>>> chef-remote cookbook base
+>>> chef-remote -r "role[slurmd]" solo
+```
+
 # Tests
 
 Copy the job helper script [slurm-stress][slurm_stress] into the home directory of a user:
