@@ -72,6 +72,7 @@ ZSH_HIGHLIGHT_STYLES+=(
   path                   'fg=246'
   single-quoted-argument 'fg=208,bold'
   double-quoted-argument 'fg=208,bold'
+  cursor                 'bg=224,fg=124,bold'
 )
 
 antigen bundle olivierverdier/zsh-git-prompt
