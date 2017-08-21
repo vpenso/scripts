@@ -86,7 +86,7 @@ function basic() {
 
 function desktop() {
   basic
-  sudo apt-get --quiet=2 --assume-yes install htop ack-grep sysstat procps iptraf tcpdump tmux psmisc clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs ccrypt xclip nmap ruby-full nethogs
+  sudo apt-get --quiet=2 --assume-yes install htop ack-grep sysstat procps iptraf tcpdump tmux psmisc clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs ccrypt xclip nmap ruby-full nethogs arc-theme moka-icon-theme
   $SCRIPTS/bin/tmux-default-config
 }
 
