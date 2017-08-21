@@ -61,6 +61,10 @@ antigen bundle zsh-users/zsh-autosuggestions
 
 # https://github.com/zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-syntax-highlighting
+
+antigen bundle olivierverdier/zsh-git-prompt
+antigen apply
+
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 ZSH_HIGHLIGHT_STYLES+=(
   reserved-word          'fg=27,bold'
@@ -74,10 +78,6 @@ ZSH_HIGHLIGHT_STYLES+=(
   double-quoted-argument 'fg=208,bold'
   cursor                 'bg=224,fg=124,bold'
 )
-
-antigen bundle olivierverdier/zsh-git-prompt
-antigen apply
-
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=252
 
 NEWLINE=$'\n'
