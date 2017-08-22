@@ -2,7 +2,8 @@ IOR (Interleaved or Random) file system benchmarking application
 
 <http://wiki.lustre.org/IOR>  
 <https://github.com/LLNL/ior> (deprecated)  
-<https://github.com/IOR-LANL/ior>
+<https://github.com/IOR-LANL/ior>  
+<https://github.com/glennklockwood/ior-apex>
 
 * Tests performance of parallel file-systems (like Lustre)
 * Use MPI for process synchronisation
@@ -49,6 +50,6 @@ File size (1.5x total memory of the system):
     filesize = segmentCount * blocksize * number_of_processes
 
 * `transfersize`: Size (in bytes) of a single data buffer to be transferred in a single I/O call. 
-* `blocksize`:  Size (in bytes) of a contiguous chunk of data accessed by a single client; it is comprised of one
+* `blocksize`:  Size (in bytes) of a contiguous chunk of data accessed by a single client
 * `segmentCount`: Number of segments in file. (A segment is a contiguous chunk of **data accessed by multiple clients** each writing/reading their own contiguous data; comprised of blocks accessed by multiple clients or more transfers.)
 
