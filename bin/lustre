@@ -88,7 +88,8 @@ def path2server(path)
       ostid, ost, state = System::exec(%Q<lfs osts | grep #{obdidx}>).delete(':').split(' ')
       ost = ost.gsub(/\_UUID$/,'')
       osts << ost
-      servers << ost2srv[ost]
+      server = ost2srv[ost]
+      servers << "#{server}:0x#{ost.split('-')[-1].gsub(/OST/,'') }"
     end
     osts.uniq!
     servers = servers.uniq.sort
