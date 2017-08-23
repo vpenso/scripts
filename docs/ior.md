@@ -23,8 +23,8 @@ IOR (Interleaved or Random) file system benchmarking application
 Deploy the `ior` binary on all nodes used for benchmarking.
 
 ```bash
->>> ior -vwr -i 4 -F -o $PWD/test.dat -t 1m -b 1g
->>> ior -vwzFemk -i 4 -t 1m -b 128m -d 0.1 -a MPIIO -o ior.dat
+# 20 parallel task writing one file each with size 100MB 
+mpirun -np 20 ior -a POSIX -vwk -t100m -b100m -i 10 -F -o ior.dat
 ```
 
 ### Options

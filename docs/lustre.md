@@ -15,7 +15,7 @@ lfs find -print -type f <path>         # find files in a directory
 
 ### Striping
 
-Split a file into small sections (stripes) and distribute these to multiple OSTs.
+Split a file into small sections (stripes) and distribute these for concurrent access to multiple OSTs.
 
 * Advantages:
   - The **file size** can be bigger then the storage capacity of a single OST.
@@ -31,10 +31,25 @@ lfs setstripe -i 0x<idx> <file|dir>         # target a specific OST
 ```
 
 * File inherit the striping configuration of their parent directory.
-* Application I/O performance is influenced by choosing the right file size and stripe count.
 * **Stipe Count** (default 1)
   - By default a single file is stored to a single OST.
   - A count of `-1` stripes across all available OSTs (eventually used for very big files).
 * **Stripe Size** (default 1MB)
   - Maximum size of the individual stripes.
   - Lustre sends data in 1MB chunks → stripe size are recommended to range between 1MB up to 4MB
+
+### Alignment
+
+Application I/O performance is influenced by choosing the right file size and stripe count.
+
+Correct I/O alignment mitigates the effects of:
+
+* **Resource contention** on the OST block device.
+* **Request contention** on the OSS hosting multiple OSTs.
+
+General recommendations for stripe alignment:
+
+* Minimize the number of OSTs a process/task must communicate with.
+* Ensure that a process/task accesses a file at offsets corresponding to stripe boundaries.
+
+
