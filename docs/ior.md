@@ -7,6 +7,11 @@ IOR (Interleaved or Random) file system benchmarking application
 
 * Tests performance of parallel file-systems (like Lustre)
 * Use MPI for process synchronisation
+* Configurable to operate in multiple modes:
+  - **File-per-process**: One file per task (measures peak throughput).
+  - **Single-shared-file**: Single shared file for all tasks.
+  - **Buffered**: Take advantage to I/O caches on the client.
+  - **DirectIO**: Bypass I/O cache by writing directly to the file-system.
 
 ```bash
 >>> git clone https://github.com/LLNL/ior.git && cd ior
@@ -21,6 +26,16 @@ Deploy the `ior` binary on all nodes used for benchmarking.
 >>> ior -vwr -i 4 -F -o $PWD/test.dat -t 1m -b 1g
 >>> ior -vwzFemk -i 4 -t 1m -b 128m -d 0.1 -a MPIIO -o ior.dat
 ```
+
+### Options
+
+File size (1.5x total main memory of a node):
+
+    filesize = segmentCount * blocksize * number_of_processes
+
+* `transfersize`: Size (in bytes) of a single data buffer to be transferred in a single I/O call. 
+* `blocksize`:  Size (in bytes) of a contiguous chunk of data accessed by a single client
+* `segmentCount`: Number of segments in file. (A segment is a contiguous chunk of **data accessed by multiple clients** each writing/reading their own contiguous data; comprised of blocks accessed by multiple clients or more transfers.)
 
 ### Configuration Files
 
@@ -42,14 +57,4 @@ IOR START
 IOR STOP
 >>> ior -f ior.conf
 ```
-
-### Options
-
-File size (1.5x total memory of the system):
-
-    filesize = segmentCount * blocksize * number_of_processes
-
-* `transfersize`: Size (in bytes) of a single data buffer to be transferred in a single I/O call. 
-* `blocksize`:  Size (in bytes) of a contiguous chunk of data accessed by a single client
-* `segmentCount`: Number of segments in file. (A segment is a contiguous chunk of **data accessed by multiple clients** each writing/reading their own contiguous data; comprised of blocks accessed by multiple clients or more transfers.)
 
