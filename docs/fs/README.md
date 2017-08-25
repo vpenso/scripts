@@ -61,6 +61,9 @@ pwd                  # print working directory
 cd <path>            # change to specified directory
 cd                   # no path argument changes to the home directory of the login user
 cd -                 # change to previous directory
+pushd                # push directory to stack
+popd                 # remove directory from stack
+dirs                 # list directory stack
 touch <file>         # create an empty file with specifed path and name
 rm <file>            # delete a file (permanently)
 mkdir <dir>          # create an (new) empty directory in the tree
