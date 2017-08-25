@@ -64,6 +64,7 @@ cd -                 # change to previous directory
 pushd                # push directory to stack
 popd                 # remove directory from stack
 dirs                 # list directory stack
+cd ~<n>              # change to nth diretory from stack
 touch <file>         # create an empty file with specifed path and name
 rm <file>            # delete a file (permanently)
 mkdir <dir>          # create an (new) empty directory in the tree
