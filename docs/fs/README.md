@@ -14,17 +14,16 @@ Typically data stored in a file-systems is organized within a **tree structure**
 Following shows the hierarchical listing of the home directory of a use "jdow":
 
 ```bash
->>> tree /home
-/home
-└── /home/jdow
-    ├── /home/jdow/bin
-    ├── /home/jdow/docs
-    │   ├── /home/jdow/docs/manual.pdf
-    │   └── /home/jdow/docs/readme.md
-    ├── /home/jdow/music
-    │   ├── /home/jdow/music/song.mp3
-    │   └── /home/jdow/music/sound.mp3
-    └── /home/jdow/var
+>>> tree -f /home/jdow
+/home/jdow
+├── /home/jdow/bin
+├── /home/jdow/docs
+│   ├── /home/jdow/docs/manual.pdf
+│   └── /home/jdow/docs/readme.md
+├── /home/jdow/music
+│   ├── /home/jdow/music/song.mp3
+│   └── /home/jdow/music/sound.mp3
+└── /home/jdow/var
 >>> pwd                                  # show the working directory
 /home/jdow
 >>> ls -1 docs/                          # list the sub directory docs/
@@ -45,27 +44,43 @@ Paths are constructed with the following notation:
 ~                        # abbr. for the home directory
 /                        # root directory
 ### absolute path
-/<dir>[/<dir>/]          # starts with / for the root directory
+/<dir>[/<dir>[/<file>]]  # starts with / for the root directory
 ### realtive path
 .                        # current directory
 ..                       # parent directory
 ../..[/..]               # parent of the parent directory
-<dir>/[<dir>/]           # sub/child directory
+<dir>/[<dir>[/<file>]]   # sub/child directory/file
 ../<dir>[/<dir>/]        # relative to parent directory
 ~/<dir>[/<dir>/]         # relative to the (login user) home directory
 ~<user>/<dir>[/<dir>/]   # relative to a specific user home directory 
 ```
 
-Examples for commands use to explore and navigate the directory tree:
+## Navigation
+
+Explore and navigate the directory tree:
 
 ```bash
-pwd                  # print working directory
-cd <path>            # change to specified directory
-cd                   # no path argument changes to the home directory of the login user
-cd -                 # change to previous directory
 ls                   # list content in the working directory
 ls <path>            # list content specified by path
 tree                 # show the tree structure decending from the working directory
 tree -f -l 1 <path>  # show absolute tree structure with a decending depth of 1 of specified directory
+pwd                  # print working directory
+cd <path>            # change to specified directory
+cd                   # no path argument changes to the home directory of the login user
+cd -                 # change to previous directory
 ```
+
+## Create & Delete
+
+Create and delete directories and files:
+
+```bash
+touch <file>         # create an empty file with specifed path and name
+rm <file>            # delete a file (permanently)
+mkdir <dir>          # create an (new) empty directory in the tree
+mkdir -p <dir>       # ^^ recursive create of a new directory (missing parents included)
+rmdir <dir>          # remove a directory if it is empty
+rm -r <path>         # remove a directory and all its content (recursive decent)
+```
+
 
