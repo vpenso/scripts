@@ -27,6 +27,7 @@ apt-get -f install | dpkg --configure -a      # recover from broken installation
 dpkg-query -l                                 # list all installed packages
 dpkg -s <package> | grep ^Version             # show installed version of package
 apt-cache policy <package> | grep -i installed
+apt-cache madison <package>                   # list all available package versions in the repositories (binary + sources)
 dpkg -L <package>                             # list content of a package (if installed)
 dpkg -S <path>                                # find package containing file (if installed)
 debsums -ce                                   # find configuration files changed from default 
