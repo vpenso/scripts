@@ -1,30 +1,31 @@
 # Numpy 
 
-Python library adding support for large **homogeneous multi-dimensional arrays** and matrices, along with a large collection of high-level mathematical functions to operate on these arrays. 
+The [Nympy](http://www.numpy.org/) library adds support for large **homogeneous multi-dimensional arrays** and matrices, along with a large collection of high-level mathematical functions to operate on these arrays. 
 
-* Numpy `ndarray` class for n-dimensional array
-* Homogeneously typed (all elements have the same type)
-* Numerical operations with ndarray run on full compiled code speed
+* Homogeneously typed (all elements have the same type).
+* Numpy `ndarray` class for n-dimensional array is a more efficient implementation of a python list.
+* Numerical operations with ndarray run on full compiled code speed.
 
 ```python
 # recommended convention to import numpy
 import numpy as np                 # with abbr. np
 ```
 
-### Create & Shape
+### Create
 
 Dimensions are called **axes**, and the number of axes is **rank**
 
 ```python
-# init. an array using a tuple or list
-print(np.array((1,2,3,4,5)))
-print(np.array([1,2,3,4,5]))         # [1 2 3 4 5]
-# print omitted
-# explicit type specification 
-np.array((1,2),float)                # [ 1.  2.]
-np.array([1,2],dtype=complex)        # [ 1.+0.j  2.+0.j]
-# multiple dimensions
-np.array(([1,2,3],[4,5,6],[7,8,9]))  # [[1 2 3] [4 5 6] [7 8 9]]
+# crate an ndarray using a tuple or list
+np.array((1,2,3,4,5))
+np.array([1,2,3,4,5])                         # [1 2 3 4 5]
+# explicit data type
+np.array((1.1,2,3))                           # [ 1.1  2.   3. ]
+np.array((1,2),float)                         # [ 1.  2.]
+np.array([1,2],dtype=complex)                 # [ 1.+0.j  2.+0.j]
+# nested tuples/lists result in multi-dimensional arrays
+np.array(([1,2,3],[4,5,6],[7,8,9]))           # [[1 2 3] [4 5 6] [7 8 9]]
+np.array([range(i, i+3) for i in [1,2,3]])    # [[1 2 3] [2 3 4] [3 4 5]]
 # initial with placeholder content
 np.zeros((3,2))                      # [[ 0.  0.] [ 0.  0.] [ 0.  0.]]
 np.ones((2,2,2))                     # [[[ 1.  1.] [ 1.  1.]] [[ 1.  1.] [ 1.  1.]]]
@@ -38,12 +39,33 @@ np.arange(0,30,10)                   # [0 10 20]
 np.linspace(2,3,5)                   # [2. 2.25 2.5 2.75 3.]
 # log spaced sequence 
 np.logspace(0,1,5)                   # [1. 1.77827941 3.16227766 5.62341325 10. ]
-np.random.rand(1,3)                  # [0.19544155  0.389351  0.09039669]
-np.random.randint(0, 10, 5)          # [7 2 9 4 8]
 ```
+
+Random values:
+
+```Python
+# float values between 0 and 1 in defined dimension
+np.random.rand(1,3)                  # [0.19544155  0.389351  0.09039669]
+np.random.rand(2,2)                  # [[ 0.62209577  0.55083187] [ 0.31431768  0.98404029]]
+# 5 integers between 0 and 10
+np.random.randint(0,10,5)            # [7 2 9 4 8]
+# in defined dimension
+np.random.randint(0,10,(2,3))        # [[6 3 6] [8 2 7]]
+```
+
+### Shape
+
 ```python
 # print dimensions
-np.array(((1,2),(3,4))).shape        # (2, 2)
+a = np.array(((1,2),(3,4)))
+a.ndim                               # 2
+a,size                               # 4
+a.shape                              # (2, 2)
+a.dtype                              # dtype('int64')
+# size in bytes per element
+a.itemsize                           # 8
+# size of all elements (size x itemsize)
+a.nbytes                             # 32 
 # flatten
 np.array(((1,2),(3,4))).flatten()
 np.array(((1,2),(3,4))).ravel()      # [1 2 3 4]

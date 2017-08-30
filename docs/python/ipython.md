@@ -9,9 +9,9 @@ ctrl-d                 exit session
 ctrl-r                 search command history
 ctrl-a                 cursor to the beginning of the line
 ctrl-e                 cursor to the end of the linr
-ctrl-k 	               cut text from cursor to end of line
-ctrl-u 	               cut text from beginning of line to cursor
-ctrl-y 	               yank (paste) text cut before
+ctrl-k                 cut text from cursor to end of line
+ctrl-u                 cut text from beginning of line to cursor
+ctrl-y                 yank (paste) text cut before
 ```
 
 ## Documentation
