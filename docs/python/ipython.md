@@ -126,4 +126,16 @@ In [6]: !echo {s}
 
 Interpolate the contents of a variable with `{<var>}`.
 
+Subshell started with `!` are non-interactive non-login instance of the user's default shell:
+
+```bash
+In [1]: !echo $SHELL
+/bin/zsh
+In [2]: !ps -p $$ && :
+  PID TTY          TIME CMD
+  19295 pts/5    00:00:00 zsh
+```
+
+ZSH user need to load their custom environment with `~/.zshenv`
+
 

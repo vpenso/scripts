@@ -99,6 +99,8 @@ export TERM="screen-256color"
 EOF
 echo "Configuration written to ~/.zshrc"
 
+ln -s ~/.zshrc ~/.zshenv
+
 mkdir ~/.zshrc.d 2>/dev/null
 
 cat > $HOME/.zshrc.d/05_zsh_git_prompt <<'EOF'
