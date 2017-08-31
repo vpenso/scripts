@@ -9,12 +9,15 @@ Conda installs/updates package and manages environments, cf. user guide:
 Managing Python environments:
 
 ```bash
-conda info                                      # basic information
-conda info --envs                               # display a list of all environments
-conda search --full-name python                 # list available Python versions
-conda create --name <env> python=<ver>          # install another Python version
-source activate <env>                           # active environment
-conda remove --name <env> --all                 # delete an environment
+conda info                                          # basic information
+conda info --envs                                   # display a list of all environments
+conda search --full-name python                     # list available Python versions
+conda create --name <env> python=<ver> [<pkg>]      # install global environment
+conda create --prefix ~/<path> python=<ver> [<pkg>] # install use specific version
+source activate <env>                               # load global environment
+source activate ~/<path>                            # load user specific environment
+source deactivate                                   # unload environment
+conda remove --name <env> --all                     # delete an environment
 ```
 Managing packages in an environment
 
@@ -24,6 +27,7 @@ Managing packages in an environment
 conda list                                      # list packages
 conda search <pkg>                              # search for a package
 conda install <pkg>                             # install into current environment
+conda update <pkg>                              # update package in current environment
 conda remove <pkg>                              # delete package fro current environment
 ```
 
