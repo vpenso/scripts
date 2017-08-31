@@ -1,19 +1,4 @@
 
-## Configuration
-
-Make Python 3 the default on **Debian**:
-
-```bash
->>> sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-update-alternatives: using /usr/bin/python3 to provide /usr/bin/python (python) in auto mode
->>> update-alternatives --list python
-/usr/bin/python3
->>> python --version
-Python 3.5.3
-# Revert this change...
->>> sudo update-alternatives --remove python /usr/bin/python3
-```
-
 ## Runtime Environment
 
 Use following libraries:

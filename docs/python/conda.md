@@ -1,10 +1,8 @@
 
 
-## Conda
+## Usage
 
-Conda installs/updates package and manages environments, cf. user guide:
-
-→ [User Guide](https://conda.io/docs/user-guide/index.html)
+`conda` installs (updates) packages and manages environments → [User Guide](https://conda.io/docs/user-guide/index.html).
 
 Managing Python environments:
 
@@ -38,9 +36,9 @@ Download and install the [Miniconda](https://conda.io/miniconda.html) Python dis
 <https://repo.continuum.io/miniconda/>
 
 ```bash
->>> wget https://repo.continuum.io/miniconda/Miniconda2-4.3.21-Linux-x86_64.sh
->>> chmod +x Miniconda2-4.3.21-Linux-x86_64.sh
->>> ./Miniconda2-4.3.21-Linux-x86_64.sh -b -p /opt/conda/4.3.21
+>>> wget https://repo.continuum.io/miniconda/Miniconda3-4.3.21-Linux-x86_64.sh
+>>> chmod +x Miniconda3-4.3.21-Linux-x86_64.sh
+>>> ./Miniconda3-4.3.21-Linux-x86_64.sh -b -p /opt/conda/4.3.21
 ```
 
 Environment module configuration:
@@ -52,10 +50,10 @@ set             CONDA_PATH           /opt/conda
 set             CONDA_VERSION        4.3.21
 prepend-path    PATH                 $CONDA_PATH/$CONDA_VERSION/bin
 prepend-path    LD_LIBRARY_PATH      $CONDA_PATH/$CONDA_VERSION/lib
-module-whatis                        "Conda 4.3.21 from /opt/conda/4.3.2"
+module-whatis                        "Conda 4.3.21 from /opt/conda/4.3.21"
 proc ModulesHelp { } {
   puts stderr "conda/4.3.21 - Adds Conda 4.3.2 from /opt/conda/4.3.21 to the environment."
-  }
+}
 >>> module load conda/4.3.21
 >>> which conda
 /opt/conda/4.3.21/bin/conda
