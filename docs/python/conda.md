@@ -1,15 +1,4 @@
 
-Download and install the Miniconda Python distribution:
-
-<https://conda.io/miniconda.html>
-
-```bash
->>> cd /tmp && wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
->>> chmod +x Miniconda3-latest-Linux-x86_64.sh && ./Miniconda3-latest-Linux-x86_64.sh
-# ...follow the installation...
-# small script to add the installation to your environment
->>> echo 'export PATH=~/miniconda3/bin:$PATH' > ~/miniconda3/source_me.sh
-```
 
 ## Conda
 
@@ -20,8 +9,9 @@ Conda installs/updates package and manages environments, cf. user guide:
 Managing Python environments:
 
 ```bash
-conda search --full-name python                 # list available Python versions
+conda info                                      # basic information
 conda info --envs                               # display a list of all environments
+conda search --full-name python                 # list available Python versions
 conda create --name <env> python=<ver>          # install another Python version
 source activate <env>                           # active environment
 conda remove --name <env> --all                 # delete an environment
@@ -37,4 +27,32 @@ conda install <pkg>                             # install into current environme
 conda remove <pkg>                              # delete package fro current environment
 ```
 
+## Deploy
 
+Download and install the [Miniconda](https://conda.io/miniconda.html) Python distribution:
+
+<https://repo.continuum.io/miniconda/>
+
+```bash
+>>> wget https://repo.continuum.io/miniconda/Miniconda2-4.3.21-Linux-x86_64.sh
+>>> chmod +x Miniconda2-4.3.21-Linux-x86_64.sh
+>>> ./Miniconda2-4.3.21-Linux-x86_64.sh -b -p /opt/conda/4.3.21
+```
+
+Environment module configuration:
+
+```bash
+>>> cat /usr/share/modules/modulefiles/conda/4.3.21
+#%Module1.0
+set             CONDA_PATH           /opt/conda
+set             CONDA_VERSION        4.3.21
+prepend-path    PATH                 $CONDA_PATH/$CONDA_VERSION/bin
+prepend-path    LD_LIBRARY_PATH      $CONDA_PATH/$CONDA_VERSION/lib
+module-whatis                        "Conda 4.3.21 from /opt/conda/4.3.2"
+proc ModulesHelp { } {
+  puts stderr "conda/4.3.21 - Adds Conda 4.3.2 from /opt/conda/4.3.21 to the environment."
+  }
+>>> module load conda/4.3.21
+>>> which conda
+/opt/conda/4.3.21/bin/conda
+```
