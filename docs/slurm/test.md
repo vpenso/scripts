@@ -55,21 +55,26 @@ nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; ho
 
 Install and configure a MySQL/MariaDB server:
 
-On Debian 8/9 with the [sys][sys] Chef cookbook and the role [account_database.rb](../../var/chef/roles/debian/slurm/account_database.rb):
-
 ```bash
 >>> vm cd lxdb01
->>> chef-remote cookbook sys 
->>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/account_database.rb
->>> chef-remote -r "role[account_database]" solo
+>>> chef-remote cookbook base
+```
+
+On Debian 8/9 with the [sys][sys] Chef cookbook and the role [mariadb.rb](../../var/chef/roles/debian/slurm/mariadb.rb):
+
+```bash
+>>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/mariadb.rb
 ```
 
 Deploy a MariaDB server on CentOS 7 with [chef-base/test/roles/mariadb.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/mariadb.rb)
 
 ```bash
->>> vm cd lxdb01
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
->>> chef-remote cookbook base
+```
+
+Run Chef
+
+```bash
 >>> chef-remote -r "role[mariadb]" solo
 ```
 
