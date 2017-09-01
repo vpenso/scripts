@@ -102,7 +102,7 @@ Debian Stretch, Chef role [chef/roles/debian/slurm/slurmctld.rb](../../var/chef/
 >>> virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
 ```
 
-CentOS 7, [base][base] Chef cookbook, role [slurmctld.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmctld.rb):
+CentOS 7, Chef role [chef-base/blob/master/test/roles/slurmctld.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmctld.rb):
 
 ```bash
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
