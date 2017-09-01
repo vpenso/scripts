@@ -10,24 +10,6 @@ Slurm has the capability to simulate resources on execution nodes for testing:
 
 # Deployment
 
-Local CentOS mirror and [package repository](../rpm.md) server:
-
-* The following example uses the [chef-base](https://github.com/vpenso/chef-base) cookbook.
-* Build the server using the Chef roles [yum_mirror](https://github.com/vpenso/chef-base/blob/master/test/roles/yum_mirror.rb) and [yum_repo](https://github.com/vpenso/chef-base/blob/master/test/roles/yum_repo.rb)
-* Build and the Slurm RPM packages to upload them to the local package repository (cf. [slurm/deploy](deploy.md), [rpm](../rpm.md))
-
-```bash
->>> vi sh centos7 lxrepo01 && vm cd lxrepo01
->>> chef-remote cookbook base
->>> chef-remote role ~/projects/chef/cookbooks/base/test/roles/yum_mirror.rb
->>> chef-remote role ~/projects/chef/cookbooks/base/test/roles/yum_repo.rb
->>> chef-remote -r "role[yum_repo]" solo
->>> ssh-exec -r  # login to the node
-# Download all required RPM packages to the local repository
->>> scp lxdev01:/root/rpmbuild/RPMS/x86_64/* /var/www/html/repo
->>> createrepo --update /var/www/html/repo/
-```
-
 Start all required virtual machine instances (cf. [clush](../clush.md)):
 
 ```bash
@@ -51,30 +33,37 @@ nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; ho
  11    lxrm01.devops.test             running
 ```
 
+For CentOS a local [package repository](../rpm.md) server is required:
+
+* The following example uses the [chef-base](https://github.com/vpenso/chef-base) cookbook.
+* Build the server using the Chef roles [yum_mirror](https://github.com/vpenso/chef-base/blob/master/test/roles/yum_mirror.rb) and [yum_repo](https://github.com/vpenso/chef-base/blob/master/test/roles/yum_repo.rb)
+* Build and the Slurm RPM packages to upload them to the local package repository (cf. [slurm/deploy](deploy.md), [rpm](../rpm.md))
+
+```bash
+>>> vi sh centos7 lxrepo01 && vm cd lxrepo01
+>>> chef-remote cookbook base
+>>> chef-remote role ~/projects/chef/cookbooks/base/test/roles/yum_mirror.rb
+>>> chef-remote role ~/projects/chef/cookbooks/base/test/roles/yum_repo.rb
+>>> chef-remote -r "role[yum_repo]" solo
+>>> ssh-exec -r  # login to the node
+# Download all required RPM packages to the local repository
+>>> scp lxdev01:/root/rpmbuild/RPMS/x86_64/* /var/www/html/repo
+>>> createrepo --update /var/www/html/repo/
+```
+
+
 ## Account Database
 
-Install and configure a MySQL/MariaDB server:
+Install and configure MariaDB with Chef role:
+
+* Debian 9 (Stretch): [chef/roles/debian/slurm/mariadb.rb](../../var/chef/roles/debian/slurm/mariadb.rb):
+* CentOS 7: [chef-base/test/roles/mariadb.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/mariadb.rb)
 
 ```bash
 >>> vm cd lxdb01
+>>> ln -s ~/projects/chef/cookbooks/base/test/roles roles              # CentOS
+>>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/mariadb.rb   # Debian
 >>> chef-remote cookbook base
-```
-
-On Debian 8/9 with use the Chef role [chef/roles/debian/slurm/mariadb.rb](../../var/chef/roles/debian/slurm/mariadb.rb):
-
-```bash
->>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/mariadb.rb
-```
-
-On CentOS 7 use the chef role [chef-base/test/roles/mariadb.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/mariadb.rb)
-
-```bash
->>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
-```
-
-Run Chef
-
-```bash
 >>> chef-remote -r "role[mariadb]" solo
 ```
 
