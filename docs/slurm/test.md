@@ -123,25 +123,22 @@ Manage the account DB configuration:
 
 ## Execution Nodes
 
-Deploy the Chef role [execution_node][execution_node.rb] to install _slurmd_
+Chef role:
+
+* Debian 9 (Stretch): [chef/roles/debian/slurm/slurmd.rb](../../var/chef/roles/debian/slurm/slurmd.rb)
+* CentOS 7: [chef-base/test/roles/slurmd.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmd.rb):
 
 ```bash
-slurm-en() { for n in $(nodeset -e $NODES) ; do cd $VM_INSTANCE_PATH/$n ; $@ ; cd - >/dev/null ; done }
-slurm-en-exec() { slurm-en ssh-exec -r $@ }
-slurm-en chef-remote cookbook sys
-slurm-en chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/execution_node.rb
-slurm-en chef-remote -r "role[execution_node]" solo
-slurm-en-exec 'systemctl reboot'
-```
-
-CentOS 7, [base][base] Chef cookbook, role [slurmd.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmd.rb):
-
-```bash
+>>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
 >>> chef-remote cookbook base
 >>> chef-remote -r "role[slurmd]" solo
 ```
 
+```bash
+slurm-en() { for n in $(nodeset -e $NODES) ; do cd $VM_INSTANCE_PATH/$n ; $@ ; cd - >/dev/null ; done }
+slurm-en-exec() { slurm-en ssh-exec -r $@ }
+```
 # Tests
 
 Copy the job helper script [slurm-stress][slurm_stress] into the home directory of a user:
