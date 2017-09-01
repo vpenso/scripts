@@ -91,21 +91,14 @@ mysql> quit
 
 ## Cluster Controller
 
+Chef role:
 
-Debian Stretch, Chef role [chef/roles/debian/slurm/slurmctld.rb](../../var/chef/roles/debian/slurm/slurmctld.rb)
-
-```bash
->>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles
->>> chef-remote cookbook base
->>> chef-remote -r "role[slurmctld]" solo
-## ...configure...
->>> virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
-```
-
-CentOS 7, Chef role [chef-base/blob/master/test/roles/slurmctld.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmctld.rb):
+* Debian 9 (Stretch): [chef/roles/debian/slurm/slurmctld.rb](../../var/chef/roles/debian/slurm/slurmctld.rb)
+* CentOS 7: [chef-base/blob/master/test/roles/slurmctld.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmctld.rb):
 
 ```bash
->>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
+>>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles          # Debian
+>>> ln -s ~/projects/chef/cookbooks/base/test/roles roles     # Centos
 >>> chef-remote cookbook base
 >>> chef-remote -r "role[slurmctld]" solo
 ```
@@ -115,9 +108,16 @@ Deploy a basic Slurm configuration:
 * [slurm.conf](../../var/slurm/slurm.conf)
 * [slurmdbd.conf](../../var/slurm/slurmdbd.conf)
 
+_Note: Depending on the platform paths in the configuration files need to be adjusted._
+
 ```bash
+# upload the configuration files
 >>> virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm
+# start the SLURM database daemon
 >>> virsh-instance exec lxrm01 'systemctl start slurmdbd'
+# register the new cluster
+>>> virsh-instance exec lxrm01 'sacctmgr -i add cluster vega'
+# start the SLURM cluster controller
 >>> virsh-instance exec lxrm01 'systemctl start slurmctld && sinfo'
 ```
 

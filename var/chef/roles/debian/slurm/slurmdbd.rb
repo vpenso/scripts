@@ -7,7 +7,7 @@ run_list(
 default_attributes(
   package: ['slurmdbd'],
   systemd_unit: {
-    'slurmdbd.service': { action: [:enable] }
+    'slurmdbd.service': { action: [ :enable ] }
   }
 )
 
