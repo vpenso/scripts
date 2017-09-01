@@ -60,13 +60,13 @@ Install and configure a MySQL/MariaDB server:
 >>> chef-remote cookbook base
 ```
 
-On Debian 8/9 with the [sys][sys] Chef cookbook and the role [mariadb.rb](../../var/chef/roles/debian/slurm/mariadb.rb):
+On Debian 8/9 with use the Chef role [chef/roles/debian/slurm/mariadb.rb](../../var/chef/roles/debian/slurm/mariadb.rb):
 
 ```bash
 >>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/mariadb.rb
 ```
 
-Deploy a MariaDB server on CentOS 7 with [chef-base/test/roles/mariadb.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/mariadb.rb)
+On CentOS 7 use the chef role [chef-base/test/roles/mariadb.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/mariadb.rb)
 
 ```bash
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
