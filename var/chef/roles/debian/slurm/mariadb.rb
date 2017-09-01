@@ -32,6 +32,7 @@ default_attributes(
 	character-set-server    = utf8mb4
 	collation-server        = utf8mb4_general_ci
       ',
+      only_if: [ 'test -d /etc/mysql/mariadb.conf.d' ],
       notifies: [ :restart, 'systemd_unit[mariadb.service]' ]
     }
   },

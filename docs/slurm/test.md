@@ -81,28 +81,23 @@ Run Chef
 Prepare the database for Slurm (cf. [deploy.md](deploy.md))
 
 ```bash
-## Debian
->>> ssh-exec -r "grep -e '^user' -e '^password' /etc/mysql/debian.cnf"
->>> ssh-exec -r "mysql -u debian-sys-maint -p"
-## CentOS
->>> ssh-exec -r 'mysql'
+>>> ssh-exec -r 'mysql -u root'
 # ..configure ...
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01' identified by '12345678' with grant option;
 mysql> grant all on slurm_acct_db.* TO 'slurm'@'lxrm01.devops.test' identified by '12345678' with grant option;
 mysql> quit
->>> ssh-exec -r 'systemctl restart mysql'
 ```
 
 ## Cluster Controller
 
 
-Debian 8/9, [sys][sys] Chef cookbooks, role [cluster_controller][cluster_controller.rb]:
+Debian Stretch, Chef role [chef/roles/debian/slurm/slurmctld.rb](../../var/chef/roles/debian/slurm/slurmctld.rb)
 
 ```bash
->>> chef-remote cookbook sys 
->>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/cluster_controller.rb
->>> chef-remote -r "role[cluster_controller]" solo
+>>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles
+>>> chef-remote cookbook base
+>>> chef-remote -r "role[slurmctld]" solo
 ## ...configure...
 >>> virsh-instance exec lxrm01 'systemctl restart munge nfs-kernel-server ; exportfs -r && exportfs'
 ```
@@ -183,5 +178,4 @@ Execute jobs:
 [sys]: https://github.com/GSI-HPC/sys-chef-cookbook
 [base]: https://github.com/vpenso/chef-base
 [slurm_stress]: ../../bin/slurm-stress
-[cluster_controller.rb]: ../../var/chef/roles/debian/slurm/cluster_controller.rb
 [execution_node.rb]: ../../var/chef/roles/debian/slurm/execution_node.rb
