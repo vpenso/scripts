@@ -5,25 +5,19 @@ run_list(
   'role[munged]'
 )
 default_attributes(
-  package: ['slurmd'],
+  package: [
+    'nfs-common',
+    'slurmd'
+  ],
+  mount: {
+    '/etc/slurm-llnl': {
+      device: 'lxrm01.devops.test:/etc/slurm',
+      fstype: 'nfs',
+      options: 'ro,nosuid',
+      notifies: [:start,'systemd_unit[slurmd.service]']
+    }
+  },
   systemd_unit: {
-    'etc-slurm.mount': {
-      content: '
-        [Unit]
-        Description=Mount SLURM configuration
-        Wants=network-online.target
-        After=network-online.target
-        [Mount]
-        What=lxrm01.devops.test:/etc/slurm
-        Where=/etc/slurm-llnl
-        Type=nfs
-        Options=ro,nosuid
-        TimeoutSec=10s
-        [Install]
-        WantedBy=multi-user.target
-      ',
-      action: [:create, :enable, :start]
-    },
     'slurmd.service': { action: [:enable]  }
   }
 )

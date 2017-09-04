@@ -129,8 +129,8 @@ Chef role:
 * CentOS 7: [chef-base/test/roles/slurmd.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmd.rb):
 
 ```bash
->>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles
->>> ln -s ~/projects/chef/cookbooks/base/test/roles roles
+>>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles        # Debian
+>>> ln -s ~/projects/chef/cookbooks/base/test/roles roles   # CentOS
 >>> chef-remote cookbook base
 >>> chef-remote -r "role[slurmd]" solo
 ```
