@@ -64,7 +64,7 @@ Install and configure MariaDB with Chef role:
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles              # CentOS
 >>> chef-remote role $SCRIPTS/var/chef/roles/debian/slurm/mariadb.rb   # Debian
 >>> chef-remote cookbook base
->>> chef-remote -r "role[mariadb]" solo
+>>> chef-remote -r "role[mariadb]" solo  # run at least two times!!
 ```
 
 Prepare the database for Slurm (cf. [deploy.md](deploy.md))
@@ -90,7 +90,7 @@ Chef role:
 >>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles          # Debian
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles     # Centos
 >>> chef-remote cookbook base
->>> chef-remote -r "role[slurmctld]" solo
+>>> chef-remote -r "role[slurmctld]" solo # run at least two times!!
 ```
 
 Deploy a basic Slurm configuration:
