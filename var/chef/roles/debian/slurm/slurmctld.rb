@@ -8,7 +8,6 @@ run_list(
 )
 default_attributes(
   package: ['slurmctld'],
-  link: { '/etc/slurm': { to: '/etc/slurm-llnl' } },
   systemd_unit: {
     'slurmctld.service': { action: [:enable] }
   }

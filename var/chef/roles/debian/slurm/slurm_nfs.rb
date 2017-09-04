@@ -12,7 +12,7 @@ default_attributes(
      # NFS shares configuration
      #
      '/etc/exports' => { 
-        content: "/etc/slurm lx*(ro,sync,no_subtree_check)\n/network lx*(rw)\n",
+        content: "/etc/slurm-llnl lx*(ro,sync,no_subtree_check)\n/network lx*(rw)\n",
         notifies: [ :restart, 'systemd_unit[nfs-server.service]' ]
      }, 
   },

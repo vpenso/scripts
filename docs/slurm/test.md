@@ -19,7 +19,7 @@ Start all required virtual machine instances (cf. [clush](../clush.md)):
 >>> nodeset-loop "virsh-instance shadow centos7 {}"
 ## for Debian nodes
 >>> nodeset-loop "virsh-instance shadow debian9 {}"
-nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; hostname -f'"
+>>> nodeset-loop "virsh-instance exec {} 'echo {} > /etc/hostname ; hostname {} ; hostname -f'"
 ## basic node setup...
 >>> vm l        
  Id    Name                           State
@@ -86,6 +86,7 @@ Chef role:
 * CentOS 7: [chef-base/blob/master/test/roles/slurmctld.rb](https://github.com/vpenso/chef-base/blob/master/test/roles/slurmctld.rb):
 
 ```bash
+>>> vm cd lxrm01
 >>> ln -s $SCRIPTS/var/chef/roles/debian/slurm roles          # Debian
 >>> ln -s ~/projects/chef/cookbooks/base/test/roles roles     # Centos
 >>> chef-remote cookbook base
@@ -101,7 +102,7 @@ _Note: Depending on the platform paths in the configuration files need to be adj
 
 ```bash
 # upload the configuration files
->>> virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm
+>>> virsh-instance sync lxrm01 $SCRIPTS/var/slurm/ :/etc/slurm-llnl
 # start the SLURM database daemon
 >>> virsh-instance exec lxrm01 'systemctl start slurmdbd'
 # register the new cluster
