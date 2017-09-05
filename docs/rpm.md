@@ -106,6 +106,7 @@ Package rollback and package version lock:
 
 ```bash
 yum --showduplicates list <package>     # show all versions of a package
+repoquery --show-duplicates <package>
 yum downgrade <package>-<version>       # rollback/downgrade a package to a specific version
 yum install yum-plugin-versionlock      # install package lock Yum plugin
 yum versionlock list                    # show all locks
