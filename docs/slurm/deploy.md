@@ -43,21 +43,21 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 >>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel mysql-devel
 >>> rpm -i /root/rpmbuild/RPMS/x86_64/munge*.rpm  # install munge including the development package
 # download the latest version of slurm
->>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.6.tar.bz2
+>>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.7.tar.bz2
 # build the Slurm packages
->>> rpmbuild -tb --clean slurm-17.02.6.tar.bz2
+>>> rpmbuild -tb --clean slurm-17.02.7.tar.bz2
 >>> ls -1 /root/rpmbuild/RPMS/x86_64/slurm*
-/root/rpmbuild/RPMS/x86_64/slurm-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-contribs-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-devel-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-munge-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-openlava-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-pam_slurm-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-perlapi-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-plugins-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-sql-17.02.3-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-torque-17.02.3-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-contribs-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-devel-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-munge-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-openlava-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-pam_slurm-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-perlapi-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-plugins-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-sql-17.02.7-1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/slurm-torque-17.02.7-1.el7.centos.x86_64.rpm
 # publish packages on a local repository
 >>> cp ~/rpmbuild/RPMS/x86_64/*.rpm /var/www/html/repo/
 >>> createrepo --update /var/www/html/repo/
