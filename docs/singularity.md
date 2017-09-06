@@ -1,15 +1,22 @@
 
-[Singularity][01] provides private OS container images in user-space
+[Singularity][01] provides private OS container images in user-space.
+
+
+## Packages
+
+<https://github.com/singularityware/singularity/releases>
+
+Build a package for Debian:
 
 ```bash
-apt -y install build-essential automake libtool debootstrap 
+>>> apt -y install build-essential automake libtool debootstrap 
 ### download, extract source code archive, and change to working directory
-version=2.2 ; wget https://github.com/singularityware/singularity/archive/$version.tar.gz -O /tmp/singularity_$version.orig.tar.gz
-tar -xf /tmp/singularity_$version.orig.tar.gz -C /tmp/ && cd /tmp/singularity-$version
-./autogen.sh                                       # prepare build
-./configure --prefix=/usr/local --sysconfdir=/etc  # configure build
-make                                               # build
-sudo make install                                  # install binaries 
+>>> version=2.2 ; wget https://github.com/singularityware/singularity/archive/$version.tar.gz -O /tmp/singularity_$version.orig.tar.gz
+>>> tar -xf /tmp/singularity_$version.orig.tar.gz -C /tmp/ && cd /tmp/singularity-$version
+>>> ./autogen.sh                                       # prepare build
+>>> ./configure --prefix=/usr/local --sysconfdir=/etc  # configure build
+>>> make                                               # build
+>>> sudo make install                                  # install binaries 
 ### create a debian package
 >>> apt -y install debhelper dh-autoreconf git devscripts
 >>> grep -A5 override_dh_fixperms debian/rules     # adjust permissions during package installation
@@ -22,6 +29,26 @@ override_dh_fixperms:
 >>> dch -i                                         # adjust changelog if required
 >>> dpkg-buildpackage -us -uc                      # build package
 ```
+
+Build a package for CentOS:
+
+```bash
+>>> yum groupinstall -y "Development Tools"
+## download and extract the source code
+>>> wget https://github.com/singularityware/singularity/releases/download/2.3.1/singularity-2.3.1.tar.gz
+>>> tar -xvf singularity-2.3.1.tar.gz && cd singularity-2.3.1
+## configure & build
+>>> ./configure
+>>> make el7
+## create an RPM package
+>>> rpmbuild -ta singularity-2.3.1.tar.gz
+>>> ls -1 ~/rpmbuild/RPMS/x86_64/singularity-*
+/root/rpmbuild/RPMS/x86_64/singularity-2.3.1-0.1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/singularity-debuginfo-2.3.1-0.1.el7.centos.x86_64.rpm
+/root/rpmbuild/RPMS/x86_64/singularity-devel-2.3.1-0.1.el7.centos.x86_64.rpm
+```
+
+## Usage
 
 ```bash
 /etc/singularity/singularity.conf                  # global configuration
