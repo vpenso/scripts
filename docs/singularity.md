@@ -39,7 +39,7 @@ Build a package for CentOS:
 >>> tar -xvf singularity-2.3.1.tar.gz && cd singularity-2.3.1
 ## configure & build
 >>> ./configure
->>> make el7
+>>> make
 ## create an RPM package
 >>> rpmbuild -ta singularity-2.3.1.tar.gz
 >>> ls -1 ~/rpmbuild/RPMS/x86_64/singularity-*
