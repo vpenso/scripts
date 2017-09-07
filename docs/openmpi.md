@@ -13,6 +13,8 @@ Download a release archive from the official web site:
 https://www.open-mpi.org/software/
 
 ```bash
+## dependencies on CentOS
+>>> yum groupinstall -y "Development Tools" && yum install bzip2
 ## select a target location for the installation
 >>> prefix=$PWD/openmpi/2.1.1 && mkdir -p $prefix
 ## change into a scratch directory i.e. /tmp, download the archive and extract it
