@@ -41,6 +41,12 @@ if command -v apt 2>&1 >/dev/null ; then
   echo "Select font »Inconsolata« in your terminal application"
 fi
 
+# On Fedora...
+if command -v dnf 2>&1 >/dev/null ; then
+  sudo dnf install git vim powerline powerline-fonts levien-inconsolata-fonts
+  echo "Select font »Inconsolata« in your terminal application"
+fi
+
 ##
 # Configure
 #
