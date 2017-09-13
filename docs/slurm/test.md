@@ -6,7 +6,7 @@ Slurm has the capability to simulate resources on execution nodes for testing:
 * Set `FastSchedule=2` in order to emulate nodes with more resources then physically available by defining them with NodeName.
 * Set `ReturnToService=1` to prevent nodes from been set to state down due to limitations like "low memory". This can help to emulate non existed memory resources on test nodes. 
 
-**Slurm configuration files are located in [var/slurm/][slurm_basic].**
+**Slurm configuration files are located in [var/slurm/](../../var/slurm).**
 
 # Deployment
 

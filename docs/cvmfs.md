@@ -1,7 +1,7 @@
 
 [CernVM-FS](https://cvmfs.readthedocs.io/en/2.4/index.html)
 
-Make the CVMFS packages available:
+Make the CVMFS packages available on **CentOS**:
 
 ```bash
 ## add the EPEL package source
@@ -38,6 +38,8 @@ Reference:
 * [CernVM-FS Client Configuration](https://cvmfs.readthedocs.io/en/2.4/cpt-configure.html)
 * [CernVM-FS Client Parameters](https://cvmfs.readthedocs.io/en/2.4/apx-parameters.html#apxsct-clientparameters)
 * [CernVM-FS Configuration Examples](http://cernvm.cern.ch/portal/cvmfs/examples)
+
+Simple :
 
 ```bash
 ## select desired repositories
