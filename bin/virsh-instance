@@ -31,6 +31,7 @@ HELP = <<EOF
   in, install <name> <path>       Install a new image
   l,  list                        List available images
   lo, login <name>                Login to instance
+  p,  path <name>                 Print path ot the instance
   rm, remove <name>               Shutdown and undefine instance
   s,  shadow <img> <name>         Shadow image and start instance 
   sy, sync <name> <src> <dst>     Rsync between host and instance
@@ -450,12 +451,10 @@ begin
 
     # Name of the virtual machine instance
     name = ARGV.shift || raise('Expecting name for target VM instance')
-
     # Append domain name if missing
     name = Virsh::instance(name)
     # Path to virtual machine instance
     path = "#{$options.instance_path}/#{name}" 
-
     System::run "cd #{path}; ssh-exec "
 
   when 'remove','rm','r'
@@ -470,6 +469,16 @@ begin
     else
       $stdout.puts("Instance #{name} not running.")
     end
+  
+  when 'path','p'
+
+    # Name of the virtual machine instance
+    name = ARGV.shift || raise('Expecting name as argument!')
+    # Append domain name if missing
+    name = Virsh::instance(name)
+    # Path to virtual machine instance
+    path = "#{$options.instance_path}/#{name}" 
+    $stdout.puts path
 
   else
     raise("Command #{command} unknown!")
