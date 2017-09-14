@@ -23,7 +23,11 @@ export VM_DOMAIN=devops.test
 
 alias vi=virsh-instance
 alias vc=virsh-config
+alias vn=virsh-nodeset
 
+##
+# Wraps the `virsh` command
+#
 function vm() {
   local command=$1
   case "$command" in
@@ -69,4 +73,32 @@ function vm() {
     ;;
   esac
 }
+
+##
+# Operate on a nodeset of virtual machines
+#
+function virsh-nodeset() {
+  local command=$1
+  case $command in
+    "shadow"|"sh"|"s")
+      img=${2:-centos7}
+      nodeset-loop virsh-instance shadow $img {}
+    ;;
+    "remove"|"rm"|"r")
+      nodeset-loop virsh-instance remove {}
+    ;;
+    "command"|"cmd")
+      shift
+      for node in $(nodeset -e $NODES)
+      do
+        echo $node
+        cd $(virsh-instance path $node)
+        $@
+        cd - >/dev/null
+      done
+    ;;
+  esac
+}
+
+
 
