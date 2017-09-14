@@ -146,7 +146,7 @@ Copy the job helper script [slurm-stress][slurm_stress] into the home directory 
 
 ```bash
 >>> cd $VM_INSTANCE_PATH/lxrm01.devops.test 
->>> ssh-sync -r $SCRIPTS/bin/slurm-* :/network/spock && ssh-exec -r 'chown spock /network/spock/slurm*'
+>>> ssh-sync -r "$SCRIPTS/bin/slurm-*" :/network/spock && ssh-exec -r 'chown spock /network/spock/slurm*'
 >>> ssh-exec -r 'su spock -c bash'
 […]
 ```

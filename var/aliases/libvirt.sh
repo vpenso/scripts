@@ -80,14 +80,7 @@ function vm() {
 function virsh-nodeset() {
   local command=$1
   case $command in
-    "shadow"|"sh"|"s")
-      img=${2:-centos7}
-      nodeset-loop virsh-instance shadow $img {}
-    ;;
-    "remove"|"rm"|"r")
-      nodeset-loop virsh-instance remove {}
-    ;;
-    "command"|"cmd")
+    "command"|"cmd"|"c")
       shift
       for node in $(nodeset -e $NODES)
       do
@@ -97,6 +90,21 @@ function virsh-nodeset() {
         cd - >/dev/null
       done
     ;;
+    "execute"|"exec"|"ex"|"e")
+      shift
+      local args=$@
+      nodeset-loop -s virsh-instance exec {} "'$args'"
+      ;;
+    "shadow"|"sh"|"s")
+      img=${2:-centos7}
+      nodeset-loop virsh-instance shadow $img {}
+      ;;
+    "remove"|"rm"|"r")
+      nodeset-loop virsh-instance remove {}
+      ;;
+    *)
+      echo "Usage: virsh-nodeset (c)ommand|(e)xecute|(s)hadow|(r)emove [args]"
+      ;;
   esac
 }
 

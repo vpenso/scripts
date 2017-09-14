@@ -84,6 +84,7 @@ begin
   options.debug = false
   options.nodeset = String.new
   options.prefix = false
+  options.space = false
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -99,6 +100,7 @@ begin
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--nodes','-w',GetoptLong::REQUIRED_ARGUMENT],
     ['--prefix','-p',GetoptLong::NO_ARGUMENT],
+    ['--space','-s',GetoptLong::NO_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
@@ -123,6 +125,8 @@ begin
       options.nodeset = arg
     when '--prefix'
       options.prefix = true
+    when '--space'
+      options.space = true
     when '--version'
       $stdout.puts 0.1
       exit 0
@@ -148,10 +152,10 @@ begin
 
   commands = ARGV.join(' ')
 
-
   nodeset.each do |node|
     command = commands.gsub(/\{\}/, node)
     $stdout.print "#{node}: " if options.prefix
+    $stdout.print "-- #{node} --\n" if options.space
     $stdout.puts System::exec(command)
   end
 
