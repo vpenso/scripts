@@ -1,5 +1,6 @@
 
-Make sure to understand how to build [development and test environments with virtual machine](../libvirt.md).
+
+Building development/test environments with virtual machines, cf [libvrit.md](../libvirt.md), ↴ [libvist.sh](https://github.com/vpenso/scripts/blob/master/var/aliases/libvirt.sh)
 
 Slurm has the capability to simulate resources on execution nodes for testing:
 
@@ -140,6 +141,7 @@ Chef role:
 slurm-en() { for n in $(nodeset -e $NODES) ; do cd $VM_INSTANCE_PATH/$n ; $@ ; cd - >/dev/null ; done }
 slurm-en-exec() { slurm-en ssh-exec -r $@ }
 ```
+
 # Tests
 
 Copy the job helper script [slurm-stress][slurm_stress] into the home directory of a user:
@@ -161,8 +163,5 @@ Execute jobs:
 […]
 ```
 
-
-[sys]: https://github.com/GSI-HPC/sys-chef-cookbook
 [base]: https://github.com/vpenso/chef-base
 [slurm_stress]: ../../bin/slurm-stress
-[execution_node.rb]: ../../var/chef/roles/debian/slurm/execution_node.rb
