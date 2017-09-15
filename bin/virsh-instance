@@ -455,7 +455,7 @@ begin
     name = Virsh::instance(name)
     # Path to virtual machine instance
     path = "#{$options.instance_path}/#{name}" 
-    System::run "cd #{path}; ssh-exec "
+    System::run "cd #{path}; ssh-exec -r"
 
   when 'remove','rm','r'
 
