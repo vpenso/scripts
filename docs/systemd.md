@@ -127,6 +127,22 @@ echo -e "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug" > /etc/systemd/system/s
 systemctl daemon-reload && systemctl restart systemd-networkd
 ```
 
+## Hostname
+
+```bash
+hostnamectl status                              # view hostname
+hostnamectl set-hostname <fqdn>                 # set hostname
+hostnamectl set-hostname ""                     # clear hostname
+/etc/hostname                                   # hostname configuration file
+/etc/hosts                                      # may contain FQDN of host (to be resolved without DNS)
+dnsdomainname                                   # display DNS domain name
+domainname                                      # (aka. nisdomainname) display NIS domain name
+hostname                                        # print hostname returned by the gethostname(2) function
+hostname -s                                     # print hostname cut at the first dot
+hostname -f                                     # print host FQDN
+hostname -d                                     # print host domain name
+```
+
 ## Localization/Time
 
 Settings system locale:
