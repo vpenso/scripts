@@ -122,9 +122,9 @@ Numeric value for Priority `P`:
 → [official firefox backports](http://mozilla.debian.net/)
 
 ```bash
-echo 'deb http://ftp.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list
+echo 'deb http://ftp.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/backports.list
                                                     # configure the backports repository
-apt update && apt install -t jessie-backports <package>
+apt update && apt install -t stretch-backports <package>
                                                     # installe a package from backports
 dpkg -l  |awk '/^ii/ && $3 ~ /bpo[6-9]/ {print $2}' # list packages installed from backports
 ```
