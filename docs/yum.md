@@ -8,13 +8,15 @@ Packages use following name specification:
     name-[epoch:]version-release
     name-[epoch:]version-release.arch
 
-Public repositories:
+Package repositories:
 
 * [CentOS](https://www.centos.org/download/mirrors/)
 * [Fedora](https://admin.fedoraproject.org/mirrormanager/)
 * Fedora [EPEL](https://fedoraproject.org/wiki/EPEL)
 * [ELRepo](http://elrepo.org)
-* [CERN CentOS](http://linuxsoft.cern.ch/) (CC)  
+* [CERN CentOS](http://linuxsoft.cern.ch/) (CC)
+
+
 
 ## Mirrors
 
@@ -260,4 +262,57 @@ Clean up:
     » dnf autoremove -y
     » dnf clean packages
     » dnf clean expire-cache
+
+
+# Security Updates
+
+## Red Hat
+
+Red Hat **Security Advisories** (RHSA) inform customers about security flaws for all Red Hat products:
+
+<https://access.redhat.com/security/security-updates/#/security-advisories>
+
+RHSA are continuously published to a **announcement mailing list**:
+
+<https://www.redhat.com/archives/rhsa-announce/>
+
+Security issues receiving special attention by Red Hat are documented by **Vulnerability Responses**:
+
+<https://access.redhat.com/security/vulnerabilities>
+
+Data related to security is programmatically available with the Red Hat **Security Data API**:
+
+https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
+
+Red Hat customers may have access to [Extended Update Support][eus] (EUS) which 
+provides update channels to stay with a minor version of the base OS. The support
+time frames are explained at Red Hat [Enterprise Linux Life Cycle][ellc]
+
+[esu]: https://lists.centos.org/pipermail/centos-announce/
+[ellc]: https://access.redhat.com/support/policy/updates/errata/
+
+## CentOS
+
+CentOS Security Advisories (CESA) are continuously published to the **announcement mailing list**:
+
+<https://lists.centos.org/pipermail/centos-announce/>
+
+CESA follows RHSA on its respective mailing-lists closely keeping the same naming convention.
+
+**_Packages distributed by the CentOS repositories do not provide security information_**
+
+CentOS Errata for Spacewalk (CEFS) imports security errata information from the CentOS announce mailing list and provides it to a [Spacewalk](http://spacewalk.redhat.com/) server:
+
+<http://cefs.steve-meier.de/> 
+
+The script `generate_updateinfo.py` uses information published by CEFS to create ma `updateinfo.xml` useable with an CentOS package mirror.
+
+<https://github.com/vmfarms/generate_updateinfo>
+
+**Centos-Package-Cron** is a python script to manage security updates:
+
+<https://github.com/wied03/centos-package-cron>
+
+* Checks security errata from CentOS mailing list via CEFS.
+* Reports advisories by mail related to installed packages.
 
