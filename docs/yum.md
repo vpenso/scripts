@@ -280,13 +280,7 @@ Security issues receiving special attention by Red Hat are documented by **Vulne
 
 <https://access.redhat.com/security/vulnerabilities>
 
-Data related to security is programmatically available with the Red Hat **Security Data API**:
-
-https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
-
-Red Hat customers may have access to [Extended Update Support][eus] (EUS) which 
-provides update channels to stay with a minor version of the base OS. The support
-time frames are explained at Red Hat [Enterprise Linux Life Cycle][ellc]
+Data related to security is programmatically available with the Red Hat [Security Data API][rhsda]. Red Hat customers may have access to [Extended Update Support][rheus] (EUS) which provides update channels to stay with a minor version of the base OS. The support time frames are explained at Red Hat [Enterprise Linux Life Cycle][rhellc].
 
 ## CentOS
 
@@ -302,7 +296,7 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 
 [CentOS Errata for Spacewalk][cefs] (CEFS) imports security errata information from the CentOS announce mailing list and provides it to a [Spacewalk](http://spacewalk.redhat.com/) server. Following scripts are bases on the security [errata XML file][cefsxml] published by CEFS.
 
-1. The script [generate_updateinfo][cefsgu] creates an `updateinfo.xml` file useable to be published on a  CentOS package repository mirror.
+1. The script [generate_updateinfo][cefsgu] creates an `updateinfo.xml` file to be published on a CentOS package repository mirror.
 2. The [Centos-Package-Cron][cefscpc] reports advisories by mail related to packages installed on a specific node.
 
 
@@ -311,9 +305,9 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 
 
 
-
-[esu]: https://lists.centos.org/pipermail/centos-announce/
-[ellc]: https://access.redhat.com/support/policy/updates/errata/
+[rhsda]: https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
+[rhesu]: https://lists.centos.org/pipermail/centos-announce/
+[rhellc]: https://access.redhat.com/support/policy/updates/errata/
 [cefs]: http://cefs.steve-meier.de/ 
 [cefsxml]: http://cefs.steve-meier.de/errata.latest.xml
 [cefsgu]: https://github.com/vmfarms/generate_updateinfo
