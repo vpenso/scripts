@@ -306,7 +306,7 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 
 
 [rhsda]: https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
-[rhesu]: https://lists.centos.org/pipermail/centos-announce/
+[rheus]: https://lists.centos.org/pipermail/centos-announce/
 [rhellc]: https://access.redhat.com/support/policy/updates/errata/
 [cefs]: http://cefs.steve-meier.de/ 
 [cefsxml]: http://cefs.steve-meier.de/errata.latest.xml
