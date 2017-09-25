@@ -288,9 +288,6 @@ Red Hat customers may have access to [Extended Update Support][eus] (EUS) which
 provides update channels to stay with a minor version of the base OS. The support
 time frames are explained at Red Hat [Enterprise Linux Life Cycle][ellc]
 
-[esu]: https://lists.centos.org/pipermail/centos-announce/
-[ellc]: https://access.redhat.com/support/policy/updates/errata/
-
 ## CentOS
 
 CentOS Security Advisories (CESA) are continuously published to the **announcement mailing list**:
@@ -299,20 +296,27 @@ CentOS Security Advisories (CESA) are continuously published to the **announceme
 
 CESA follows RHSA on its respective mailing-lists closely keeping the same naming convention.
 
-**_Packages distributed by the CentOS repositories do not provide security information_**
+**_Packages distributed by the CentOS repositories do not provide security information!_**
 
-CentOS Errata for Spacewalk (CEFS) imports security errata information from the CentOS announce mailing list and provides it to a [Spacewalk](http://spacewalk.redhat.com/) server:
+### CEFS
 
-<http://cefs.steve-meier.de/> 
+[CentOS Errata for Spacewalk][cefs] (CEFS) imports security errata information from the CentOS announce mailing list and provides it to a [Spacewalk](http://spacewalk.redhat.com/) server. Following scripts are bases on the security [errata XML file][cefsxml] published by CEFS.
 
-The script `generate_updateinfo.py` uses information published by CEFS to create ma `updateinfo.xml` useable with an CentOS package mirror.
+1. The script [generate_updateinfo][cefsgu] creates an `updateinfo.xml` file useable to be published on a  CentOS package repository mirror.
+2. The [Centos-Package-Cron][cefscpc] reports advisories by mail related to packages installed on a specific node.
 
-<https://github.com/vmfarms/generate_updateinfo>
 
-**Centos-Package-Cron** is a python script to manage security updates:
 
-<https://github.com/wied03/centos-package-cron>
 
-* Checks security errata from CentOS mailing list via CEFS.
-* Reports advisories by mail related to installed packages.
+
+
+
+
+[esu]: https://lists.centos.org/pipermail/centos-announce/
+[ellc]: https://access.redhat.com/support/policy/updates/errata/
+[cefs]: http://cefs.steve-meier.de/ 
+[cefsxml]: http://cefs.steve-meier.de/errata.latest.xml
+[cefsgu]: https://github.com/vmfarms/generate_updateinfo
+[cefscpc]: https://github.com/wied03/centos-package-cron
+
 
