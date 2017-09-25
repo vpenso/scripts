@@ -8,6 +8,14 @@ Packages use following name specification:
     name-[epoch:]version-release
     name-[epoch:]version-release.arch
 
+Public repositories:
+
+* [CentOS](https://www.centos.org/download/mirrors/)
+* [Fedora](https://admin.fedoraproject.org/mirrormanager/)
+* Fedora [EPEL](https://fedoraproject.org/wiki/EPEL)
+* [ELRepo](http://elrepo.org)
+* [CERN CentOS](http://linuxsoft.cern.ch/) (CC)  
+
 ## Mirrors
 
 Mirror CentOS packages on a (private) local mirror:
@@ -54,7 +62,7 @@ OnUnitInactiveSec=2h
 WantedBy=multi-user.target
 >>> systemctl start reposync.timer
 ``` 
-## Local Repository
+## Custom Repository
 
 Create a local repository to host RPM packages:
 
@@ -67,6 +75,7 @@ Create a local repository to host RPM packages:
 ```
 
 Install and configure a web-server similar to the package mirror above.
+
 
 # Yum
 
