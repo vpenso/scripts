@@ -25,6 +25,8 @@ A **live systems** boots from a removable medium (CD, USB, or SD card) or the ne
   - **System image** providing the root file-system
   - **Bootloader**
 
+## Network Boot
+
 iPXE booting over the network from an HTTP server:
 
 ```bash
@@ -38,15 +40,23 @@ initrd.img
 initrd.img-4.9.0-3-amd64
 vmlinuz
 vmlinuz-4.9.0-3-amd64
-# move the files to the HTTP server document root
->>> cp binary/live/{vmlinuz,initrd.img,filesystem.squashfs} $HTTP_ROOT
-# example iPXE configuration
->>> cat $HTTP_ROOT/menu
+# star a basic web-server
+>>> cd binary/live && python3 -m http.server 8000 >/dev/null &
+# OR move the files to the HTTP server document root
+>>> cat binar/live/menu
 #!ipxe
-kernel vmlinuz initrd=initrd.img boot=live components fetch=http://<ip-address>/filesystem.squashfs
+kernel vmlinuz initrd=initrd.img boot=live components fetch=http://<ip-address>:8000/filesystem.squashfs
 initrd initrd.img
 boot
+# download the iPXE bootloader
+>>> wget http://boot.ipxe.org/ipxe.iso
+# start a virtual machine with the iPXE bootloader
+>>> kvm -m 2048 ipxe.iso
+## Ctrl+B to get to the iPXE prompt
+iPXE> dhcp
+iPXE> chain http://${YOUR_BOOT_URL}
 ```
+
 
 # Live Build
 
