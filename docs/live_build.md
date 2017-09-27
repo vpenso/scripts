@@ -1,3 +1,61 @@
+
+HTTP server hosting the files for network booting over PXE: 
+
+```bash
+# install the Apache web-server
+>>> apt install -y apache2
+>>> rm /var/www/html/index.html
+```
+
+
+Create a SquashFs based root file-system:
+
+```bash
+>>> apt install -y debootstrap systemd-container squashfs-tools
+>>>  debootstrap stretch /tmp/rootfs
+# access the root file-system
+>>> chroot /tmp/rootfs
+## ...set the root password ...
+# start the root file-system in a container
+>>> systemd-nspawn -b -D /tmp/rootfs/
+## ... customize ...
+# create a SquashFS
+>>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
+```
+
+Prepare the boot components:
+
+```bash
+# publish the Linux kernel
+>>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
+# publish the initramfs image
+>>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
+# a basic iPXE configuration file
+>>> cat /var/www/html/menu
+#!ipxe
+kernel vmlinuz initrd=initrd.img boot=live components fetch=http://10.1.1.28/filesystem.squashfs
+initrd initrd.img
+boot
+>>> ls -1 /var/www/html/
+filesystem.squashfs
+initrd.img
+menu
+vmlinuz
+```
+
+Start a virtual machine with the iPXE bootloader
+
+```bash
+>>> wget http://boot.ipxe.org/ipxe.iso
+# start a virtual machine with the iPXE bootloader
+>>> kvm -m 2048 ipxe.iso
+## Ctrl+B to get to the iPXE prompt
+iPXE> dhcp
+iPXE> chain http://10.1.1.28/menu
+```
+
+# Live Build
+
 Developer information:
 
 <https://debian-live.alioth.debian.org/>
@@ -43,19 +101,6 @@ vmlinuz-4.9.0-3-amd64
 # star a basic web-server
 >>> cd binary/live && python3 -m http.server
 # ... OR move the files to the HTTP server document root
-# a basic iPXE configuration file
->>> cat binar/live/menu
-#!ipxe
-kernel vmlinuz initrd=initrd.img boot=live components fetch=http://<ip-address>:8000/filesystem.squashfs
-initrd initrd.img
-boot
-# download the iPXE bootloader
->>> wget http://boot.ipxe.org/ipxe.iso
-# start a virtual machine with the iPXE bootloader
->>> kvm -m 2048 ipxe.iso
-## Ctrl+B to get to the iPXE prompt
-iPXE> dhcp
-iPXE> chain http://${YOUR_BOOT_URL}
 ```
 
 
@@ -133,21 +178,7 @@ chroot.files                             # list of file in the chroot
 chroot.packages.install                  # installed packages
 ```
 
-## Live Configuration
-
-
-```bash
-# create a root file-system
->>> sudo debootstrap stretch /tmp/rootfs
-# access the root file-system
->>> sudo chroot rootfs
-# start the root file-system in a container
->>> sudo systemd-nspawn -b -D rootfs/
-# install live boot components
->>> apt install live-boot live-config live-config-systemd
-# create a SquashFS
->>> sudo mksquashfs rootfs boot/filesystem.squashfs
-```
+## Live Config
 
 ```bash
 man live-config                           # run-time configuration 

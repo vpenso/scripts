@@ -131,6 +131,12 @@ lsinitramfs                                          # list content of an initra
 lsinitramfs /boot/initrd.img-$(uname -r)             # ^ of the currently running kernel
 ```
 
+Live-boot support for the initramfs image:
+
+```bash
+apt install -y live-boot live-boot-initramfs-tools
+```
+
 # Dracut
 
 ```bash
