@@ -116,8 +116,9 @@ Create a basic Debian root file-system:
 ```bash
 lb bootstrap                             # debootstrap the roo file-system
 lb config --mirror-bootstrap <repo>      # configure the package mirror used 
-config/bootstrap                         # bootstrap configuration
 chroot/                                  # directory containing the root file-system
+config/bootstrap                         # bootstrap configuration
+config/includes.chroot                   # add or replace files in the chroot/
 ```
 
 Create the live OS root file-system:
@@ -130,8 +131,26 @@ chroot.files                             # list of file in the chroot
 chroot.packages.install                  # installed packages
 ```
 
-## Run-Time Configuration
+## Live Configuration
+
+
+```bash
+# create a root file-system
+>>> sudo debootstrap stretch /tmp/rootfs
+# access the root file-system
+>>> sudo chroot rootfs
+# start the root file-system in a container
+>>> sudo systemd-nspawn -b -D rootfs/
+# install live boot components
+>>> apt install live-boot live-config live-config-systemd
+# create a SquashFS
+>>> sudo mksquashfs rootfs boot/filesystem.squashfs
+```
 
 ```bash
 man live-config                           # run-time configuration 
+config/includes.chroot/lib/live/config/   # include live-config with live-build
 ```
+
+
+
