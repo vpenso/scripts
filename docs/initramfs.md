@@ -21,7 +21,7 @@ Tools helping build an initramfs image:
 * [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
 
 
-## Linux Kernel Support
+### Linux Kernel Support
 
 Enable support in the Linux kernel configuration:
 
