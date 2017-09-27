@@ -19,6 +19,7 @@ Tools helping build an initramfs image:
 * [dracut](http://git.kernel.org/cgit/boot/dracut/dracut.git)
 * [initramfs-tools](https://anonscm.debian.org/gitweb/?p=kernel/initramfs-tools.git)
 * [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
+* [mkinitramfs-II](https://github.com/tokiclover/mkinitramfs-ll)
 
 
 ### Linux Kernel Support
