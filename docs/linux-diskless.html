@@ -1,3 +1,4 @@
+# Live OS
 
 HTTP server hosting the files for network booting over PXE: 
 
@@ -7,6 +8,12 @@ HTTP server hosting the files for network booting over PXE:
 >>> rm /var/www/html/index.html
 ```
 
+Make sure the have an initrd image with live-boot support (cf [iniramfs.md](initramfs.md)):
+
+```bash
+>>> apt install -y live-boot live-boot-initramfs-tools
+>>> update-initramfs -u -k $(uname -r) ## (optionsl)
+```
 
 Create a SquashFs based root file-system:
 
@@ -33,7 +40,7 @@ Prepare the boot components:
 # a basic iPXE configuration file
 >>> cat /var/www/html/menu
 #!ipxe
-kernel vmlinuz initrd=initrd.img boot=live components fetch=http://10.1.1.28/filesystem.squashfs
+kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
 initrd initrd.img
 boot
 >>> ls -1 /var/www/html/
