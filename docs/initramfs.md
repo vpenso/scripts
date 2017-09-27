@@ -105,9 +105,42 @@ Test using a virtual machine:
 >>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
+# Initramfs-tools
+
+Tool chain to generate initramfs images:
+
+```bash
+apt install -y initramfs-tools                       # install
+man initramfs-tools                                  # introduction to writing scripts for mkinitramfs
+## manage initramfs images on the local file-system, utilizing mkinitramfs
+man update-initramfs                                 # manual page
+/etc/initramfs-tools/update-initramfs.conf           # configuration
+update-initramfs -u -k $(uname -r)                   # update initramfs of the currently running kernel
+## low-level tool for generating an initramfs image
+mkinitramfs                                          # generate initramfs image
+man initramfs.conf                                   # configuration file documentation
+/etc/initramfs-tools/initramfs.conf                  # global configuration
+ls -1 {/etc,/usr/share}/initramfs-tools/conf*        # hooks overwriting the configuration file
+ls -1 {/etc,/usr/share}/initramfs-tools/hooks*       # hooks executed during generation of the initramfs
+ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
+mkinitramfs -o /tmp/initrd.img-$(uname -r)           # create an initramfs image for the currently running kernel
+sh -x /usr/sbin/mkinitramfs -o /tmp/initrd.img-$(uname -r) | tee /tmp/mkinitramfs.log
+                                                     # debug the image creation
+lsinitramfs                                          # list content of an initramfs image
+lsinitramfs /boot/initrd.img-$(uname -r)             # ^ of the currently running kernel
+```
+
 # Dracut
 
-[Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs, cf. `dracut`, [dracut.git](http://git.kernel.org/cgit/boot/dracut/dracut.git)
+```bash
+>>> apt install -y dracut dracut-network
+```
+
+[Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs.
+
+Source code is available at:
+
+<http://git.kernel.org/cgit/boot/dracut/dracut.git>
 
 
 ```bash
