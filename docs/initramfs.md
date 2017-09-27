@@ -1,6 +1,6 @@
 Cf. [kernel](kernel.md) to build a custom Linux kernel.
 
-# Initramfs
+# Initramfs Infrastructure 
 
 Loaded into memory during Linux boot and used as intermediate root file-system (aka. early user space):
 
@@ -14,8 +14,14 @@ Loaded into memory during Linux boot and used as intermediate root file-system (
 * Provides a minimalistic rescue shell
 * Mounted by the kernel to `/` if present, before executing `/init` main init process (PID 1)
 
-→ [Custom Ininitramfs](https://wiki.gentoo.org/wiki/Custom_Initramfs)  
-→ [Initramfs Tutorial](http://nairobi-embedded.org/initramfs_tutorial.html)
+Tools helping build an initramfs image:
+
+* [dracut](http://git.kernel.org/cgit/boot/dracut/dracut.git)
+* [initramfs-tools](https://anonscm.debian.org/gitweb/?p=kernel/initramfs-tools.git)
+* [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
+
+
+## Linux Kernel Support
 
 Enable support in the Linux kernel configuration:
 
@@ -32,7 +38,7 @@ CONFIG_TMPFS_POSIX_ACL=y
 CONFIG_TMPFS_XATTR=y
 ```
 
-### Custom Program
+### C Program Initrd
 
 Compile a simple C program an execute it as initrd payload:
 
@@ -52,7 +58,7 @@ int main(void) {
 >>> kvm -m 2048 -kernel ${KERNEL}/${version}/linux -initrd initrd.gz -append "debug console=ttyS0" -nographic
 ```
 
-### Manual
+### BusyBox Initrd
 
 Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
 
@@ -107,6 +113,10 @@ Test using a virtual machine:
 
 # Initramfs-tools
 
+Modular initramfs generator tool chain maintained by Debian:
+
+<https://tracker.debian.org/pkg/initramfs-tools>
+
 ```bash
 apt install -y initramfs-tools                       # install package
 ## manage initramfs images on the local file-system, utilizing mkinitramfs
@@ -139,18 +149,14 @@ apt install -y live-boot live-boot-initramfs-tools
 
 # Dracut
 
-```bash
->>> apt install -y dracut dracut-network
-```
+Event-driven software to build initramfs images:
 
-[Dracut](https://dracut.wiki.kernel.org) is an infrastructure to build an initramfs.
+<https://dracut.wiki.kernel.org>
 
-Source code is available at:
-
-<http://git.kernel.org/cgit/boot/dracut/dracut.git>
 
 
 ```bash
+apt install -y dracut dracut-network
 dracut --help | grep Version                   # show program version
 /etc/dracut.conf                               # configuration files
 /etc/dracut.conf.d/*.conf

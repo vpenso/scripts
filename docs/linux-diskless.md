@@ -8,18 +8,18 @@ HTTP server hosting the files for network booting over PXE:
 >>> rm /var/www/html/index.html
 ```
 
-Make sure the have an initrd image with live-boot support (cf [iniramfs.md](initramfs.md)):
+Make sure the have an initrd image with live-boot support (cf [initramfs.md](initramfs.md)):
 
 ```bash
 >>> apt install -y live-boot live-boot-initramfs-tools
->>> update-initramfs -u -k $(uname -r) ## (optionsl)
+>>> update-initramfs -u -k $(uname -r) ## (optional)
 ```
 
 Create a SquashFs based root file-system:
 
 ```bash
 >>> apt install -y debootstrap systemd-container squashfs-tools
->>>  debootstrap stretch /tmp/rootfs
+>>> debootstrap stretch /tmp/rootfs
 # access the root file-system
 >>> chroot /tmp/rootfs
 ## ...set the root password ...
