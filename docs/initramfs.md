@@ -107,17 +107,18 @@ Test using a virtual machine:
 
 # Initramfs-tools
 
-Tool chain to generate initramfs images:
-
 ```bash
-apt install -y initramfs-tools                       # install
-man initramfs-tools                                  # introduction to writing scripts for mkinitramfs
+apt install -y initramfs-tools                       # install package
 ## manage initramfs images on the local file-system, utilizing mkinitramfs
 man update-initramfs                                 # manual page
 /etc/initramfs-tools/update-initramfs.conf           # configuration
 update-initramfs -u -k $(uname -r)                   # update initramfs of the currently running kernel
-## low-level tool for generating an initramfs image
-mkinitramfs                                          # generate initramfs image
+```
+
+Low-level tools to generate initramfs images:
+
+```bash
+man initramfs-tools                                  # introduction to writing scripts for mkinitramfs
 man initramfs.conf                                   # configuration file documentation
 /etc/initramfs-tools/initramfs.conf                  # global configuration
 ls -1 {/etc,/usr/share}/initramfs-tools/conf*        # hooks overwriting the configuration file

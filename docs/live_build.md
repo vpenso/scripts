@@ -41,8 +41,9 @@ initrd.img-4.9.0-3-amd64
 vmlinuz
 vmlinuz-4.9.0-3-amd64
 # star a basic web-server
->>> cd binary/live && python3 -m http.server 8000 >/dev/null &
-# OR move the files to the HTTP server document root
+>>> cd binary/live && python3 -m http.server
+# ... OR move the files to the HTTP server document root
+# a basic iPXE configuration file
 >>> cat binar/live/menu
 #!ipxe
 kernel vmlinuz initrd=initrd.img boot=live components fetch=http://<ip-address>:8000/filesystem.squashfs
@@ -56,6 +57,7 @@ boot
 iPXE> dhcp
 iPXE> chain http://${YOUR_BOOT_URL}
 ```
+
 
 
 # Live Build
