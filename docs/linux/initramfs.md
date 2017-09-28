@@ -133,6 +133,7 @@ Tools helping build an initramfs image:
 * [initramfs-tools](https://anonscm.debian.org/gitweb/?p=kernel/initramfs-tools.git)
 * [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
 * [mkinitramfs-II](https://github.com/tokiclover/mkinitramfs-ll)
+* [tiny-initramfs](https://github.com/chris-se/tiny-initramfs/)
 
 ## Initramfs-tools
 

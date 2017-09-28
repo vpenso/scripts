@@ -19,16 +19,6 @@ HTTP server hosting the files for network booting over PXE:
 >>> rm /var/www/html/index.html
 ```
 
-Minimal configuration:
-
-```bash
->>> ls -1 /var/www/html/
-filesystem.squashfs
-initrd.img
-menu
-vmlinuz
-```
-
 Start a virtual machine with the iPXE bootloader
 
 ```bash
@@ -40,8 +30,14 @@ iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
 ```
 
+### Initramfs-Tools
 
-```
+```bash
+# use initramfs-tools on Debian
+>>> apt install -y live-boot live-boot-initramfs-tools
+>>> update-initramfs -u -k $(uname -r) ## (optional)
+# publish the image on the webserver
+>>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 # publish the Linux kernel
 >>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
 # create a rootfs
@@ -53,16 +49,6 @@ iPXE> chain http://10.1.1.28/menu
 # start the root file-system in a container
 >>> systemd-nspawn -b -D /tmp/rootfs/
 ## ... customize ...
-```
-
-With **initramfs-tools** on Debian:
-
-```bash
-# use initramfs-tools on Debian
->>> apt install -y live-boot live-boot-initramfs-tools
->>> update-initramfs -u -k $(uname -r) ## (optional)
-# publish the image on the webserver
->>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 # create a SquashFS
 >>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
 # iPXE kernel command line
@@ -73,7 +59,18 @@ initrd initrd.img
 boot
 ```
 
-With **dracut** on Debian, cf. [Fedora LiveOS image](https://fedoraproject.org/wiki/LiveOS_image):
+### Dracut
+
+
+Live booting with Dracut involves following modules:
+
+* **livenet**e - Parses the `root=live:<URL>` kernel argument, and call the dmsquash-live module after the rootfs image download.
+* **dmsquash-live**  - Mounts the rootfs. 
+
+The rootfs image requires a pre-defined nested structure of directories:
+
+<https://fedoraproject.org/wiki/LiveOS_image>  
+<https://rwmj.wordpress.com/tag/squashfs/>
 
 ```bash
 # install Dracut on Debian
@@ -83,7 +80,7 @@ With **dracut** on Debian, cf. [Fedora LiveOS image](https://fedoraproject.org/w
 do_prelink=no
 hostonly=no
 # include live boot support into initramfs
->>> dracut -f -a 'network dmsquash-live livenet' --filesystems "squashfs" /var/www/html/initramfs.img
+>>> dracut -f -a livenet /var/www/html/initramfs.img
 # iPXE kernel command line for
 >>> cat /var/www/html/menu
 #!ipxe
