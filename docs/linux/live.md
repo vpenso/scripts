@@ -9,7 +9,7 @@ A **live systems** boots from a removable medium (CD, USB, or SD card) or the ne
   - `rootfs.img` target root file-system, cf. [roofs.md](rootfs.md).
   - **Bootloader**, e.g. PXE network boot, cf. [pxe.md](../net/pxe.md).
 
-## Example
+## Network Boot
 
 HTTP server hosting the files for network booting over PXE: 
 
@@ -19,36 +19,9 @@ HTTP server hosting the files for network booting over PXE:
 >>> rm /var/www/html/index.html
 ```
 
-Make sure the have an initramfs image with live-boot support:
+Minimal configuration:
 
-```bash
-# use initramfs-tools on Debian
->>> apt install -y live-boot live-boot-initramfs-tools
->>> update-initramfs -u -k $(uname -r) ## (optional)
 ```
-
-Create a SquashFs based root file-system:
-
-```bash
->>> apt install -y debootstrap systemd-container squashfs-tools
->>> debootstrap stretch /tmp/rootfs
-# access the root file-system
->>> chroot /tmp/rootfs
-## ...set the root password ...
-# start the root file-system in a container
->>> systemd-nspawn -b -D /tmp/rootfs/
-## ... customize ...
-# create a SquashFS
->>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
-```
-
-Prepare the boot components:
-
-```bash
-# publish the Linux kernel
->>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
-# publish the initramfs image
->>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 # a basic iPXE configuration file
 >>> cat /var/www/html/menu
 #!ipxe
@@ -72,6 +45,44 @@ Start a virtual machine with the iPXE bootloader
 iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
 ```
+
+## Initramfs
+
+Make sure the have an initramfs image with live-boot support:
+
+```bash
+# use initramfs-tools on Debian
+>>> apt install -y live-boot live-boot-initramfs-tools
+>>> update-initramfs -u -k $(uname -r) ## (optional)
+# publish the initramfs image
+>>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
+```
+
+```bash
+>>> apt install -y dracut dracut-network
+
+```
+
+
+## Rootfs
+
+Create a SquashFs based root file-system:
+
+```bash
+# publish the Linux kernel
+>>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
+>>> apt install -y debootstrap systemd-container squashfs-tools
+>>> debootstrap stretch /tmp/rootfs
+# access the root file-system
+>>> chroot /tmp/rootfs
+## ...set the root password ...
+# start the root file-system in a container
+>>> systemd-nspawn -b -D /tmp/rootfs/
+## ... customize ...
+# create a SquashFS
+>>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
+```
+
 
 # Live Build
 

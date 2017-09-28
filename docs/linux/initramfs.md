@@ -176,25 +176,39 @@ Event-driven software to build initramfs images:
 
 <https://dracut.wiki.kernel.org>
 
-
-
 ```bash
-apt install -y dracut dracut-network
+apt install -y dracut dracut-network           # requiered packages on Debian
 dracut --help | grep Version                   # show program version
-/etc/dracut.conf                               # configuration files
-/etc/dracut.conf.d/*.conf
-dracut -fv /tmp/initrd.img                     # create a new initramfs
-lsinitrd /tmp/initrd.img                       # inspect an initramfs
+## configuration files
+man dracut.conf                                # manual
+/etc/dracut.conf                               # global
+{/etc,/usr/lib}/dracut.conf.d/*.conf           # custom (/etc overwrites /usr/lib)
+## command
+dracut --kver $(uname -r)                      # generate the image at the default location for a specific kernel version 
+dracut -fv <path>                              # create a new initramfs at specified path
+lsinitrd | less                                # contents of the default image
+lsinitrd -f <path>                             # content of a file within the default image
+lsinitrd <path>                                # contents of a specified initramfs image
+## boot parameters
+dracut --print-cmdline                         # kernel command line from the running system
+man dracut.cmdline                             # list of all kernel arguments
 ```
 
-Enable logging with:
+Troubleshooting:
 
 ```bash
+## enable logging within the initramfs image
 >>> cat /etc/dracut.conf.d/log.conf
 logfile=/var/log/dracut.log
 fileloglvl=6
+## rebuild the image
 ```
-
+```bash
+## add following to the kernel command line
+rd.shell rd.debug log_buf_len=1M
+## log file generated during boot
+/run/initramfs/rdsosreport.txt 
+```
 
 ### Boot Stages
 
@@ -208,6 +222,8 @@ The bootloader loads the kernel and its initramfs. When the kernel boots it unpa
 | Mount  | pre-mount, mount, pre-pivot | Mount root device, check for target /init                                      |
 | Switch | cleanup                     | Clean up, stop udev, stop logging. Start target /init                          |
 
+Find more comprehensive information in the `man dracut.bootup`.
+
 ### Modules
 
 Dracut builds the initramfs out of modules:
@@ -219,11 +235,11 @@ Dracut builds the initramfs out of modules:
 ```bash
 man dracut.modules                             # documentation
 ls -1 /usr/lib/dracut/modules.d/**/*.sh        # modules with two digit numeric prefix, run in ascending sort order
-dracut --list-modules | sort                   # list all available modules
+dracut --list-modules | sort | less            # list all available modules
+dracut --add <module> ...                      # add module to initramfs image
 ## within the build initramfs
 /usr/lib/dracut/hooks/                         # all hooks
 ```
-
 
 All module installation information is in the file *`module-setup.sh`* with following functions:
 
