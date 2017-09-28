@@ -50,10 +50,9 @@ CONFIG_TMPFS_XATTR=y
 
 ### C Program Initrd
 
-Compile a simple C program an execute it as initrd payload:
+Simple C program execute as initrd payload:
 
-```bash
->>> cat hello.c          
+```c
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/reboot.h>
@@ -63,8 +62,13 @@ int main(void) {
     reboot(0x4321fedc);
     return 0;
 }
->>> gcc -o initrd/init -static hello.c
+```
+```bash
+# compile the program
+>>> gcc -o initrd/init -static init.c
+# create a CPIO formated file-system, and compress it
 >>> ( cd initrd/ && find . | cpio -o -H newc ) | gzip > initrd.gz
+# test in a virtual machine
 >>> kvm -m 2048 -kernel ${KERNEL}/${version}/linux -initrd initrd.gz -append "debug console=ttyS0" -nographic
 ```
 
@@ -204,7 +208,7 @@ The bootloader loads the kernel and its initramfs. When the kernel boots it unpa
 | Mount  | pre-mount, mount, pre-pivot | Mount root device, check for target /init                                      |
 | Switch | cleanup                     | Clean up, stop udev, stop logging. Start target /init                          |
 
-## Modules
+### Modules
 
 Dracut builds the initramfs out of modules:
 

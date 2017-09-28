@@ -1,4 +1,15 @@
-# Live OS
+# Linux Live Boot
+
+A **live systems** boots from a removable medium (CD, USB, or SD card) or the network:
+
+* It does not require a local installation, since it auto-configures at run-time
+* Requires following components:
+  - Linux **kernel image**
+  - Initial **ramdisk image**
+  - **System image** providing the root file-system
+  - **Bootloader**
+
+## Example
 
 HTTP server hosting the files for network booting over PXE: 
 
@@ -81,14 +92,6 @@ The source code is available at:
 
 <https://anonscm.debian.org/git/debian-live/>
 
-A **live systems** boots from a removable medium (CD, USB, or SD card) or the network:
-
-* It does not require a local installation, since it auto-configures at run-time
-* Requires following components:
-  - Linux **kernel image**
-  - Initial **ramdisk image**
-  - **System image** providing the root file-system
-  - **Bootloader**
 
 ## Network Boot
 
@@ -110,9 +113,7 @@ vmlinuz-4.9.0-3-amd64
 # ... OR move the files to the HTTP server document root
 ```
 
-
-
-# Live Build
+## Commands
 
 High-level command:
 
