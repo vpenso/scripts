@@ -4,10 +4,10 @@ A **live systems** boots from a removable medium (CD, USB, or SD card) or the ne
 
 * It does not require a local installation, since it auto-configures at run-time
 * Requires following components:
-  - Linux **kernel image**
-  - Early user-space **initramfs** (cf. [initramfs.md](initramfs.md)
-  - **System image** providing the root file-system
-  - **Bootloader**
+  - `vmlinuz` Linux kernel image. cf [kernel.md](kernel.md).
+  - `initramfs.img` early user-space, cf. [initramfs.md](initramfs.md).
+  - `rootfs.img` target root file-system, cf. [roofs.md](rootfs.md).
+  - **Bootloader**, e.g. PXE network boot, cf. [pxe.md](../net/pxe.md).
 
 ## Example
 
