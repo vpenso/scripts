@@ -48,7 +48,9 @@ iPXE> chain http://10.1.1.28/menu
 
 ## Initramfs
 
-Make sure the have an initramfs image with live-boot support:
+Enable live boot support in the initramfs image.
+
+With **initramfs-tools** on Debian:
 
 ```bash
 # use initramfs-tools on Debian
@@ -58,9 +60,17 @@ Make sure the have an initramfs image with live-boot support:
 >>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 ```
 
-```bash
->>> apt install -y dracut dracut-network
+With **dracut** on Debian:
 
+```bash
+# install Dracut on Debian
+>>> apt install -y dracut dracut-network
+# disable hostonly mode
+>>> cat /etc/dracut.conf.d/10-debian.conf
+do_prelink=no
+hostonly=no
+# include live boot support into initramfs
+>>> dracut -a dmsquash-live  --kver $(uname -r) --force
 ```
 
 
