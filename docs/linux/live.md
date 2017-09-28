@@ -40,16 +40,20 @@ iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
 ```
 
-### Kernel
 
 ```
 # publish the Linux kernel
 >>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
+# create a rootfs
+>>> apt install -y debootstrap systemd-container squashfs-tools
+>>> debootstrap stretch /tmp/rootfs
+# access the root file-system
+>>> chroot /tmp/rootfs
+## ...set the root password ...
+# start the root file-system in a container
+>>> systemd-nspawn -b -D /tmp/rootfs/
+## ... customize ...
 ```
-
-### Initramfs
-
-Enable live boot support in the initramfs image.
 
 With **initramfs-tools** on Debian:
 
@@ -57,11 +61,19 @@ With **initramfs-tools** on Debian:
 # use initramfs-tools on Debian
 >>> apt install -y live-boot live-boot-initramfs-tools
 >>> update-initramfs -u -k $(uname -r) ## (optional)
-## publish the image on the webserver
+# publish the image on the webserver
 >>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
+# create a SquashFS
+>>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
+# iPXE kernel command line
+>>> cat /var/www/html/menu
+#!ipxe
+kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
+initrd initrd.img
+boot
 ```
 
-With **dracut** on Debian:
+With **dracut** on Debian, cf. [Fedora LiveOS image](https://fedoraproject.org/wiki/LiveOS_image):
 
 ```bash
 # install Dracut on Debian
@@ -71,44 +83,8 @@ With **dracut** on Debian:
 do_prelink=no
 hostonly=no
 # include live boot support into initramfs
->>> dracut -a 'network dmsquash-live livenet' --kver $(uname -r) --force
-# publish the image on the web-server
->>> cp /boot/initramfs-4.9.0-3-amd64.img /var/www/html/initramfs.img
-```
-### Rootfs
-
-Create a SquashFs based root file-system:
-
-```bash
->>> apt install -y debootstrap systemd-container squashfs-tools
->>> debootstrap stretch /tmp/rootfs
-# access the root file-system
->>> chroot /tmp/rootfs
-## ...set the root password ...
-# start the root file-system in a container
->>> systemd-nspawn -b -D /tmp/rootfs/
-## ... customize ...
-# create a SquashFS
->>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
-```
-
-### Bootloader
-
-Basic iPXE configuration file (adjust hte IP address of the HTTP server).
-
-Kernel command line for **initramfs-tools**:
-
-```bash
->>> cat /var/www/html/menu
-#!ipxe
-kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
-initrd initrd.img
-boot
-```
-
-Kernel command line for **dracut**:
-
-```bash
+>>> dracut -f -a 'network dmsquash-live livenet' --filesystems "squashfs" /var/www/html/initramfs.img
+# iPXE kernel command line for
 >>> cat /var/www/html/menu
 #!ipxe
 kernel vmlinuz initrd=initramfs.img root=live:http://10.1.1.29/filesystem.squashfs
