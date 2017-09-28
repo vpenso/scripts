@@ -22,12 +22,6 @@ HTTP server hosting the files for network booting over PXE:
 Minimal configuration:
 
 ```bash
-# a basic iPXE configuration file (adjust hte IP address of the HTTP server)
->>> cat /var/www/html/menu
-#!ipxe
-kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
-initrd initrd.img
-boot
 >>> ls -1 /var/www/html/
 filesystem.squashfs
 initrd.img
@@ -63,6 +57,8 @@ With **initramfs-tools** on Debian:
 # use initramfs-tools on Debian
 >>> apt install -y live-boot live-boot-initramfs-tools
 >>> update-initramfs -u -k $(uname -r) ## (optional)
+## publish the image on the webserver
+>>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 ```
 
 With **dracut** on Debian:
@@ -75,15 +71,10 @@ With **dracut** on Debian:
 do_prelink=no
 hostonly=no
 # include live boot support into initramfs
->>> dracut -a dmsquash-live --kver $(uname -r) --force
+>>> dracut -a 'network dmsquash-live livenet' --kver $(uname -r) --force
+# publish the image on the web-server
+>>> cp /boot/initramfs-4.9.0-3-amd64.img /var/www/html/initramfs.img
 ```
-
-Publish the image for PXE boot:
-
-```bash
->>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
-```
-
 ### Rootfs
 
 Create a SquashFs based root file-system:
@@ -99,6 +90,30 @@ Create a SquashFs based root file-system:
 ## ... customize ...
 # create a SquashFS
 >>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
+```
+
+### Bootloader
+
+Basic iPXE configuration file (adjust hte IP address of the HTTP server).
+
+Kernel command line for **initramfs-tools**:
+
+```bash
+>>> cat /var/www/html/menu
+#!ipxe
+kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
+initrd initrd.img
+boot
+```
+
+Kernel command line for **dracut**:
+
+```bash
+>>> cat /var/www/html/menu
+#!ipxe
+kernel vmlinuz initrd=initramfs.img root=live:http://10.1.1.29/filesystem.squashfs
+initrd initramfs.img
+boot
 ```
 
 
