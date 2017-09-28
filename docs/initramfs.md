@@ -2,16 +2,18 @@ Cf. [kernel](kernel.md) to build a custom Linux kernel.
 
 # Initramfs Infrastructure 
 
-Loaded into memory during Linux boot and used as intermediate root file-system (aka. early user space):
+RAM-based file-system, cf. [ramfs, rootfs and initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt)
 
-* RAM-based file-system, cf. [ramfs, rootfs and initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt)
-  - **ramdisk** - Fixed size synthetic block device in RAM backing a file-system (requires a corresponding file-system driver).
-  - **ramfs** - Dynamically resizable RAM file-system (without a backing block device).
-  - **tmpfs** - Derivative of ramfs with size limits and swap support.
-  - **rootfs** - Kernel entry point for the root file-system storage initialized as ramfs/tmpfs. During boot early user-space usually mounts a target root file-system to the kernel rootfs.
-  - **initramfs** - Compressed CPIO formatted file-system archive extracted into rootfs during kernel boot. Contains an "init" file and the early user-space tools to enable the mount of a target root file-system.
-* Prepares device drivers required to mount the **final root file-system** (rootfs) if is loaded:
-  - ...by addressing a label or UUID
+* **ramdisk** - Fixed size synthetic block device in RAM backing a file-system (requires a corresponding file-system driver).
+* **ramfs** - Dynamically resizable RAM file-system (without a backing block device).
+* **tmpfs** - Derivative of ramfs with size limits and swap support.
+* **rootfs** - Kernel entry point for the root file-system storage initialized as ramfs/tmpfs. During boot early user-space usually mounts a target root file-system to the kernel rootfs.
+* **initramfs** - Compressed CPIO formatted file-system archive extracted into rootfs during kernel boot. Contains an "init" file and the early user-space tools to enable the mount of a target root file-system.
+
+Loaded into memory during Linux boot and used as intermediate root file-system, aka.** early user-space**:
+
+* Prepares device drivers required to mount the **final/target root file-system** (rootfs) if is loaded:
+  - ...by addressing a local disk (block device) by label or UUID
   - ...from the network (NFS, iSCSI, NBD)
   - ...from a logical volume LVM, software (ATA)RAID `dmraid`, device mapper multi-pathing
   - ...from an encrypted source `dm-crypt`
