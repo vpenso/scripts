@@ -5,7 +5,7 @@ A **live systems** boots from a removable medium (CD, USB, or SD card) or the ne
 * It does not require a local installation, since it auto-configures at run-time
 * Requires following components:
   - Linux **kernel image**
-  - Initial **ramdisk image**
+  - Early user-space **initramfs** (cf. [initramfs.md](initramfs.md)
   - **System image** providing the root file-system
   - **Bootloader**
 
@@ -19,9 +19,10 @@ HTTP server hosting the files for network booting over PXE:
 >>> rm /var/www/html/index.html
 ```
 
-Make sure the have an initrd image with live-boot support (cf [initramfs.md](initramfs.md)):
+Make sure the have an initramfs image with live-boot support:
 
 ```bash
+# use initramfs-tools on Debian
 >>> apt install -y live-boot live-boot-initramfs-tools
 >>> update-initramfs -u -k $(uname -r) ## (optional)
 ```
