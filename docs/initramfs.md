@@ -8,9 +8,19 @@ RAM-based file-system, cf. [ramfs, rootfs and initramfs](https://www.kernel.org/
 * **ramfs** - Dynamically resizable RAM file-system (without a backing block device).
 * **tmpfs** - Derivative of ramfs with size limits and swap support.
 * **rootfs** - Kernel entry point for the root file-system storage initialized as ramfs/tmpfs. During boot early user-space usually mounts a target root file-system to the kernel rootfs.
-* **initramfs** - Compressed CPIO formatted file-system archive extracted into rootfs during kernel boot. Contains an "init" file and the early user-space tools to enable the mount of a target root file-system.
 
-Loaded into memory during Linux boot and used as intermediate root file-system, aka.** early user-space**:
+The **initramfs** (aka. **initrd** (init ram-disk)) is a compressed CPIO formatted file-system archive extracted into rootfs during kernel boot. Contains an "init" file and the early user-space tools to enable the mount of a target root file-system.
+
+```bash
+>>> file initrd.img
+initrd.img: XZ compressed data
+# extract the archive and restore the CPIO formated file-system
+>>> xz -dc < initrd.img | cpio --quiet -i --make-directories
+# create a CPIO formated file-system, and compress it
+>>> find . 2>/dev/null | cpio --quiet -c -o | xz -9 --format=lzma >"new_initrd.img"
+```
+
+Initramfs is loaded to (volatile) memory during Linux boot and used as intermediate root file-system, aka. **early user-space**:
 
 * Prepares device drivers required to mount the **final/target root file-system** (rootfs) if is loaded:
   - ...by addressing a local disk (block device) by label or UUID
@@ -20,14 +30,6 @@ Loaded into memory during Linux boot and used as intermediate root file-system, 
   - ...live system on `squashfs` or `iso9660`
 * Provides a minimalistic rescue shell
 * Mounted by the kernel to `/` if present, before executing `/init` main init process (PID 1)
-
-Tools helping build an initramfs image:
-
-* [dracut](http://git.kernel.org/cgit/boot/dracut/dracut.git)
-* [initramfs-tools](https://anonscm.debian.org/gitweb/?p=kernel/initramfs-tools.git)
-* [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
-* [mkinitramfs-II](https://github.com/tokiclover/mkinitramfs-ll)
-
 
 ### Linux Kernel Support
 
@@ -119,7 +121,16 @@ Test using a virtual machine:
 >>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
-# Initramfs-tools
+# Tool Chain
+
+Tools helping build an initramfs image:
+
+* [dracut](http://git.kernel.org/cgit/boot/dracut/dracut.git)
+* [initramfs-tools](https://anonscm.debian.org/gitweb/?p=kernel/initramfs-tools.git)
+* [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
+* [mkinitramfs-II](https://github.com/tokiclover/mkinitramfs-ll)
+
+## Initramfs-tools
 
 Modular initramfs generator tool chain maintained by Debian:
 
@@ -155,7 +166,7 @@ Live-boot support for the initramfs image:
 apt install -y live-boot live-boot-initramfs-tools
 ```
 
-# Dracut
+## Dracut
 
 Event-driven software to build initramfs images:
 
@@ -180,19 +191,8 @@ logfile=/var/log/dracut.log
 fileloglvl=6
 ```
 
-### Unpack/repack
 
-Xz compressed image:
-
-```bash
->>> file initrd.img
-initrd.img: XZ compressed data
->>> xz -dc < initrd.img | cpio --quiet -i --make-directories
-...
->>> find . 2>/dev/null | cpio --quiet -c -o | xz -9 --format=lzma >"new_initrd.img"
-```
-
-## Boot Stages
+### Boot Stages
 
 The bootloader loads the kernel and its initramfs. When the kernel boots it unpacks the initramfs and executes `/init` (installed from `99base/init.sh` module). Init runs following phases:
 
