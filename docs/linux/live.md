@@ -64,8 +64,8 @@ boot
 
 Live booting with Dracut involves following modules:
 
-* **livenet**e - Parses the `root=live:<URL>` kernel argument, and call the dmsquash-live module after the rootfs image download.
-* **dmsquash-live**  - Mounts the rootfs. 
+* **livenet** - Parses the `root=live:<URL>` kernel argument, and downloads the rootfs image.
+* **dmsquash-live**  - Parses `rd.live*` kernel arguments, and mounts the rootfs. 
 
 The rootfs image requires a pre-defined nested structure of directories:
 
