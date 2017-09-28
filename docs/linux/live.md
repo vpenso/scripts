@@ -21,8 +21,8 @@ HTTP server hosting the files for network booting over PXE:
 
 Minimal configuration:
 
-```
-# a basic iPXE configuration file
+```bash
+# a basic iPXE configuration file (adjust hte IP address of the HTTP server)
 >>> cat /var/www/html/menu
 #!ipxe
 kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
@@ -46,7 +46,14 @@ iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
 ```
 
-## Initramfs
+### Kernel
+
+```
+# publish the Linux kernel
+>>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
+```
+
+### Initramfs
 
 Enable live boot support in the initramfs image.
 
@@ -56,8 +63,6 @@ With **initramfs-tools** on Debian:
 # use initramfs-tools on Debian
 >>> apt install -y live-boot live-boot-initramfs-tools
 >>> update-initramfs -u -k $(uname -r) ## (optional)
-# publish the initramfs image
->>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 ```
 
 With **dracut** on Debian:
@@ -70,17 +75,20 @@ With **dracut** on Debian:
 do_prelink=no
 hostonly=no
 # include live boot support into initramfs
->>> dracut -a dmsquash-live  --kver $(uname -r) --force
+>>> dracut -a dmsquash-live --kver $(uname -r) --force
 ```
 
+Publish the image for PXE boot:
 
-## Rootfs
+```bash
+>>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
+```
+
+### Rootfs
 
 Create a SquashFs based root file-system:
 
 ```bash
-# publish the Linux kernel
->>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
 >>> apt install -y debootstrap systemd-container squashfs-tools
 >>> debootstrap stretch /tmp/rootfs
 # access the root file-system
