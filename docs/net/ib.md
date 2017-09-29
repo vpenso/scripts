@@ -129,7 +129,7 @@ ff:00:00:00:00:00:02:00:00:02:c9:00:00:25:90:ff:ff:f7:d2:05
 
 MAC-addresses are determined from the GUID by removing the 2-bytes in the middle.
 
-````
+```
          GUID                     MAC 
 00:25:90:ff:ff:f7:d2:05 >> 00:25:90:f7:d2:05
 ```
