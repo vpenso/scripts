@@ -7,6 +7,37 @@
   - CPU offload, hardware based transport protocol, bypass of the kernel
 * [Mellanox Community](https://community.mellanox.com/)
 
+
+## Kernel Modules
+
+Kernel drivers are required to operate the host channel adapter. 
+
+Mellanox HCAs require at least the `mlx?_core` and `mlx?_ib` kernel modules. 
+
+* `mlx4_*` modules are use by **ConnectX** adapters, and `mlx5_*` modules are used by **Connect-IB** adapters.
+* The "core" module is a generic driver use by `mlx_[ib|en|fc]` for Infiniband, Ethernet, or Fiber-Channel support.
+* The "ib" module contains Infiniband specific functions.
+
+```bash
+## find all infiniband modules
+>>> find /lib/modules/$(uname -r)/kernel/drivers/infiniband -type f -name \*.ko
+## load requried modules
+>>> for mod in mlx4_core mlx4_ib ib_umad ib_ipoib rdma_ucm ; do modprobe $mod ; done
+## Add the module list to /etc/modules for boot persistence
+>>> for mod in mlx4_core mlx4_ib ib_umad ib_ipoib rdma_ucm ; do echo "$mod" >> /etc/modules ; done
+## listt loaded infiniband modules
+>>> lsmod | egrep "^mlx|^ib|^rdma"
+## check the version
+>>> modinfo mlx4_core | grep -e ^filename -e ^version
+## list module configuration parameters
+>>> for i in /sys/module/mlx?_core/parameters/* ; do echo $i: $(cat $i); done
+## module configuration
+>>> cat /etc/modprobe.d/mlx4_core.conf
+options mlx4_core log_num_mtt=20 log_mtts_per_seg=4
+```
+
+## Usage
+
 ```bash
 ibstat                           # link state of the HCA, LIDs, GUIDs
 ibstat -d <card>                 # limit to card, e.g. mlx4_0

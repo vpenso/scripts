@@ -29,3 +29,23 @@ linux.config
 modules/
 ```
 
+## Modules
+
+```bash
+lsmod                                         # show loaded modules
+modinfo <name>                                # information about a module
+systool -v -m <name>                          # list the options that are set for a loaded module
+modprobe -c | less                            # comprehensive configuration of all the modules
+modprobe --show-depends <name>                # list dependencies of a module
+modprobe <name>                               # load a module
+insmod <path> <args>                          # load a module from a file
+modprobe -r <name>                            # unload module
+rmmod <name>                                  # ^^
+/etc/modules                                  # list of modules to load at boot
+/etc/modules-load.d/*.conf                    # ^^
+/etc/modprobe.d/*.conf                        # module parameter configuration
+/lib/modules/$(uname -r)/                     # module and configuration for a given kernel
+# list all available kernel modules
+find /lib/modules/$(uname -r) -type f -name \*.ko
+
+```

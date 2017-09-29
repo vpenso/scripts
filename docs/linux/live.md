@@ -35,11 +35,10 @@ iPXE> chain http://10.1.1.28/menu
 ```bash
 # use initramfs-tools on Debian
 >>> apt install -y live-boot live-boot-initramfs-tools
->>> update-initramfs -u -k $(uname -r) ## (optional)
-# publish the image on the webserver
->>> cp /boot/initrd.img-$(uname -r) /var/www/html/initrd.img
 # publish the Linux kernel
 >>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
+# create an initramfs image
+>>> mkinitramfs -o /var/www/html/initramfs.img
 # create a rootfs
 >>> apt install -y debootstrap systemd-container squashfs-tools
 >>> debootstrap stretch /tmp/rootfs
@@ -54,8 +53,8 @@ iPXE> chain http://10.1.1.28/menu
 # iPXE kernel command line
 >>> cat /var/www/html/menu
 #!ipxe
-kernel vmlinuz initrd=initrd.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
-initrd initrd.img
+kernel vmlinuz initrd=initramfs.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
+initrd initramfs.img
 boot
 ```
 

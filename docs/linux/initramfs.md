@@ -134,6 +134,7 @@ Tools helping build an initramfs image:
 * [mkinitcpio](https://git.archlinux.org/mkinitcpio.git/)
 * [mkinitramfs-II](https://github.com/tokiclover/mkinitramfs-ll)
 * [tiny-initramfs](https://github.com/chris-se/tiny-initramfs/)
+* [init4boot](https://github.com/florath/init4boot)
 
 ## Initramfs-tools
 
@@ -161,15 +162,13 @@ ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
 mkinitramfs -o /tmp/initrd.img-$(uname -r)           # create an initramfs image for the currently running kernel
 sh -x /usr/sbin/mkinitramfs -o /tmp/initrd.img-$(uname -r) | tee /tmp/mkinitramfs.log
                                                      # debug the image creation
+/run/initramfs/initramfs.debug                       # log generate with the kernel `debug` argument during boot
 lsinitramfs                                          # list content of an initramfs image
 lsinitramfs /boot/initrd.img-$(uname -r)             # ^ of the currently running kernel
+unmkinitramfs <image> <path>                         # extract the content of an initramfs
 ```
 
-Live-boot support for the initramfs image:
 
-```bash
-apt install -y live-boot live-boot-initramfs-tools
-```
 
 ## Dracut
 
