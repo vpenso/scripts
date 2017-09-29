@@ -159,8 +159,8 @@ man initramfs.conf                                   # configuration file docume
 ls -1 {/etc,/usr/share}/initramfs-tools/conf*        # hooks overwriting the configuration file
 ls -1 {/etc,/usr/share}/initramfs-tools/hooks*       # hooks executed during generation of the initramfs
 ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
-mkinitramfs -o /tmp/initrd.img-$(uname -r)           # create an initramfs image for the currently running kernel
-sh -x /usr/sbin/mkinitramfs -o /tmp/initrd.img-$(uname -r) | tee /tmp/mkinitramfs.log
+mkinitramfs -o /tmp/initramfs.img                    # create an initramfs image for the currently running kernel
+sh -x /usr/sbin/mkinitramfs -o /tmp/initramfs.img |& tee /tmp/mkinitramfs.log
                                                      # debug the image creation
 /run/initramfs/initramfs.debug                       # log generate with the kernel `debug` argument during boot
 lsinitramfs                                          # list content of an initramfs image
