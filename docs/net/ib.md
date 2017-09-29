@@ -261,9 +261,11 @@ Restoring signature                     - OK
 ```
 
 
-## Topology 
+# Architecture
 
-## Fat-Tree
+## Topology
+
+### Fat-Tree
 
 **Fat-Tree** topologies provide (non-)blocking fabrics with consistent hop count, resulting in predictable latency. 
   - They do not scale linearly with cluster size (max. 7 layers/tiers)
@@ -277,7 +279,7 @@ Restoring signature                     - OK
   - Equal number of external and internal connections (balanced)
 * **Blocking** (x:1), external connections is higher than internal connections, over subscription
 
-## Torrus
+### Torrus
 
 **Torus** (Cube/Mesh) 3D topologies, CBB ratio 1:6
 
@@ -310,12 +312,12 @@ Restoring signature                     - OK
 Fabric Initialization by the **Subnet Manager** (SM)
 
 1. Subnet Discovery (after SM wakeup)
-  - Travers the network beginning with close neighbors
-  - Subnet Manager Packages (SMP) to initiate "conversation" 
+   - Travers the network beginning with close neighbors
+   - Subnet Manager Packages (SMP) to initiate "conversation" 
 2. Information Gathering
-  - Find all links/switches/hosts on all connected ports to map topology
-  - Subnet Manager Query Message: direct routed information gathering for node/port information
-  - Subnet Manager Agent (SMA) required on each node
+   - Find all links/switches/hosts on all connected ports to map topology
+   - Subnet Manager Query Message: direct routed information gathering for node/port information
+   - Subnet Manager Agent (SMA) required on each node
 3. LIDs assignment
 4. Paths establishment
    - Best path calculation to identify **Shortest Path Table** (Min-Hop)
