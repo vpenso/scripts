@@ -168,6 +168,33 @@ lsinitramfs /boot/initrd.img-$(uname -r)             # ^ of the currently runnin
 unmkinitramfs <image> <path>                         # extract the content of an initramfs
 ```
 
+### Hooks
+
+Executed during image creation to add and configure files. 
+
+Following scripting header is used as a skeleton:
+
+* `PREREQ` should contain the name of the hook
+* Read `/usr/share/initramfs-tools/hook-functions` for a list of predefined helper-functions. 
+
+```bash
+#!/bin/sh
+PREREQ=""
+prereqs()
+{
+     echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+     prereqs
+     exit 0
+     ;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+# Begin real processing below this line
+```
 
 
 ## Dracut
