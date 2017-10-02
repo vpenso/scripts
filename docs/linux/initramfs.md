@@ -174,10 +174,13 @@ Executed during image creation to add and configure files.
 
 Following scripting header is used as a skeleton:
 
-* `PREREQ` should contain the name of the hook
+* `PREREQ` should contain a list of dependency hooks
 * Read `/usr/share/initramfs-tools/hook-functions` for a list of predefined helper-functions. 
 
+Following examples loads Infiniband drivers:
+
 ```bash
+>>> cat /etc/initramfs-tools/hooks/infiniband
 #!/bin/sh
 PREREQ=""
 prereqs()
@@ -193,7 +196,23 @@ prereqs)
 esac
 
 . /usr/share/initramfs-tools/hook-functions
-# Begin real processing below this line
+
+mkdir -p ${DESTDIR}/etc/modules-load.d
+
+# make sure the infiniband modules get loaded
+cat << EOF > ${DESTDIR}/etc/modules-load.d/infiniband.conf
+mlx4_core
+mlx4_ib
+ib_umad
+ib_ipoib
+rdma_ucm
+EOF
+
+for module in $(cat ${DESTDIR}/etc/modules-load.d/infiniband.conf); do
+        manual_add_modules ${module}
+done
+## make the hook executable
+>>> chmod +x /etc/initramfs-tools/hooks/infiniband
 ```
 
 
