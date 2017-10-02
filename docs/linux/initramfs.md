@@ -125,7 +125,7 @@ Test using a virtual machine:
 >>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
-## Debootstrap & Systemd
+### Debootstrap & Systemd
 
 Debian user-space and systemd in an initramfs:
 
