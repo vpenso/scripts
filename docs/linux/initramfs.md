@@ -125,6 +125,28 @@ Test using a virtual machine:
 >>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
+## Debootstrap & Systemd
+
+Debian user-space and systemd in an initramfs:
+
+```bash
+>>> apt install -y debootstrap systemd-container
+>>> export ROOTFS=/tmp/rootfs
+## create the root file-system
+>>> debootstrap stretch $ROOTFS
+## configure the root fiel-system
+>>> chroot $ROOTFS
+>>> passwd                          # change the root password
+>>> ln -s /sbin/init /init          # use systemd as /init
+>>> exit
+## the kernel to boot
+>>> cp vmlinuz-4.9.0-3-amd64 /tmp/vmlinuz
+## create an initramfs image from the roofs
+>>> ( cd $ROOTFS ; find . | cpio -o -H newc --quiet | gzip -9 ) > /tmp/initrd.img
+## test with a virtual machine
+>>> kvm -m 2048 -kernel vmlinuz -initrd initrd.img
+```
+
 # Tool Chain
 
 Tools helping build an initramfs image:
@@ -156,7 +178,7 @@ Low-level tools to generate initramfs images:
 man initramfs-tools                                  # introduction to writing scripts for mkinitramfs
 man initramfs.conf                                   # configuration file documentation
 /etc/initramfs-tools/initramfs.conf                  # global configuration
-ls -1 {/etc,/usr/share}/initramfs-tools/conf*        # hooks overwriting the configuration file
+ls -1 {/etc,/usr/share}/initramfs-tools/conf.d*      # hooks overwriting the configuration file
 ls -1 {/etc,/usr/share}/initramfs-tools/hooks*       # hooks executed during generation of the initramfs
 ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
 mkinitramfs -o /tmp/initramfs.img                    # create an initramfs image for the currently running kernel
@@ -213,8 +235,9 @@ for module in $(cat ${DESTDIR}/etc/modules-load.d/infiniband.conf); do
 done
 ## make the hook executable
 >>> chmod +x /etc/initramfs-tools/hooks/infiniband
+## check if required file are in the initramfs image
+>>> lsinitramfs /tmp/initramfs.img  | grep infiniband
 ```
-
 
 ## Dracut
 
