@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Inconsolata">
 <style type="text/css">
 
 html {
@@ -7,10 +9,9 @@ html {
 
 body {
   padding: 2em; 
-  font-size: 1.1em; 
   color: rgb(56, 58, 66); 
   overflow: auto; 
-  font-family: 'Segoe UI', Helvetica, Arial, freesans, sans-serif; 
+  font-family: 'Open Sans', Helvetica, Arial, freesans, sans-serif; 
 }
 
 @media all {
@@ -23,13 +24,17 @@ body {
   .page-break { display: block; page-break-before: always; }
 }
 
-
-h1 { font-size: 2em;   font-weight: 300; border-bottom: 1px solid lightgray }
-h2 { font-size: 1.6em; font-weight: 400; border-bottom: 1px solid lightgray }
+h1 { font-size: 2em;   font-weight: 600; border-bottom: 1px solid lightgray }
+h2 { font-size: 1.6em; font-weight: 600; border-bottom: 1px solid lightgray }
 h3 { font-size: 1.4em; font-weight: 500; }
 h4 { font-size: 1.2em; font-weight: 600; }
 h5 { font-size: 1.1em; font-weight: 600; }
 h6 { font-size: 1em;   font-weight: 600; }
+
+
+b, strong {
+  font-size: 0.9em;
+}
 
 li { list-style: disc; }
 li li { list-style: circle; }
@@ -103,11 +108,9 @@ a code {
 */
 
 code, tt, kbd {
-  font-family: "Ubuntu Mono", Consolas, "Liberation Mono", Courier, monospace;
-  font-size: 1.1em; 
+  font-family: Inconsolata, Consolas, "Liberation Mono", Courier, monospace;
   padding: 0.2em;
   margin: 0;
-  font-size: 0.9em;
   border-radius: 3px; 
   white-space: nowrap;
 }
@@ -131,20 +134,19 @@ td code {
 
 
 pre {
-  font-size: 1.1em; 
   display: block;
   padding: 9.5px;
   line-height: 1;
   color: #333333;
+  background:whitesmoke;
   border-radius: 3px;
-  border: 1px solid lightgray; 
   overflow:auto;
   width:auto;
   white-space: pre-wrap;
 }
 
 pre code {
-  font-size: inherit;
+  font-size:1.4em;
   color: inherit;
   white-space: pre;
   background-color: transparent;

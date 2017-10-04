@@ -1,8 +1,3 @@
-
-Etcher writes image files to USB drives and SD cards:
-
-<https://etcher.io/>
-
 ## Images
 
 ### Raw 
@@ -69,16 +64,13 @@ Create a minimal Debian container image with `debootstrap`
 
 ```bash
 apt install debootstrap fakechroot fakeroot      
-suite=testing ; rootfs=$suite ; archive=/tmp/debian-${suite}-$(date +%Y%m%dT%H%M%S).tar.gz
 fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
-debootstrap $suite $rootfs && cd $rootfs ; tar -cvzf $archive .
-                                                 # create an compressed archive 
-            --include=linux-image-amd64 $suite $rootfs    
+debootstrap --include=linux-image-amd64 stretch $ROOTFS_PATH
                                                  # include a kernel
 ## -- Work with the root file-system -- ##
 fakeroot fakechroot chroot ...                   # run chroot in user space
-chroot $rootfs /bin/bash                         # chroot into a shell
-chroot $rootfs /bin/bash -c "<command>"          # execute a command in a chroot 
+chroot $ROOTFS_PATH /bin/bash                         # chroot into a shell
+chroot $ROOTFS_PATH /bin/bash -c "<command>"          # execute a command in a chroot 
 ```
 
 Boot a root file-system with `kvm`:
