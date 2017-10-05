@@ -1,3 +1,58 @@
+# RootFS
+
+The root file-system (rootfs) typically refers to the directory tree available in `/` (root path).
+
+Following tools help to install a base operating system (OS) into a directory tree:
+
+* **debootstrap** - install a Debian in a sub-directory
+* **multistrap** - like debootstrap, but supports multiple package repositories
+* [polystrap](https://github.com/josch/polystrap) - creates a foreign architecture rootfs without superuser privileges
+
+### Debootstrap
+
+Install a Debian base system into a defined sub-directory:
+
+```bash
+apt install debootstrap fakechroot fakeroot      
+fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
+debootstrap --include=linux-image-amd64 stretch $ROOTFS_PATH
+                                                 # include a kernel
+## -- Work with the root file-system -- ##
+fakeroot fakechroot chroot ...                   # run chroot in user space
+chroot $ROOTFS_PATH /bin/bash                    # chroot into a shell
+chroot $ROOTFS_PATH /bin/bash -c "<command>"     # execute a command in a chroot 
+systemd-nspawn -D $ROOTFS_PATH "<command>"       # execute a command in a container execution rootfs
+systemd-nspawn -b -D $ROOTFS_PATH                # boot the rootfs with a container
+```
+
+Boot a root file-system with a KVM based virtual machine instance (cf. [initramfs.md](initramfs.md)):
+
+```bash
+# attach a network interface
+options='-netdev user,id=net0 -device virtio-net-pci,netdev=net0'
+options='-netdev user,id=net0 -device virtio-net-pci,netdev=net0,mac=02:FF:0A:0A:06:1C'
+
+# boot the host kernel with custom initramfs
+kvm -m 2048 $options -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
+```
+
+Basic customization for root file-system:
+
+```bash
+sed -i '/^root/ { s/:x:/::/ }' /etc/passwd       # remove the root password for tests
+apt -y install zsh ; adduser --shell /bin/zsh devops
+                                                 # add a test user devops
+# -- configure the network interface -- ##
+name=$(udevadm test /sys/class/net/* 2>&- | grep ID_NET_NAME_SLOT | cut -d= -f2)
+                                                 # primary network interface
+echo -e "[Match]\nName=$name\n[Network]\nDHCP=yes" > /etc/systemd/network/$name.network
+systemctl restart systemd-networkd && systemctl enable systemd-networkd
+echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
+                                                 # configure root mount on boot
+echo -e "domain devops.test\nsearch devops.test\nnameserver 10.1.1.1" > /etc/resolv.conf
+                                                 # configure name resolution
+```
+
 ## Images
 
 ### Raw 
@@ -6,7 +61,7 @@
 * Allocate only used space on file-systems that support sparse files 
 * GPT partition table with [Discoverable Partitions Specification](https://www.freedesktop.org/wiki/Specifications/DiscoverablePartitionsSpec/)
 
-```
+```bash
 rfsimg=/tmp/rootfs.img rootfs=/mnt
 dd bs=1M seek=4095 count=1 if=/dev/zero of=$rfsimg         # create a binary image
 qemu-img create -f raw $rfsimg 100G                        # create a sparse binary image
@@ -58,45 +113,3 @@ sudo umount /mnt
 qemu-nbd -d /dev/nbd0                           
 ```
 
-## Debootstrap
-
-Create a minimal Debian container image with `debootstrap`
-
-```bash
-apt install debootstrap fakechroot fakeroot      
-fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
-debootstrap --include=linux-image-amd64 stretch $ROOTFS_PATH
-                                                 # include a kernel
-## -- Work with the root file-system -- ##
-fakeroot fakechroot chroot ...                   # run chroot in user space
-chroot $ROOTFS_PATH /bin/bash                         # chroot into a shell
-chroot $ROOTFS_PATH /bin/bash -c "<command>"          # execute a command in a chroot 
-```
-
-Boot a root file-system with `kvm`:
-
-```bash
-# -- boot a VM with rootfs and external kernel & initrd -- ##
-cp -v $rootfs/boot/vmlinuz* /tmp/kern && cp -v $rootfs/boot/initrd* /tmp/init
-kvm -nographic -kernel /tmp/kern -initrd /tmp/init -append "console=ttyS0 root=/dev/vda rw" \
-    -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
-# -- boot a VM from an image bootloader -- ##
-kvm -drive file=$rootfs,if=virtio -netdev user,id=net0 -device virtio-net-pci,netdev=net0
-```
-
-Basic customization for root file-system:
-
-```bash
-sed -i '/^root/ { s/:x:/::/ }' /etc/passwd"      # remove the root password for tests
-apt -y install zsh ; adduser --shell /bin/zsh devops
-                                                 # add a test user devops
-# -- configure the network interface -- ##
-name=$(udevadm test /sys/class/net/* 2>&- | grep ID_NET_NAME_SLOT | cut -d= -f2)
-                                                 # primary network interface
-echo -e "[Match]\nName=$name\n[Network]\nDHCP=yes" > /etc/systemd/network/$name.network
-systemctl restart systemd-networkd && systemctl enable systemd-networkd
-echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
-                                                 # configure root mount on boot
-echo -e "domain devops.test\nsearch devops.test\nnameserver 10.1.1.1" > /etc/resolv.conf
-                                                 # configure name resolution
-```

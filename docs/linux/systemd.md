@@ -271,8 +271,7 @@ loginctl enable-linger <user>                   # make user sessions (boot) pers
 /etc/fstab                                      # translated by systemd-fstab-generator into units
 /etc/systemd/system/*.mount                     # mount units
 systemctl --all -t mount                        # show mounts
-systemctl daemon-reload && systemctl start <name>.mount
-                                                # mount with a unit file
+systemd.special                                 # units treated specially by systemd
 ```
 
 Mount units must be named after the mount point directories they control, cf `systemd-escape`.
@@ -290,7 +289,7 @@ Type= # file system type (e.g. ext4)
 Options=defaults
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=local-fs.target
 ```
 
 Unit skeleton for an NFS mount:
@@ -309,8 +308,29 @@ Options=defaults
 TimeoutSec=10s
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=network-online.target
 ```
+
+### Tmpfs
+
+Use tmpfs to mount /tmp:
+
+```bash
+>>> cat /etc/systemd/system/tmp.mount
+[Unit]
+Description=Mount /tmp as tmpfs
+
+[Mount]
+What=tmpfs
+Where=/tmp
+Type=tmpfs
+Options=rw,nodev,nosuid,size=2G
+
+[Install]
+WantedBy=basic.target
+```
+
+
 
 ## Resource Limits
 

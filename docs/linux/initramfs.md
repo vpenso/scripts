@@ -81,9 +81,8 @@ Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
 >>> version=1.26.2 ; curl https://busybox.net/downloads/busybox-${version}.tar.bz2 | tar xjf -
 ### Configure and compile busybox
 >>> cd busybox-${version} 
->>> make menuconfig
-# → Busybox Settings → Build Options → Build BusyBox as a static binary (no shared libs)
->>> make -j 4 2>&1 | tee build.log
+>>> make defconfig
+>>> make LDFLAG=--static -j $(nproc) 2>&1 | tee build.log
 >>> make install 2>&1 | tee -a build.log 
 >>> ls -1 _install
 bin/
@@ -131,20 +130,18 @@ Debian user-space and systemd in an initramfs:
 
 ```bash
 >>> apt install -y debootstrap systemd-container
->>> export ROOTFS=/tmp/rootfs
+>>> export ROOTFS_PATH=/tmp/rootfs
 ## create the root file-system
->>> debootstrap stretch $ROOTFS
+>>> debootstrap stretch $ROOTFS_PATH
 ## configure the root fiel-system
->>> chroot $ROOTFS
+>>> chroot $ROOTFS_PATH
 >>> passwd                          # change the root password
 >>> ln -s /sbin/init /init          # use systemd as /init
 >>> exit
-## the kernel to boot
->>> cp vmlinuz-4.9.0-3-amd64 /tmp/vmlinuz
 ## create an initramfs image from the roofs
->>> ( cd $ROOTFS ; find . | cpio -o -H newc --quiet | gzip -9 ) > /tmp/initrd.img
+>>> ( cd $ROOTFS_PATH ; find . | cpio -ov -H newc | gzip -9 ) > /tmp/initramfs.cpio.gz
 ## test with a virtual machine
->>> kvm -m 2048 -kernel vmlinuz -initrd initrd.img
+>>> kvm -m 2048 -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
 ```
 
 # Tool Chain
