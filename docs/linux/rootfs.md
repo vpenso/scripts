@@ -25,17 +25,6 @@ systemd-nspawn -D $ROOTFS_PATH "<command>"       # execute a command in a contai
 systemd-nspawn -b -D $ROOTFS_PATH                # boot the rootfs with a container
 ```
 
-Boot a root file-system with a KVM based virtual machine instance (cf. [initramfs.md](initramfs.md)):
-
-```bash
-# attach a network interface
-options='-netdev user,id=net0 -device virtio-net-pci,netdev=net0'
-options='-netdev user,id=net0 -device virtio-net-pci,netdev=net0,mac=02:FF:0A:0A:06:1C'
-
-# boot the host kernel with custom initramfs
-kvm -m 2048 $options -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
-```
-
 Basic customization for root file-system:
 
 ```bash
