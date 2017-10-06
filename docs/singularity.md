@@ -1,24 +1,56 @@
 
-[Singularity][01] provides private OS container images in user-space.
+# Singularity
 
+<http://singularity.lbl.gov/>
 
-## Packages
+Singularity allows a simple integration of Linux containers with HPC clusters.
+
+* Scheduler/Resource manager agnostic
+* Runs with user privileges(, and does not require a service daemon)
+* Bind mounts host file-systems into the container
+* Executable within a job script send to the resource manager
+* Integrates with MPI, InfiniBand, hardware accelerators (Nvidia/AMD GPUs, Intel KNL)
+
+Supported container formats for the rootfs:
+
+* singularity image
+* squashfs
+* tar.gz, tar.bz2, tar, cpio, cpio.gz archives 
+* docker
+
+## Install
+
+Source archives of Singularity releases:
 
 <https://github.com/singularityware/singularity/releases>
 
-Build a package for Debian:
+Build from source code:
 
 ```bash
->>> apt -y install build-essential automake libtool debootstrap 
+>>> apt -y install build-essential automake libtool python debootstrap
 ### download, extract source code archive, and change to working directory
->>> version=2.2 ; wget https://github.com/singularityware/singularity/archive/$version.tar.gz -O /tmp/singularity_$version.orig.tar.gz
+>>> version=2.4 ; wget https://github.com/singularityware/singularity/archive/$version.tar.gz -O /tmp/singularity_$version.orig.tar.gz
 >>> tar -xf /tmp/singularity_$version.orig.tar.gz -C /tmp/ && cd /tmp/singularity-$version
 >>> ./autogen.sh                                       # prepare build
 >>> ./configure --prefix=/usr/local --sysconfdir=/etc  # configure build
->>> make                                               # build
->>> sudo make install                                  # install binaries 
-### create a debian package
->>> apt -y install debhelper dh-autoreconf git devscripts
+>>> make -j $(nprocs)                                  # build
+>>> sudo make install                                  # install binaries
+```
+
+### Debian
+
+Official Debian packages:
+
+<https://packages.debian.org/singularity-container>
+
+Debian, Ubuntu package from NeuroDebian:
+
+<http://neuro.debian.net/pkgs/singularity-container.html>
+
+Build a custom Debian package:
+
+```bash
+>>> apt -y install debhelper dh-autoreconf git devscripts help2man
 >>> grep -A5 override_dh_fixperms debian/rules     # adjust permissions during package installation
 override_dh_fixperms:
         dh_fixperms
@@ -26,11 +58,13 @@ override_dh_fixperms:
         chown root.root debian/singularity-container/usr/lib/*/singularity/sexec-suid
         chmod 755 debian/singularity-container/usr/lib/*/singularity/sexec
         chmod 4755 debian/singularity-container/usr/lib/*/singularity/sexec-suid
+## cf. http://singularity.lbl.gov/install-linux
+>>> echo "echo SKIPPING TESTS THEYRE BROKEN" > ./test.sh
 >>> dch -i                                         # adjust changelog if required
->>> dpkg-buildpackage -us -uc                      # build package
+>>> fakeroot dpkg-buildpackage -nc -b -us -uc      # build package
 ```
 
-Build a package for CentOS:
+### CentOS
 
 ```bash
 >>> yum groupinstall -y "Development Tools"
@@ -48,14 +82,22 @@ Build a package for CentOS:
 /root/rpmbuild/RPMS/x86_64/singularity-devel-2.3.1-0.1.el7.centos.x86_64.rpm
 ```
 
-## Usage
+## Configuration
+
+Singularity administration guide:
+
+<http://singularity.lbl.gov/admin-guide>
 
 ```bash
 /etc/singularity/singularity.conf                  # global configuration
-grep 'allow setuid = yes' /etc/singularity/singularity.conf
-chmod 755 /usr/lib/x86_64-linux-gnu/singularity/sexec && chmod 4755 /usr/lib/x86_64-linux-gnu/singularity/sexec-suid
-                                                   # >2.2 SUID bit required
+## show configuration
+grep -v ^# /etc/singularity/singularity.conf | grep -v -e '^$' | sort
 ```
+
+The Singularity configuration must be owned by root if running in SUID mode.
+
+## Usage
+
 
 ```bash
      singularity -d -x ...                              # debuging mode
@@ -71,10 +113,9 @@ sudo             import <image> docker://<target>:<tag> # import image from dock
                       -B <source>:<destination> ...     # bind host source path into container destination path
 ```
 
-→ [Bootstrap Definition][03]  
-→ [Docker Official Repositories][04]
 
-### Usage
+
+### Example
 
 Following example builds a container with the [FairRoot][06] application:
 
@@ -96,11 +137,16 @@ sudo singularity shell --shell /bin/bash --writable debian.img  # enter the cont
 >>> exit
 ```
 
-
-
-[01]: http://singularity.lbl.gov/
-[02]: https://github.com/singularityware/singularity
-[03]: http://singularity.lbl.gov/bootstrap-image
-[04]: https://hub.docker.com/explore/
 [05]: https://github.com/FairRootGroup/FairSoft
 [06]: https://github.com/FairRootGroup/FairRoot 
+
+### SCI-F
+
+SCI-F (Standard Container Integration Format):
+
+<http://containers-ftw.org/>
+
+* Reproducible containers for scientific software workflows.
+* Self-documenting, programmatically parseable (exposing software and associated metadata, environments, and files).
+
+<http://containers-ftw.org/apps/examples/tutorials/getting-started>
