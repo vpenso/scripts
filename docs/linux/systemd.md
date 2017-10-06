@@ -316,18 +316,8 @@ WantedBy=network-online.target
 Use tmpfs to mount /tmp:
 
 ```bash
->>> cat /etc/systemd/system/tmp.mount
-[Unit]
-Description=Mount /tmp as tmpfs
-
-[Mount]
-What=tmpfs
-Where=/tmp
-Type=tmpfs
-Options=rw,nodev,nosuid,size=2G
-
-[Install]
-WantedBy=basic.target
+>>> cp /usr/share/systemd/tmp.mount /etc/systemd/system/tmp.mount
+>>> systemctl enable tmp.mount && systemctl start tmp.mount
 ```
 
 
