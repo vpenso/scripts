@@ -4,9 +4,9 @@ A **live systems** boots from a removable medium (CD, USB, or SD card) or the ne
 
 * It does not require a local installation, since it auto-configures at run-time
 * Requires following components:
-  - `vmlinuz` Linux kernel image. cf [kernel.md](kernel.md).
-  - `initramfs.img` early user-space, cf. [initramfs.md](initramfs.md).
-  - `rootfs.img` target root file-system, cf. [roofs.md](rootfs.md).
+  - __vmlinuz*__ Linux kernel image. cf [kernel.md](kernel.md).
+  - **initramfs** early user-space, cf. [initramfs.md](initramfs.md).
+  - **rootfs.img** target root file-system, cf. [roofs.md](rootfs.md).
   - **Bootloader**, e.g. PXE network boot, cf. [pxe.md](../net/pxe.md).
 
 ## Network Boot
@@ -87,7 +87,6 @@ kernel vmlinuz initrd=initramfs.img root=live:http://10.1.1.29/filesystem.squash
 initrd initramfs.img
 boot
 ```
-
 
 # Live Build
 

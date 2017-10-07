@@ -12,44 +12,44 @@ First process executed in users space (PID 1)
 - Every process is spawned in a **control group** named after its service.
 
 ```bash
-systemd --version                               # show systemd version
-/etc/os-release                                 # platform information
-/etc/machine-id                                 # unique machine identifier
-man systemd.index                               # overview documentation
-{/etc,/run,/lib}/systemd/system/                # unit configuration files
-LESS="-p SIGNALS" man -P less systemd           # list of supported signals
-LESS="-p KERNEL" man -P less systemd            # kernel command line options for boot
-SYSTEMD_LESS=FRXMK                              # export to wrap lines to screen width
-systemctl                                       # list all units with state
-systemctl -t <unit_type>                        # list units with a given type, e.g. "service"
-systemctl list-unit-files -t service            # list unit files for a given unit type 
-systemctl cat <unit>                            # print unit configuration files
-systemctl show <unit>                           # dump entire configuration
-systemctl edit --full <unit>                    # edit a unit file, reload on close
-systemctl reenable <unit>                       # reconfigure existing unit
-systemctl --failed --all                        # list units in failed state
+systemd --version                            # show systemd version
+/etc/os-release                              # platform information
+/etc/machine-id                              # unique machine identifier
+man systemd.index                            # overview documentation
+{/etc,/run,/lib}/systemd/system/             # unit configuration files
+LESS="-p SIGNALS" man -P less systemd        # list of supported signals
+LESS="-p KERNEL" man -P less systemd         # kernel command line options for boot
+SYSTEMD_LESS=FRXMK                           # export to wrap lines to screen width
+systemctl                                    # list all units with state
+systemctl -t <unit_type>                     # list units with a given type, e.g. "service"
+systemctl list-unit-files -t service         # list unit files for a given unit type 
+systemctl cat <unit>                         # print unit configuration files
+systemctl show <unit>                        # dump entire configuration
+systemctl edit --full <unit>                 # edit a unit file, reload on close
+systemctl reenable <unit>                    # reconfigure existing unit
+systemctl --failed --all                     # list units in failed state
 systemctl help <unit>
-systemctl status [<unit>]                       # show state of a unit, e.g. ssh.service
-systemctl is-enabled <unit>                     # check if a unit will bi started during init
+systemctl status [<unit>]                    # show state of a unit, e.g. ssh.service
+systemctl is-enabled <unit>                  # check if a unit will bi started during init
 systemctl is-active <unit>
-systemctl list-dependencies <unit>              # show unit dependencies
-systemctl start|stop|restart|reload <unit>      # state management of units
-systemctl -t target                             # list available targets
-systemctl get-default                           # show current default target at boot
-systemctl set-default -f <target>               # set a new default target
-systemctl show -p Wants <target>                # show dependencies to a target
-systemctl isolate <target>                      # switch to another target
-systemctl kill <service>                        # send TERM to service
-systemctl kill -s <sig> <service>               # send a given signal to servive, e.g. HUB  
-systemctl reboot|poweroff|suspend|hibernate     # power management
-systemctl list-jobs                             # show pending jobs
-systemctl daemon-reload                         # Re-read configuration files
-systemctl daemon-reexec                         # re-execute systemd
-/etc/systemd/system/<unit>.d/*.conf             # drop-in files to overwrite units
-systemd-delta --type=extended                   # Identify configuration which override others
-systemd-analyze                                 # time the system required during last booting
-systemd-analyze blame                           # ^^ time by by unit
-systemd-analyze critical-chain                  
+systemctl list-dependencies <unit>           # show unit dependencies
+systemctl start|stop|restart|reload <unit>   # state management of units
+systemctl -t target                          # list available targets
+systemctl get-default                        # show current default target at boot
+systemctl set-default -f <target>            # set a new default target
+systemctl show -p Wants <target>             # show dependencies to a target
+systemctl isolate <target>                   # switch to another target
+systemctl kill <service>                     # send TERM to service
+systemctl kill -s <sig> <service>            # send a given signal to servive, e.g. HUB  
+systemctl reboot|poweroff|suspend|hibernate  # power management
+systemctl list-jobs                          # show pending jobs
+systemctl daemon-reload                      # Re-read configuration files
+systemctl daemon-reexec                      # re-execute systemd
+/etc/systemd/system/<unit>.d/*.conf          # drop-in files to overwrite units
+systemd-delta --type=extended                # Identify configuration which override others
+systemd-analyze                              # time the system required during last booting
+systemd-analyze blame                        # ^^ time by by unit
+systemd-analyze critical-chain
 ```
 
 Skeleton for a custom service unit `/lib/systemd/system/*.service` to execute a program once:
@@ -108,13 +108,13 @@ Skeleton for a **static IP-address**
 
 ```
 [Match]
-Name=                              # device name (e.g en*)
+Name=              # device name (e.g en*)
 
 [Network]
-Address=                           # IP address, CIDR notation
-Gateway=                           # IP address
-DNS=                               # is a DNS server address (multiples possibel)
-Domains=                           # a list of the domains used for DNS host name resolution
+Address=           # IP address, CIDR notation
+Gateway=           # IP address
+DNS=               # is a DNS server address (multiples possibel)
+Domains=           # a list of the domains used for DNS host name resolution
 ```
 
 Debugging `systemd-networkd`:
@@ -130,17 +130,17 @@ systemctl daemon-reload && systemctl restart systemd-networkd
 ## Hostname
 
 ```bash
-hostnamectl status                              # view hostname
-hostnamectl set-hostname <fqdn>                 # set hostname
-hostnamectl set-hostname ""                     # clear hostname
-/etc/hostname                                   # hostname configuration file
-/etc/hosts                                      # may contain FQDN of host (to be resolved without DNS)
-dnsdomainname                                   # display DNS domain name
-domainname                                      # (aka. nisdomainname) display NIS domain name
-hostname                                        # print hostname returned by the gethostname(2) function
-hostname -s                                     # print hostname cut at the first dot
-hostname -f                                     # print host FQDN
-hostname -d                                     # print host domain name
+hostnamectl status                  # view hostname
+hostnamectl set-hostname <fqdn>     # set hostname
+hostnamectl set-hostname ""         # clear hostname
+/etc/hostname                       # hostname configuration file
+/etc/hosts                          # may contain FQDN of host (to be resolved without DNS)
+dnsdomainname                       # display DNS domain name
+domainname                          # (aka. nisdomainname) display NIS domain name
+hostname                            # print hostname returned by the gethostname(2) function
+hostname -s                         # print hostname cut at the first dot
+hostname -f                         # print host FQDN
+hostname -d                         # print host domain name
 ```
 
 ## Localization/Time
@@ -148,11 +148,11 @@ hostname -d                                     # print host domain name
 Settings system locale:
 
 ```bash
-/etc/locale.conf                                # system-wide locale settings
-localectl                                       # show language configuration
-localectl list-locales                          # list vailable keys configuration
+/etc/locale.conf                    # system-wide locale settings
+localectl                           # show language configuration
+localectl list-locales              # list vailable keys configuration
 localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"
-localectl list-keymaps                          # list all available keyboard layouts
+localectl list-keymaps              # list all available keyboard layouts
 localectl set-keymap us
 ```
 
@@ -167,39 +167,39 @@ Types of clocks:
 
 
 ```bash
-timedatectl                                     # show time and time zone configuration
-timedatectl set-time YYYY-MM-DD                 # change the current date
-timedatectl set-time HH:MM:SS                   # change the current time
-timedatectl list-timezones                      # list available time zones
-timedatectl set-timezone <zone>                 # set a given time zone, e.g. Europe/Berlin
-grep ^Servers /etc/systemd/timesyncd.conf       # list time servers 
-timedatectl set-ntp true                        # enable NTP
-systemctl start systemd-timesyncd               # start the time sync daemon 
-systemctl enable systemd-timesyncd              # make the time sync daemon boot persistant 
+timedatectl                                 # show time and time zone configuration
+timedatectl set-time YYYY-MM-DD             # change the current date
+timedatectl set-time HH:MM:SS               # change the current time
+timedatectl list-timezones                  # list available time zones
+timedatectl set-timezone <zone>             # set a given time zone, e.g. Europe/Berlin
+grep ^Servers /etc/systemd/timesyncd.conf   # list time servers 
+timedatectl set-ntp true                    # enable NTP
+systemctl start systemd-timesyncd           # start the time sync daemon 
+systemctl enable systemd-timesyncd          # make the time sync daemon boot persistant 
 ```
 
 
 ## Journal/Logging
 
 ```bash
-man systemd-journald                            # docs for the journal daemon
-systemctl status systemd-journald               # state of the journal service
-man journald.conf                               # docs for the journald configuration
-journalctl -b                                   # this boot
-journalctl -b -p err                            # error from this boot
-journalctl -b -1                                # previous boot
-journalctl --list-boots                         # show list of boot logs
-journalctl -k                                   # kernel ring buffer
-journalctl -f [...]                             # tail the log file
-journalctl -u <unit>                            # messages of a specific unit
-journalctl _UID=<uid>                           # messages by user ID
-journalctl _PID=<pid>                           # messages from a given process
+man systemd-journald                  # docs for the journal daemon
+systemctl status systemd-journald     # state of the journal service
+man journald.conf                     # docs for the journald configuration
+journalctl -b                         # this boot
+journalctl -b -p err                  # error from this boot
+journalctl -b -1                      # previous boot
+journalctl --list-boots               # show list of boot logs
+journalctl -k                         # kernel ring buffer
+journalctl -f [...]                   # tail the log file
+journalctl -u <unit>                  # messages of a specific unit
+journalctl _UID=<uid>                 # messages by user ID
+journalctl _PID=<pid>                 # messages from a given process
 journalctl --since=yesterday
 journalctl --since=00:00 --until=9:30
 journalctl --since "20 min ago"
 journalctl -o verbose -n
 journalctl -f -l SYSLOG_FACILITY=10
-journalctl --vacuum-time=2weeks                 # clean journal files
+journalctl --vacuum-time=2weeks       # clean journal files
 ```
 
 Enable the persistent storage of log messages
@@ -271,8 +271,7 @@ loginctl enable-linger <user>                   # make user sessions (boot) pers
 /etc/fstab                                      # translated by systemd-fstab-generator into units
 /etc/systemd/system/*.mount                     # mount units
 systemctl --all -t mount                        # show mounts
-systemctl daemon-reload && systemctl start <name>.mount
-                                                # mount with a unit file
+systemd.special                                 # units treated specially by systemd
 ```
 
 Mount units must be named after the mount point directories they control, cf `systemd-escape`.
@@ -290,7 +289,7 @@ Type= # file system type (e.g. ext4)
 Options=defaults
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=local-fs.target
 ```
 
 Unit skeleton for an NFS mount:
@@ -309,8 +308,19 @@ Options=defaults
 TimeoutSec=10s
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=network-online.target
 ```
+
+### Tmpfs
+
+Use tmpfs to mount /tmp:
+
+```bash
+>>> cp /usr/share/systemd/tmp.mount /etc/systemd/system/tmp.mount
+>>> systemctl enable tmp.mount && systemctl start tmp.mount
+```
+
+
 
 ## Resource Limits
 

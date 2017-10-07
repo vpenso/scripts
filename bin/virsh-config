@@ -24,8 +24,7 @@ exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 #{exec_name} [<options>] <path>
 
-<path>: Path to the configuration file for the virtual
-        machine instance
+<path>: Path to the configuration file for the virtual machine instance
 
 <options>
   -b,--bridge <name>               Network birdge (default nbr0)
@@ -35,6 +34,8 @@ HELP = <<EOF
   -d,--disks <path>[,<path>]       Disk images to uses (default `disk*.img`)
   -t,--disk-type qcow2|raw         Disk device type (default qcow2) 
   -h,--help                        Show this help information.
+  -k,--kernel <path>               Linux kernel to boot
+  -i,--initrd <path>               Init file-system to us with kernel
   -m,--mac-address <address>       MAC-address (default 02:FF:0A:0A:06:00)
   -M,--memory <size>               Memory in GB
   -n,--name <name>                 Name (default is the enclosing directory name)
@@ -66,26 +67,37 @@ class Virsh
            end
 
     disks_list = if $options.disks.empty?
-                   Dir.glob("#{dir}/disk*.img")
+                   disks = Dir.glob("#{dir}/disk*.img")
+                   if not disks.empty?
+                     $stdout.puts "Found disk images in path: #{disks.join(',')}"
+                   end
+                   disks
                  else
                    $options.disks
                  end
 
-    raise('NO disk(s) defined!') if disks_list.empty?
-
-    id = 'a'
-    disks = Array.new
-    disks_list.sort.map do |disk|
-      disks << %Q[
-        <disk type="file" device="disk">
-          <driver name="qemu" type="#{$options.disk_type}"/>
-          <target dev="vd#{id}" bus="virtio"/>
-          <source file="#{disk}"/>
-        </disk>].gsub(/^    /,'')
-      id = id.next
+    if disks_list.empty? and $options.kernel.nil?
+      raise("Make sure to configure the source to boot! Either specify a kernel/initrd or a rootfs to boot from.")
     end
 
-    # render the XMl configuration
+    ## 
+    # Configure the disk images attached to the virtual machine instance
+    #
+    if not disks_list.empty? 
+      id = 'a'
+      disks = Array.new
+      disks_list.sort.map do |disk|
+        disks << %Q[
+          <disk type="file" device="disk">
+            <driver name="qemu" type="#{$options.disk_type}"/>
+            <target dev="vd#{id}" bus="virtio"/>
+            <source file="#{disk}"/>
+          </disk>].gsub(/^    /,'')
+        id = id.next
+      end
+    end 
+
+    # render the XML configuration
     config = ERB.new(DATA.read,nil,'-').result(binding)
     # write the configuration file
     File.open(path,'w') { |f| f.puts config }
@@ -114,16 +126,18 @@ begin
   $options.debug = false
   $options.file = nil
   $options.bridge = 'nbr0'
-  $options.mac = '02:FF:0A:0A:06:00'
+  $options.mac = '02:FF:0A:0A:06:1C'
   $options.memory = 1
   $options.vcpu = 1
   $options.vns = false
   $options.vnc_port = nil
   $options.overwrite = false
-  $options.name = nil
+  $options.name = 'lxdev01.devops.test'
   $options.netboot = false
   $options.disks = Array.new
   $options.disk_type = 'qcow2'
+  $options.kernel = nil
+  $options.initrd = nil
 
   GetoptLong.new(
     ['--bridge','-b',GetoptLong::REQUIRED_ARGUMENT],
@@ -132,6 +146,8 @@ begin
     ['--disks','-d',GetoptLong::REQUIRED_ARGUMENT],
     ['--disk-type','-t',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--kernel','-k',GetoptLong::REQUIRED_ARGUMENT],
+    ['--initrd','-i',GetoptLong::REQUIRED_ARGUMENT],
     ['--mac-address','-m',GetoptLong::REQUIRED_ARGUMENT],
     ['--name','-n',GetoptLong::REQUIRED_ARGUMENT],
     ['--net-boot','-N',GetoptLong::NO_ARGUMENT],
@@ -159,6 +175,10 @@ begin
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--kernel'
+      $options.kernel = arg
+    when '--initrd'
+      $options.initrd = arg
     when '--mac-address'
       $options.mac = arg
     when '--memory'
@@ -172,7 +192,7 @@ begin
     when '--vcpu'
       $options.vcpu = arg
     when '--version'
-      $stdout.puts 0.4
+      $stdout.puts 0.5
       exit 0
     when '--vnc'
       $options.vnc = true
@@ -206,6 +226,12 @@ __END__
   <vcpu><%= $options.vcpu %></vcpu>
   <os>
     <type arch="x86_64">hvm</type>
+<% if $options.kernel -%>
+    <kernel><%= $options.kernel %></kernel>
+<% end -%>
+<% if $options.initrd -%>
+    <initrd><%= $options.initrd %></initrd>
+<% end -%>
 <% if $options.netboot -%>
     <boot dev='network'/>
 <% end -%>

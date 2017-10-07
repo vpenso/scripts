@@ -53,9 +53,9 @@ Mellanox HCAs require at least the `mlx?_core` and `mlx?_ib` kernel modules.
 >>> find /lib/modules/$(uname -r)/kernel/drivers/infiniband -type f -name \*.ko
 ## load requried modules
 >>> for mod in mlx4_core mlx4_ib ib_umad ib_ipoib rdma_ucm ; do modprobe $mod ; done
-## Add the module list to /etc/modules for boot persistence
->>> for mod in mlx4_core mlx4_ib ib_umad ib_ipoib rdma_ucm ; do echo "$mod" >> /etc/modules ; done
-## listt loaded infiniband modules
+## make sure modules get loaded on boot 
+>>> for mod in mlx4_core mlx4_ib ib_umad ib_ipoib rdma_ucm ; do echo "$mod" >> /etc/modules-load.d/infiniband.conf ; done
+## list loaded infiniband modules
 >>> lsmod | egrep "^mlx|^ib|^rdma"
 ## check the version
 >>> modinfo mlx4_core | grep -e ^filename -e ^version

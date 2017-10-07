@@ -81,9 +81,8 @@ Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
 >>> version=1.26.2 ; curl https://busybox.net/downloads/busybox-${version}.tar.bz2 | tar xjf -
 ### Configure and compile busybox
 >>> cd busybox-${version} 
->>> make menuconfig
-# → Busybox Settings → Build Options → Build BusyBox as a static binary (no shared libs)
->>> make -j 4 2>&1 | tee build.log
+>>> make defconfig
+>>> make LDFLAG=--static -j $(nproc) 2>&1 | tee build.log
 >>> make install 2>&1 | tee -a build.log 
 >>> ls -1 _install
 bin/
@@ -125,6 +124,26 @@ Test using a virtual machine:
 >>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
+### Debootstrap & Systemd
+
+Debian user-space and systemd in an initramfs:
+
+```bash
+>>> apt install -y debootstrap systemd-container
+>>> export ROOTFS_PATH=/tmp/rootfs
+## create the root file-system
+>>> debootstrap stretch $ROOTFS_PATH
+## configure the root fiel-system
+>>> chroot $ROOTFS_PATH
+>>> passwd                          # change the root password
+>>> ln -s /sbin/init /init          # use systemd as /init
+>>> exit
+## create an initramfs image from the roofs
+>>> ( cd $ROOTFS_PATH ; find . | cpio -ov -H newc | gzip -9 ) > /tmp/initramfs.cpio.gz
+## test with a virtual machine
+>>> kvm -m 2048 -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
+```
+
 # Tool Chain
 
 Tools helping build an initramfs image:
@@ -156,7 +175,7 @@ Low-level tools to generate initramfs images:
 man initramfs-tools                                  # introduction to writing scripts for mkinitramfs
 man initramfs.conf                                   # configuration file documentation
 /etc/initramfs-tools/initramfs.conf                  # global configuration
-ls -1 {/etc,/usr/share}/initramfs-tools/conf*        # hooks overwriting the configuration file
+ls -1 {/etc,/usr/share}/initramfs-tools/conf.d*      # hooks overwriting the configuration file
 ls -1 {/etc,/usr/share}/initramfs-tools/hooks*       # hooks executed during generation of the initramfs
 ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
 mkinitramfs -o /tmp/initramfs.img                    # create an initramfs image for the currently running kernel
@@ -174,10 +193,13 @@ Executed during image creation to add and configure files.
 
 Following scripting header is used as a skeleton:
 
-* `PREREQ` should contain the name of the hook
+* `PREREQ` should contain a list of dependency hooks
 * Read `/usr/share/initramfs-tools/hook-functions` for a list of predefined helper-functions. 
 
+Following examples loads Infiniband drivers:
+
 ```bash
+>>> cat /etc/initramfs-tools/hooks/infiniband
 #!/bin/sh
 PREREQ=""
 prereqs()
@@ -193,9 +215,26 @@ prereqs)
 esac
 
 . /usr/share/initramfs-tools/hook-functions
-# Begin real processing below this line
-```
 
+mkdir -p ${DESTDIR}/etc/modules-load.d
+
+# make sure the infiniband modules get loaded
+cat << EOF > ${DESTDIR}/etc/modules-load.d/infiniband.conf
+mlx4_core
+mlx4_ib
+ib_umad
+ib_ipoib
+rdma_ucm
+EOF
+
+for module in $(cat ${DESTDIR}/etc/modules-load.d/infiniband.conf); do
+        manual_add_modules ${module}
+done
+## make the hook executable
+>>> chmod +x /etc/initramfs-tools/hooks/infiniband
+## check if required file are in the initramfs image
+>>> lsinitramfs /tmp/initramfs.img  | grep infiniband
+```
 
 ## Dracut
 
