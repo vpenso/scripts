@@ -7,8 +7,7 @@ Deployment and configuration of [libvirt](http://libvirt.org/docs.html) on a wor
 ```bash
 sudo apt-get -y install libvirt-daemon-system libvirt-dev libvirt-clients virt-manager virt-viewer virt-top virtinst qemu-utils qemu-kvm libguestfs-tools ovmf
                                                  # related packages in Debian
-sudo dnf -y group install with-optional virtualization
-                                                 # related packages in Fedora
+sudo dnf -y install @virtualization              # related packages in Fedora
 sudo usermod -a -G libvirt,kvm `id -un`          # enable your user account to manage virtual machines
                                                  # re-login to activate these group rights
 sudo grep '^user =' /etc/libvirt/qemu.conf       # should contain $USER
