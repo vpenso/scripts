@@ -113,6 +113,9 @@ sudo             import <image> docker://<target>:<tag> # import image from dock
                       -B <source>:<destination> ...     # bind host source path into container destination path
 ```
 
+```bash
+>>> singularity image.create -s 1024 /tmp/debian.sly.img
+```
 
 
 ### Example
