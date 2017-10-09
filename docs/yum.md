@@ -217,7 +217,7 @@ Package manager for RPM based distributions → [DNF on GitHub](https://github.c
 /var/cache/dnf                    # cache files
 dnf repolist -v all               # list all repositories
 dnf search <package>              # search for a package by name
-dnf list <package
+dnf list <package>
 dnf list installed
 dnf list recent
 dnf info <package>
@@ -226,43 +226,41 @@ dnf install <rpm>
 dnf upgrade <package> 
 dnf downgrade <package>
 dnf erase <package>
+dnf repoquery -l <package>        # list files within a package
 ```
-
-## Transaction History
-
-    » dnf history list 
-    » dnf history info <id>
-    » dnf history info <sid>[..<eid>]
 
 Actions: (D)owngrade, (E)rase, (I)nstall, (O)bsoleting, (R)einstall, (U)pdate
 
-Revert a transaction (uninstall, downgrade), redo a transaction as root
+```bash
+dnf history list 
+dnf history info <id>
+dnf history info <sid>[..<eid>]
+dnf history undo <id>                 # revert a transaction (uninstall,downgrade)
+dnf history redo <id>
+```
 
-    » dnf history undo <id>
-    » dnf history redo <id>
 
 ## Upgrades
 
-Check for updates and install available packages
-
-    » dnf check-update
-    » dnf upgrade
+```bash
+dnf check-update
+dnf upgrade
+## ...clean up...
+dnf list autoremove
+dnf autoremove -y
+dnf clean packages
+dnf clean expire-cache
+```
 
 → [DNF Automatic](http://dnf.readthedocs.org/en/latest/automatic.html)
 
-    » dnf install -yq dnf-automatic
-    » grep apply_updates /etc/dnf/automatic.conf
-    apply_updates = yes
-    » systemctl enable dnf-automatic.timer && systemctl start dnf-automatic.timer
-    » systemctl list-timers '*dnf-automatic*'
-
-Clean up:
-
-    » dnf list autoremove
-    » dnf autoremove -y
-    » dnf clean packages
-    » dnf clean expire-cache
-
+```bash
+>>> dnf install -yq dnf-automatic
+>>> grep apply_updates /etc/dnf/automatic.conf
+apply_updates = yes
+>>> systemctl enable --now dnf-automatic-install.timer
+>>> systemctl list-timers '*dnf-automatic*'
+```
 
 # Security Updates
 
