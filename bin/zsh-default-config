@@ -25,12 +25,23 @@ fi
 if ! command -v zsh 2>&1 >/dev/null ; then
   # Debian based platform...
   if command -v apt 2>&1 >/dev/null ; then
-    # required packages
-    sudo apt -qy install zsh zsh-antigen
+    # Install
+    sudo apt -qy install zsh
+  fi
+  # On Fedora...
+  if command -v dnf 2>&1 >/dev/null ; then
+    sudo dnf -qy install zsh
   fi
 fi
 
+
 mkdir ~/.zsh 2>/dev/null
+
+##
+# Download ZSH antigen
+# https://github.com/zsh-users/antigen/releases
+ANTIGEN_PATH=~/.zsh/antigen.zsh
+wget -O $ANTIGEN_PATH https://github.com/zsh-users/antigen/releases/download/v2.2.1/antigen.zsh
 
 cat > $HOME/.zshrc <<'EOF'
 export HISTSIZE=10000
@@ -49,8 +60,8 @@ bindkey -e
 ##
 # Antigen plugin manager for ZSH - https://github.com/zsh-users/antigen
 #
-# loaded from the `zsh-antigen` Debian package
-source /usr/share/zsh-antigen/antigen.zsh
+ANTIGEN_CACHE=false
+source ~/.zsh/antigen.zsh
 
 antigen bundle git
 # https://github.com/zsh-users/zsh-completions
@@ -119,8 +130,9 @@ EOF
 echo "Configuration written to ~/.zshrc.d/05_zsh_git_prompt"
 
 # make zsh default shell
-shell=$(getent passwd $USER | cut -d':' -f 7)
+user=$USER
+shell=$(getent passwd $user | cut -d':' -f 7)
 if [ ! "$shell" = "/bin/zsh" ] ; then
-  chsh -s /bin/zsh
+  sudo usermod --shell /bin/zsh $user
   echo "Re-login to your user account."
 fi

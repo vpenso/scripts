@@ -12,11 +12,16 @@ fi
 # Installation
 #
 if ! command -v tmux 2>&1 >/dev/null ; then
+  
   # Debian based platform...
   if command -v apt 2>&1 >/dev/null ; then
     # required packages
-    sudo apt -qy install tmux fonts-powerline
-    fc-cache # build font information cache files
+    sudo apt -qy install tmux
+  fi
+
+  # On Fedora...
+  if command -v dnf 2>&1 >/dev/null ; then
+    sudo dnf install -qy tmux
   fi
 fi
 
