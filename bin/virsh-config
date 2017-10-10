@@ -22,9 +22,10 @@ require 'erb'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [<options>] <path>
+#{exec_name} [<options>] [<path>]
 
 <path>: Path to the configuration file for the virtual machine instance
+        (defaults to libvirt_instance.xml in working directory)
 
 <options>
   -b,--bridge <name>               Network birdge (default nbr0)
@@ -69,7 +70,7 @@ class Virsh
     disks_list = if $options.disks.empty?
                    disks = Dir.glob("#{dir}/disk*.img")
                    if not disks.empty?
-                     $stdout.puts "Found disk images in path: #{disks.join(',')}"
+                     $stdout.puts "Using disk image with path: #{disks.join(',')}"
                    end
                    disks
                  else
@@ -101,7 +102,7 @@ class Virsh
     config = ERB.new(DATA.read,nil,'-').result(binding)
     # write the configuration file
     File.open(path,'w') { |f| f.puts config }
-    $stdout.puts "#{path} written."
+    $stdout.puts "Libvirt configuration: #{path}"
   end
 
   def self.vnc
@@ -201,7 +202,8 @@ begin
     end
   end
 
-  path = ARGV.shift || raise('No target path defined!')
+  path = ARGV.shift || "#{ENV['PWD']}/libvirt_instance.xml"
+  $stdout.puts "Domain name #{$options.name} with MAC-address #{$options.mac}"
   Virsh::config(File.expand_path(path))
 
 rescue => exc
