@@ -168,6 +168,8 @@ virsh-instance shadow <image> <name>        # start shadow instance from image
 virsh-instance remove <name>                # undefine/stop instance
 ```
 
+### Start
+
 Start a **virtual machine instance** with the name `lxdev03`:
 
 ```bash
@@ -183,7 +185,18 @@ Libvirt configuration: /srv/vms/instances/lxdev03.devops.test/libvirt_instance.x
 SSH configuration: /srv/vms/instances/lxdev03.devops.test/ssh_config
 Domain lxdev03.devops.test defined from /srv/vms/instances/lxdev03.devops.test/libvirt_instance.xml
 Domain lxdev03.devops.test started
->>> tree $VM_INSTANCE_PATH/lxdev03.devops.test
+```
+
+### Cycle
+
+Resources create for the virtual machine instance:
+
+```bash
+## directory of the VM instance
+>>> virsh-instance path lxdev03
+/srv/vms/instances/lxdev03.devops.test
+## contents
+>>> tree $(virsh-instance path lxdev03)       
 /srv/vms/instances/lxdev03.devops.test
 ├── disk.img
 ├── keys
@@ -191,13 +204,33 @@ Domain lxdev03.devops.test started
 │   └── id_rsa.pub
 ├── libvirt_instance.xml
 └── ssh_config
->>> ls -lh $VM_INSTANCE_PATH/lxdev03.devops.test/disk.img
+## differential disk image (shadow image)
+>>> ls -lh $(virsh-instance path lxdev03)/disk.img
 -rw-r--r--. 1 root root 3.0M Oct 10 14:50 /srv/vms/instances/lxdev03.devops.test/disk.img
->>> virsh-instance login lxdev03
-## ... work with the virtual machine instance
+## delete the VM instance
 >>> virsh-instance remove lxdev03
 Domain lxdev03.devops.test destroyed
 Domain lxdev03.devops.test has been undefined
+```
+
+### Login
+
+```bash
+## login as root user
+>>> virsh-instance login lxdev03
+## execute a command in the VM instance 
+>>> virsh-instance exec lxdev03 'ip a | grep inet'
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.1.1.30/24 brd 10.1.1.255 scope global ens3
+    inet6 fe80::ff:aff:fe0a:61e/64 scope link 
+## rsync a file into the virtual machine
+>>> virsh-instance sync lxdev03 /bin/bash :/tmp
+sending incremental file list
+bash
+
+sent 1,137,020 bytes  received 35 bytes  2,274,110.00 bytes/sec
+total size is 1,136,624  speedup is 1.00
 ```
 
 
