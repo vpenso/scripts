@@ -168,35 +168,36 @@ virsh-instance shadow <image> <name>        # start shadow instance from image
 virsh-instance remove <name>                # undefine/stop instance
 ```
 
-Example:
-
-* Select a network configuration, and a template image
-* Start a VM instance with selected configuration, and login
-* Remove the VM instance 
+Start a **virtual machine instance** with the name `lxdev03`:
 
 ```bash
->>> virsh-nat-bridge lookup lxdev01
-lxdev01.devops.test 10.1.1.27 02:FF:0A:0A:06:1B
->>> virsh-instance list | grep debian
-  debian64-8
-  debian64-9
-  debian8
-  debian8-xfs
->>> virsh-instance shadow debian64-9 lxdev01
-/srv/vms/instances/lxdev01.devops.test/libvirt_instance.xml written.
-/home/vpenso/vms/instances/lxdev01.devops.test/ssh_config written.
-Domain lxdev01.devops.test defined from /home/vpenso/vms/instances/lxdev01.devops.test/libvirt_instance.xml
-Domain lxdev01.devops.test started
->>> ls -1 $VM_INSTANCE_PATH/lxdev01.devops.test
-disk.img
-keys/
-libvirt_instance.xml
-ssh_config
->>> virsh-instance login lxdev01
-[…]
->>> virsh-instance remove lxdev01           
-Domain lxdev01.devops.test destroyed
-Domain lxdev01.devops.test has been undefined
+## list the virtual machine images
+>>> virsh-instance list            
+Images in /srv/vms/images:
+  debian9
+## start a virtual machine instance
+>>> virsh-instance shadow debian9 lxdev03
+Domain name lxdev03.devops.test with MAC-address 02:FF:0A:0A:06:1E
+Using disk image with path: /srv/vms/instances/lxdev03.devops.test/disk.img
+Libvirt configuration: /srv/vms/instances/lxdev03.devops.test/libvirt_instance.xml
+SSH configuration: /srv/vms/instances/lxdev03.devops.test/ssh_config
+Domain lxdev03.devops.test defined from /srv/vms/instances/lxdev03.devops.test/libvirt_instance.xml
+Domain lxdev03.devops.test started
+>>> tree $VM_INSTANCE_PATH/lxdev03.devops.test
+/srv/vms/instances/lxdev03.devops.test
+├── disk.img
+├── keys
+│   ├── id_rsa
+│   └── id_rsa.pub
+├── libvirt_instance.xml
+└── ssh_config
+>>> ls -lh $VM_INSTANCE_PATH/lxdev03.devops.test/disk.img
+-rw-r--r--. 1 root root 3.0M Oct 10 14:50 /srv/vms/instances/lxdev03.devops.test/disk.img
+>>> virsh-instance login lxdev03
+## ... work with the virtual machine instance
+>>> virsh-instance remove lxdev03
+Domain lxdev03.devops.test destroyed
+Domain lxdev03.devops.test has been undefined
 ```
 
 
