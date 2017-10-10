@@ -91,10 +91,27 @@ Set the following configuration options during installation:
 Domain name lxdev01.devops.test with MAC-address 02:FF:0A:0A:06:1C
 Using disk image with path: /srv/vms/images/debian9/disk.img
 Libvirt configuration: /srv/vms/images/debian9/libvirt_instance.xml
-# start the virtual machine instance
 >>> virsh-nat-bridge lookup lxdev01     
 lxdev01.devops.test 10.1.1.28 02:FF:0A:0A:06:1C
+# start the virtual machine instance
 >>> virsh create libvirt_instance.xml
+# generate an SSH configuration
+>>> ssh-instance   
+Password-less SSH key-pair create in /srv/vms/images/debian9/keys
+SSH configuration: /srv/vms/images/debian9/ssh_config
+```
+
+Example
+
+```bash
+# install required packages on Debian Stretch
+>>> ssh-exec "su -lc 'apt install rsync sudo'"  # login as devops, execute command as root user
+# install required packages on CentOS
+>>> ssh-exec -r 'yum install rsync sudo'        
+>>> ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
+>>> ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
+>>> ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
+>>> ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 ```
 
 Configure the virtual machine:
@@ -187,16 +204,6 @@ ssh-sync <spath> :<dpath>                   # rsync local path into VM instance
 ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local path as root
 ```
 
-Example
-
-```bash
-ssh-exec "su -lc 'apt install rsync sudo'"  # Debian
-ssh-exec -r 'yum install rsync sudo'        # Centos
-ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
-ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
-ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
-ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
-```
 
 ### Management
 
