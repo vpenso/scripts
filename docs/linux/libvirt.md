@@ -86,11 +86,15 @@ Set the following configuration options during installation:
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
 ```bash
-# create a basic configuration for LibVirt
+# create a defaultc configuration for LibVirt
 >>> virsh-config
 Domain name lxdev01.devops.test with MAC-address 02:FF:0A:0A:06:1C
 Using disk image with path: /srv/vms/images/debian9/disk.img
 Libvirt configuration: /srv/vms/images/debian9/libvirt_instance.xml
+# start the virtual machine instance
+>>> virsh-nat-bridge lookup lxdev01     
+lxdev01.devops.test 10.1.1.28 02:FF:0A:0A:06:1C
+>>> virsh create libvirt_instance.xml
 ```
 
 Configure the virtual machine:
