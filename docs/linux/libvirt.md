@@ -7,12 +7,14 @@ Deployment and configuration of [libvirt](http://libvirt.org/docs.html) on a wor
 ```bash
 sudo apt-get -y install libvirt-daemon-system libvirt-dev libvirt-clients virt-manager virt-viewer virt-top virtinst qemu-utils qemu-kvm libguestfs-tools ovmf
                                                  # related packages in Debian
-sudo dnf -y install @virtualization              # related packages in Fedora
-sudo usermod -a -G libvirt,kvm `id -un`          # enable your user account to manage virtual machines
-                                                 # re-login to activate these group rights
-sudo grep '^user =' /etc/libvirt/qemu.conf       # should contain $USER
-sudo systemctl restart libvirtd && sudo systemctl enable libvirtd
-                                                 # libvirtd service
+>>> sudo dnf -y install @virtualization          # related packages in Fedora
+# enable your user account to manage virtual machines
+>>> sudo usermod -a -G libvirt,kvm `id -un`      # re-login to activate these group rights
+# configure the Libvirt service to run with your user ID, e.g.:
+>>> sudo grep -e '^user' -e '^group' /etc/libvirt/qemu.conf
+user = "vpenso"
+group = "vpenso"
+>>> sudo systemctl restart libvirtd
 ```
 
 Connect with the libvirt service ↴ [var/aliases/libvirt.sh](../var/aliases/libvirt.sh)
@@ -151,24 +153,6 @@ Configure the virtual machine image:
 >>> ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
 >>> ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 ```
-
-Configure the virtual machine:
-
-```bash
-# Aditional Debian packages
-apt update && apt -y install openssh-server sudo rsync chef haveged   
-# Aditional CentOS packages
-yum -y install openssh-server sudo rsync                           
-wget https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm
-yum install chef-13.1.31-1.el7.x86_64.rpm
-# password-less sudo for the devops user
-echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
-##
-## -- Configure systemd, NTP, PAM, etc if required -- # 
-## 
-```
-
-
 
 ## Instances
 
