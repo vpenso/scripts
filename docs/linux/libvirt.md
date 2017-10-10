@@ -53,25 +53,57 @@ virsh-config -n <name> -m <mac> […] libvirt_instance.xml # create XML configur
 virsh create|define libvirt_instance.xml                 # start/define VM instance
 ```
 
-## Templates
+## Login
 
-Use [bootstrap](bootstrap.md), or [guestfs](http://libguestfs.org/guestfs.3.html), i.e.:
+Login with ↴ [ssh-instance][ssh-instance] password-less SSH configuration
+
+* Uses `instance` as target hostname, and `devops` as login
+* Requires an pre-generated SSH key-pair without password lock
+
+```bash
+cd $VM_IMAGE_PATH/$name                    
+mkdir keys ; ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
+                                            # password-less SSH key-pair
+ssh-instance -i keys/id_rsa 10.1.1.26       # custom SSH configuration written to ssh_config
+ssh -F ssh_config instance -C […]
+                                            # use custom SSH configuration to connect 
+```
+
+↴ [ssh-exec][ssh-exec] and ↴ [ssh-sync][ssh-sync] use `ssh_config` if present in the working directory:
+
+```bash
+ssh-exec                                    # login as devops
+ssh-exec -s                                 # login as devops, and sudo to root shell
+ssh-exec -r                                 # login as root
+ssh-exec […]                                # execute command as devops
+ssh-sync <spath> :<dpath>                   # rsync local path into VM instance
+ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local path as root
+```
+
+## Images
+
+Create a virtual machine image:
 
 ```bash 
-$VM_IMAGE_PATH                                   # path to the VM template images (default /srv/vms/images)
-$VM_INSTANCE_PATH                                # path to the VM instances (default /srv/vms/instances)
+## required environment variables
+>>> env | grep VM_  
+VM_IMAGE_PATH=/srv/vms/images
+VM_INSTANCE_PATH=/srv/vms/instances
+VM_DOMAIN=devops.test
+## create a directory for the virtual machine image, e.g.:
+>>> mkdir -p $VM_IMAGE_PATH/debian9 && cd $VM_IMAGE_PATH/debian9
 ## Install Centos 7 from a mirror
-virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
-             --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
-             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
-             --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
+>>> virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+               --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
+               --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
+               --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
 ## Install Debian 9 from a mirror
-virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+>>> virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
              --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
 ## Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
-virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+>>> virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --cdrom /tmp/archlinux-2017.07.01-x86_64.iso
 ```
@@ -82,8 +114,11 @@ Set the following configuration options during installation:
 * Host name is the distribution nick-name (e.g squeeze or lucid)
 * Domain name `devops.test`
 * Single primary partition for `/` (no SWAP).
-* Passord "root" for the root account, and user `devops` password "devops"
+* Use the password "root" for the `root` account
+* Create a user `devops` with password "devops"
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
+
+Libvirt and SSH configuration for the virtual machine image:
 
 ```bash
 # create a defaultc configuration for LibVirt
@@ -101,15 +136,18 @@ Password-less SSH key-pair create in /srv/vms/images/debian9/keys
 SSH configuration: /srv/vms/images/debian9/ssh_config
 ```
 
-Example
+Configure the virtual machine image:
 
 ```bash
 # install required packages on Debian Stretch
 >>> ssh-exec "su -lc 'apt install rsync sudo'"  # login as devops, execute command as root user
 # install required packages on CentOS
->>> ssh-exec -r 'yum install rsync sudo'        
+>>> ssh-exec -r 'yum install rsync sudo'
+# Sudo configuration for user devops
 >>> ssh-exec "su -lc 'echo \"devops ALL = NOPASSWD: ALL\" > /etc/sudoers.d/devops'"
+# paths for the SSH key
 >>> ssh-exec 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
+# deploy the SSH key for password-less login
 >>> ssh-sync keys/id_rsa.pub :.ssh/authorized_keys
 >>> ssh-exec -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
 ```
@@ -177,32 +215,6 @@ Domain lxdev01.devops.test destroyed
 Domain lxdev01.devops.test has been undefined
 ```
 
-### Access
-
-Login with ↴ [ssh-instance][ssh-instance] password-less SSH configuration
-
-* Uses `instance` as target hostname, and `devops` as login
-* Requires an pre-generated SSH key-pair without password lock
-
-```bash
-cd $VM_IMAGE_PATH/$name                    
-mkdir keys ; ssh-keygen -q -t rsa -b 2048 -N '' -f keys/id_rsa
-                                            # password-less SSH key-pair
-ssh-instance -i keys/id_rsa 10.1.1.26       # custom SSH configuration written to ssh_config
-ssh -F ssh_config instance -C […]
-                                            # use custom SSH configuration to connect 
-```
-
-↴ [ssh-exec][ssh-exec] and ↴ [ssh-sync][ssh-sync] use `ssh_config` if present in the working directory:
-
-```bash
-ssh-exec                                    # login as devops
-ssh-exec -s                                 # login as devops, and sudo to root shell
-ssh-exec -r                                 # login as root
-ssh-exec […]                                # execute command as devops
-ssh-sync <spath> :<dpath>                   # rsync local path into VM instance
-ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local path as root
-```
 
 
 ### Management

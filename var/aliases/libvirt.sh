@@ -17,8 +17,8 @@
 
 export LIBVIRT_DEFAULT_URI=qemu:///system
 
-export VM_IMAGE_PATH=~/vms/images
-export VM_INSTANCE_PATH=~/vms/instances
+export VM_IMAGE_PATH=/srv/vms/images
+export VM_INSTANCE_PATH=/srv/vms/instances
 export VM_DOMAIN=devops.test
 
 alias vi=virsh-instance
