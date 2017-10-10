@@ -58,6 +58,8 @@ virsh create|define libvirt_instance.xml                 # start/define VM insta
 Use [bootstrap](bootstrap.md), or [guestfs](http://libguestfs.org/guestfs.3.html), i.e.:
 
 ```bash 
+$VM_IMAGE_PATH                                   # path to the VM template images (default /srv/vms/images)
+$VM_INSTANCE_PATH                                # path to the VM instances (default /srv/vms/instances)
 ## Install Centos 7 from a mirror
 virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
@@ -84,6 +86,16 @@ Set the following configuration options during installation:
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
 ```bash
+# create a basic configuration for LibVirt
+>>> virsh-config
+Domain name lxdev01.devops.test with MAC-address 02:FF:0A:0A:06:1C
+Using disk image with path: /srv/vms/images/debian9/disk.img
+Libvirt configuration: /srv/vms/images/debian9/libvirt_instance.xml
+```
+
+Configure the virtual machine:
+
+```bash
 # Aditional Debian packages
 apt update && apt -y install openssh-server sudo rsync chef haveged   
 # Aditional CentOS packages
@@ -96,26 +108,6 @@ echo "devops ALL = NOPASSWD: ALL" > /etc/sudoers.d/devops
 ## -- Configure systemd, NTP, PAM, etc if required -- # 
 ## 
 ```
-
-Alternatively ↴ [virsh-instance][virsh-instance] manages virtual machine template images and instance: 
-
-```bash
-$VM_IMAGE_PATH                                   # path to the VM template images (default /srv/vms/images)
-$VM_INSTANCE_PATH                                # path to the VM instances (default /srv/vms/instances)
-name=debian8                                     # select a name for the VM template, e.g. "debian8"
-virsh-instance install $name  $VM_IMAGE_PATH/$name/disk.img
-                                                 # install debian stable the offical FTP server into qcow2 image
-virsh-instance install --location http://ftp.de.debian.org/debian/dists/stable/main/installer-i386 […]
-                                                 # select a custom mirror
-virsh-instance install --cdrom <path_to_iso> […] # install from a ISO image
-virt-viewer $name                                # connect to VNC of the installing template image
-virsh undefine $name                             # remove template virtial machine after the installation is finished
-virsh-config -v -n $name -m 02:FF:0A:0A:06:1A $VM_IMAGE_PATH/$name/libvirt_instance.xml
-                                                  # create a configuration for the virtual machine
-virsh create $VM_IMAGE_PATH/$name/libvirt_instance.xml
-                                                  # start the virtual machine to customize the installation
-```
-
 
 
 
