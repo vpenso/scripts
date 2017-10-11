@@ -20,6 +20,13 @@ Chef: 13.5.3
 Configure [Knife](https://docs.chef.io/knife.html) for the devops user:
 
 ```bash
+~/.chef/knife.rb         user specific configuration file
+knife configure ...      generate a configuration file
+```
+
+A Knife configuration may look like:
+
+```bash
 >>> cat .chef/knife.rb
 log_level                :info
 log_location             STDOUT
