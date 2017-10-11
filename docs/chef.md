@@ -19,6 +19,20 @@ chef-server-ctl user-create devops dev ops dops@devops.test 'devops' --filename 
 chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops.pem
 ```
 
+# Usage
+
+The Chef client packages:
+
+<https://downloads.chef.io/chef>
+
+```bash
+## Debian Stretch (using the Jessie package)
+>>> wget https://packages.chef.io/files/stable/chef/13.5.3/debian/8/chef_13.5.3-1_amd64.deb
+>>> sudo dpkg -i chef_13.5.3-1_amd64.deb
+>>> knife --version
+Chef: 13.5.3
+```
+
 ## Knife
 
 Configure [Knife](https://docs.chef.io/knife.html) for the devops user:
