@@ -1,23 +1,5 @@
 
 
-Dummy deployment for a [chef-server](https://downloads.chef.io/chef-server) package:
-
-→ [Install the Chef Server](https://docs.chef.io/install_server.html), official documentation from [docs.chef.io](http://docs.chef.io)
-
-```bash
-wget https://packages.chef.io/files/stable/chef-server/12.15.7/el/7/chef-server-core-12.15.7-1.el7.x86_64.rpm
-yum -y install chef-server-core-12.15.7-1.el7.x86_64.rpm
-#3 Deploy the chef server
-chef-server-ctl reconfigure
-## open the firewall
-firewall-cmd --permanent --zone public --add-service http
-firewall-cmd --permanent --zone public --add-service https
-firewall-cmd --reload
-## dummy user and orga
-su devops -c 'mkdir ~/.chef'
-chef-server-ctl user-create devops dev ops dops@devops.test 'devops' --filename /home/devops/.chef/devops.pem
-chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops.pem
-```
 
 # Usage
 
@@ -56,6 +38,54 @@ Query Chefs index (infrastructure inventory) for nodes attributes, e.g.:
 knife search node "role:<foo>"    # node with a specific role
 knife search node "role:<foo> AND role:<bar>" -a <attribute>
 knife search node "name:<foo>*" -Fj -a ipaddress
+```
+
+### Bootstrap
+
+Knife [bootstrap](https://docs.chef.io/knife_bootstrap.html) installs and configures the chef-client on a remote node.
+
+Template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
+
+```
+bash -c '
+
+echo "Writing configuration to /etc/chef"
+mkdir -p /etc/chef
+
+<% if client_pem -%>
+cat > /etc/chef/client.pem <<'EOP'
+<%= ::File.read(::File.expand_path(client_pem)) %>
+EOP
+chmod 0600 /etc/chef/client.pem
+<% end -%>
+
+chmod 0600 /etc/chef/validation.pem
+cat > /etc/chef/client.rb <<'EOP'
+<%= config_content.concat "\nssl_verify_mode :verify_none" %>
+EOP
+
+cat > /etc/chef/first-boot.json <<'EOP'
+<%= first_boot.to_json %>
+EOP
+
+echo "Starting first Chef Client run..."
+<%= start_chef %>
+
+'
+```
+
+Bootstrap a node with a given template
+
+```bash
+# configure and execute chef-client
+knife bootstrap -N $fqdn $fqdn --bootstrap-template default
+# prepare cookbook & role for chef-client configuration
+mkdir -p chef/cookbooks
+git clone https://github.com/vpenso/chef-base.git chef/cookbooks/base
+knife cookbook upload base
+knife role from file ~/chef/cookbooks/base/test/roles/chef_client.rb
+# configure/execute chef-client to use a given role
+knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client]'
 ```
 
 ## Client
@@ -117,50 +147,24 @@ AccuracySec=300sec
 >>> systemctl start chef-client.timer && systemctl enable chef-client.timer
 ```
 
-### Bootstrap
 
-Knife [bootstrap](https://docs.chef.io/knife_bootstrap.html) installs and configures the chef-client on a remote node.
+# Server
 
-Template example `~/.chef/bootstrap/default.erb` (cf. [chef-full.erb](https://github.com/chef/chef/blob/master/lib/chef/knife/bootstrap/templates/chef-full.erb)):
+Dummy deployment for a [chef-server](https://downloads.chef.io/chef-server) package:
 
-```
-bash -c '
-
-echo "Writing configuration to /etc/chef"
-mkdir -p /etc/chef
-
-<% if client_pem -%>
-cat > /etc/chef/client.pem <<'EOP'
-<%= ::File.read(::File.expand_path(client_pem)) %>
-EOP
-chmod 0600 /etc/chef/client.pem
-<% end -%>
-
-chmod 0600 /etc/chef/validation.pem
-cat > /etc/chef/client.rb <<'EOP'
-<%= config_content.concat "\nssl_verify_mode :verify_none" %>
-EOP
-
-cat > /etc/chef/first-boot.json <<'EOP'
-<%= first_boot.to_json %>
-EOP
-
-echo "Starting first Chef Client run..."
-<%= start_chef %>
-
-'
-```
-
-Bootstrap a node with a given template
+→ [Install the Chef Server](https://docs.chef.io/install_server.html), official documentation from [docs.chef.io](http://docs.chef.io)
 
 ```bash
-# configure and execute chef-client
-knife bootstrap -N $fqdn $fqdn --bootstrap-template default
-# prepare cookbook & role for chef-client configuration
-mkdir -p chef/cookbooks
-git clone https://github.com/vpenso/chef-base.git chef/cookbooks/base
-knife cookbook upload base
-knife role from file ~/chef/cookbooks/base/test/roles/chef_client.rb
-# configure/execute chef-client to use a given role
-knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client]'
+wget https://packages.chef.io/files/stable/chef-server/12.15.7/el/7/chef-server-core-12.15.7-1.el7.x86_64.rpm
+yum -y install chef-server-core-12.15.7-1.el7.x86_64.rpm
+#3 Deploy the chef server
+chef-server-ctl reconfigure
+## open the firewall
+firewall-cmd --permanent --zone public --add-service http
+firewall-cmd --permanent --zone public --add-service https
+firewall-cmd --reload
+## dummy user and orga
+su devops -c 'mkdir ~/.chef'
+chef-server-ctl user-create devops dev ops dops@devops.test 'devops' --filename /home/devops/.chef/devops.pem
+chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops.pem
 ```
