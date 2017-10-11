@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2013 Victor Penso
+# Copyright 2013-2017 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,16 +21,22 @@
 # exit of statement returns a non-true return value
 #set -o errexit
 
-VERSION=0.1
+VERSION=0.2
 
 # Filename of this script
 SCRIPT=${0##*/}
 
 # Help text for this script
 HELP=\
-"Usage: $SCRIPT [COMMAND] [ARGUMENTS]
+"Usage: $SCRIPT [<option>] <command>
   
-Add more text here"
+<command>:
+  t, term, terminal      Install and configure command-line tool-chain
+  w, work, workstation   Install and configure GNOME environment
+
+<options>
+  -h, --help             Show this help information
+  -v, --version          Print version number"
 
 # enable line numbers for debug output
 if [ "$_DEBUG" = "true" ] ; then
@@ -49,12 +55,16 @@ function _error() {
 }
 
 # Parse the command line options
-ARGS=$(getopt -o h -l "help" -- "$@")
+ARGS=$(getopt -o hv -l "help,version" -- "$@")
 eval set -- "$ARGS"
 while true; do
   case "$1" in
     -h|--help)
-      _help
+      echo "$HELP"
+      exit 0
+      ;;
+    -v|--version)
+      echo $VERSION
       exit 0
       ;;
     --) shift; break ;;
@@ -62,9 +72,11 @@ while true; do
   esac
 done
 
-SCRIPTS=~/projects/scripts
 
-function basic() {
+##
+# Install custom tool chain for working with a terminal environment
+#
+function terminal() {
   # install all dependency packages in Debian
   sudo apt-get --quiet=2 --assume-yes install curl git-core vim zsh python ruby
   if [ -d $SCRIPTS ] ; then
@@ -74,28 +86,49 @@ function basic() {
     # Get all my scripts from GitHub
     git clone --origin github https://github.com/vpenso/scripts.git $SCRIPTS
   fi
-  # Configure the ZSH shell
-  $SCRIPTS/bin/zsh-default-config
   # Configure the Vim editor
   $SCRIPTS/bin/vim-default-config
+  # Configure the ZSH shell
+  $SCRIPTS/bin/zsh-default-config
   # Install my ls color schema
   $SCRIPTS/bin/dir-colors
-  # Load scripts & aliases to the shell environment
-  [[ -L ~/.zsh_config_hook  ]] || ln -s $SCRIPTS/source_me.sh ~/.zsh_config_hook
+  # configure the terminal multiplexer
+  $SCRIPTS/bin/tmux-default-config
 }
 
-function desktop() {
-  basic
-  sudo apt-get --quiet=2 --assume-yes install htop ack-grep sysstat procps iptraf tcpdump tmux psmisc clustershell sshuttle ipmitool freeipmi-tools mpd mpc rsync sshfs ccrypt xclip nmap ruby-full nethogs arc-theme moka-icon-theme
-  $SCRIPTS/bin/tmux-default-config
+##
+# 
+#
+function workstation() {
+ 
+  # Debian based platform...
+  if command -v apt 2>&1 >/dev/null ; then
+    sudo apt-get --quiet=2 --assume-yes install \
+      htop ack-grep sysstat procps iptraf tcpdump \
+      psmisc clustershell sshuttle ipmitool freeipmi-tools \
+      rsync sshfs ccrypt xclip nmap \
+      nethogs arc-theme moka-icon-theme
+  fi
+ 
+  # No IPMI servie
+  sudo systemctl disable ipmievd.service
+ 
+  echo GNOME configuration org.gnome.desktop.interface...
+  gsettings set org.gnome.desktop.interface gtk-theme Arc
+  echo "  gtk-theme = " $(gsettings get org.gnome.desktop.interface gtk-theme)
+  gsettings set org.gnome.desktop.interface icon-theme Moka
+  echo "  icon-theme = " $(gsettings get org.gnome.desktop.interface icon-theme)
+  gsettings set org.gnome.desktop.interface clock-show-date true
+  echo "  clock-show-date = " $(gsettings get org.gnome.desktop.interface clock-show-date)
+
 }
 
 
 # Read the command-line arguments
 _command=$1 ; shift
 case "$_command" in 
-  basic) basic ;;
-  desktop) desktop ;;  
+  terminal|term|t) terminal ;;
+  workstation|work|w) workstation ;;  
   *) echo "$HELP" ;;
 esac
 
