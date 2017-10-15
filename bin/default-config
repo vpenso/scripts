@@ -79,13 +79,14 @@ done
 function terminal() {
   # install all dependency packages in Debian
   sudo apt-get --quiet=2 --assume-yes install curl git-core vim zsh python ruby
-  if [ -d $SCRIPTS ] ; then
+  if [ -d ~/projects/scripts ] ; then
     echo "Scripts directory ~/projects/scripts exists!"
   else
     mkdir ~/projects 2>/dev/null
     # Get all my scripts from GitHub
-    git clone --origin github https://github.com/vpenso/scripts.git $SCRIPTS
+    git clone --origin github https://github.com/vpenso/scripts.git ~/projects/scripts
   fi
+  source ~/projects/scripts/source_me.sh
   # Configure the Vim editor
   $SCRIPTS/bin/vim-default-config
   # Configure the ZSH shell
