@@ -77,24 +77,26 @@ done
 # Install custom tool chain for working with a terminal environment
 #
 function terminal() {
+  path=${1:-~/projects}
   # install all dependency packages in Debian
   sudo apt-get --quiet=2 --assume-yes install curl git-core vim zsh python ruby
-  if [ -d ~/projects/scripts ] ; then
+  target=${path}/scripts 
+  if [ -d $target ] ; then
     echo "Scripts directory ~/projects/scripts exists!"
   else
-    mkdir ~/projects 2>/dev/null
+    mkdir $path 2>/dev/null
     # Get all my scripts from GitHub
-    git clone --origin github https://github.com/vpenso/scripts.git ~/projects/scripts
+    git clone --origin github https://github.com/vpenso/scripts.git $target
   fi
-  source ~/projects/scripts/source_me.sh
+  source $target/source_me.sh
   # Configure the Vim editor
-  $SCRIPTS/bin/vim-default-config
+  $target/bin/vim-default-config
   # Configure the ZSH shell
-  $SCRIPTS/bin/zsh-default-config
+  $target/bin/zsh-default-config
   # Install my ls color schema
-  $SCRIPTS/bin/dir-colors
+  $target/bin/dir-colors
   # configure the terminal multiplexer
-  $SCRIPTS/bin/tmux-default-config
+  $target/bin/tmux-default-config
 }
 
 ##
@@ -128,7 +130,7 @@ function workstation() {
 # Read the command-line arguments
 _command=$1 ; shift
 case "$_command" in 
-  terminal|term|t) terminal ;;
+  terminal|term|t) terminal $1 ;;
   workstation|work|w) workstation ;;  
   *) echo "$HELP" ;;
 esac
