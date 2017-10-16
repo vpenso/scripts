@@ -29,7 +29,7 @@ function vm() {
   # remove first argument if present
   [[ $# -ge 1 ]] && shift
   case "$command" in
-  "cd")              cd $VM_INSTANCE_PATH/$1.$VM_DOMAIN ;;
+  cd)                cd $(virsh-instance path $1) ;;
   "clone"|"cl")      virsh-instance clone $@ ;;
   "config"|"cf")     virsh-config $@ ;;
   "create"|"c")      virsh create $@ ;;
@@ -38,7 +38,7 @@ function vm() {
   "image"|"i")       virsh-instance list ;;
   "kill"|"k")        virsh undefine "$1" ; virsh destroy "$1" ;;
   "list"|"l")        virsh list --all ;;
-  "login"|"lo")      virsh-instance login $@ ;;
+  "login"|"lo")      vm cd $1 ; ssh-exec -r ;;
   "nat"|"n")         virsh-nat-bridge $@ ;;
   "path"|"p")        virsh-instance path $@ ;;
   "remove"|"r")      virsh-instance remove $@ ;;
