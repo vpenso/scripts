@@ -105,7 +105,7 @@ VM_DOMAIN=devops.test
 >>> virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
-             --location http://ftp.de.debian.org/debian/dists/stable/main/installer-amd64/
+             --location http://deb.debian.org/debian/dists/stable/main/installer-amd64/
 ## Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
 >>> virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
