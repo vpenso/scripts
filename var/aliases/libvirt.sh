@@ -35,6 +35,7 @@ function vm() {
   "create"|"c")      virsh create $@ ;;
   "define"|"d")      virsh define $@ ;;
   "exec"|"ex")       virsh-instance exec $@ ;;
+  "image"|"i")       virsh-instance list ;;
   "kill"|"k")        virsh undefine "$1" ; virsh destroy "$1" ;;
   "list"|"l")        virsh list --all ;;
   "login"|"lo")      virsh-instance login $@ ;;
