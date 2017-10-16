@@ -16,58 +16,36 @@
 #
 
 export LIBVIRT_DEFAULT_URI=qemu:///system
-
 export VM_IMAGE_PATH=/srv/vms/images
 export VM_INSTANCE_PATH=/srv/vms/instances
 export VM_DOMAIN=devops.test
-
-alias vi=virsh-instance
-alias vc=virsh-config
-alias vn=virsh-nodeset
 
 ##
 # Wraps the `virsh` command
 #
 function vm() {
-  local command=$1
+  # list VMs by default
+  local command=${1:-list}
+  # remove first argument if present
+  [[ $# -ge 1 ]] && shift
   case "$command" in
-  "cd")
-    shift
-    cd $VM_INSTANCE_PATH/$1.$VM_DOMAIN
-    ;;
-  "create"|"c") 
-    shift
-    virsh create "$@" 
-    ;;
-  "define"|"d") 
-    shift
-    virsh define "$@" 
-    ;;
-  "kill"|"k")
-    shift
-    virsh undefine "$1"
-    virsh destroy "$1" 
-    ;;
-  "list"|"l") 
-    virsh list --all 
-    ;;
-  "remove"|"r") 
-    shift
-    virsh undefine "$1"
-    virsh shutdown "$1" 
-    ;;
-  "shutdown"|"h") 
-    shift
-    virsh shutdown "$1" 
-    ;;
-  "start"|"s") 
-    shift
-    virsh start "$1" 
-    ;;
-  "undefine"|"u") 
-    shift
-    virsh undefine "$@"
-    ;;
+  "cd")              cd $VM_INSTANCE_PATH/$1.$VM_DOMAIN ;;
+  "clone"|"cl")      virsh-instance clone $@ ;;
+  "config"|"cf")     virsh-config $@ ;;
+  "create"|"c")      virsh create $@ ;;
+  "define"|"d")      virsh define $@ ;;
+  "exec"|"ex")       virsh-instance exec $@ ;;
+  "kill"|"k")        virsh undefine "$1" ; virsh destroy "$1" ;;
+  "list"|"l")        virsh list --all ;;
+  "login"|"lo")      virsh-instance login $@ ;;
+  "nat"|"n")         virsh-nat-bridge $@ ;;
+  "path"|"p")        virsh-instance path $@ ;;
+  "remove"|"r")      virsh-instance remove $@ ;;
+  "shutdown"|"h")    virsh shutdown "$1" ;;
+  "shadow"|"sh")     virsh-instance shadow $@ ;;
+  "start"|"s")       virsh start $1 ;;
+  "sync"|"sy")       virsh-instance sync $@ ;;
+  "undefine"|"u")    virsh undefine $@ ;;
   *) 
     echo "Usage: vm cd|(c)reate|(d)efine|s(h)utdown|(k)ill|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
     ;;
