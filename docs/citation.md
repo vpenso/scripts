@@ -48,11 +48,11 @@ Nach der Installation befindet sich BibTex4Word unter **Add-In** unter der Menu-
 
 ### Zitieren in Word
 
-Ein Zitat aus JabRef in im Text verwenden:
+Ein Zitat aus JabRef im Text verwenden:
 
 * In JabRef das entsprechende Zitat mit **rechter Maustaste** anklicken:
 * Im Menu **Kopieren...** → **BibTex-Key kopieren** auswählen.
-* Unter **Add-In** das rote **+** drücken.
+* Im Word **Add-In** das rote **+** drücken.
 * Den BibTex-Key einfügen und **Ok** drücken.
 
 ### Bibliographie Einfügen
