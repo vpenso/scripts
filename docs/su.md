@@ -41,8 +41,11 @@ Basic form of a policy:
 
 ```bash
 # comment a policy
-<user> <host>[,<host>,...] = (<user>[,<user>,...]:<group>[.<group>,...]) <modifier>: <command>[,<command>,...]
+<user> <host>[,<host>,...] = (<user>[,<user>,...]:<group>[.<group>,...]) [NOPASSWD:] <command>[,<command>,...]
 ```
+
+Aliasing:
+
 ```
 # list of one or more hostnames, IP addresses, network numbers or netgroups
 Host_Alias <NAME> = <ip>,[<ip>,...][,<hostname>[,<hostname>,...]
@@ -60,8 +63,11 @@ vpenso ALL=(ALL) ALL       # user vpenso gains root priviliges
 %wheel ALL=(ALL) ALL       # group wheel gains root priviliges
 # user vpenso can execute apt as root
 vpenso ALL = (root) /usr/bin/apt
-# user vpenso can shutdown localhost without password
+# host shutdown
 Cmnd_Alias POWER = /bin/systemctl poweroff
-vpenso localhost = (root) NOPASSWD: POWER
+# allow password changes with the exception of root
+Cmnd_Alias PASSWD = /usr/bin/passwd [A-z]*, !/usr/bin/passwd root
+# vpenso can execute defined by command aliases
+vpenso localhost = (root) NOPASSWD: POWER,PASSWD
 ```
 
