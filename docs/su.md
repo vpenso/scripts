@@ -35,12 +35,33 @@ sudo -i <user>             # ^^
 sudo -s <user>             # executes $SHELL as user
 ```
 
-Configuration examples:
+### Configuration
+
+Basic form of a policy:
+
+```bash
+# comment a policy
+<user> <host>[,<host>,...] = (<user>[,<user>,...]:<group>[.<group>,...]) <modifier>: <command>[,<command>,...]
+```
+```
+# list of one or more hostnames, IP addresses, network numbers or netgroups
+Host_Alias <NAME> = <ip>,[<ip>,...][,<hostname>[,<hostname>,...]
+Host_Alias <NETWORK> = <ip>/<mask>
+# alias is list of one or more users, groups, uids etc.
+User_Alias <USERS> = <user>[,...][,%<group>,...], 
+# list of commandnames, files or directories
+Cmnd_Alias <COMMAND> = <command][,<command>,...]
+```
+
+Examples:
 
 ```bash
 vpenso ALL=(ALL) ALL       # user vpenso gains root priviliges
 %wheel ALL=(ALL) ALL       # group wheel gains root priviliges
-# user vpenso can execute apt as root without password
-vpenso ALL=(root) NOPASSWD: /usr/bin/apt
+# user vpenso can execute apt as root
+vpenso ALL = (root) /usr/bin/apt
+# user vpenso can shutdown localhost without password
+Cmnd_Alias POWER = /bin/systemctl poweroff
+vpenso localhost = (root) NOPASSWD: POWER
 ```
 
