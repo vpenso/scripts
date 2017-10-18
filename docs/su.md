@@ -37,16 +37,16 @@ sudo -s <user>             # executes $SHELL as user
 
 ### Configuration
 
-Basic form of a policy:
+Basic policy:
 
 ```bash
 # comment a policy
 <user> <host>[,<host>,...] = (<user>[,<user>,...]:<group>[.<group>,...]) [NOPASSWD:] <command>[,<command>,...]
 ```
 
-Aliasing:
+Aliases:
 
-```
+```bash
 # list of one or more hostnames, IP addresses, network numbers or netgroups
 Host_Alias <NAME> = <ip>,[<ip>,...][,<hostname>[,<hostname>,...]
 Host_Alias <NETWORK> = <ip>/<mask>
@@ -56,7 +56,7 @@ User_Alias <USERS> = <user>[,...][,%<group>,...],
 Cmnd_Alias <COMMAND> = <command][,<command>,...]
 ```
 
-Examples:
+### Examples
 
 ```bash
 vpenso ALL=(ALL) ALL       # user vpenso gains root priviliges
