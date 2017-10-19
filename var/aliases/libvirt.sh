@@ -20,12 +20,34 @@ export VM_IMAGE_PATH=/srv/vms/images
 export VM_INSTANCE_PATH=/srv/vms/instances
 export VM_DOMAIN=devops.test
 
+VM_FUNCTION_HELP="\
+vm <command> 
+
+<command>
+     cd <name>                change to the VM directory
+ cl, clone <image> <name>     copy an VM image, and start VM instance
+  c, create <file>            start VM instance from XML configuration
+  d, define <file>            define a VM instance from an XML configuration
+ ex, exec <name> <command>    execute a command in a VM instance
+  h, shutdown <id|fqdn>       graceful shutdown a VM instance        
+  k, kill <id|fqdn>           destroy a VM instance
+  i, image                    list available VM images
+  l, list                     list all VM instances
+ lo, login <name>             login into VM instance
+  r, remove <name>            delete a VM instance
+  p, path <name>              print path to VM instance
+  s, shadown <image> <name>   shadow a VM image, and start VM instance
+ st, start <id|fqdn>          start a defined VM instance
+ sy, sync <name> <src> <dst>  rsync files to VM instance 
+  u, undefine <id|fqdn>       undefine VM instance"
+
+
 ##
 # Wraps the `virsh` command
 #
 function vm() {
   # list VMs by default
-  local command=${1:-list}
+  local command=${1:-help}
   # remove first argument if present
   [[ $# -ge 1 ]] && shift
   case "$command" in
@@ -42,13 +64,13 @@ function vm() {
   "nat"|"n")         virsh-nat-bridge $@ ;;
   "path"|"p")        virsh-instance path $@ ;;
   "remove"|"r")      virsh-instance remove $@ ;;
-  "shutdown"|"h")    virsh shutdown "$1" ;;
+  "shutdown"|"s")    virsh shutdown "$1" ;;
   "shadow"|"sh")     virsh-instance shadow $@ ;;
-  "start"|"s")       virsh start $1 ;;
+  "start"|"st")      virsh start $1 ;;
   "sync"|"sy")       virsh-instance sync $@ ;;
   "undefine"|"u")    virsh undefine $@ ;;
   *) 
-    echo "Usage: vm cd|(c)reate|(d)efine|s(h)utdown|(k)ill|(l)ist|(r)emove|(s)tart|(u)ndefine [args]" 
+    echo $VM_FUNCTION_HELP
     ;;
   esac
 }
