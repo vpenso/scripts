@@ -123,6 +123,16 @@ SSH server configuration:
 /ip ssh regenerate-host-key                 # generate hard host keys
 ```
 
+Use an SSH private/public key-pair for login:
+
+```bash
+# upload an ssh public key
+>>> scp -P 2222 id_rsa.pub 192.168.88.1:
+# imported the public key for the login user
+>>> ssh -p 2222 192.168.88.11 "/user ssh-keys import public-key-file=id_rsa.pub"
+```
+
+
 ### Services
 
 ```bash
