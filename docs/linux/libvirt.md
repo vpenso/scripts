@@ -19,16 +19,29 @@ group = "vpenso"
 >>> sudo systemctl restart libvirtd
 ```
 
-Connect with the libvirt service ↴ [var/aliases/libvirt.sh](../../var/aliases/libvirt.sh)
+The tool chain presented in this document requires at least following **environment variables** to be present:
+
+```bash
+>>> env | grep -e VM_ -e LIBVIRT
+LIBVIRT_DEFAULT_URI=qemu:///system
+VM_DOMAIN=devops.test
+VM_IMAGE_PATH=/srv/vms/images
+VM_INSTANCE_PATH=/srv/vms/instances
+```
+
+These variables, and other configuration can be loaded with the **shell script** ↴ [var/aliases/libvirt.sh](../../var/aliases/libvirt.sh)
+
+In general access the Libvirt service following commands:
 
 ```
 virsh -c qemu:///session […]                     # connect with user session
 virsh -c qemu:///system […]                      # connect with system session
-export LIBVIRT_DEFAULT_URI=qemu:///system        # define the default connection
 virsh -c qemu+ssh://root@lxhvs01.devops.test/system list
                                                  # connect to a remote session
 virt-manager -c qemu+ssh://root@lxhvs01.devops.test/system
 virt-top -c qemu+ssh://root@lxhvs01.devops.test/system
+## define the default connection by environment variable
+export LIBVIRT_DEFAULT_URI=qemu:///system
 ```
 
 ## Network
