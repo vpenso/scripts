@@ -88,9 +88,9 @@ ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local pa
 
 In the following context the term virtual machine **image** refers to:
 
-* A VM stored in a directory defined by the environment variable **`$VM_IMAGE_PATH`**.
-* It provides a generic very basic configuration for user accounts, and the network.
-* These images are used as **templates** to create virtual machine instances for development and testing.
+* A virtual machine configuration and disk-image stored in a directory defined by the environment variable **`$VM_IMAGE_PATH`**.
+* A generic very basic Linux configuration (user accounts, network, etc.) installed into the disk-image.
+* These images are used as **templates** to create virtual machine instances in a _reproducible_ way for development and testing.
 
 ### Manual
 
