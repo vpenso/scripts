@@ -89,10 +89,12 @@ ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local pa
 In the following context the term virtual machine **image** refers to:
 
 * A VM stored in a directory defined by the environment variable **`$VM_IMAGE_PATH`**.
-* It provides a generic very basic configuration for users accounts, and the network.
+* It provides a generic very basic configuration for user accounts, and the network.
 * These images are used as **templates** to create virtual machine instances for development and testing.
 
 ### Manual
+
+The [virt-install][virt-manager] program creates a `disk.img` and start the installation program for a selected Linux distribution:
 
 ```bash 
 ## required environment variables
@@ -100,31 +102,33 @@ In the following context the term virtual machine **image** refers to:
 VM_IMAGE_PATH=/srv/vms/images
 ## create a directory for the virtual machine image, e.g.:
 >>> mkdir -p $VM_IMAGE_PATH/debian9 && cd $VM_IMAGE_PATH/debian9
-## Install Debian 9
+## -- Debian 9 --
 >>> virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
              --location http://deb.debian.org/debian/dists/stable/main/installer-amd64/
-## Install Centos 7 from a mirror
+## -- CentOS 7 --
 >>> virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
                --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
                --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
                --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
-## Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
+## -- ArchLinux --
+# Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
 >>> virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --cdrom /tmp/archlinux-2017.07.01-x86_64.iso
 ```
 
-Configuration options during installation:
+During installation following configuration are required:
 
 * Keymap: English
-* Host name is the distribution nick-name (e.g squeeze or lucid)
+* Host name (e.g the distribution nick-name squeeze or lucid)
 * Domain name `devops.test`
-* Single primary partition for `/` (no SWAP).
 * Use the password "root" for the `root` account
 * Create a user `devops` with password "devops"
-* Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
+* Single primary partition for `/` (no SWAP).
+
+Install a minimal standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
 
 ### Automation
 
@@ -135,7 +139,7 @@ Install a virtual machine image with pressed and the debian-installer
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --location http://deb.debian.org/debian/dists/jessie/main/installer-amd64/ \
              --graphics none --console pty,target_type=serial \
-             --extra-args 'auto=true hostname=jessie domain=devops.test file=preseed.cfg console=ttyS0,115200n8 serial' \
+             --extra-args 'auto=true hostname=jessie domain=devops.test console=ttyS0,115200n8 serial' \
              --initrd-inject=$SCRIPTS/var/debian/8/preseed.cfg
 ```
 
@@ -413,9 +417,6 @@ Remove all development artifacts when finished.
 
 
 
-
-
-
 [virsh-nat-bridge]: ../../bin/virsh-nat-bridge
 [virsh-instance]: ../../bin/virsh-instance
 [virsh-config]: ../../bin/virsh-config
@@ -425,3 +426,4 @@ Remove all development artifacts when finished.
 [ssh-fs]: ../../bin/ssh-fs
 [chef-remote]: ../../bin/chef-remote
 [sys]: https://github.com/GSI-HPC/sys-chef-cookbook
+[virt-manager]: https://virt-manager.org/
