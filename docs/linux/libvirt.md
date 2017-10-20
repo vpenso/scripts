@@ -86,7 +86,13 @@ ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local pa
 
 ## Images
 
-Create a virtual machine image:
+In the following context the term virtual machine **image** refers to:
+
+* A VM stored in a directory defined by the environment variable **`$VM_IMAGE_PATH`**
+* It provides a generic very basic configuration for users accounts, and the network.
+* These images are used as **templates** to create virtual machine instances for development and testing.
+
+### Manual
 
 ```bash 
 ## required environment variables
@@ -101,12 +107,6 @@ VM_DOMAIN=devops.test
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
              --location http://deb.debian.org/debian/dists/stable/main/installer-amd64/
->>> virt-install --name debian8 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
-             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --location http://deb.debian.org/debian/dists/jessie/main/installer-amd64/ \
-             --graphics none --console pty,target_type=serial \
-             --extra-args 'auto=true hostname=jessie domain=devops.test file=preseed.cfg console=ttyS0,115200n8 serial' \
-             --initrd-inject=$SCRIPTS/var/debian/8/preseed.cfg
 ## Install Centos 7 from a mirror
 >>> virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
                --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
@@ -118,7 +118,7 @@ VM_DOMAIN=devops.test
              --cdrom /tmp/archlinux-2017.07.01-x86_64.iso
 ```
 
-Set the following configuration options during installation:
+Configuration options during installation:
 
 * Keymap: English
 * Host name is the distribution nick-name (e.g squeeze or lucid)
@@ -127,6 +127,21 @@ Set the following configuration options during installation:
 * Use the password "root" for the `root` account
 * Create a user `devops` with password "devops"
 * Only standard system, no desktop environment (unless really needed), no services, no development environment, no editor, nothing except a bootable Linux.
+
+### Automation
+
+Install a virtual machine image with pressed and the debian-installer
+
+```
+>>> virt-install --name debian8 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --location http://deb.debian.org/debian/dists/jessie/main/installer-amd64/ \
+             --graphics none --console pty,target_type=serial \
+             --extra-args 'auto=true hostname=jessie domain=devops.test file=preseed.cfg console=ttyS0,115200n8 serial' \
+             --initrd-inject=$SCRIPTS/var/debian/8/preseed.cfg
+```
+
+### Customize
 
 Libvirt and SSH configuration for the virtual machine image:
 
