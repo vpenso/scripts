@@ -7,17 +7,17 @@
 
 | Name         | Price | CPU    | RAM   | Ports | WLAN                          | USB | SFP | PoE        |
 |--------------|-------|--------|-------|-------|-------------------------------|-----|-----|------------|
-| mAP lite     | ~25   | 650Mhz |  64MB | 1x E  | 802.11b/g/n 2.4 GHz           | no  | no  | 1x (in)    |
-| mAP          | ~45   | 650Mhz |  64MB | 2x E  | Dual-Chain 802.11b/g/n 2.4GHz | no  | no  | 1x (in/out)
-| hAP mini     | ~20   | 650Mhz |  32MB | 3x E  | 802.11b/g/n 2.4 GHz           | no  | no  | no         |
-| hAP lite     | ~25   | 650Mhz |  32MB | 4x E  | 802.11b/g/n 2.4 GHz           | no  | no  | no         |
-| hAP          | ~45   | 650MHz |  64MB | 5x E  | 802.11b/g/n 2.4 GHz           | yes | no  | 1x         |
-| hAP AC lite  | ~50   | 650Mhz |  64MB | 4x E  | 802.11a/n/ac 2,4GHz/5GHz      | yes | no  | 1x         |
-| hAP AC       | ~130  | 720MHz | 128MB | 5x GE | 802.11a/b/g/n/ac 2,4GHz/5GHz  | yes | 1x  | 1x         |
-| hEX lite     | ~40   | 850Mhz |  64MB | 5x E  | no                            | no  | no  | no         |
-| hEX          | ~60   | 880Mhz | 256MB | 5x GE | no                            | yes | no  | no         | 
-| hEX PoE lite | ~60   | 650MHz |  64MB | 5x E  | no                            | no  | no  | 4x         |
-| hEX PoE      | ~80   | 800Mhz | 128MB | 5x GE | no                            | yes | 1x  | 4x         |
+| mAP lite     | ~25   | 650Mhz |  64MB | 1xE   | Dual-Chain 2.4GHz             | no  | no  | 1x (in)    |
+| mAP          | ~45   | 650Mhz |  64MB | 2xE   | Dual-Chain 2.4GHz             | no  | no  | 1x (in/out)
+| hAP mini     | ~20   | 650Mhz |  32MB | 3xE   | 2.4 GHz (802.11b/g/n)         | no  | no  | no         |
+| hAP lite     | ~25   | 650Mhz |  32MB | 4xE   | 2.4 GHz (802.11b/g/n)         | no  | no  | no         |
+| hAP          | ~45   | 650MHz |  64MB | 5xE   | 2.4 GHz (802.11b/g/n)         | yes | no  | 1x         |
+| hAP AC lite  | ~50   | 650Mhz |  64MB | 4xE   | Dual-Concurrent 2.4GHz/5GHz   | yes | no  | 1x         |
+| hAP AC       | ~130  | 720MHz | 128MB | 5xG E | Dual-Concurrent 2.4GHz/5GHz   | yes | 1x  | 1x         |
+| hEX lite     | ~40   | 850Mhz |  64MB | 5xE  | no                             | no  | no  | no         |
+| hEX          | ~60   | 880Mhz | 256MB | 5xGE | no                             | yes | no  | no         | 
+| hEX PoE lite | ~60   | 650MHz |  64MB | 5xE  | no                             | no  | no  | 4x         |
+| hEX PoE      | ~80   | 800Mhz | 128MB | 5xGE | no                             | yes | 1x  | 4x         |
 
 ## Console
 
@@ -48,6 +48,8 @@ Logging:
 ```
 
 
+
+
 ## Configuration
 
 Basic router configuration:
@@ -64,18 +66,29 @@ Basic router configuration:
 /system identity set name="<name>"
 ```
 
+Backup the configuration
 
 ```bash
-/tool bandwidth-server set enabled=no       # disable bandwidth test server
-/tool romon set enabled=no                  # disable RoMON
-# collect network statistics
-/tool graphing interface add allow-address=192.168.0.0/16
-/tool graphing queue add allow-address=192.168.0.0/16
-/tool graphing resource add allow-address=192.168.0.0/16
-# disable MAC Telnet and MAC Winbox
-/tool mac-server set [find] disabled=yes
-/tool mac-server mac-winbox set [find] disabled=yes
-/tool mac-server ping set enabled=no
+/system backup save name=config                # write a backup file
+/file print detail where name="config.backup"  # show backup file time stamp
+/export compact                                # 
+```
+
+### License
+
+RouterOS license levels: 0 (trial), 1 (demo), 3 to 6 
+
+```bash
+/system license print             # licensing information
+```
+
+Backup the license key:
+
+```bash
+/system license output            # dump license into a file
+/file print                       # list available files, look file type .key
+/file edit 1 value-name=contents  # show key in editor
+# copy & paste to a save location
 ```
 
 ### Users & Logins
@@ -119,24 +132,25 @@ SSH server configuration:
 /ip service set address=192.168.0.0/16 [find]   # limit access to a CDIR
 ```
 
+### Tools
+
+```bash
+/tool bandwidth-server set enabled=no       # disable bandwidth test server
+/tool romon set enabled=no                  # disable RoMON
+# collect network statistics
+/tool graphing interface add allow-address=192.168.0.0/16
+/tool graphing queue add allow-address=192.168.0.0/16
+/tool graphing resource add allow-address=192.168.0.0/16
+# disable MAC Telnet and MAC Winbox
+/tool mac-server set [find] disabled=yes
+/tool mac-server mac-winbox set [find] disabled=yes
+/tool mac-server ping set enabled=no
+```
+
+
+
 ## Operation
 
-### License
-
-RouterOS license levels: 0 (trial), 1 (demo), 3 to 6 
-
-```bash
-/system license print             # licensing information
-```
-
-Backup the license key:
-
-```bash
-/system license output            # dump license into a file
-/file print                       # list available files, look file type .key
-/file edit 1 value-name=contents  # show key in editor
-# copy & paste to a save location
-```
 
 ### Packages
 
@@ -165,5 +179,11 @@ Update the OS:
 /interface print                              # print ports
 /interface set <id>[,<id>,...] disabled=yes   # disable a list of ports
 ```
+
+### WLAN
+
+```bash
+/interface wireless print                     # configuration
+/interface wireless security-profiles print   # security configuration
 ```
 
