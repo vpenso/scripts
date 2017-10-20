@@ -2,20 +2,22 @@
 
 # Libvirt 
 
-Deployment and configuration of [libvirt](http://libvirt.org/docs.html) on a workstation
+**Service deployment and configuration** of [libvirt](http://libvirt.org/docs.html) on a workstation (requires administrator privileges):
 
 ```bash
-# related packages in Debian
+# required packages on Debian 
 >>> sudo apt-get -y install libvirt-daemon-system libvirt-dev libvirt-clients \
                             virt-manager virt-viewer virt-top virtinst qemu-utils \ 
                             qemu-kvm libguestfs-tools ovmf
->>> sudo dnf -y install @virtualization          # related packages in Fedora
+# required packages on Fedora & CentOS
+>>> sudo dnf -y install @virtualization          
 # enable your user account to manage virtual machines
 >>> sudo usermod -a -G libvirt,kvm `id -un`      # re-login to activate these group rights
-# configure the Libvirt service to run with your user ID, e.g.:
+# configure the Libvirt service to run with your user ID (here illustrated with ID vpenso):
 >>> sudo grep -e '^user' -e '^group' /etc/libvirt/qemu.conf
 user = "vpenso"
 group = "vpenso"
+# restart the Libvirt service daemon
 >>> sudo systemctl restart libvirtd
 ```
 
@@ -31,9 +33,9 @@ VM_INSTANCE_PATH=/srv/vms/instances
 
 These variables, and other configuration can be loaded with the **shell script** ↴ [var/aliases/libvirt.sh](../../var/aliases/libvirt.sh)
 
-In general access the Libvirt service following commands:
+In general access the Libvirt service with following commands:
 
-```
+```bash
 virsh -c qemu:///session […]                     # connect with user session
 virsh -c qemu:///system […]                      # connect with system session
 virsh -c qemu+ssh://root@lxhvs01.devops.test/system list
