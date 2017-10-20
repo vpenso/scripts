@@ -195,5 +195,6 @@ Update the OS:
 ```bash
 /interface wireless print                     # configuration
 /interface wireless security-profiles print   # security configuration
+/interface wireless set <name> disabled=yes   # disable WLAN
 ```
 
