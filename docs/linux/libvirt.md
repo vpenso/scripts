@@ -141,9 +141,9 @@ Install a virtual machine image with pressed and the debian-installer
              --initrd-inject=$SCRIPTS/var/debian/8/preseed.cfg
 ```
 
-### Customize
+## Image Customize
 
-Libvirt and SSH configuration for the virtual machine image:
+Prepare a Libvirt configuration, start the virtual machine image, and access the console:
 
 ```bash
 # create a defaultc configuration for LibVirt (with VNC support enabled)
@@ -156,7 +156,6 @@ Libvirt configuration: /srv/vms/images/debian9/libvirt_instance.xml
 lxdev01.devops.test 10.1.1.28 02:FF:0A:0A:06:1C
 # start the virtual machine instance
 >>> virsh create libvirt_instance.xml
-# generate an SSH configuration
 # access the VNC graphical console
 >>> virt-viewer lxdev01.devops.test
 ```
@@ -164,9 +163,15 @@ lxdev01.devops.test 10.1.1.28 02:FF:0A:0A:06:1C
 Configure SSH access to the virtual machine image:
 
 ```bash
+# generate a default SSH configuration for lxdev01
 >>> ssh-instance   
 Password-less SSH key-pair create in /srv/vms/images/debian9/keys
 SSH configuration: /srv/vms/images/debian9/ssh_config
+```
+
+Enable password-less SSH login to the virtual machine image for the users root and devops: 
+
+```bash
 # install required packages on Debian Stretch
 >>> ssh-exec "su -lc 'apt install rsync sudo'"  # login as devops, execute command as root user
 # install required packages on CentOS
