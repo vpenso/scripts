@@ -84,11 +84,11 @@ ssh-sync <spath> :<dpath>                   # rsync local path into VM instance
 ssh-sync -r :<spath> <dpath>                # rsync from VM instance to local path as root
 ```
 
-## Images
+## Virtual Machine Images
 
 In the following context the term virtual machine **image** refers to:
 
-* A VM stored in a directory defined by the environment variable **`$VM_IMAGE_PATH`**
+* A VM stored in a directory defined by the environment variable **`$VM_IMAGE_PATH`**.
 * It provides a generic very basic configuration for users accounts, and the network.
 * These images are used as **templates** to create virtual machine instances for development and testing.
 
@@ -96,10 +96,8 @@ In the following context the term virtual machine **image** refers to:
 
 ```bash 
 ## required environment variables
->>> env | grep VM_  
+>>> env | grep VM_IMAGE
 VM_IMAGE_PATH=/srv/vms/images
-VM_INSTANCE_PATH=/srv/vms/instances
-VM_DOMAIN=devops.test
 ## create a directory for the virtual machine image, e.g.:
 >>> mkdir -p $VM_IMAGE_PATH/debian9 && cd $VM_IMAGE_PATH/debian9
 ## Install Debian 9
@@ -140,6 +138,8 @@ Install a virtual machine image with pressed and the debian-installer
              --extra-args 'auto=true hostname=jessie domain=devops.test file=preseed.cfg console=ttyS0,115200n8 serial' \
              --initrd-inject=$SCRIPTS/var/debian/8/preseed.cfg
 ```
+
+Find Debian pressed files in [var/debian/](../../var/debian).
 
 ## Image Customize
 
