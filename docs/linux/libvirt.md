@@ -146,24 +146,27 @@ Install a virtual machine image with pressed and the debian-installer
 Libvirt and SSH configuration for the virtual machine image:
 
 ```bash
-# create a defaultc configuration for LibVirt
->>> virsh-config
+# create a defaultc configuration for LibVirt (with VNC support enabled)
+>>> virsh-config --vnc
 Domain name lxdev01.devops.test with MAC-address 02:FF:0A:0A:06:1C
 Using disk image with path: /srv/vms/images/debian9/disk.img
 Libvirt configuration: /srv/vms/images/debian9/libvirt_instance.xml
+# it uses the network configuration for the node lxdev01 by default
 >>> virsh-nat-bridge lookup lxdev01     
 lxdev01.devops.test 10.1.1.28 02:FF:0A:0A:06:1C
 # start the virtual machine instance
 >>> virsh create libvirt_instance.xml
 # generate an SSH configuration
+# access the VNC graphical console
+>>> virt-viewer lxdev01.devops.test
+```
+
+Configure SSH access to the virtual machine image:
+
+```bash
 >>> ssh-instance   
 Password-less SSH key-pair create in /srv/vms/images/debian9/keys
 SSH configuration: /srv/vms/images/debian9/ssh_config
-```
-
-Configure the virtual machine image:
-
-```bash
 # install required packages on Debian Stretch
 >>> ssh-exec "su -lc 'apt install rsync sudo'"  # login as devops, execute command as root user
 # install required packages on CentOS
