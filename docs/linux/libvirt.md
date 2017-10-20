@@ -96,16 +96,22 @@ VM_INSTANCE_PATH=/srv/vms/instances
 VM_DOMAIN=devops.test
 ## create a directory for the virtual machine image, e.g.:
 >>> mkdir -p $VM_IMAGE_PATH/debian9 && cd $VM_IMAGE_PATH/debian9
+## Install Debian 9
+>>> virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
+             --location http://deb.debian.org/debian/dists/stable/main/installer-amd64/
+>>> virt-install --name debian8 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             --location http://deb.debian.org/debian/dists/jessie/main/installer-amd64/ \
+             --graphics none --console pty,target_type=serial \
+             --extra-args 'auto=true hostname=jessie console=ttyS0,115200n8 serial' \
+             --initrd-inject=$SCRIPTS/var/debian/preseed/jessie.cfg
 ## Install Centos 7 from a mirror
 >>> virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
                --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
                --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
                --location 'http://mirror.centos.org/centos-7/7.3.1611/os/x86_64/'
-## Install Debian 9 from a mirror
->>> virt-install --name debian9 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
-             --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --graphics none --console pty,target_type=serial --extra-args 'console=ttyS0,115200n8 serial' \
-             --location http://deb.debian.org/debian/dists/stable/main/installer-amd64/
 ## Install Archlinux with an ISO image downloaded from https://www.archlinux.org/download/
 >>> virt-install --name arch --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
