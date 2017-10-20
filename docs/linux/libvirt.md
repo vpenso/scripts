@@ -19,7 +19,7 @@ group = "vpenso"
 >>> sudo systemctl restart libvirtd
 ```
 
-Connect with the libvirt service ↴ [var/aliases/libvirt.sh](../var/aliases/libvirt.sh)
+Connect with the libvirt service ↴ [var/aliases/libvirt.sh](../../var/aliases/libvirt.sh)
 
 ```
 virsh -c qemu:///session […]                     # connect with user session
@@ -105,8 +105,8 @@ VM_DOMAIN=devops.test
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --location http://deb.debian.org/debian/dists/jessie/main/installer-amd64/ \
              --graphics none --console pty,target_type=serial \
-             --extra-args 'auto=true hostname=jessie console=ttyS0,115200n8 serial' \
-             --initrd-inject=$SCRIPTS/var/debian/preseed/jessie.cfg
+             --extra-args 'auto=true hostname=jessie domain=devops.test file=preseed.cfg console=ttyS0,115200n8 serial' \
+             --initrd-inject=$SCRIPTS/var/debian/8/preseed.cfg
 ## Install Centos 7 from a mirror
 >>> virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
                --disk path=disk.img,size=100,format=qcow2,sparse=true,bus=virtio \
@@ -393,12 +393,12 @@ Remove all development artifacts when finished.
 
 
 
-[virsh-nat-bridge]: ../bin/virsh-nat-bridge
-[virsh-instance]: ../bin/virsh-instance
-[virsh-config]: ../bin/virsh-config
-[ssh-instance]: ../bin/ssh-instance
-[ssh-exec]: ../bin/ssh-exec
-[ssh-sync]: ../bin/ssh-sync
-[ssh-fs]: ../bin/ssh-fs
-[chef-remote]: ./bin/chef-remote
+[virsh-nat-bridge]: ../../bin/virsh-nat-bridge
+[virsh-instance]: ../../bin/virsh-instance
+[virsh-config]: ../../bin/virsh-config
+[ssh-instance]: ../../bin/ssh-instance
+[ssh-exec]: ../../bin/ssh-exec
+[ssh-sync]: ../../bin/ssh-sync
+[ssh-fs]: ../../bin/ssh-fs
+[chef-remote]: ../../bin/chef-remote
 [sys]: https://github.com/GSI-HPC/sys-chef-cookbook
