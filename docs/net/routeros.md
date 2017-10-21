@@ -187,12 +187,14 @@ Use an SSH private/public key-pair for login:
 
 ### Logging
 
+Logging of system events and status information:
+
 ```bash
 /log print                               # print log information
 /log print follow where topics~"<name>"  # search for a specific topic
+/system logging print                    # topic currently logged
 /system logging add topics=<TAB>         # list available topics
-# enable logging for a given topic
-/system logging add topics=<topic> action=memory
+/system logging add topics=<topic>       # enable logging for a given topic
 ```
 
 ### Packages
