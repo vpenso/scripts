@@ -1,8 +1,3 @@
-Always use the latest version, on Debian consider using: http://mozilla.debian.net/
-
-Select one of the Firefox `*.js` profiles and link it to `~/.mozilla/firefox/*/user.js`.
-
-    » firefox -profilemanager -no-remote 2>&- & ; disown
 
 Plugins I'm using:
 
@@ -10,8 +5,7 @@ Plugins I'm using:
 - [ublock](https://github.com/gorhill/uBlock)
 - [Privacy Settings](https://github.com/schomery/privacy-settings/) 
 
-
-## Container
+### Container
 
 Use → [Firejail](https://firejail.wordpress.com/) to run Firefox as untrusted application in a restricted environment:
 
@@ -28,9 +22,10 @@ whitelist ~/Video
 >>> gksu -l -u <user> firejail firefox
 ```
 
-Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with GPT:
+Use `systemd-nspawn` to run firefox in a container: 
 
-↴ [bin/firefox-container](../../bin/firefox-container)
+* [bootstrap](../../docs/bootstrap.md) a container with GPT
+* Us ↴ [firefox-container](../../bin/firefox-container) for execution
 
 ```bash
 ## -- install firefox and audio support in the container -- ##
