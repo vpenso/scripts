@@ -15,6 +15,17 @@ Plugins I'm using:
 
 → [Firejail](https://firejail.wordpress.com/)
 
+```bash
+## modify original firefox profile in your home-dirctory
+>>> cp /etc/firejail/firefox.profile ~/.config/firejail/
+## whitelist additional directories in the custom profile
+>>> grep Video  ~/.config/firejail/firefox.profile
+noblacklist ~/Video
+whitelist ~/Video
+## start firefox in a sandbox
+>>> firejail firefox
+```
+
 Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with GPT:
 
 ↴ [bin/firefox-container](../../bin/firefox-container)
