@@ -13,17 +13,19 @@ Plugins I'm using:
 
 ## Container
 
-→ [Firejail](https://firejail.wordpress.com/)
+Use → [Firejail](https://firejail.wordpress.com/) to run Firefox as untrusted application in a restricted environment:
 
 ```bash
-## modify original firefox profile in your home-dirctory
+# modify original firefox profile in your home-dirctory
 >>> cp /etc/firejail/firefox.profile ~/.config/firejail/
-## whitelist additional directories in the custom profile
+# whitelist additional directories in the custom profile
 >>> grep Video  ~/.config/firejail/firefox.profile
 noblacklist ~/Video
 whitelist ~/Video
-## start firefox in a sandbox
+# start firefox in a sandbox
 >>> firejail firefox
+# start firefox as another user in a sandbox
+>>> gksu -l -u <user> firejail firefox
 ```
 
 Firefox in a container: [bootstrap](../../docs/bootstrap.md) a container with GPT:
