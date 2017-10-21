@@ -1,4 +1,16 @@
 
+Install latest version:
+
+```bash
+>>> mkdir -p /opt/firefox
+# download official version, and extract the archive
+>>> sudo cp -r ~/Downloads/firefox-56.0.1/firefox/* /opt/firefox
+# backup the executable from the original Debian package
+>>> sudo mv /usr/lib/firefox-esr/firefox-esr /usr/lib/firefox-esr/firefox-esr.orig
+# link to the custom installation
+>>> sudo ln -s /opt/firefox/firefox /usr/lib/firefox-esr/firefox-esr
+```
+
 Plugins I'm using:
 
 - [VimFx](https://github.com/akhodakivskiy/VimFx)
