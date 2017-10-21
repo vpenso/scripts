@@ -1,23 +1,43 @@
-## RouterOS
+# RouterOS
 
-* [MikroTik](https://mikrotik.com/products) RouterBoards 
-* [RouterOS Manual](https://wiki.mikrotik.com/wiki/Manual:TOC)
+RouterOS is an operating system build buy MikroTik based on the Linux kernel:
 
-(WLAN) Router:
+* Wireless Access Point (HotSpot gateway)
+* Web proxy, Socks proxy, DNS cache/proxy
+* Stateful firewall
+* S/D NAT (Network Address Translation)
+* Routing (IPv4/6), RIPv1/2 OSPFv2/3, BGPv4
+* VRF (Virtual Routing and Forwarding)
+* MPLS (MultiProtocol Label Switching)
+* VPN (Virtual Private Network) tunnels
+* IPsec concentrator
+* Intrusion detection system (IDS)
+* Intrusion prevention system (IPS)
+
+[MikroTik](https://mikrotik.com/products) RouterBoard hardware (consumers):
 
 | Name         | Price | CPU    | RAM   | Ports | WLAN                          | USB | SFP | PoE        |
 |--------------|-------|--------|-------|-------|-------------------------------|-----|-----|------------|
-| mAP lite     | ~25   | 650Mhz |  64MB | 1xE   | Dual-Chain 2.4GHz             | no  | no  | 1x (in)    |
-| mAP          | ~45   | 650Mhz |  64MB | 2xE   | Dual-Chain 2.4GHz             | no  | no  | 1x (in/out)
+| mAP lite     | ~25   | 650Mhz |  64MB | 1xE   | 2.4GHz Dual-Chain             | no  | no  | 1x (in)    |
+| mAP          | ~45   | 650Mhz |  64MB | 2xE   | 2.4GHz Dual-Chain             | no  | no  | 1x (in/out)|
 | hAP mini     | ~20   | 650Mhz |  32MB | 3xE   | 2.4 GHz (802.11b/g/n)         | no  | no  | no         |
 | hAP lite     | ~25   | 650Mhz |  32MB | 4xE   | 2.4 GHz (802.11b/g/n)         | no  | no  | no         |
 | hAP          | ~45   | 650MHz |  64MB | 5xE   | 2.4 GHz (802.11b/g/n)         | yes | no  | 1x         |
-| hAP AC lite  | ~50   | 650Mhz |  64MB | 4xE   | Dual-Concurrent 2.4GHz/5GHz   | yes | no  | 1x         |
-| hAP AC       | ~130  | 720MHz | 128MB | 5xG E | Dual-Concurrent 2.4GHz/5GHz   | yes | 1x  | 1x         |
-| hEX lite     | ~40   | 850Mhz |  64MB | 5xE  | no                             | no  | no  | no         |
-| hEX          | ~60   | 880Mhz | 256MB | 5xGE | no                             | yes | no  | no         | 
-| hEX PoE lite | ~60   | 650MHz |  64MB | 5xE  | no                             | no  | no  | 4x         |
-| hEX PoE      | ~80   | 800Mhz | 128MB | 5xGE | no                             | yes | 1x  | 4x         |
+| hAP AC lite  | ~50   | 650Mhz |  64MB | 4xE   | 2.4GHz/5GHz Dual-Concurrent   | yes | no  | 1x         |
+| hAP AC       | ~130  | 720MHz | 128MB | 5xGE  | 2.4GHz/5GHz Dual-Concurrent   | yes | 1x  | 1x         |
+| hEX lite     | ~40   | 850Mhz |  64MB | 5xE   | no                            | no  | no  | no         |
+| hEX          | ~60   | 880Mhz | 256MB | 5xGE  | no                            | yes | no  | no         | 
+| hEX PoE lite | ~60   | 650MHz |  64MB | 5xE   | no                            | no  | no  | 4x         |
+| hEX PoE      | ~80   | 800Mhz | 128MB | 5xGE  | no                            | yes | 1x  | 4x         |
+
+Management Tools:
+
+* **Console** using serial port, telnet, SSH.
+* **WebFig** web-interface over HTTP.
+* **TikApp** Android mobile application.
+* **WinBox** Windows GUI application (with WINE on Linux) over IP and MAC
+
+
 
 ## Console
 
@@ -25,7 +45,7 @@ Most basic setup steps:
 
 * Connect the uplink (WAN/LAN) to port 1, and a node to any other port
 * Default IP-address of the router is **192.168.88.1**
-* Login with `ssh admin@192.168.88.1` (no password required)
+* Default login with `ssh admin@192.168.88.1` (no password required)
 
 The console allows configuration with text commands:
 
@@ -37,15 +57,6 @@ The console allows configuration with text commands:
 /quit                                 # close connection
 ```
 
-Logging:
-
-```bash
-/log print                               # print log information
-/log print follow where topics~"<name>"  # search for a specific topic
-/system logging add topics=<TAB>         # list available topics
-# enable logging for a given topic
-/system logging add topics=<topic> action=memory
-```
 
 
 
@@ -66,12 +77,21 @@ Basic router configuration:
 /system identity set name="<name>"
 ```
 
-Backup the configuration
+### Configuration Management
+
+**Backup** stores the entire system configuration (assumes restore on the same hardware). The backup-file is encrypted by default (protected by password):
 
 ```bash
-/system backup save name=config                # write a backup file
-/file print detail where name="config.backup"  # show backup file time stamp
-/export compact                                # 
+/system backup save name=<file>                # write a backup file
+/system backup load name=<file>                # read a backup file
+```
+
+**Export** dumps a complete or partial configuration into a script file `*.rsc`:
+
+```bash
+/export compact                                # export non default configuration
+/<command> export file=<name>                  # export a sub-system
+/import file=<name>                            # import configuration
 ```
 
 ### License
@@ -91,24 +111,28 @@ Backup the license key:
 # copy & paste to a save location
 ```
 
-### Users & Logins
+### Users
 
 User management:
 
 * Make sure to change the name and password of the `admin` (id: 0) account.
-* Create a secondary user account with with `group=full`
+* Create separate accounts with `group=full` for admins.
+* Read only user with `group=read`
 
 ```bash
 /user print                                   # list user accounts
+/user group print                             # list groups
 /user active print                            # list logged-in users
 /password                                     # set password for current user
-/user set <id> password=<password>            # set password for user ID
+/user set <name> password=<password>          # set password for user ID
 /user set <id> name=<user>                    # change user name
 # add a new user with admin priviliges
 /user add name=<user> password=<password> group=full
 /user disable [find name=<user>]              # disable a user
 /user remove [find name=<user>]               # remove a user
 ```
+
+### SSH Login
 
 SSH server configuration:
 
@@ -161,10 +185,23 @@ Use an SSH private/public key-pair for login:
 
 ## Operation
 
+### Logging
+
+```bash
+/log print                               # print log information
+/log print follow where topics~"<name>"  # search for a specific topic
+/system logging add topics=<TAB>         # list available topics
+# enable logging for a given topic
+/system logging add topics=<topic> action=memory
+```
 
 ### Packages
 
-Update the OS:
+Update channels:
+
+* **release** latest features (hardly tested)
+* **current** latest stable version (very good tested)
+* **bugfix** latest stable version including safe fixes
 
 ```bash
 /system package print                         # list available packages
@@ -172,9 +209,9 @@ Update the OS:
 /system package update set channel=current    # set update channel
 /system package update check-for-updates      # check for updates
 /system package update download               # download updates
-/system reboot                                
+/system reboot
 /system routerboard upgrade                   # upgrade firmware
-/system reboot          
+/system reboot
 ```
 
 ### Route
@@ -186,15 +223,18 @@ Update the OS:
 ### Interfaces
 
 ```bash
-/interface print                              # print ports
-/interface set <id>[,<id>,...] disabled=yes   # disable a list of ports
+/interface ethernet print                     # print ports
+/interface ethernet enable|disable <name>     # enable, disable a port
 ```
 
-### WLAN
+### Wireless
 
 ```bash
 /interface wireless print                     # configuration
 /interface wireless security-profiles print   # security configuration
 /interface wireless set <name> disabled=yes   # disable WLAN
+## specify a password for wireless access
+/interface wireless security-profiles set default authentication-types=wpa2-psk 
+mode=dynamic-keys wpa2-pre-shared-key=<password>
 ```
 
