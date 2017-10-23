@@ -110,4 +110,29 @@ function virsh-nodeset() {
 }
 
 
+function virt-convert-cpio() {
+  if [ "$EUID" -ne 0 ]
+  then
+    echo Please run as root! 
+  else
+    image=$1
+
+    echo Copy image to rootfs/
+    [[ -d rootfs ]] || mkdir rootfs
+    virt-copy-out -a $image / rootfs/
+
+    echo Evacuate kernel...
+    rm -rf boot
+    mv rootfs/boot .
+
+    echo Cleanup...
+    (cd rootfs ; rm -rf initrd* vmlinuz* tmp/* media mnt)
+
+    echo Configure...
+    [[ -L rootfs/init ]] || chroot rootfs/ ln -s /sbin/init /init
+
+    echo Generate initramfs...
+    (cd rootfs ; find . | cpio -o -H newc | gzip -9 ) > initramfs.cpio.gz
+  fi
+}
 

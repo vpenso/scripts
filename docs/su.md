@@ -34,6 +34,7 @@ sudo -lU <user>            # show configuration for another user
 sudo su - <user>           # invoke a login shell as user
 sudo -i <user>             # ^^
 sudo -s <user>             # executes $SHELL as user
+sudo -E <command>          # preserver environment variables (no shell functions)
 ```
 
 ### Configuration
