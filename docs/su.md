@@ -8,6 +8,7 @@ su <user>                  # switch to a specific user
 su - ...                   # invoke a login shell for another user
 su -p ...                  # preserve caller environment variables
 su - -c '<command>' <user> # execute a command as different user
+gksu -u <user> <app>       # start a GUI application
 ```
 
 ### Example
