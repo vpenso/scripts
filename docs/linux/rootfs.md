@@ -76,16 +76,14 @@ kpartx -d -v $rfsimg                                       # remove partition ma
 QEMU copy-on-write format supports: Snapshots, sparse images without file-system support, AES encryption
 
 ```bash
-rfsimg=/tmp/rootfs.img rootfs=/mnt
 ## -- qcow2 images with snapshot support -- ##
-qemu-img create -f qcow2 $rfsimg 100G            # create a copy-on-write image file
-qemu-img info $rfsimg                            # print details about a disk image
-virt-format --partition=mbr --filesystem=ext4 -a $rfsimg         
-                                                 # create a file-system in the image file
-virt-filesystems -lh --uuid -a $rfsimg           # list file-systems in image file
-sudo guestmount --rw -a $rfsimg -m /dev/sda1 $rootfs -o dev ; mount | grep $rootfs
-## -- work with the mount-point -- ##
-sudo guestunmount $rootfs
+qemu-img create -f qcow2 <image> <size>                     # create a copy-on-write image file with size (e.g. 100G)
+qemu-img info <image                                        # print details about a disk image
+virt-format --partition=mbr --filesystem=ext4 -a <image>    # create a file-system in the image file
+virt-ls -a <image> <path>                                   # list content of an image
+virt-filesystems -lh --uuid -a <image>                      # list file-systems in image file
+virt-copy-out -a <image> / <path>                           # copy image to local path
+virt-tar-out -a <image> / - | gzip > <path>.tar.gz          # write disk image to zipped TAR archive
 ```
 
 Use `qemu-nbd` to exports a disk image as a "network block device (nbd)":
