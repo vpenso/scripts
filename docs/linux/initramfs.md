@@ -144,13 +144,13 @@ Debian user-space and systemd in an initramfs:
 >>> kvm -m 2048 -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
 ```
 
-## VM Image to Initramfs
+### VM Image to Initramfs
 
 Convert a roofs from a qcow2 disk image to initramfs:
 
 ```bash
 function virt-convert-cpio() {
-  tmpdir=$(mktemp -d /tmp/${SCRIPT}.XXXXXX)
+  tmpdir=$(mktemp -d /tmp/virt-convert-cpio.XXXXXX)
   image=$1
   ofile=$2
   virt-copy-out -a $image / $tmpdir/
