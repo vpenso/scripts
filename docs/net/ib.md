@@ -42,6 +42,12 @@ perfquery <lid> <port>           # show counters for a given switch port
 
 Kernel drivers are required to operate the host channel adapter. 
 
+```bash
+# installation on CentOS
+>>> yum -y groupinstall "Infiniband Support"
+>>> systemctl enable --now rdma.service
+```
+
 Mellanox HCAs require at least the `mlx?_core` and `mlx?_ib` kernel modules. 
 
 * `mlx4_*` modules are use by **ConnectX** adapters, and `mlx5_*` modules are used by **Connect-IB** adapters.
@@ -65,6 +71,9 @@ Mellanox HCAs require at least the `mlx?_core` and `mlx?_ib` kernel modules.
 >>> cat /etc/modprobe.d/mlx4_core.conf
 options mlx4_core log_num_mtt=20 log_mtts_per_seg=4
 ```
+
+
+
 
 ## IPoIB
 
