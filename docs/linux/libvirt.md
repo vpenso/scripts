@@ -147,7 +147,7 @@ Install a minimal standard system, no desktop environment (unless really needed)
 
 ### Automation
 
-Install a virtual machine image with pressed and the debian-installer
+Install a virtual machine image with pressed and the **Debian Installer**:
 
 ```bash
 >>> virt-install --name debian8 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
@@ -160,16 +160,20 @@ Install a virtual machine image with pressed and the debian-installer
 
 Find Debian pressed files in [var/debian/](../../var/debian).
 
+Install with CentOS/Fedora **Kickstart**:
+
 ```bash
->>> virt-install --name debian8 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
+>>> virt-install --name centos7 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
              --location http://mirror.centos.org/centos-7/7/os/x86_64/ \
              --graphics none --console pty,target_type=serial \
              --initrd-inject=$SCRIPTS/var/centos/7/kickstart.cfg \
              --extra-args 'console=ttyS0,115200n8 serial \
                            inst.repo=http://mirror.centos.org/centos-7/7/os/x86_64/ \
-                           inst.text inst.ks=kickstart.cfg'
+                           inst.text inst.ks=file:/kickstart.cfg'
 ```
+
+Find the kickstart file in [var/centos](../../var/centos).
 
 ## Image Customize
 
