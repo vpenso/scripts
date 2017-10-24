@@ -163,12 +163,12 @@ Find Debian pressed files in [var/debian/](../../var/debian).
 ```bash
 >>> virt-install --name debian8 --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             --location http://deb.debian.org/debian/dists/jessie/main/installer-amd64/ \
+             --location http://mirror.centos.org/centos-7/7/os/x86_64/ \
              --graphics none --console pty,target_type=serial \
              --initrd-inject=$SCRIPTS/var/centos/7/kickstart.cfg \
              --extra-args 'console=ttyS0,115200n8 serial \
                            inst.repo=http://mirror.centos.org/centos-7/7/os/x86_64/ \
-                           inst.text inst.ks=kickstart.cfg
+                           inst.text inst.ks=kickstart.cfg'
 ```
 
 ## Image Customize
