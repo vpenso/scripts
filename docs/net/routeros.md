@@ -224,7 +224,14 @@ Update channels:
 
 ### Interfaces
 
-Port switching allows wire speed traffic passing among a group of ports:
+
+```bash
+/interface print                              # list all interfaces (ethernet, wlan, etc.)
+/interface print stats                        # all interfaces (packets, bytes, drops and errors)
+/interface monitor-traffic <port>,aggregate   # traffic passing through a given interface
+```
+
+Ethernet port switching allows wire speed traffic passing among a group of ports:
 
 * Ports are named `ether*`, typically ether1 is used for routing. 
 * The **master port** will communicate to all ports in a group.
@@ -240,12 +247,13 @@ Port switching allows wire speed traffic passing among a group of ports:
 /interface ethernet switch set <switch> mirror-source=<port> mirror-target=<port>
 ```
 
-VLANs:
+Ethernet VLAN management:
 
 ```bash
+/interface vlan print                         # list VLANs
 /interface ethernet switch port print         # vlan table forwarding rules
 # specific VLAN IDs between ports
-/interface ethernet switch vlan add ports=<poer>[,<port>] switch=<switch> vlan-id=<id>
+/interface ethernet switch vlan add ports=<port>[,<port>] switch=<switch> vlan-id=<id>
 # VLAN per port configuration
 /interface ethernet switch port set <port> 
      ... vlan-mode=secure                     # strict use of VLAN table
