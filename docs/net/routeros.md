@@ -224,11 +224,35 @@ Update channels:
 
 ### Interfaces
 
+Port switching allows wire speed traffic passing among a group of ports:
+
+* Ports are named `ether*`, typically ether1 is used for routing. 
+* The **master port** will communicate to all ports in a group.
+
 ```bash
-/interface ethernet print                     # print ports
+/interface ethernet switch print              # list switch chips
+/interface ethernet switch host print         # switch chips internal mac address to port mapping
+/interface ethernet print                     # list all ports
+/interface ethernet monitor <port>            # link configuration of port
 /interface ethernet enable|disable <name>     # enable, disable a port
+/interface ethernet print stats               # tx/rx statistics
+# port mirroring
+/interface ethernet switch set <switch> mirror-source=<port> mirror-target=<port>
 ```
 
+VLANs:
+
+```bash
+/interface ethernet switch port print         # vlan table forwarding rules
+# specific VLAN IDs between ports
+/interface ethernet switch vlan add ports=<poer>[,<port>] switch=<switch> vlan-id=<id>
+# VLAN per port configuration
+/interface ethernet switch port set <port> 
+     ... vlan-mode=secure                     # strict use of VLAN table
+     ... vlan-header=always-strip             # remove VLAN header from frame
+     ..  vlan-header=add-if-missing           # adds VLAN header to untagged frames
+     ... default-vlan-id=<id>                 # set default VLAN ID
+```
 ### Wireless
 
 ```bash
