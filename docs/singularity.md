@@ -1,7 +1,17 @@
 
+
+
 # Singularity
 
 <http://singularity.lbl.gov/>
+
+Container images contain run-time, libraries, tools, and application code:
+
+* Containers encapsulate a software environment (software stack).
+* Relieve a cluster from the need to provide a common software environment.
+* Users define/control containers specific to an applications.
+* User-space independent from hardware run-time environment (host OS).
+* Users become completely invisible to each other ("dependency hell").
 
 Singularity allows a simple integration of Linux containers with HPC clusters.
 
@@ -17,6 +27,8 @@ Supported container formats for the rootfs:
 * squashfs
 * tar.gz, tar.bz2, tar, cpio, cpio.gz archives 
 * docker
+
+
 
 ## Install
 
