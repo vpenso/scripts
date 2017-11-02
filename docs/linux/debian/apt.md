@@ -1,5 +1,25 @@
+# APT
 
-→ [package search](https://packages.debian.org/index)
+Debian the package database at: 
+
+<https://packages.debian.org>
+
+Package **version format**:
+
+```
+{upstream_version}-{debian_revision}[~{suffix}{release}[+{revision}]]
+```
+
+* `upstream_version` - Version as specified by the upstream author(s)
+* `debian_revision` - Debian specific version (reset to 1 each time the upstream_version is increased). The absence of a debian_revision is equivalent to a debian_revision of 0.
+* `~{suffix}{release}[+{revision}]` (optional) - tilde sorts before anything (hence `1.1~bpo9` will be upgraded by `1.1`)
+  * `suffix` - Used for backport `bpo` packages and site-specific packages.
+  * `release` - Indicates the Debian release the package is meant for e.g. `bpo8` for Debian Jessie
+  * `revision` (optional) - Anther counter to version the package 
+
+Cf. <https://www.debian.org/doc/debian-policy/#s-f-version>
+
+## Package Management
 
 ```bash
 dpkg -i <path>.deb                            # install package
