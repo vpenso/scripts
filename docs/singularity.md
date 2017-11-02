@@ -5,7 +5,7 @@
 
 <http://singularity.lbl.gov/>
 
-Container images contain run-time, libraries, tools, and application code:
+Container images include run-time, libraries, tools, and application code:
 
 * Containers encapsulate a software environment (software stack).
 * Relieve a cluster from the need to provide a common software environment.
@@ -13,7 +13,7 @@ Container images contain run-time, libraries, tools, and application code:
 * User-space independent from hardware run-time environment (host OS).
 * Users become completely invisible to each other ("dependency hell").
 
-Singularity allows a simple integration of Linux containers with HPC clusters.
+Singularity allows a simple integration of Linux containers with high-performance computing:
 
 * Scheduler/Resource manager agnostic
 * Runs with user privileges(, and does not require a service daemon)
@@ -62,7 +62,7 @@ Debian, Ubuntu package from NeuroDebian:
 Build a custom Debian package:
 
 ```bash
->>> apt -y install debhelper dh-autoreconf git devscripts help2man
+>>> apt -y install debhelper dh-autoreconf git devscripts help2man fakeroot
 >>> grep -A5 override_dh_fixperms debian/rules     # adjust permissions during package installation
 override_dh_fixperms:
         dh_fixperms
