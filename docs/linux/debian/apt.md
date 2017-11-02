@@ -86,7 +86,7 @@ http_proxy=$URL ; apt install <package>       # temporary proxy
 ```bash
 apt-cache policy | grep -Ev Translation-..$   # list release information
 ## package repositories in priority order
-apt-cache policy | grep '^ [0-9]...*' | sort -r
+apt-cache policy | grep '^ [0-9]... *' | sed 's%/[^/]*$%/%' | uniq | sort -r
 apt-cache policy <package>                    # list available package versions
 apt install -t <release> <package>            # install package from target release
 apt install <package>=<version>               # install a specific version
