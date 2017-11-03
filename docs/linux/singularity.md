@@ -146,7 +146,8 @@ From: cern/cc7-base
 %environment
   ROOTSYS=/opt/root
   PATH=$PATH:$ROOTSYS/bin
-  export ROOTSYS PATH
+  LD_LIBRARY_PATH=$ROOTSYS/lib:.:$LD_LIBRARY_PATH
+  export ROOTSYS PATH LD_LIBRARY_PATH 
 
 %runscript
   exec /opt/root/bin/root -b "$@"
