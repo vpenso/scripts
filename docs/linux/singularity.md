@@ -133,6 +133,7 @@ sudo singularity shell --writable debian.img
 Following example builds and starts a container for the [ROOT Data Analysis Framework](https://root.cern.ch/guides/users-guide)
 
 ```
+>>> cat root6.sing
 BootStrap: docker
 From: cern/cc7-base
 
@@ -165,32 +166,6 @@ From: cern/cc7-base
 
 root [0]
 ```
-
-
-### Example
-
-Following example builds a container with the [FairRoot][06] application:
-
-```bash
-# download software dependencies to /tmp on the host 
-git clone --branch may16p1 https://github.com/FairRootGroup/FairSoft /tmp/fairsoft
-git clone https://github.com/FairRootGroup/FairRoot.git /tmp/fairroot
-sudo singularity create --size 10240 debian.img                 # prepare a container image
-sudo singularity import debian.img docker://debian:jessie       # install basic OS into container
-sudo singularity shell --shell /bin/bash --writable debian.img  # enter the container
-# deploy the application software stack (note that /tmp is auto-bind into the container)
->>> cd /tmp/fairsoft
->>> $(grep -m 1 -A 7 apt DEPENDENCIES | tr -d "\\" | tr -d "\n")
->>> apt -y install libssh-dev subversion unzip libtool libglu1-mesa-dev libxft-dev libxmp-dev
->>> ./configure
->>> echo -e "export PATH=/opt/bin:\$PATH\nexport SIMPATH=/opt" >> /etc/bash.bashrc ; source /etc/bash.bashrc 
->>> mkdir /tmp/fairroot/build ; cd /tmp/fairroot/build
->>> cmake -DCMAKE_INSTALL_PREFIX="/opt" .. ;  make && make install
->>> exit
-```
-
-[05]: https://github.com/FairRootGroup/FairSoft
-[06]: https://github.com/FairRootGroup/FairRoot 
 
 ### SCI-F
 
