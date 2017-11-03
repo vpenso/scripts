@@ -21,12 +21,6 @@ Singularity allows a simple integration of Linux containers with high-performanc
 * Executable within a job script send to the resource manager
 * Integrates with MPI, InfiniBand, hardware accelerators (Nvidia/AMD GPUs, Intel KNL)
 
-Supported container formats for the rootfs:
-
-* singularity image
-* squashfs
-* tar.gz, tar.bz2, tar, cpio, cpio.gz archives 
-* docker
 
 
 
@@ -35,6 +29,16 @@ Supported container formats for the rootfs:
 Source archives of Singularity releases:
 
 <https://github.com/singularityware/singularity/releases>
+
+### Debian
+
+Official Debian packages:
+
+<https://packages.debian.org/singularity-container>
+
+Debian, Ubuntu package from NeuroDebian:
+
+<http://neuro.debian.net/pkgs/singularity-container.html>
 
 Build from source code:
 
@@ -49,31 +53,21 @@ Build from source code:
 >>> sudo make install                                  # install binaries
 ```
 
-### Debian
-
-Official Debian packages:
-
-<https://packages.debian.org/singularity-container>
-
-Debian, Ubuntu package from NeuroDebian:
-
-<http://neuro.debian.net/pkgs/singularity-container.html>
-
 Build a custom Debian package:
 
 ```bash
 >>> apt -y install debhelper dh-autoreconf git devscripts help2man fakeroot
->>> grep -A5 override_dh_fixperms debian/rules     # adjust permissions during package installation
-override_dh_fixperms:
-        dh_fixperms
-        chown root.root debian/singularity-container/usr/lib/*/singularity/sexec
-        chown root.root debian/singularity-container/usr/lib/*/singularity/sexec-suid
-        chmod 755 debian/singularity-container/usr/lib/*/singularity/sexec
-        chmod 4755 debian/singularity-container/usr/lib/*/singularity/sexec-suid
 ## cf. http://singularity.lbl.gov/install-linux
 >>> echo "echo SKIPPING TESTS THEYRE BROKEN" > ./test.sh
 >>> dch -i                                         # adjust changelog if required
 >>> fakeroot dpkg-buildpackage -nc -b -us -uc      # build package
+## upload the new package to a repository
+```
+
+Install required packages on a node:
+
+```bash
+>>> apt install singularity-container squashfs-tools
 ```
 
 ### CentOS
@@ -110,25 +104,31 @@ The Singularity configuration must be owned by root if running in SUID mode.
 
 ## Usage
 
+Singularity user guide:
+
+<http://singularity.lbl.gov/user-guide>
+
+
+### Build
+
+Container image sources:
+
+<https://hub.docker.com/explore/>  
+<https://www.singularity-hub.org/collections>
+
 
 ```bash
-     singularity -d -x ...                              # debuging mode
-                 help <subcommand>                      # call help for sub-command
-sudo             create <image>                         # create blank container image
-sudo             export <image> | gzip -9 > <archive>   # export image to compressed archive
-sudo             import <image> docker://<target>:<tag> # import image from docker hub
-                 bootstrap <image> <definition>         # install OS into container
-                 mount <image> <path>                   # mount container image to path
-                 shell [--writable] <image>             # spawn shell in container
-                       docker://<target>:<tag>          # address docker hub image
-                 exec <image>                           # execute command in container
-                      -B <source>:<destination> ...     # bind host source path into container destination path
+# container in read-only squashfs image
+singularity build centos.simg docker://centos:latest 
+singularity build debian.simg docker://debian:latest
+# container in awritable ext3 image
+sudo singularity build -w debian.img docker://debian:latest
+# container within a writable directory
+sudo singularity build -s debian docker://debian:latest
+sudo singularity build debian.simg debian/               # convert a directory to a squashfs image
+## make changes to the image
+sudo singularity shell --writable debian.img
 ```
-
-```bash
->>> singularity image.create -s 1024 /tmp/debian.sly.img
-```
-
 
 ### Example
 
