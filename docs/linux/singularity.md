@@ -130,6 +130,43 @@ sudo singularity build debian.simg debian/               # convert a directory t
 sudo singularity shell --writable debian.img
 ```
 
+Following example builds and starts a container for the [ROOT Data Analysis Framework](https://root.cern.ch/guides/users-guide)
+
+```
+BootStrap: docker
+From: cern/cc7-base
+
+%post
+  yum install wget git cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel
+  cd /opt
+  wget https://root.cern.ch/download/root_v6.10.08.Linux-centos7-x86_64-gcc4.8.tar.gz
+  tar -xzf root_v6.10.08.Linux-centos7-x86_64-gcc4.8.tar.gz
+
+%environment
+  ROOTSYS=/opt/root
+  PATH=$PATH:$ROOTSYS/bin
+  export ROOTSYS PATH
+
+%runscript
+  exec /opt/root/bin/root -b "$@"
+```
+```bash
+## build the container
+>>> sudo singularity build root6.simg root6.sing
+## run the container
+>>> singularity run root6.simg 
+   ------------------------------------------------------------
+  | Welcome to ROOT 6.10/08                http://root.cern.ch |
+  |                               (c) 1995-2017, The ROOT Team |
+  | Built for linuxx8664gcc                                    |
+  | From tag v6-10-08, 16 October 2017                         |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q' |
+   ------------------------------------------------------------
+
+root [0]
+```
+
+
 ### Example
 
 Following example builds a container with the [FairRoot][06] application:
