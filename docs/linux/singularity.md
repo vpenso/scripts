@@ -102,6 +102,12 @@ grep -v ^# /etc/singularity/singularity.conf | grep -v -e '^$' | sort
 
 The Singularity configuration must be owned by root if running in SUID mode.
 
+```bash
+user bind control = yes                # allow user defined bind mounts
+# linux kernel >4.0
+enable overlay = yes                   # create bind mount path if missing
+```
+
 ## Usage
 
 Singularity user guide:
