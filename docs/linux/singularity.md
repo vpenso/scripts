@@ -114,7 +114,6 @@ Singularity user guide:
 
 <http://singularity.lbl.gov/user-guide>
 
-
 ### Build
 
 Container image sources:
@@ -144,7 +143,7 @@ BootStrap: docker
 From: cern/cc7-base
 
 %post
-  yum install wget git cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel
+  yum install -y wget git cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel
   cd /opt
   wget https://root.cern.ch/download/root_v6.10.08.Linux-centos7-x86_64-gcc4.8.tar.gz
   tar -xzf root_v6.10.08.Linux-centos7-x86_64-gcc4.8.tar.gz
