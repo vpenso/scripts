@@ -8,22 +8,37 @@ Main code sections:
 
 ## Install
 
-Download a release archive from the official web site: 
 
-https://www.open-mpi.org/software/
+### Packages
+
+Debian Stretch supports OpenMPI 2.0:
 
 ```bash
-## dependencies on CentOS
->>> yum groupinstall -y "Development Tools" && yum install bzip2
+>>>> apt install openmpi-bin libopenmpi-dev openmpi-doc
+```
+
+### From Source
+
+Developing version on GitHub:
+
+<https://github.com/open-mpi/ompi/releases>
+
+Official source-code archive:
+
+<https://www.open-mpi.org/software/>
+
+```bash
+# download the latest archive and extract it
+>>> wget https://www.open-mpi.org/software/ompi/v3.0/downloads/openmpi-3.0.0.tar.gz
+>>> tar -xvf openmpi-3.0.0.tar.gz && cd openmpi-3.0.0
 ## select a target location for the installation
->>> prefix=$PWD/openmpi/2.1.1 && mkdir -p $prefix
-## change into a scratch directory i.e. /tmp, download the archive and extract it
->>> wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.1.tar.bz2 && tar -xvf openmpi-2.1.1.tar.bz2
+>>> prefix=$PWD/openmpi/3.0.0 && mkdir -p $prefix
 ## make sure to have the required compilers (in a given version) in the shell enironment
 >>> ./configure --prefix=$prefix 2>&1 | tee $prefix/configure.log
 ## adjust how many cores to use for the compilation with option -j
->>> make -j 8 2>&1 | tee $prefix/make.log
+>>> make -j $(nprocs) 2>&1 | tee $prefix/make.log
 >>> make install 2>&1 | tee $prefix/install.log
+>>> cp -R examples $prefix
 ## create a file to source this installation into a shell environment
 >>> echo "export PATH=$prefix/bin:$PATH" >> $prefix/source_me.sh
 >>> echo "export LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH" >> $prefix/source_me.sh
