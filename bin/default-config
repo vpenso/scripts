@@ -118,12 +118,9 @@ function workstation() {
  
   echo GNOME configuration org.gnome.desktop.interface...
   gsettings set org.gnome.desktop.interface gtk-theme Arc
-  echo "  gtk-theme = " $(gsettings get org.gnome.desktop.interface gtk-theme)
   gsettings set org.gnome.desktop.interface icon-theme Moka
-  echo "  icon-theme = " $(gsettings get org.gnome.desktop.interface icon-theme)
   gsettings set org.gnome.desktop.interface clock-show-date true
-  echo "  clock-show-date = " $(gsettings get org.gnome.desktop.interface clock-show-date)
-
+  gsettings set org.gnome.shell.extensions.user-theme name Arc
 }
 
 
