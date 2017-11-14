@@ -13,9 +13,77 @@ Since 2013/12 the version numbers use the format year.month (like Ubuntu). Last 
 
 ### Debian
 
-List available packages for all Debian releases with `rmadison` (from the _devscripts_ package):
+Official Debian package:
 
-→ [Debian Tracker](https://tracker.debian.org/pkg/slurm-llnl)
+<http://packages.debian.org/slurm-wlm>
+
+Package versions for Debian Jessie and Stretch: 
+
+```bash
+>>> date && rmadison slurm-wlm
+Tue Nov 14 12:10:35 CET 2017
+slurm-wlm  | 14.03.9-5        | oldstable                  | amd64, arm64, armel, armhf, i386, mips, mipsel, powerpc, ppc64el, s390x
+slurm-wlm  | 14.03.9-5+deb8u1 | oldstable-proposed-updates | amd64, arm64, armel, armhf, i386, mips, mipsel, powerpc, ppc64el, s390x
+slurm-wlm  | 16.05.9-1        | stable                     | amd64, arm64, armel, armhf, i386, mips, mips64el, mipsel, ppc64el, s390x
+slurm-wlm  | 16.05.9-1+deb9u1 | proposed-updates           | amd64, arm64, armel, armhf, i386, mips, mips64el, mipsel, ppc64el, s390x
+slurm-wlm  | 17.02.7-1        | testing                    | amd64, arm64, armel, armhf, i386, mips, mips64el, mipsel, ppc64el, s390x
+slurm-wlm  | 17.02.9-1        | unstable                   | amd64, arm64, armel, armhf, i386, mips, mips64el, mipsel, powerpc, ppc64el, s390x
+```
+
+Proximity of SLURM upstream releases to the release of a Debian package to **testing**:
+
+```bash
+## release dates of major SLURM versions as package to Debian **testing**:
+>>> cat *_changelog | grep -e ^slurm -e ' -- ' | paste - - | cut -d' ' -f1,2,11-13 L
+slurm-llnl (17.02.1.2-1) 08 Mar 2017
+slurm-llnl (16.05.0-1) 14 Jun 2016
+slurm-llnl (15.08.0-1) 24 Sep 2015
+slurm-llnl (14.11.6-1) 20 May 2015
+slurm-llnl (14.03.8-1) 08 Sep 2014
+## compared to upstream source
+>>> git clone https://github.com/SchedMD/slurm.git && cd slurm
+>>> git log --tags --simplify-by-decoration --pretty="format:%ci %d" | grep tag
+2017-03-02 15:22:45 -0700  (tag: slurm-17-02-1-1)
+2016-05-31 14:42:39 -0700  (tag: slurm-16-05-0-1)
+2015-08-31 16:55:04 -0700  (tag: slurm-15-08-0-1)
+2015-04-23 15:50:47 -0700  (tag: slurm-14-11-6-1)
+2014-09-17 13:19:57 -0700  (tag: slurm-14-03-8-1)
+```
+
+An example of Debian following a minor release of SLURM 16.05
+
+```bash
+>>> git log --tags --simplify-by-decoration --pretty="format:%ci %d" | grep tag | grep slurm-16-05
+2017-10-31 18:30:01 -0600  (tag: slurm-16-05-11-1)
+2017-03-02 17:42:11 -0700  (tag: slurm-16-05-10-2)
+2017-03-02 15:17:50 -0700  (tag: slurm-16-05-10-1)
+2017-01-31 12:56:34 -0700  (tag: slurm-16-05-9-1)
+2017-01-04 14:11:51 -0700  (tag: slurm-16-05-8-1)
+2016-12-08 15:35:21 -0700  (tag: slurm-16-05-7-1)
+2016-10-27 14:33:09 -0600  (tag: slurm-16-05-6-1)
+2016-09-29 13:03:13 -0600  (tag: slurm-16-05-5-1)
+2016-08-12 06:30:15 -0600  (tag: slurm-16-05-4-1)
+2016-07-26 14:04:46 -0700  (tag: slurm-16-05-3-1)
+2016-07-06 16:51:37 -0700  (tag: slurm-16-05-2-1)
+2016-06-29 15:45:09 -0700  (tag: slurm-16-05-1-1)
+2016-05-31 14:42:39 -0700  (tag: slurm-16-05-0-1)
+2016-05-13 08:49:56 -0700  (tag: slurm-16-05-0-0rc2)
+2016-05-03 15:33:43 -0700  (tag: slurm-16-05-0-0rc1)
+2016-03-29 15:06:49 -0700  (tag: slurm-16-05-0-0pre2)
+2016-02-18 15:30:03 -0800  (tag: slurm-16-05-0-0pre1)
+>>> cat *_changelog | grep -e ^slurm -e ' -- ' | paste - - | cut -d' ' -f1,2,11-13 | grep 16.05
+slurm-llnl (16.05.9-1) 03 Feb 2017
+slurm-llnl (16.05.8-1) 07 Jan 2017
+slurm-llnl (16.05.7-2) 30 Dec 2016
+slurm-llnl (16.05.7-1) 14 Dec 2016
+slurm-llnl (16.05.6-1) 28 Oct 2016
+slurm-llnl (16.05.5-1) 30 Sep 2016
+slurm-llnl (16.05.4-1) 26 Sep 2016
+slurm-llnl (16.05.2-1) 29 Jul 2016
+slurm-llnl (16.05.0-1) 14 Jun 2016
+```
+
+
 
 ### CentOS
 
