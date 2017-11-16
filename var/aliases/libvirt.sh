@@ -70,7 +70,7 @@ function vm() {
   "sync"|"sy")       virsh-instance sync $@ ;;
   "undefine"|"u")    virsh undefine $@ ;;
   *) 
-    echo $VM_FUNCTION_HELP
+    echo "$VM_FUNCTION_HELP"
     ;;
   esac
 }
