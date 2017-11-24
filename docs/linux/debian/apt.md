@@ -138,6 +138,8 @@ Numeric value for Priority `P`:
       P > 1000       installed even if this constitutes a downgrade
 ```
 
+## Additional Repositories
+
 ### Backports
 
 → [official backports](https://backports.debian.org/Instructions/)
@@ -164,4 +166,20 @@ fakeroot debian/rules binary                         # build the source
 dpkg-buildpackage -us -uc                            # build the package
 ```
 
+### Unstable (Sid)
+
+Debian's development distribution is "sid", aliased to "unstable":
+
+* Packages from it will propagate into testing and then into a real release.
+* Security updates are **not** managed by the Debian security team.
+
+```bash
+>>> cat /etc/apt/sources.list.d/unstable.list
+deb http://ftp.us.debian.org/debian/ sid main
+deb-src http://ftp.us.debian.org/debian/ sid main
+>>> cat /etc/apt/preferences.d/unstable
+Package: *
+Pin: release a=unstable
+Pin-Priority: 2
+```
 
