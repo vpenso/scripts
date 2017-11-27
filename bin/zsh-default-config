@@ -62,19 +62,17 @@ bindkey -e
 #
 ANTIGEN_CACHE=false
 source ~/.zsh/antigen.zsh
-
 antigen bundle git
 # https://github.com/zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-completions
-
 # https://github.com/zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-autosuggestions
-
 # https://github.com/zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-syntax-highlighting
-
 antigen bundle olivierverdier/zsh-git-prompt
 antigen apply
+
+setopt INTERACTIVE_COMMENTS
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 ZSH_HIGHLIGHT_STYLES+=(
@@ -88,6 +86,9 @@ ZSH_HIGHLIGHT_STYLES+=(
   single-quoted-argument 'fg=208,bold'
   double-quoted-argument 'fg=208,bold'
   cursor                 'bg=224,fg=124,bold'
+  comment                'fg=242'
+  commandseparator       'fg=52,bold'
+  unknown-token          'bg=224,bold'
 )
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=252
 
