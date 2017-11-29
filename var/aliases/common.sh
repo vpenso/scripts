@@ -51,6 +51,7 @@ alias cpu=lscpu
 alias ports='netstat -tulanp'
 # Print seconds since epoch
 alias epoch="date +%s"
+alias stamp="date +%FT%R:%S"
 
 # Download a file
 alias get="curl -C - -O"
