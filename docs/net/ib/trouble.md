@@ -4,9 +4,9 @@ The `ibdiagnet` command may report trouble in a from like:
 ```bash
 >>> ibdiagnet
 ...
-Link at the end of direct route "1,1,19,10,9,25"
+Link at the end of direct route "1,1,19,10,9,17"
      Errors:
-           -error noInfo -command {smNodeInfoMad getByDr {1 1 19 10 9 25}}
+           -error noInfo -command {smNodeInfoMad getByDr {1 1 19 10 9 17}}
 Errors types explanation:
      "noInfo"  : the link was ACTIVE during discovery but, sending MADs across it
                    failed 4 consecutive times
@@ -16,7 +16,7 @@ Errors types explanation:
 Use `ibdiagpath` to print all GUIDs on the route:
 
 ```bash
->>> ibdiagpath -d 1,1,19,10,9,25
+>>> ibdiagpath -d 1,1,19,10,9,17
 ...
 -I- From: lid=0x0216 guid=0x7cfe90030097cef0 dev=51000 Port=17
 ```
