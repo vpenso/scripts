@@ -111,10 +111,13 @@ function workstation() {
       psmisc clustershell sshuttle ipmitool freeipmi-tools \
       rsync sshfs ccrypt xclip nmap \
       nethogs arc-theme moka-icon-theme
+    # No IPMI servie
+    sudo systemctl disable ipmievd.service
   fi
  
-  # No IPMI servie
-  sudo systemctl disable ipmievd.service
+  if command -v dnf 2>&1 >/dev/null ; then
+    sudo dnf -qy install clustershell arc-theme moka-icon-theme
+  fi 
  
   echo GNOME configuration org.gnome.desktop.interface...
   gsettings set org.gnome.desktop.interface gtk-theme Arc
