@@ -1,4 +1,10 @@
 
+DNS providers: 
+
+* [Quad9](https://www.quad9.net)
+* [OpenDNS](https://www.opendns.com/)
+* [Google Public DNS](https://developers.google.com/speed/public-dns/)
+
 # Resolver
 
 **`/etc/resolv.conf`** configuration for the local resolution of domain names
