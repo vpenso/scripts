@@ -1,8 +1,13 @@
-
+Ein Mentales Model erlaubt es einen Sachverhalt, Ablauf oder Prozess im
+Geiste abzubilden. Diese vereinfachte (damit unvollständige) Repräsentation
+erlaubt das wiederkehrende von Muster und ermöglicht gegebenenfalls 
+angemessen darauf zu reagieren. Mentale Modelle geben ihrem Anwender das
+Verständnis wiederkehrende Situationen oder Erkenntnisse mit einer im
+Vorfeld durchdachten zielführenden Reaktion zu begegnen.
 
 ## Entscheidungen
 
-**Umkehr** 
+### Umkehr
 
 Viele Probleme sind einfacher zu lösen in dem deren Inverse angestrebt wird. 
 In anderen Worten, erkenne welches Ergebnis definitiv vermieden werden soll, 
@@ -12,7 +17,7 @@ und vermeide dieses Verhalten zu wiederholen.
 **Beispiel** – Stelle die Frage: „Was ist der schlimmst mögliche Ausgang und 
 wie kann ich diesen verhindern.“
 
-**Aktion & Reaktion**
+### Aktion & Reaktion
 
 Im täglichen Leben sind viele Entscheidungen einfach zu korrigieren. Das 
 entscheidende ist flexible auf ein Ergebnis zu reagieren und gegebenenfalls
@@ -23,7 +28,7 @@ und das Schlimmste ist nicht zu Handeln.
 **Anmerkung** – Fehler sind Menschlich, Fehler einzugestehen ist Charakterstärke, 
 und Fehler zu korrigieren braucht Intelligenz.
 
-**[Erwartungswert](https://de.wikipedia.org/wiki/Erwartungswert)**
+### [Erwartungswert](https://de.wikipedia.org/wiki/Erwartungswert)
 
 Ein einfaches Model zur Bewertung ungewisser Ereignisse. Multipliziere die
 Eintrittswahrscheinlichkeit des Ereignisses mit dessen Wert.  
@@ -34,7 +39,7 @@ Model, ein Lotto Ticket ist nicht lohnenswert falls es mehr als 2 Euro kostet.
 Entscheidung zu treffen. Oft ist es notwendig den zu erwartenden Nutze im 
 Verhältnis zu betrachten.
 
-**[Nutzenzuwachs](https://de.wikipedia.org/wiki/Grenznutzen)**
+### [Nutzenzuwachs](https://de.wikipedia.org/wiki/Grenznutzen)**
 
 Entstehung eines Mehrwertes durch den Konsum eines Gutes. Der Nutzenzuwachs
 durch ein Gute nimmt meistens bei wachsendem Konsum ab.  
@@ -43,7 +48,7 @@ zu bewerten und gegebenenfalls bei minimalen Mehrwert zu verzichten.
 **Beispiel** – Der Besitz des ersten Autos hat einen signifikanten Einfluss 
 auf Mobilität. Ein zweites Auto verbessert diesen Zustand nur marginal.
 
-**Strategie & Taktik**
+## Strategie & Taktik
 
 Entscheidungen lassen sich grob in zwei Kategorien unterteilen. Strategische
 Entscheidungen haben einen graduellen schleichenden Effekt über lange Zeit.
@@ -55,7 +60,7 @@ macht, können nur realisiert werden durch Entitäten deren Einfluss über einen
 
 ## Kommunikation
 
-**Geschichten**
+### Geschichten
 
 Menschen reagieren besser aut Informationen in Form einer Geschichte. Die
 Erzählung eines Sachverhalts im Kontext einer Geschichte erlaubt es eine Idee
@@ -64,14 +69,14 @@ zugänglich wird.
 **Beispiel** – Normalerweise... Eines Tages... Aus diesem Grund... 
 Schließlich... Am Ende...
 
-**Positive Interpretation**
+### Positive Interpretation
 
 Prinzipiell sollten Aussagen einer Person rational interpretiert werden. Im
 Falle eines Streits sollte wohlwollend die best mögliche Schlußfolgerung 
 gezogen werden. Positive Interpretation verbessert Konversation (und 
 zwischenmenschliche Beziehungen).
 
-**[Gewaltfreie Kommunikation](https://de.wikipedia.org/wiki/Gewaltfreie_Kommunikation)** (GFK)
+### [Gewaltfreie Kommunikation](https://de.wikipedia.org/wiki/Gewaltfreie_Kommunikation) (GFK)
 
 Ein Handlungskonzept des es ermöglicht Beschwerden Ausdruck zu verleihen und
 Konflikte ohne Konfrontation zu lösen. Die Struktur der GFK folgt vier schritten:
@@ -82,7 +87,7 @@ In Zukunft...
 
 ## Menschen
 
-**IQ, RQ & EQ**
+### IQ, RQ & EQ
 
 Der Intelligenzquotient (IQ) bewertet die intellektuellen Leistungsfähigkeit
 eines Menschen. Der Rationalitätsquotient (RQ) beschreibt die Effizienzen bei
@@ -94,7 +99,7 @@ deuten.
 verhalten, einfühlsame Menschen können ein sehr verzehrtes Bild der Welt haben,
 und Menschen können mit durchschnittlicher Intelligenz effektiv sein.
 
-**Kulturelle Struktur**
+### Kulturelle Struktur
 
 Die Beobachtung das menschliches Verhalten auf einer Balance zwischen
 internalisierten kulturellen Mustern und der Kapazität zu unabhängigem 
@@ -108,7 +113,7 @@ Strukturen unter Umständen ohne sie zu hinterfragen.
 etablierter Erwartungen und handeln damit manchmal im Gegensatz zu den
 eigentlichen Anforderungen ihrer Rolle.
 
-**Kontrollierte Vulnerabilität**
+### Kontrollierte Vulnerabilität
 
 Die Beobachtung das Menschen positiv auf von andere selbstsicher ausgedrückte 
 Schwäche reagieren, gleichzeitig aber Angst haben ihre eigene Verletzbarkeit
@@ -117,17 +122,20 @@ zu artikulieren.
 der Sicherheit bei der Artikulierung ihrer eigenen Unzulänglichkeit, gefolgt von 
 Erleichterung und einer stärkeren Bindung zu seinem Gegenüber.
 
-**[Mere-Exposure-Effekt](https://de.wikipedia.org/wiki/Mere-Exposure-Effekt)**
+### [Mere-Exposure-Effekt](https://de.wikipedia.org/wiki/Mere-Exposure-Effekt)
 
-Die Feststellung das Menschen tendenziell eine Vorliebe für Dinge, Menschen und
-Prozesse entwickeln die ihnen Bekannt vorkommen. Der Effekt der Wiedererkennung
+Die Feststellung das Menschen tendenziell eine Vorliebe für Ideen, Dinge, Menschen 
+und Prozesse entwickeln die ihnen Bekannt vorkommen. Der Effekt der Wiedererkennung
 ist viel stärker als initial scheint.  
 **Folgerung** – Eine Gruppe von Menschen wiederholt zusammenzuführen, gemeinsame 
-Symbolik zu entwickeln und ein Ziel zu definieren, stärkt den Zusammenhalt.
+Symbolik zu entwickeln und ein Ziel zu definieren, stärkt den Zusammenhalt.  
+([Wahrheitseffekt](https://de.wikipedia.org/wiki/Wahrheitseffekt_und_Wahrheitsurteile))
+
+
 
 ## Politik
 
-**[Tragödie des Allgemeinguts](https://de.wikipedia.org/wiki/Tragik_der_Allmende)**
+### [Tragödie des Allgemeinguts](https://de.wikipedia.org/wiki/Tragik_der_Allmende)
 
 Umstände in denen Individuen unabhängig von einander angemessen Handeln und dem
 Allgemeinwohl dabei schaden.  
@@ -135,7 +143,7 @@ Allgemeinwohl dabei schaden.
 (2) Fehlgebrauch von Antibiotika führt zu Antibiotikaresistenzen.  
 **Folgerung** – Regierung ist notwendig um das Allgemeingut zu wahren.
 
-**[Globaler Mehrwert](https://de.wikipedia.org/wiki/Utilitarismus)**
+### [Globaler Mehrwert](https://de.wikipedia.org/wiki/Utilitarismus)
 
 Gerechtigkeit aus Perspektive des Individuums ist oft nicht zu befriedigen. Der 
 Versuch kann manchmal großen Ärger erzeugen im Austausch für geringfügigen Nutzen.
@@ -145,7 +153,7 @@ zu erreichen.
 **Folgerung** – Unter Umständen ist es Sinnvoll ein Individuum unfaire zu behandeln
 um dem Allgemeingut zu dienen.
 
-**Vernünftige Person Prinzip**
+### Vernünftige Person Prinzip
 
 Die Annahme das ein vernünftige Menschen eine sinnvolle Balance zwischen dem verfolgen
 seiner eigenen Interessen und dem Ziel einer Organisation (Gruppe) als ganzes finden.  
@@ -154,7 +162,7 @@ verärgern.
 **Folgerung** – Umgang mit unvernünftigen Personen nimmt mehr Zeit in Anspruch und geht
 zu lasten von Zielen die über das Individuum hinaus geht.
 
-**Diskussionraum**
+### Diskussionraum
 
 Das Spektrum von Ideen die innerhalb einer Gruppe von Menschen akzeptiert sind. Ideen
 liegen in eine Bereich von: Gesetz, populär, salonfähig, sensibel, radikal und
