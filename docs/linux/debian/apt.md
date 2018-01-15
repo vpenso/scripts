@@ -111,6 +111,16 @@ apt-cache policy <package>                    # list available package versions
 apt install -t <release> <package>            # install package from target release
 apt install <package>=<version>               # install a specific version
 ```
+
+Keep the current version of a package:
+
+```bash
+apt-mark showhold                       # list package on hold
+apt-mark hold <package> [<package>,...] # hold one or more packages
+echo <package> hold | dpkg --set-selections   
+dpkg --get-selections <package>         # check the hold status
+apt-mark unhold <package>               # unset package hold
+```
 Configure priorities in `/etc/apt/preferences.d/*.pref`:
 
 ```bash
