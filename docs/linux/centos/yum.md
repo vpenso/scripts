@@ -103,9 +103,10 @@ yum update --security             # update those packages which are affected by 
 yum -y update                     # update all outdated packages
 yum update <package>              # update package to latest version
 yum grouplist                     # list available group packages
-yum groupinstall <package>        # install a group package
-yum groupupdate <package>         # update group package
-yum groupremove <package>         # delete a group package
+yum group info <group>            # show packages in group
+yum groupinstall <group>          # install a group package
+yum groupupdate <group>           # update group package
+yum groupremove <group>           # delete a group package
 yum list installed                # list installed packages
 yum list available [<regex>]      # list all packages in all enabled repositories available to install
 yum provides <path>               # find which package a specific file belongs to

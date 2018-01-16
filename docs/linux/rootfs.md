@@ -16,7 +16,7 @@ apt install debootstrap fakechroot fakeroot yum  # install the tool-chain on Deb
 debootstrap --include=linux-image-amd64 stretch $ROOTFS_PATH
 fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
 ## install an OS based on RPM packages
-yum -y --installroot=$ROOTFS_PATH groupinstall base
+yum -y --installroot=$ROOTFS_PATH --releasever=7 groupinstall 'Minimal Install'
 ```
 
 ### Customization
