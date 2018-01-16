@@ -2,23 +2,27 @@
 
 The root file-system (rootfs) typically refers to the directory tree available in `/` (root path).
 
-Following tools help to install a base operating system (OS) into a directory tree:
+Following tools help to install a base operating system (OS) into a target directory:
 
 * **debootstrap** - install a Debian in a sub-directory
 * **multistrap** - like debootstrap, but supports multiple package repositories
 * [polystrap](https://github.com/josch/polystrap) - creates a foreign architecture rootfs without superuser privileges
+* **`yum`** (or `dnf`) with option `--installroot`
 
-### Debootstrap
-
-Install a Debian base system into a defined sub-directory:
 
 ```bash
-apt install debootstrap fakechroot fakeroot      
-fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
+apt install debootstrap fakechroot fakeroot yum  # install the tool-chain on Debian
+## install an OS based on Debian packages
 debootstrap --include=linux-image-amd64 stretch $ROOTFS_PATH
-                                                 # include a kernel
-## -- Work with the root file-system -- ##
-fakeroot fakechroot chroot ...                   # run chroot in user space
+fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
+## install an OS based on RPM packages
+yum -y --installroot=$ROOTFS_PATH groupinstall base
+```
+
+Work with the target directory:
+
+```bash
+fakeroot fakechroot chroot $ROOTFS_PATH          # run chroot in user space
 chroot $ROOTFS_PATH /bin/bash                    # chroot into a shell
 chroot $ROOTFS_PATH /bin/bash -c "<command>"     # execute a command in a chroot 
 systemd-nspawn -D $ROOTFS_PATH "<command>"       # execute a command in a container execution rootfs
@@ -40,6 +44,11 @@ echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
                                                  # configure root mount on boot
 echo -e "domain devops.test\nsearch devops.test\nnameserver 10.1.1.1" > /etc/resolv.conf
                                                  # configure name resolution
+```
+
+### Yum
+
+```bash
 ```
 
 ## Images
