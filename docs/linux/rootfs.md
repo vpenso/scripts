@@ -19,6 +19,8 @@ fakeroot fakechroot /usr/sbin/debootstrap ...    # run debootstrap in user space
 yum -y --installroot=$ROOTFS_PATH groupinstall base
 ```
 
+### Customization
+
 Work with the target directory:
 
 ```bash
@@ -44,11 +46,6 @@ echo $(mount | grep ' / ' | cut -d' ' -f1,3,5) defaults,noatime 0 1 > /etc/fstab
                                                  # configure root mount on boot
 echo -e "domain devops.test\nsearch devops.test\nnameserver 10.1.1.1" > /etc/resolv.conf
                                                  # configure name resolution
-```
-
-### Yum
-
-```bash
 ```
 
 ## Images
