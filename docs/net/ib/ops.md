@@ -34,9 +34,10 @@ perfquery <lid> <port>           # show counters for a given switch port
 Kernel drivers are required to operate the host channel adapter. 
 
 ```bash
->>> yum -y groupinstall "Infiniband Support"
->>> yum install -y libibverbs librdmacm libibcm libibmad libibumad libmlx4 libmlx5 opensm ibutils infiniband-diags srptools perftest mstflint rdmacm-utils ibverbs-utils librdmacm-utils 
->>> systemctl enable --now rdma.service
+# install required packages
+yum install -y libibverbs librdmacm libibcm libibmad libibumad libmlx4 libmlx5 opensm ibutils infiniband-diags srptools perftest mstflint rdmacm-utils ibverbs-utils librdmacm-utils 
+/etc/rdma/rdma.conf                      # configuration file
+systemctl enable --now rdma.service      # enable Infinibnand
 ```
 
 ## Kernel Modules
