@@ -29,15 +29,17 @@ ibportstate <lid> <port>         # show link state of a given switch port
 perfquery <lid> <port>           # show counters for a given switch port
 ```
 
-## Kernel Modules
+## Install
 
 Kernel drivers are required to operate the host channel adapter. 
 
 ```bash
-# installation on CentOS
 >>> yum -y groupinstall "Infiniband Support"
+>>> yum install -y libibverbs librdmacm libibcm libibmad libibumad libmlx4 libmlx5 opensm ibutils infiniband-diags srptools perftest mstflint rdmacm-utils ibverbs-utils librdmacm-utils 
 >>> systemctl enable --now rdma.service
 ```
+
+## Kernel Modules
 
 Mellanox HCAs require at least the `mlx?_core` and `mlx?_ib` kernel modules. 
 
