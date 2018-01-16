@@ -74,10 +74,24 @@ The rootfs image requires a pre-defined nested structure of directories:
 ```bash
 # install Dracut on Debian
 >>> apt install -y dracut dracut-network
-# disable hostonly mode
+```
+
+Disable host-only mode:
+
+```bash
+# Debian
 >>> cat /etc/dracut.conf.d/10-debian.conf
 do_prelink=no
 hostonly=no
+# Centos
+>>> grep hostonly /usr/lib/dracut/dracut.conf.d/01-dist.conf
+hostonly="no"
+hostonly_cmdline="no"
+```
+
+Include the `livenet` module:
+
+```bash
 # include live boot support into initramfs
 >>> dracut -f -a livenet /var/www/html/initramfs.img
 # iPXE kernel command line for
