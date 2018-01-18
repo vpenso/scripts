@@ -42,7 +42,28 @@ ln -s ${www}/boot/centos/7/1611 ${www}/boot/centos/current
 
 More then 1GB memory required for the CentOS LiveOS!
 
-### Boot Configuration
+# Anaconda
+
+Cf. [Anaconda Network](https://fedoraproject.org/wiki/Anaconda/Network#boot)
+
+Network connection missing?
+
+* Check if the require network device is available with `ip a` 
+* If the device is visible check the NetworkManager configuration
+
+NetworkManager configuration (logs to `/tmp/syslog`):
+
+* [Anaconda Boot Options](https://github.com/rhinstaller/anaconda/blob/master/docs/boot-options.rst) can be used to enable network (e.g. to download a kickstart file)
+* Anaconda is communicating with NetworkManager mostly with `ifcfg` files located in `/etc/sysconfig/netwrok-scripts/ifcfg-<device name>`
+* Note that the Kickstart `network` option can be used both to enable and configure devices also!
+
+# Kickstarter
+
+Cf. [Kickstart Documentation](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html)
+
+Kickstart provides method to **automate** the installation of CentOS. 
+
+## Boot Configuration
 
 Boot into the interactive installation:
 
@@ -67,12 +88,7 @@ inst.sshd                            # SSH login during installation
 inst.loglevel=<debug|info|warning|error|critical>
 ```
 
-
-# Kickstarter
-
-Cf. [Kickstart Documentation](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html), [Anaconda Logging](https://fedoraproject.org/wiki/Anaconda/Logging)
-
-Kickstart provides method to **automate** the installation of CentOS. 
+## Kickstart File
 
 The **kickstart file** contains answers for the Anaconda installer program:
 
