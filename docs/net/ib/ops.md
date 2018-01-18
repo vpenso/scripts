@@ -31,13 +31,23 @@ perfquery <lid> <port>           # show counters for a given switch port
 
 ## Install
 
+Official Mellanox [Linux Drivers](http://www.mellanox.com/page/products_dyn?product_family=26&mtag=linux_sw_drivers)
+
 Kernel drivers are required to operate the host channel adapter. 
 
+CentOS:
+
 ```bash
-# install required packages
 yum install -y libibverbs librdmacm libibcm libibmad libibumad libmlx4 libmlx5 opensm ibutils infiniband-diags srptools perftest mstflint rdmacm-utils ibverbs-utils librdmacm-utils 
 /etc/rdma/rdma.conf                      # configuration file
 systemctl enable --now rdma.service      # enable Infinibnand
+```
+
+Debian
+
+```bash
+# jessie
+apt install -y libmlx4-1 libibcommon1 libibmad1 libibumad1 libopensm2 infiniband-diags ibutils ofa-kernel-modules
 ```
 
 ## Kernel Modules
