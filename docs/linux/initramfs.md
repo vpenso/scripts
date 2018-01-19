@@ -226,6 +226,15 @@ Use following to build a new initramfs and to debug it with a virtual machine:
 ...
 ```
 
+Examine an initramfs image by extracting it into a temporary directory:
+
+```bash
+>>> cd `mktemp -d` && gzip -dc /boot/initrd.img-$(uname -r) | cpio -ivd
+# the first program called by the Linux kernel
+>>> cat init
+...
+```
+
 ### Hooks
 
 Executed during image creation to add and configure files. 
