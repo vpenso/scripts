@@ -69,9 +69,13 @@ Following scripting header is used as a skeleton:
 * `PREREQ` should contain a list of dependency hooks
 * Read `/usr/share/initramfs-tools/hook-functions` for a list of predefined helper-functions. 
 
+### Infiniband
+
 Following examples loads Infiniband drivers:
 
 ```bash
+# install Infiniband support
+>>>  apt install -y libmlx4-1 infiniband-diags ibutils
 >>> cat /etc/initramfs-tools/hooks/infiniband
 #!/bin/sh
 PREREQ=""
@@ -100,16 +104,22 @@ ib_ipoib
 rdma_ucm
 EOF
 
+# adds kernel module (and its dependencies) to the initramfs image 
+# and also unconditionally loads the module during boot
 for module in $(cat ${DESTDIR}/etc/modules-load.d/infiniband.conf); do
-        manual_add_modules ${module}
+    force_load ${module}    
 done
-## make the hook executable
+# make the hook executable
 >>> chmod +x /etc/initramfs-tools/hooks/infiniband
-## check if required file are in the initramfs image
+# build the image..
+# check if required file are in the initramfs image
 >>> lsinitramfs /tmp/initramfs.img  | grep infiniband
 ```
 
+
+
 # Live-Boot
+
 
 The `live-boot` package contains a hook for the initramfs-tools that configure 
 a live system during the boot process (early userspace):
@@ -117,9 +127,13 @@ a live system during the boot process (early userspace):
 * Activated if `boot=live` was used as a kernel parameter
 * At boot time it will look for a (read-only) medium containing a "/live" directory where a root filesystems (often a compressed filesystem image like squashfs) is stored. If found, it will create a writable environment, using aufs, to boot the system from. 
 
+<https://wiki.debian.org/DebianLive>
+
 ```bash
 apt install -y live-boot live-boot-docs live-config
 man live-boot                            # overview documentation
+/usr/share/initramfs-tools/hooks/live    # initramfs-tools hook
+/lib/live/boot/                          # scripts      
 ```
 
 ## Debug
@@ -166,6 +180,6 @@ Start a virtual machine with the iPXE bootloader
 >>> kvm -m 2048 ipxe.iso
 ## Ctrl+B to get to the iPXE prompt
 iPXE> dhcp
-```
 iPXE> chain http://10.1.1.28/menu
+```
 
