@@ -199,10 +199,27 @@ ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
 mkinitramfs -o /tmp/initramfs.img                    # create an initramfs image for the currently running kernel
 sh -x /usr/sbin/mkinitramfs -o /tmp/initramfs.img |& tee /tmp/mkinitramfs.log
                                                      # debug the image creation
-/run/initramfs/initramfs.debug                       # log generate with the kernel `debug` argument during boot
 lsinitramfs                                          # list content of an initramfs image
 lsinitramfs /boot/initrd.img-$(uname -r)             # ^ of the currently running kernel
 unmkinitramfs <image> <path>                         # extract the content of an initramfs
+```
+
+### Debug
+
+Use following to build a new initramfs and to debug it with a virtual machine:
+
+* The `debug` argument writes a log-file to `/run/initramfs/initramfs.debug`
+* Use `break=` to spawn a shell at a chosen run-time (top, modules, premount, mount, mountroot, bottom, init)
+* The shell is basically bash with busybox...
+
+```bash
+# build the image
+>>> mkinitramfs -o /tmp/initramfs.img
+# start kernel & initramfs with debug flags
+>>> kvm -nographic -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img -append 'console=ttyS0 debug break=top' 
+...
+(initramfs) poweroff -f
+...
 ```
 
 ### Hooks
