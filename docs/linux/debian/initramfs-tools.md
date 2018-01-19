@@ -120,7 +120,6 @@ done
 
 # Live-Boot
 
-
 The `live-boot` package contains a hook for the initramfs-tools that configure 
 a live system during the boot process (early userspace):
 
@@ -133,7 +132,8 @@ a live system during the boot process (early userspace):
 apt install -y live-boot live-boot-docs live-config
 man live-boot                            # overview documentation
 /usr/share/initramfs-tools/hooks/live    # initramfs-tools hook
-/lib/live/boot/                          # scripts      
+/bin/live-boot                           # sources the config & exec. scripts
+/lib/live/boot/                          # scripts
 ```
 
 ## Debug
