@@ -30,34 +30,6 @@ iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
 ```
 
-### Initramfs-Tools
-
-```bash
-# use initramfs-tools on Debian
->>> apt install -y live-boot live-boot-initramfs-tools
-# publish the Linux kernel
->>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
-# create an initramfs image
->>> mkinitramfs -o /var/www/html/initramfs.img
-# create a rootfs
->>> apt install -y debootstrap systemd-container squashfs-tools
->>> debootstrap stretch /tmp/rootfs
-# access the root file-system
->>> chroot /tmp/rootfs
-## ...set the root password ...
-# start the root file-system in a container
->>> systemd-nspawn -b -D /tmp/rootfs/
-## ... customize ...
-# create a SquashFS
->>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
-# iPXE kernel command line
->>> cat /var/www/html/menu
-#!ipxe
-kernel vmlinuz initrd=initramfs.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
-initrd initramfs.img
-boot
-```
-
 ### Dracut
 
 

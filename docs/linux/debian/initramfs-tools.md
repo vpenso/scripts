@@ -33,7 +33,7 @@ lsinitramfs /boot/initrd.img-$(uname -r)             # ^ of the currently runnin
 unmkinitramfs <image> <path>                         # extract the content of an initramfs
 ```
 
-### Debug
+## Debug
 
 Use following to build a new initramfs and to debug it with a virtual machine:
 
@@ -54,13 +54,13 @@ Use following to build a new initramfs and to debug it with a virtual machine:
 Examine an initramfs image by extracting it into a temporary directory:
 
 ```bash
->>> cd `mktemp -d` && gzip -dc /boot/initrd.img-$(uname -r) | cpio -ivd
+>>> cd `mktemp -d` && gzip -dc /tmp/initramfs.img | cpio -ivd
 # the first program called by the Linux kernel
 >>> cat init
 ...
 ```
 
-### Hooks
+## Hooks
 
 Executed during image creation to add and configure files. 
 
@@ -108,4 +108,64 @@ done
 ## check if required file are in the initramfs image
 >>> lsinitramfs /tmp/initramfs.img  | grep infiniband
 ```
+
+# Live-Boot
+
+The `live-boot` package contains a hook for the initramfs-tools that configure 
+a live system during the boot process (early userspace):
+
+* Activated if `boot=live` was used as a kernel parameter
+* At boot time it will look for a (read-only) medium containing a "/live" directory where a root filesystems (often a compressed filesystem image like squashfs) is stored. If found, it will create a writable environment, using aufs, to boot the system from. 
+
+```bash
+apt install -y live-boot live-boot-docs live-config
+man live-boot                            # overview documentation
+```
+
+## Debug
+
+HTTP server hosting the files for network booting over PXE:
+
+```bash
+# install the Apache web-server
+>>> apt install -y apache2
+>>> rm /var/www/html/index.html
+```
+
+```bash
+# use initramfs-tools on Debian
+>>> apt install -y live-boot live-boot-initramfs-tools
+# publish the Linux kernel
+>>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
+# create an initramfs image
+>>> mkinitramfs -o /var/www/html/initramfs.img
+# create a rootfs
+>>> apt install -y debootstrap systemd-container squashfs-tools
+>>> debootstrap stretch /tmp/rootfs
+# access the root file-system
+>>> chroot /tmp/rootfs
+## ...set the root password ...
+# start the root file-system in a container
+>>> systemd-nspawn -b -D /tmp/rootfs/
+## ... customize ...
+# create a SquashFS
+>>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
+# iPXE kernel command line
+>>> cat /var/www/html/menu
+#!ipxe
+kernel vmlinuz initrd=initramfs.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
+initrd initramfs.img
+boot
+```
+
+Start a virtual machine with the iPXE bootloader
+
+```
+>>> wget http://boot.ipxe.org/ipxe.iso
+# start a virtual machine with the iPXE bootloader
+>>> kvm -m 2048 ipxe.iso
+## Ctrl+B to get to the iPXE prompt
+iPXE> dhcp
+```
+iPXE> chain http://10.1.1.28/menu
 
