@@ -179,6 +179,9 @@ Modular initramfs generator tool chain maintained by Debian:
 
 <https://tracker.debian.org/pkg/initramfs-tools>
 
+* **Hook** scripts are used to create an initramfs image.
+* **Boot** scripts are included into the initramfs image and executed during boot.
+
 ```bash
 apt install -y initramfs-tools                       # install package
 ## manage initramfs images on the local file-system, utilizing mkinitramfs
@@ -196,6 +199,7 @@ man initramfs.conf                                   # configuration file docume
 ls -1 {/etc,/usr/share}/initramfs-tools/conf.d*      # hooks overwriting the configuration file
 ls -1 {/etc,/usr/share}/initramfs-tools/hooks*       # hooks executed during generation of the initramfs
 ls -1 {/etc,/usr/share}/initramfs-tools/modules*     # module configuration
+/usr/share/initramfs-tools/hook-functions            # help functions use within hooks
 mkinitramfs -o /tmp/initramfs.img                    # create an initramfs image for the currently running kernel
 sh -x /usr/sbin/mkinitramfs -o /tmp/initramfs.img |& tee /tmp/mkinitramfs.log
                                                      # debug the image creation
