@@ -28,6 +28,8 @@ crw-rw----+ 1 root kvm 10, 232 Sep 18 09:00 /dev/kvm
 >>> sudo usermod -a -G kvm $USER
 ```
 
+
+
 Using the `kvm` command:
 
 ```bash
@@ -37,4 +39,29 @@ kvm -m 2048 -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
 kvm -netdev user,id=net0 -device virtio-net-pci,netdev=net0 ...
 # redirect serial console to terminal
 kvm -nographic .. -append console=ttyS0 ..
+```
+
+
+## Nested virtualization
+
+Allow to run a VM within a VM with hardware acceleration:
+
+```bash
+>>> cat /etc/modprobe.d/kvm-nested.conf
+options kvm-intel nested=1
+options kvm-intel enable_shadow_vmcs=1
+options kvm-intel enable_apicv=1
+options kvm-intel ept=1
+# reload the kernel module (stop all VMs beforehand)
+>>> modprobe -r kvm_intel && modprobe -a kvm_intel
+# check for the support
+>>> cat /sys/module/kvm_intel/parameters/nested
+Y
+```
+
+Configure [Libvirt](https://libvirt.org) to pass all features of the host CPU:
+
+```bash
+>>> grep 'cpu mode' libvirt_instance.xml
+  <cpu mode="host-passthrough"></cpu>
 ```
