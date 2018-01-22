@@ -141,11 +141,14 @@ man live-boot                            # overview documentation
 Use a `kvm` virtual machine with a network device and the kernel options 'break=mountroot boot=live':
 
 ```bash
->>> kvm -m 256 -nographic -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
+>>> kvm -m 512 -nographic -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
     -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img \ 
     -append 'console=ttyS0 debug=1 boot=live ip=dhcp toram fetch=http://10.1.1.28/root.squashfs' 
-...
-(initramfs) grep live /run/initramfs/initramfs.debug
+## in case things break ##
+# check the live-boot log
+(initramfs) cat /boot.log
+# check the network configuration
+(initramfs) cat /run/net*.conf
 ```
 
 HTTP server hosting the files for network booting over PXE:
