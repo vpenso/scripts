@@ -37,7 +37,7 @@ unmkinitramfs <image> <path>                         # extract the content of an
 
 Use following to build a new initramfs and to debug it with a [KVM](../kvm.md) virtual machine:
 
-* The `debug` argument writes a log-file to `/run/initramfs/initramfs.debug`
+* The `debug=1` argument writes a log-file to `/run/initramfs/initramfs.debug`
 * Use `break=` to spawn a shell at a chosen run-time (top, modules, premount, mount, mountroot, bottom, init)
 * The shell is basically bash with busybox...
 
@@ -45,7 +45,7 @@ Use following to build a new initramfs and to debug it with a [KVM](../kvm.md) v
 # build the image
 >>> mkinitramfs -o /tmp/initramfs.img
 # start kernel & initramfs with debug flags
->>> kvm -m 256 -nographic -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img -append 'console=ttyS0 debug break=top' 
+>>> kvm -m 256 -nographic -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img -append 'console=ttyS0 debug=1 break=top' 
 ...
 (initramfs) poweroff -f
 ...
@@ -143,7 +143,7 @@ Use a `kvm` virtual machine with a network device and the kernel options 'break=
 ```bash
 >>> kvm -m 256 -nographic -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
     -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img \ 
-    -append 'console=ttyS0 debug break=mountroot boot=live' 
+    -append 'console=ttyS0 debug=1 boot=live ip=dhcp toram fetch=http://10.1.1.28/root.squashfs' 
 ...
 (initramfs) grep live /run/initramfs/initramfs.debug
 ```
@@ -168,11 +168,11 @@ HTTP server hosting the files for network booting over PXE:
 >>> systemd-nspawn -b -D /tmp/rootfs/
 ## ... customize ...
 # create a SquashFS
->>> mksquashfs /tmp/rootfs /var/www/html/filesystem.squashfs
+>>> mksquashfs /tmp/rootfs /var/www/html/root.squashfs
 # iPXE kernel command line
 >>> cat /var/www/html/menu
 #!ipxe
-kernel vmlinuz initrd=initramfs.img boot=live components toram fetch=http://10.1.1.28/filesystem.squashfs
+kernel vmlinuz initrd=initramfs.img boot=live components toram fetch=http://10.1.1.28/root.squashfs
 initrd initramfs.img
 boot
 ```
