@@ -31,7 +31,7 @@ Initramfs is loaded to (volatile) memory during Linux boot and used as intermedi
 * Provides a minimalistic rescue shell
 * Mounted by the kernel to `/` if present, before executing `/init` main init process (PID 1)
 
-### Linux Kernel Support
+## Linux Kernel Support
 
 Enable support in the Linux kernel configuration:
 
@@ -48,7 +48,9 @@ CONFIG_TMPFS_POSIX_ACL=y
 CONFIG_TMPFS_XATTR=y
 ```
 
-### C Program Initrd
+## Building Initramfs
+
+### C Program
 
 Simple C program execute as initrd payload:
 
@@ -72,7 +74,7 @@ int main(void) {
 >>> kvm -m 2048 -kernel ${KERNEL}/${version}/linux -initrd initrd.gz -append "debug console=ttyS0" -nographic
 ```
 
-### BusyBox Initrd
+### BusyBox
 
 Download the latest BusyBox from [busybox.net](https://busybox.net/downloads/)
 
@@ -124,7 +126,7 @@ Test using a virtual machine:
 >>> kvm -nographic -m 2048 -append "$cmdline" -kernel ${KERNEL}/${version}/linux -initrd /tmp/initrd.gz
 ```
 
-### Debootstrap & Systemd
+### Systemd
 
 Debian user-space and systemd in an initramfs:
 
@@ -144,23 +146,21 @@ Debian user-space and systemd in an initramfs:
 >>> kvm -m 2048 -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.cpio.gz
 ```
 
-### VM Image to Initramfs
+## Trouble Shooting
 
-Convert a roofs from a qcow2 disk image to initramfs:
+While testing a new initramfs image in a virtual machine with [KVM](kvm.md)
+following error message may indicate not enough memory to uncompress 
+the image:
 
 ```bash
-function virt-convert-cpio() {
-  tmpdir=$(mktemp -d /tmp/virt-convert-cpio.XXXXXX)
-  image=$1
-  ofile=$2
-  virt-copy-out -a $image / $tmpdir/
-  (cd $tmpdir ; find . | cpio -ov -H newc | gzip -9 ) > $ofile
-  rm -rf $tmpdir
-}
+...
+[    0.974160] Unpacking initramfs...
+[    1.230752] Initramfs unpacking failed: write error
+...
 ```
-```bash
->>> virt-convert-cpio disk.img /tmp/initramfs.cpio.gz
-```
+
+Use option `-m <MB>` to increase the available memory.
+
 
 # Tool Chain
 
