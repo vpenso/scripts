@@ -35,7 +35,7 @@ unmkinitramfs <image> <path>                         # extract the content of an
 
 ## Debug
 
-Use following to build a new initramfs and to debug it with a virtual machine:
+Use following to build a new initramfs and to debug it with a [KVM](../kvm.md) virtual machine:
 
 * The `debug` argument writes a log-file to `/run/initramfs/initramfs.debug`
 * Use `break=` to spawn a shell at a chosen run-time (top, modules, premount, mount, mountroot, bottom, init)
@@ -45,7 +45,7 @@ Use following to build a new initramfs and to debug it with a virtual machine:
 # build the image
 >>> mkinitramfs -o /tmp/initramfs.img
 # start kernel & initramfs with debug flags
->>> kvm -nographic -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img -append 'console=ttyS0 debug break=top' 
+>>> kvm -m 256 -nographic -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img -append 'console=ttyS0 debug break=top' 
 ...
 (initramfs) poweroff -f
 ...
@@ -129,7 +129,7 @@ a live system during the boot process (early userspace):
 <https://wiki.debian.org/DebianLive>
 
 ```bash
-apt install -y live-boot live-boot-docs live-config
+apt install -y live-boot live-boot-doc
 man live-boot                            # overview documentation
 /usr/share/initramfs-tools/hooks/live    # initramfs-tools hook
 /bin/live-boot                           # sources the config & exec. scripts
@@ -138,17 +138,22 @@ man live-boot                            # overview documentation
 
 ## Debug
 
+Use a `kvm` virtual machine with a network device and the kernel options 'break=mountroot boot=live':
+
+```bash
+>>> kvm -m 256 -nographic -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
+    -kernel /boot/vmlinuz-$(uname -r) -initrd /tmp/initramfs.img \ 
+    -append 'console=ttyS0 debug break=mountroot boot=live' 
+...
+(initramfs) grep live /run/initramfs/initramfs.debug
+```
+
 HTTP server hosting the files for network booting over PXE:
 
 ```bash
 # install the Apache web-server
 >>> apt install -y apache2
 >>> rm /var/www/html/index.html
-```
-
-```bash
-# use initramfs-tools on Debian
->>> apt install -y live-boot live-boot-initramfs-tools
 # publish the Linux kernel
 >>> cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
 # create an initramfs image
@@ -182,4 +187,6 @@ Start a virtual machine with the iPXE bootloader
 iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
 ```
+
+
 
