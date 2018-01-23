@@ -16,11 +16,9 @@ Package repositories:
 * [ELRepo](http://elrepo.org)
 * [CERN CentOS](http://linuxsoft.cern.ch/) (CC)
 
+## Server
 
-
-## Mirrors
-
-Mirror CentOS packages on a (private) local mirror:
+Prerequisite HTTP server:
 
 ```bash
 >>> yum -y install yum-utils createrepo                       # install the tools
@@ -40,6 +38,10 @@ Mirror CentOS packages on a (private) local mirror:
 SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
+
+### Mirror
+
+Mirror CentOS packages on a (private) local mirror.
 
 Periodic package mirror sync with Systemd units:
 
@@ -64,7 +66,7 @@ OnUnitInactiveSec=2h
 WantedBy=multi-user.target
 >>> systemctl start reposync.timer
 ``` 
-## Custom Repository
+### Custom Repository
 
 Create a local repository to host RPM packages:
 
