@@ -77,7 +77,7 @@ Create a local repository to host RPM packages:
 >>> path=/var/www/html/repo                                   # directory holding the repository
 >>> mkdir -p $path && createrepo $path                        # intialize the package repository
 ## move RPM packages into $path
->>> createrepo --update                                       # update once packages have been added
+>>> createrepo --update $path                                 # update once packages have been added
 ```
 
 Install and configure a web-server similar to the package mirror above.
