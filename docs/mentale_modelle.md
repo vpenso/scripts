@@ -1,16 +1,16 @@
-Ein Mentales Model erlaubt es einen Sachverhalt, Ablauf oder Prozess im
-Geiste abzubilden. Diese vereinfachte (damit unvollständige) Repräsentation
-erlaubt das wiederkehrende von Muster und ermöglicht gegebenenfalls 
-angemessen darauf zu reagieren. Mentale Modelle geben ihrem Anwender das
-Verständnis wiederkehrende Situationen oder Erkenntnisse mit einer im
-Vorfeld durchdachten zielführenden Reaktion zu begegnen.
+Ein mentales Model erlaubt es einen Sachverhalt, Ablauf oder Prozess im
+Geiste abzubilden. Eine solche abstrakte Repräsentation erlaubt wiederkehrende 
+Muster zu erkennen und ermöglicht es gegebenenfalls angemessen darauf zu 
+reagieren. Mentale Modelle geben ihrem Anwender das Verständnis wiederkehrende 
+Situationen oder Erkenntnisse mit einer im Vorfeld durchdachten zielführenden 
+Reaktion zu begegnen.
 
 ## Entscheidungen
 
 ### Umkehr
 
-Viele Probleme sind einfacher zu lösen in dem deren Inverse angestrebt wird. 
-In anderen Worten, erkenne welches Ergebnis definitiv vermieden werden soll, 
+Viele Probleme sind einfacher zu lösen in dem deren Inverse verhindert wird. 
+In anderen Worten: Erkenne welches Ergebnis definitiv vermieden werden soll, 
 verhindere dessen Realisierung, und behebe dadurch indirekt das Problem.  
 **Folgerung** – Erkenne wie Menschen in ihrem alltäglichen Handeln scheitern,
 und vermeide dieses Verhalten zu wiederholen.  
@@ -20,8 +20,7 @@ wie kann ich diesen verhindern.“
 ### Aktion & Reaktion
 
 Im täglichen Leben sind viele Entscheidungen einfach zu korrigieren. Das 
-entscheidende ist flexible auf ein Ergebnis zu reagieren und gegebenenfalls
-einen Fehler wieder auszugleichen.  
+entscheidende ist flexible und schnell auf ungewollte Ergebnisse zu reagieren.  
 **Idiom** – Ein Test ist mehr Wert als die Meinung vieler Experten.  
 **Idiom** – Die beste Tat ist die Richtige, die zweitbeste ist die Falsche, 
 und das Schlimmste ist nicht zu Handeln.  
@@ -39,10 +38,10 @@ Model, ein Lotto Ticket ist nicht lohnenswert falls es mehr als 2 Euro kostet.
 Entscheidung zu treffen. Oft ist es notwendig den zu erwartenden Nutze im 
 Verhältnis zu betrachten.
 
-### [Nutzenzuwachs](https://de.wikipedia.org/wiki/Grenznutzen)**
+### [Nutzenzuwachs](https://de.wikipedia.org/wiki/Grenznutzen)
 
 Entstehung eines Mehrwertes durch den Konsum eines Gutes. Der Nutzenzuwachs
-durch ein Gute nimmt meistens bei wachsendem Konsum ab.  
+durch ein Gut nimmt "meistens" bei wachsendem Konsum ab.  
 **Folgerung** – Es ist wichtig bei Konsum den Nutzenzuwachs realistisch
 zu bewerten und gegebenenfalls bei minimalen Mehrwert zu verzichten.  
 **Beispiel** – Der Besitz des ersten Autos hat einen signifikanten Einfluss 
@@ -50,13 +49,12 @@ auf Mobilität. Ein zweites Auto verbessert diesen Zustand nur marginal.
 
 ## Strategie & Taktik
 
-Entscheidungen lassen sich grob in zwei Kategorien unterteilen. Strategische
-Entscheidungen haben einen graduellen schleichenden Effekt über lange Zeit.
-Taktische Entscheidungen verfolgen einem kurzfristigem Ziel und haben eine
-relativ schnelle binäre Folge (Erfolg oder Scheitern).  
-**Folgerung** – Ziele deren Erreichen eine langfristige Strategie notwendig
-macht, können nur realisiert werden durch Entitäten deren Einfluss über einen 
-ähnlich lagen Zeitraum bestehen bleibt.
+Entscheidungen lassen sich grob in zwei Kategorien unterteilen:
+
+* Strategische Entscheidungen haben einen graduellen schleichenden Effekt über lange Zeit.
+* Taktische Entscheidungen verfolgen einem kurzfristigem Ziel und haben eine relativ schnelle binäre Folge (Erfolg oder Scheitern).
+
+**Folgerung** – Ziele deren Erreichen eine langfristige Strategie notwendig macht, können nur realisiert werden durch Entitäten deren Einfluss über einen ähnlich lagen Zeitraum bestehen bleibt.
 
 ## Kommunikation
 
