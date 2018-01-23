@@ -18,17 +18,9 @@ Package repositories:
 
 ## Server
 
-Prerequisite HTTP server:
+Simple **test HTTP server** setup:
 
 ```bash
->>> yum -y install yum-utils createrepo                       # install the tools
->>> path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
-## repeat for all repo IDs to mirror
->>> yum repolist                                              # list repo IDs
->>> mkdir -p $path && createrepo $path                        # intialize CentOS base repo
->>> reposync -gml --download-metadata -r base -p $path        # sync repo
->>> createrepo -v --update $path/base -g comps.xml            # update repo after each sync
-# deploy a web-server to host the repos
 >>> yum -y install httpd && systemctl enable httpd && systemctl start httpd
 # Grant access to the HTTP port, or disable the firewall 
 >>> firewall-cmd --permanent --add-service=http && firewall-cmd --reload
@@ -39,9 +31,19 @@ SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
 
-### Mirror
+### Package Mirror
 
 Mirror CentOS packages on a (private) local mirror.
+
+```bash
+>>> yum -y install yum-utils createrepo                       # install the tools
+>>> path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
+## repeat for all repo IDs to mirror
+>>> yum repolist                                              # list repo IDs
+>>> mkdir -p $path && createrepo $path                        # intialize CentOS base repo
+>>> reposync -gml --download-metadata -r base -p $path        # sync repo
+>>> createrepo -v --update $path/base -g comps.xml            # update repo after each sync
+```
 
 Periodic package mirror sync with Systemd units:
 
