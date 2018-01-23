@@ -9,10 +9,11 @@ The Chef client packages:
 
 ```bash
 ## Debian Stretch (using the Jessie package)
->>> wget https://packages.chef.io/files/stable/chef/13.5.3/debian/8/chef_13.5.3-1_amd64.deb
->>> sudo dpkg -i chef_13.5.3-1_amd64.deb
->>> knife --version
-Chef: 13.5.3
+wget https://packages.chef.io/files/stable/chef/13.5.3/debian/8/chef_13.5.3-1_amd64.deb
+dpkg -i chef_13.5.3-1_amd64.deb
+## CentOS 7
+wget https://packages.chef.io/files/stable/chef/13.7.16/el/7/chef-13.7.16-1.el7.x86_64.rpm
+yum install -y ./chef-13.7.16-1.el7.x86_64.rpm
 ```
 
 ## Knife
