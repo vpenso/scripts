@@ -90,18 +90,14 @@ slurm-llnl (16.05.0-1) 14 Jun 2016
 Latest Munge release: <https://github.com/dun/munge/releases>
 
 ```bash
-# install the tool chain
->>> yum groupinstall "Development Tools"
->>> yum -y install rpm-build bzip2-devel openssl-devel zlib-devel wget
+# install build tools and dependencies
+>>> yum install -y "@Development Tools" rpm-build bzip2-devel openssl openssl-devel zlib-devel wget
 # download the latest verison of Munge
->>> wget https://github.com/dun/munge/releases/download/munge-0.5.12/munge-0.5.12.tar.xz
+>>> version=0.5.13
+>>> wget https://github.com/dun/munge/releases/download/munge-${version}/munge-${version}.tar.xz
 # build the packages
->>> rpmbuild -tb --clean munge-0.5.12.tar.xz
+>>> rpmbuild -tb --clean munge-${version}.tar.xz
 >>> ls ~/rpmbuild/RPMS/x86_64/*
-/root/rpmbuild/RPMS/x86_64/munge-0.5.12-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/munge-debuginfo-0.5.12-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/munge-devel-0.5.12-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/munge-libs-0.5.12-1.el7.centos.x86_64.rpm
 ```
 
 Latest Slurm release: <https://www.schedmd.com/downloads.php>
@@ -109,23 +105,13 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 ```bash
 # install dependencies
 >>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel mysql-devel
->>> rpm -i /root/rpmbuild/RPMS/x86_64/munge*.rpm  # install munge including the development package
+>>> rpm -i ~/rpmbuild/RPMS/x86_64/munge*.rpm  # install munge including the development package
 # download the latest version of slurm
->>> wget https://www.schedmd.com/downloads/latest/slurm-17.02.7.tar.bz2
+>>> version=17.11.2
+>>> wget https://download.schedmd.com/slurm/slurm-${version}.tar.bz2
 # build the Slurm packages
->>> rpmbuild -tb --clean slurm-17.02.7.tar.bz2
+>>> rpmbuild -tb --clean slurm-${version}.tar.bz2
 >>> ls -1 /root/rpmbuild/RPMS/x86_64/slurm*
-/root/rpmbuild/RPMS/x86_64/slurm-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-contribs-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-devel-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-munge-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-openlava-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-pam_slurm-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-perlapi-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-plugins-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-sql-17.02.7-1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/slurm-torque-17.02.7-1.el7.centos.x86_64.rpm
 # publish packages on a local repository
 >>> cp ~/rpmbuild/RPMS/x86_64/*.rpm /var/www/html/repo/
 >>> createrepo --update /var/www/html/repo/
