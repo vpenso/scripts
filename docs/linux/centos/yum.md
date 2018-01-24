@@ -63,10 +63,12 @@ yum downgrade <package>-<version>       # rollback/downgrade a package to a spec
 Version **lock**:
 
 ```bash
-yum install yum-plugin-versionlock      # install package lock Yum plugin
+yum install -y yum-plugin-versionlock   # install package lock Yum plugin
+/etc/yum/pluginconf.d/versionlock.conf  # configuration file
 yum versionlock list                    # show all locks
-yum versionlock <package>-<version>     # lock a package to a specific version
+yum versionlock <package>*-<version>    # lock a package to a specific version
 yum versionlcok delete <package>        # remove a lock
+yum versionlock clear                   # remove all versionlocks
 ```
 
 Exclude packages from updates in `/etc/yum.conf`:

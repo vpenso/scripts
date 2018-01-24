@@ -117,6 +117,29 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 >>> createrepo --update /var/www/html/repo/
 ```
 
+Version lock of the Munge & Slurm packages, e.g.:
+
+```bash
+>>> yum versionlock munge*-0.5.12
+>>> yum versionlock slurm*-17.02.7
+>>> yum versionlock list | grep -e munge -e slurm
+0:munge-0.5.12-1.el7.centos.*
+0:munge-debuginfo-0.5.12-1.el7.centos.*
+0:munge-devel-0.5.12-1.el7.centos.*
+0:munge-libs-0.5.12-1.el7.centos.*
+0:slurm-17.02.7-1.el7.centos.*
+0:slurm-contribs-17.02.7-1.el7.centos.*
+0:slurm-devel-17.02.7-1.el7.centos.*
+0:slurm-munge-17.02.7-1.el7.centos.*
+0:slurm-openlava-17.02.7-1.el7.centos.*
+0:slurm-pam_slurm-17.02.7-1.el7.centos.*
+0:slurm-perlapi-17.02.7-1.el7.centos.*
+0:slurm-plugins-17.02.7-1.el7.centos.*
+0:slurm-slurmdbd-17.02.7-1.el7.centos.*
+0:slurm-sql-17.02.7-1.el7.centos.*
+0:slurm-torque-17.02.7-1.el7.centos.*
+```
+
 ## Source Code
 
 ### Munge
