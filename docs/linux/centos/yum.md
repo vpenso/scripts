@@ -65,6 +65,7 @@ Version **lock**:
 ```bash
 yum install -y yum-plugin-versionlock   # install package lock Yum plugin
 /etc/yum/pluginconf.d/versionlock.conf  # configuration file
+/etc/yum/pluginconf.d/versionlock.list  # package list format EPOCH:NAME-VERSION-RELEASE.ARCH
 yum versionlock list                    # show all locks
 yum versionlock <package>*-<version>    # lock a package to a specific version
 yum versionlcok delete <package>        # remove a lock
