@@ -75,17 +75,16 @@ Install required packages on a node:
 ```bash
 >>> yum groupinstall -y "Development Tools"
 ## download and extract the source code
->>> wget https://github.com/singularityware/singularity/releases/download/2.3.1/singularity-2.3.1.tar.gz
->>> tar -xvf singularity-2.3.1.tar.gz && cd singularity-2.3.1
+>>> version=2.4.2
+>>> wget https://github.com/singularityware/singularity/releases/download/${version}/singularity-${version}.tar.gz
+>>> tar -xvf singularity-${version}.tar.gz && cd singularity-${version}
 ## configure & build
 >>> ./configure
 >>> make
 ## create an RPM package
->>> rpmbuild -ta singularity-2.3.1.tar.gz
+>>> rpmbuild -ta singularity-${version}.tar.gz
+## list the packages
 >>> ls -1 ~/rpmbuild/RPMS/x86_64/singularity-*
-/root/rpmbuild/RPMS/x86_64/singularity-2.3.1-0.1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/singularity-debuginfo-2.3.1-0.1.el7.centos.x86_64.rpm
-/root/rpmbuild/RPMS/x86_64/singularity-devel-2.3.1-0.1.el7.centos.x86_64.rpm
 ```
 
 ## Configuration
