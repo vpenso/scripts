@@ -16,73 +16,6 @@ Package repositories:
 * [ELRepo](http://elrepo.org)
 * [CERN CentOS](http://linuxsoft.cern.ch/) (CC)
 
-## Server
-
-Simple **test HTTP server** setup:
-
-```bash
->>> yum -y install httpd && systemctl enable httpd && systemctl start httpd
-# Grant access to the HTTP port, or disable the firewall 
->>> firewall-cmd --permanent --add-service=http && firewall-cmd --reload
->>> systemctl stop firewalld && systemctl disable firewalld
-# Disable SELinux
->>> grep ^SELINUX= /etc/selinux/config
-SELINUX=disabled
->>> setenforce 0 && sestatus
-```
-
-### Package Mirror
-
-Mirror CentOS packages on a (private) local mirror.
-
-```bash
->>> yum -y install yum-utils createrepo                       # install the tools
->>> path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
-## repeat for all repo IDs to mirror
->>> yum repolist                                              # list repo IDs
->>> mkdir -p $path && createrepo $path                        # intialize CentOS base repo
->>> reposync -gml --download-metadata -r base -p $path        # sync repo
->>> createrepo -v --update $path/base -g comps.xml            # update repo after each sync
-```
-
-Periodic package mirror sync with Systemd units:
-
-```bash
->>> cat /etc/systemd/system/reposync.service
-[Unit]
-Description=Mirror package repository
-
-[Service]
-ExecStart=/usr/bin/reposync -gml --download-metadata -r base -p /var/www/html/centos/7/os/x86_64/
-ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/7/os/x86_64/base -g comps.xml
-Type=oneshot
->>> cat /etc/systemd/system/reposync.timer 
-[Unit]
-Description=Periodically execute package mirror sync
-
-[Timer]
-OnStartupSec=300s
-OnUnitInactiveSec=2h
-
-[Install]
-WantedBy=multi-user.target
->>> systemctl start reposync.timer
-``` 
-### Custom Repository
-
-Create a local repository to host RPM packages:
-
-```bash
->>> yum -y install yum-utils createrepo                       # install the tools
->>> path=/var/www/html/repo                                   # directory holding the repository
->>> mkdir -p $path && createrepo $path                        # intialize the package repository
-## move RPM packages into $path
->>> createrepo --update $path                                 # update once packages have been added
-```
-
-Install and configure a web-server similar to the package mirror above.
-
-
 # Yum
 
 Yum is the Red Hat package manager 
@@ -118,12 +51,18 @@ yum makecache                     # update metadata for the currently enabled re
 yum clean all                     # clean up all the repository metadata caches
 ```
 
-Package rollback and package version lock:
+### Versions
 
 ```bash
 yum --showduplicates list <package>     # show all versions of a package
 repoquery --show-duplicates <package>
+yum install <package>-<verison>
 yum downgrade <package>-<version>       # rollback/downgrade a package to a specific version
+```
+
+Version **lock**:
+
+```bash
 yum install yum-plugin-versionlock      # install package lock Yum plugin
 yum versionlock list                    # show all locks
 yum versionlock <package>-<version>     # lock a package to a specific version
@@ -138,8 +77,16 @@ Exclude packages from updates in `/etc/yum.conf`:
 exclude=<foo>* <bar>*
 ```
 
+### History
 
-Transaction history
+Show the **changelog** of a package:
+
+```bash
+yum install yum-plugin-changelog
+yum changelog all <package>
+```
+
+**Transaction history**:
 
 ```bash
 /var/lib/yum/history/                # history DB
@@ -266,6 +213,71 @@ apply_updates = yes
 >>> systemctl enable --now dnf-automatic-install.timer
 >>> systemctl list-timers '*dnf-automatic*'
 ```
+
+# Package Server
+
+Simple **test HTTP server** setup:
+
+```bash
+>>> yum -y install httpd && systemctl enable httpd && systemctl start httpd
+# Grant access to the HTTP port, or disable the firewall 
+>>> firewall-cmd --permanent --add-service=http && firewall-cmd --reload
+>>> systemctl stop firewalld && systemctl disable firewalld
+# Disable SELinux
+>>> grep ^SELINUX= /etc/selinux/config
+SELINUX=disabled
+>>> setenforce 0 && sestatus
+```
+
+### Package Mirror
+
+Mirror CentOS packages on a (private) local mirror.
+
+```bash
+>>> yum -y install yum-utils createrepo                       # install the tools
+>>> path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
+## repeat for all repo IDs to mirror
+>>> yum repolist                                              # list repo IDs
+>>> mkdir -p $path && createrepo $path                        # intialize CentOS base repo
+>>> reposync -gml --download-metadata -r base -p $path        # sync repo
+>>> createrepo -v --update $path/base -g comps.xml            # update repo after each sync
+```
+
+Periodic package mirror sync with Systemd units:
+
+```bash
+>>> cat /etc/systemd/system/reposync.service
+[Unit]
+Description=Mirror package repository
+
+[Service]
+ExecStart=/usr/bin/reposync -gml --download-metadata -r base -p /var/www/html/centos/7/os/x86_64/
+ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/7/os/x86_64/base -g comps.xml
+Type=oneshot
+>>> cat /etc/systemd/system/reposync.timer 
+[Unit]
+Description=Periodically execute package mirror sync
+
+[Timer]
+OnStartupSec=300s
+OnUnitInactiveSec=2h
+
+[Install]
+WantedBy=multi-user.target
+>>> systemctl start reposync.timer
+``` 
+### Custom Repository
+
+Create a local repository to host RPM packages:
+
+```bash
+>>> yum -y install yum-utils createrepo                       # install the tools
+>>> path=/var/www/html/repo                                   # directory holding the repository
+>>> mkdir -p $path && createrepo $path                        # intialize the package repository
+## move RPM packages into $path
+>>> createrepo --update $path                                 # update once packages have been added
+```
+
 
 # Security Updates
 
