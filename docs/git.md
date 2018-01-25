@@ -1,8 +1,6 @@
 
 ## Setup
 
-↴ [git-default-config](git-default-config)
-
 ```bash
 git help config                              # configuration documentation
 git-default-config '<name>' <mail> <editor>
