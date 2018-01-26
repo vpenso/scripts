@@ -143,9 +143,11 @@ gpgcheck=0
 /etc/yum.repos.d/epel-testing.repo
 ```
 
-## Unattended Update
+## Yum-Cron
 
 Keep repository metadata up to date, and check for, download, and apply updates
+
+Enable the service:
 
 ```bash
 >>> yum install -y yum-cron      # install the package
@@ -161,6 +163,24 @@ apply_updates = yes
 
 CentOS does not support `yum --security update` therefore the `update_cmd = default` is required.
 
+Configuration files:
+
+```bash
+>>> find /etc/yum/* -name '*cron*'
+/etc/yum/yum-cron.conf
+/etc/yum/yum-cron-hourly.conf
+# cronjobs executing yum-cron
+>>> find /etc/cron* -name '*yum*'
+/etc/cron.daily/0yum-daily.cron
+/etc/cron.hourly/0yum-hourly.cron
+```
+
+Trouble shooting:
+
+```bash
+# check if the cronjobs are executed...
+>>> grep yum /var/log/cron
+```
 # DNF
 
 Package manager for RPM based distributions → [DNF on GitHub](https://github.com/rpm-software-management/dnf)
