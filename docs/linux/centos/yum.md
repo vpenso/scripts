@@ -153,12 +153,7 @@ Enable the service:
 >>> yum install -y yum-cron      # install the package
 # start/enable the service
 >>> systemctl start yum-cron.service && systemctl enable yum-cron.service
-```
-
-
-Configuration files:
-
-```bash
+# configuration files
 >>> find /etc/yum/* -name '*cron*'
 /etc/yum/yum-cron.conf
 /etc/yum/yum-cron-hourly.conf
@@ -171,7 +166,7 @@ Configuration files:
 Configure `download_updates` and `apply_updates` to **enable the package updates**:
 
 * CentOS does not support `yum --security update` therefore the `update_cmd = default` is required
-* Install new **GPG keys by** packages automatically with `assumeyes = True`
+* Install new **GPG keys** by packages automatically with `assumeyes = True`
 
 ```bash
 >>> grep -e ^update_cmd -e ^download -e ^apply /etc/yum/*cron*.conf
