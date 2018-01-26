@@ -153,15 +153,8 @@ Enable the service:
 >>> yum install -y yum-cron      # install the package
 # start/enable the service
 >>> systemctl start yum-cron.service && systemctl enable yum-cron.service
-# basic configuration
->>> egrep -v '^#|^$' /etc/yum/yum-cron-hourly.conf | grep update
-update_cmd = default
-update_messages = yes
-download_updates = yes
-apply_updates = yes
 ```
 
-CentOS does not support `yum --security update` therefore the `update_cmd = default` is required.
 
 Configuration files:
 
@@ -175,11 +168,31 @@ Configuration files:
 /etc/cron.hourly/0yum-hourly.cron
 ```
 
+Configure `download_updates` and `apply_updates` to **enable the package updates**:
+
+* CentOS does not support `yum --security update` therefore the `update_cmd = default` is required
+* Install new **GPG keys by** packages automatically with `assumeyes = True`
+
+```bash
+>>> grep -e ^update_cmd -e ^download -e ^apply /etc/yum/*cron*.conf
+/etc/yum/yum-cron.conf:update_cmd = default
+/etc/yum/yum-cron.conf:download_updates = yes
+/etc/yum/yum-cron.conf:apply_updates = no
+/etc/yum/yum-cron-hourly.conf:update_cmd = default
+/etc/yum/yum-cron-hourly.conf:download_updates = yes
+/etc/yum/yum-cron-hourly.conf:apply_updates = yes
+>>> grep ^assume /etc/yum/*cron*
+/etc/yum/yum-cron-hourly.conf:assumeyes = True
+```
+
+
 Trouble shooting:
 
 ```bash
 # check if the cronjobs are executed...
 >>> grep yum /var/log/cron
+# execute yum-cron with a configuration file...
+>>> /usr/sbin/yum-cron /etc/yum/yum-cron-hourly.conf
 ```
 # DNF
 
