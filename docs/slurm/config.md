@@ -321,55 +321,6 @@ List resources and features of execution nodes with:
     40   2:10:2     561009   129079   (null)                    lxbk[0001-0200]
     40   2:10:2     550000   256000   firepro                   lxbl[0001-1000]
 
-### Isolation
-
-Control Groups cgroups is a Linux kernel mechanism (appeared in 2.6.24) to limit, isolate and monitor resource usage (CPU, memory, disk I/O, etc.) of groups of processes. Slurm uses this mechanism to:
-
-- Limit consumable resources of jobs.
-- Improved tasks isolation upon resources.
-- Improved robustness (e.g. more reliable cleanup of jobs)
-- Improved efficiency of Slurm activities (e.g., process tracking, collection of accounting statistics) 
-
-Slurm plug-ins relates to Cgroups:
-
-Plug-in          | Comment
------------------|-----------------------------------------------------------------------------------
-proctrack/cgroup | Uses the Cgroup freezer subsystem to track processes and suspend/resume job steps. 
-task/cgroup      | Uses the Cgroup cpuset subsystem to bind processes to CPU cores (task affinity.) 
-
-Enable these in [slurm.conf][slurmconf]:
-
-    » grep cgroup slurm.conf 
-    ProctrackType=proctrack/cgroup
-    TaskPlugin=task/cgroup
-
-The [cgroup.conf][cgroupconf] file is read by all components using these facilities. 
-
-    » cat /etc/slurm-llnl/cgroup.conf 
-    CgroupAutomount=yes
-    ConstrainCores=yes
-
-
-Config             | Comment
--------------------|---------------------------
-CgroupAutomount    | Mount the cgroup pseudo file-system to `/cgroup` if not available yet:
-ConstrainCores     | Limits the jobs access to CPU resources to the defined number of cores. 
-
-For example the following output shows a job requesting one CPU (here with hyperthreading), but starting for processes. 
-
-    » sbatch --cpus-per-task 1 -p debug stress.sh 100s 4 500M
-    » ps -u vpenso -o pid,%cpu,args
-      PID %CPU COMMAND
-    36679  0.0 /bin/bash /var/lib/slurm-llnl/slurmd/job00118/slurm_script 100s 4 500M
-    36689 51.0 stress --vm 4 --vm-bytes 500M --timeout 100s
-    36690 51.0 stress --vm 4 --vm-bytes 500M --timeout 100s
-    36691 50.7 stress --vm 4 --vm-bytes 500M --timeout 100s
-    36692 50.7 stress --vm 4 --vm-bytes 500M --timeout 100s
-
-
-
-
-
 ## Partitions
 
 _Partitions group nodes with similar characteristics (resources, priorities, limits, access controls, etc)._
