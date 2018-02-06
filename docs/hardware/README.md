@@ -51,15 +51,20 @@ The Microarchitecture (µarch) is the implementation of the ISA under specific d
 * The microprocessor is the physical representation (circuits) of the ISA and microarchitecture (µarch).
 * Example: add instruction (ISA) vs adder implementation (µarch) [bit serial, ripple carry, carry lockahead, etc.]
 * x86 ISA ha many implementations: Intel [2,3,4]86, Intel Pentium [Pro, 4], Intel Core, AMD...
+* Design points: cost, performance, power consumption, reliability, time to market...
 
 The µarch defines anything done in hardware and can execute instructions in any order (e.g. data-flow order) as long it obeys the **semantics specified by the ISA**:
 
 * Pipeline instruction execution (Intel 486)
 * Multiple instructions at a time (Intel Pentium)
 * Out-of-order execution (Intel Pentium Pro)
-* Speculative execution
-* Memory access scheduling policy
-* Cache levels, size, associativity, replacement policy
-* Separate instruction and data caches
-* Superscalar processing
-* Error correction
+* Speculative execution, branch prediction, prefetching
+* Memory access scheduling policy, cache (levels, size, associativity, replacement policy)
+* Clock gating, dynamic voltage and frequency scaling (energy efficiency)
+* Error handling, correction
+* Superscalar processing, multiple instructions (VLIW architecture, Intel Itanium)
+* SIMD processing (vector/array processors, GPUs)
+* Systolic arrays (Google tensor-processor)
+
+# Memory Hierarchy
+
