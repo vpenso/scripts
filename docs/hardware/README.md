@@ -72,9 +72,9 @@ Programmers see **virtual memory** provided by the system (OS + hardware):
 
 * Simplified abstraction of memory for the program providing the illusion of "infinite" memory
 * The system manages the physical memory space transparent to the programmer by mapping virtual memory addresses to the limited physical memory
-* Example for the programmer/(micro)architecture trade-off
+* Example for the programmer/(micro) architecture trade-off
 
-Storage (physical memory) is divided into a **memory hierarchy** with three layers (broadly speaking):
+Storage (physical memory) is divided into a **memory hierarchy**:
 
 **Primary storage**:
 
@@ -85,35 +85,6 @@ Storage (physical memory) is divided into a **memory hierarchy** with three laye
 
 - **Mass storage** devices like hard disk drives and rotating optical storage (CD/DVD)
 - **Flash memory** like USB flash drives and solid-state drives (SSD)
-
-## Hierarchy
-
-A **memory hierarchy** separates storage into a layers/levels based on **latency** (response time) and **capacity**:
-
-* Fast and large storage can not be achieved with a single level memory
-* Multiple levels of storage progressively bigger and slower
-
-Typical modern memory(/cache) hierarchy:
-
-Name      | Latency | Size
-----------|---------|----------------
-register  | <1ns    | 32words
-L1 cache  | ~1ns    | ~32KB
-L2 cache  | >1ns    | <1MB
-L3 cache  |         |
-DRAM      | ~100ns  | GB
-Swap      | ~10ms   | TB
-
-**CPU Cache** is used to avoid repeated access to main memory (typically DRAM):
-
-* Automatically managed memory hierarchy (Level 1,2,3) (typically SRAM) 
-* Stores frequently used data and is commonly on-die with an associated CPU 
-
-**Locality** ensures that data required by the processor is kept in the fast(er) level(s):
-
-* Idea: Store recently accessed and adjacent data automatically in fast memory (RAM and cache)
-* Temporal locality is based on repetitive computations (e.g. loops) referencing the same memory
-* Spatial locality is based on a probability of related computations referencing a cluster of memory (e.g. array)
 
 ## Technology
 
@@ -131,6 +102,36 @@ Swap      | ~10ms   | TB
   - Higher cost
   - No refresh needed
   - Manufacturing compatible with logic process
+
+## Hierarchy
+
+A memory hierarchy separates storage into a layers/levels based on **latency** (response time) and **capacity**:
+
+* Fast and large storage can not be achieved with a single level memory
+* Multiple levels of storage progressively bigger and slower
+
+Typical modern memory(/cache) hierarchy:
+
+Name      | Latency | Size
+----------|---------|----------------
+register  | <1ns    | 32words
+L1 cache  | ~1ns    | ~32KB
+L2 cache  | >1ns    | <1MB
+L3 cache  | >10ns   | >1MB
+DRAM      | ~100ns  | GB
+Swap      | ~10ms   | TB
+
+**CPU Cache** is used to avoid repeated access to main memory (typically DRAM):
+
+* Automatically managed memory hierarchy (Level 1,2,3) (typically SRAM) 
+* Stores frequently used data and is commonly on-die with an associated CPU 
+
+**Locality** ensures that data required by the processor is kept in the fast(er) level(s):
+
+* Idea: Store recently accessed and adjacent data automatically in fast memory (RAM and cache)
+* Temporal locality is based on repetitive computations (e.g. loops) referencing the same memory
+* Spatial locality is based on a probability of related computations referencing a cluster of memory (e.g. array)
+
 
 ## Cache
 
