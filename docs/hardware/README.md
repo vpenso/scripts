@@ -18,7 +18,7 @@ Stored Program Computer (aka. Von Neumann Model)
 **Data-flow architecture**:
 
 * Instructions executed based on the availability of input arguments, **data flow order**
-* Conceptually **no instruction pointer** required instruction ordering specified by data dependencies
+* Conceptually **no instruction pointer** required since execute based on data dependencies
 * Inherently more parallel with the potential to execute many instructions at the same time 
 
 Control- vs data-flow trade-offs:
@@ -48,9 +48,9 @@ The ISA includes all functionality exposed to the programmer:
 
 The Microarchitecture (µarch) is the implementation of the ISA under specific design constrains and goals:
 
-* The microprocessor is the physical representation (circuits) of the ISA and microarchitecture (µarch).
+* The microprocessor is the physical representation (circuits) of the ISA and µarch
 * Example: add instruction (ISA) vs adder implementation (µarch) [bit serial, ripple carry, carry lockahead, etc.]
-* x86 ISA ha many implementations: Intel [2,3,4]86, Intel Pentium [Pro, 4], Intel Core, AMD...
+* Example: x86 ISA has many implementations - Intel [2,3,4]86, Intel Pentium [Pro, 4], Intel Core, AMD...
 * Design points: cost, performance, power consumption, reliability, time to market...
 
 The µarch defines anything done in hardware and can execute instructions in any order (e.g. data-flow order) as long it obeys the **semantics specified by the ISA**:
@@ -66,17 +66,29 @@ The µarch defines anything done in hardware and can execute instructions in any
 * SIMD processing (vector/array processors, GPUs)
 * Systolic arrays (Google tensor-processor)
 
-# Random-Access Memory
+# Computer Data Storage
 
-Primary storage, programmers see **virtual memory** provided by the system (OS + hardware):
+Programmers see **virtual memory** provided by the system (OS + hardware):
 
 * Simplified abstraction of memory for the program providing the illusion of "infinite" memory
 * The system manages the physical memory space transparent to the programmer by mapping virtual memory addresses to the limited physical memory
 * Example for the programmer/(micro)architecture trade-off
 
-## Memory Hierarchy
+Storage (physical memory) is divided into a **memory hierarchy** with three layers (broadly speaking):
 
-Separates storage into a hierarchy based on **latency** (response time) and **capacity**:
+**Primary storage**:
+
+- Processor **cache** is an intermediate stage between ultra-fast registers and much slower main memory 
+- Volatile **main memory** (Random Access Memory (RAM)) operating at high speed compared to secondary strorage
+
+**Secondary storage**:
+
+- **Mass storage** devices like hard disk drives and rotating optical storage (CD/DVD)
+- **Flash memory** like USB flash drives and solid-state drives (SSD)
+
+## Hierarchy
+
+A **memory hierarchy** separates storage into a layers/levels based on **latency** (response time) and **capacity**:
 
 * Fast and large storage can not be achieved with a single level memory
 * Multiple levels of storage progressively bigger and slower
@@ -103,7 +115,7 @@ Swap      | ~10ms   | TB
 * Temporal locality is based on repetitive computations (e.g. loops) referencing the same memory
 * Spatial locality is based on a probability of related computations referencing a cluster of memory (e.g. array)
 
-## Memory Technology
+## Technology
 
 **Volatile memory** (DRAM vs SRAM):
 
@@ -120,6 +132,15 @@ Swap      | ~10ms   | TB
   - No refresh needed
   - Manufacturing compatible with logic process
 
-## Caching
+## Cache
+
+Memory is logically divided into fixed-size **blocks**:
+
+* Each block maps to a **location in the cache**, determined by the **index bits** in the address
+* **Cache hit**: Use cached data instead if accessing next level memory
+* **Cache miss**: Data not cached, read block from next level memory
+* **Hit ratio**: percentage of accesses that result in cache hits
+* **Replacement policy**: Heuristic used to select the entry to replaced by uncached data (LRU (Least Recently Used))
+* **Average Memory Access Time** (AMAT): Metric to analyze memory system performance
 
 
