@@ -1,9 +1,7 @@
 
-# Configuration
-
 _The Slurm account configuration can be altered with the command [sacctmgr][sacctmgr] by changing associations in the database (including resource limits and fair-share)._
 
-Account records are maintained based on associations:
+Account records are maintained based on **associations**:
 
 * Associations are a combination of: cluster, (partition,) account, user
 * Associations have a fair-share allocation and group limits
@@ -14,43 +12,27 @@ Account records are maintained based on associations:
 Check the **consistency** of the account configuration with [sacctmgr][sacctmgr]:
 
 ```bash
->>> sacctmgr show problem
+sacctmgr show problem # cheek config consistency
+scontrol show config | grep ClusterName            # show the name of the cluster
+sacctmgr -i add cluster $name                      # add a new cluster to the database
+sacctmgr list cluster                              # list all cluster in the database
 ```
-
-## Clusters
-
-The _ClusterName_ in [slurm.conf][slurmconf] defines the cluster name.
-
-```bash
->>> scontrol show config | grep ClusterName 
-ClusterName             = virgo
->>> sacctmgr -i add cluster virgo
-[…]
->>> sacctmgr list cluster
-[…]
-```
-
-Each cluster needs to be initialized in the database using its name before accounts can be added. 
 
 ## Accounts
 
 Add accounts (groups) before adding users (multiple accounts can be added at the same time by comma separating the names).
 
 ```bash
->>> sacctmgr add account alice description="alice" organization="cern"
-[…]
->>> sacctmgr list account
-[…]
->>> sacctmgr delete account alice
-[…]
->>> sacctmgr modify account name=alice set organization=cern
+sacctmgr list account                              # list all accounts
+# add/modify the account configuration
+sacctmgr add account $name description="$text" organization=$org
+sacctmgr modify account name=$name set organization=$org
+sacctmgr delete account $name                      # remove an account
+# accounts may be arranged in a hierarchical fashion, limits are inherited by children.
+sacctmgr add account $name parent=$parent description="$text" organization=$org
 ```
 
-Accounts may be arranged in a hierarchical fashion, limits are inherited by children.
-
-```bash
->>> sacctmgr add account train parent=alice description=train organization=cern
-```
+## Ueers
 
 Users associated with an account can have multiple roles:
 
@@ -61,20 +43,45 @@ Coordinator | Representative from a working group managing a single account
 Operator    | Creates and manages accounts in general
 Admin       | Owns all available privileges (like root)
 
+Users `name=` requires to be the Linux account name (check with `id $name`)!
+
+```bash
+# list all user associations
+sacctmgr list users                                               
+# list all association for given user name
+sacctmgr show user withassoc format=account,user,defaultaccount where user=$name
+# custom format for listing associations
+sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
+```
+
+Create, modify and remove users:
+
+```bash
+# create a user and associate it to an existing account
+sacctmgr create user name=$name account=$account defaultaccount=$account
+# modifiy a user association
+sacctmgr modify user where user=$name set $key=$value             
+# remove a users account association
+sacctmgr delete user name=$name account=$account                  
+```
+
 ### Administrator
 
 Admin users can operate the accounting database, and alter anything on an instance of slurmctld as if root.
 
 ```bash
->>> sacctmgr modify user where user=vpenso set adminlevel=admin
+# grant admin priviliges to a user
+sacctmgr modify user where user=<name> set adminlevel=admin
+# list all user with admin priviliges
+sacctmgr show user withassoc format=user,adminlevel where adminlevel=admin
 ```
 Options for `adminlevel=`
-
 
 Level    | Description
 ---------|--------------
 none     | Regular user, no special privileges
 operator | Can add, modify, and remove any database object (user, account, etc), and add other operators
+admin    | Act as if root
 
 ### Coordinator
 
@@ -111,22 +118,8 @@ sacctmgr list user withcoordinator format=user,coordinator -P | tr '|' ' ' | awk
                                                              # print a list of all coordinators          
 ```
 
-### User
+### Association Enforcement
 
-Users `name=` requires to be the Linux account name!
-
-```bash
-id <username>                                                     # check for a given linux account
-sacctmgr create user name=<id> account=<account> [defaultaccount=<account>]
-                                                                  # associate a user to an account
-sacctmgr modify user where user=<id> set <key>=<value>            # modifiy a user association
-sacctmgr list users                                               # list all user associations
-sacctmgr show user withassoc format=account,user,defaultaccount where user=<id>
-                                                                  # list association for user
-sacctmgr delete user name=<id> account=<account>                  # remove a user account association
-sacctmgr list association format=account,user,share,maxcpus,maxsubmitjobs
-                                                                  # custom format for listing associations
-```
 
 **Enforce user account associations** in `slurm.conf` with:
 
