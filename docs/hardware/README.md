@@ -114,12 +114,14 @@ Typical modern memory(/cache) hierarchy:
 
 Name      | Latency | Size
 ----------|---------|----------------
-register  | <1ns    | 32words
+Register  | <1ns    | B
 L1 cache  | ~1ns    | ~32KB
 L2 cache  | >1ns    | <1MB
 L3 cache  | >10ns   | >1MB
 DRAM      | ~100ns  | GB
 Swap      | ~10ms   | TB
+
+## Cache
 
 **CPU Cache** is used to avoid repeated access to main memory (typically DRAM):
 
@@ -132,16 +134,36 @@ Swap      | ~10ms   | TB
 * Temporal locality is based on repetitive computations (e.g. loops) referencing the same memory
 * Spatial locality is based on a probability of related computations referencing a cluster of memory (e.g. array)
 
-
-## Cache
-
 Memory is logically divided into fixed-size **blocks**:
 
 * Each block maps to a **location in the cache**, determined by the **index bits** in the address
 * **Cache hit**: Use cached data instead if accessing next level memory
 * **Cache miss**: Data not cached, read block from next level memory
 * **Hit ratio**: percentage of accesses that result in cache hits
-* **Replacement policy**: Heuristic used to select the entry to replaced by uncached data (LRU (Least Recently Used))
 * **Average Memory Access Time** (AMAT): Metric to analyze memory system performance
 
+### Associativity
+
+Caches fall into three categories: 
+
+* **Direct-mapped** 
+  - Each memory location maps into one and only one cache block
+  - Fast, simple, inefficient
+  - Maximum cache misses
+* **Fully associative**
+  - Any memory location can map to anywhere in the cache
+  - Slow, complex, efficient
+  - Perfect replacement policy (no cache misses)
+* N-way **set associative**
+  - Groups of blocks "sets" from associative pools
+  - A compromise between simplicity and efficiency
+  - Reduces cache misses
+
+Types of cache misses:
+
+* **Compulsory** (start miss): First access to a block, must be brought into the cache
+* **Capacity**: Blocks are being discarded to free space
+* **Conflict** (collision/interference miss): Occurs when several memory locations are mapped to the same cache block 
+
+**Replacement policy**: Heuristic used to select the entry to replaced by uncached data (LRU (Least Recently Used))
 
