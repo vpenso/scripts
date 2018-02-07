@@ -8,9 +8,6 @@ Account records are maintained based on **associations**:
 * Account names must be unique, can't be repeated inside the hierarchy
 * Accounts inherit limits assigned to a parent association
 
-
-Check the **consistency** of the account configuration with [sacctmgr][sacctmgr]:
-
 ```bash
 sacctmgr show problem # cheek config consistency
 scontrol show config | grep ClusterName            # show the name of the cluster
@@ -32,7 +29,7 @@ sacctmgr delete account $name                      # remove an account
 sacctmgr add account $name parent=$parent description="$text" organization=$org
 ```
 
-## Ueers
+## Users
 
 Users associated with an account can have multiple roles:
 
@@ -79,9 +76,9 @@ Options for `adminlevel=`
 
 Level    | Description
 ---------|--------------
-none     | Regular user, no special privileges
-operator | Can add, modify, and remove any database object (user, account, etc), and add other operators
-admin    | Act as if root
+none     | Regular user, no special privileges.
+operator | Can add, modify, and remove any database object (user, account, etc), and add other operators.
+admin    | Same level of privileges as an operator in the database. Can also alter anything on `slurmctld` as if root.
 
 ### Coordinator
 
