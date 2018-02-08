@@ -54,7 +54,7 @@ The ISA includes all functionality exposed to the programmer:
 * Task/thread management, power & thermal management
 * Multi-threading & multi-processing support
 
-RISC vs CISC:
+**ISA Types**:
 
 * Reduced Instruction Set Computer (RISC)
   - Compact, uniform instruction size ➜ easier to decode ➜ facilitates pipelines
@@ -67,6 +67,11 @@ RISC vs CISC:
   - Pipelines requires break down of instructions into smaller components at processor level
   - High code density
   - Complex processor hardware
+* Very long instruction word (VLIW)
+  - Execute multiple instructions concurrently, in parallel
+  - Instruction Level Parallelism (ILP)
+  - Compiler bundles multiple instructions that can be executed in parallel into a single long instruction
+  - 
 
 ## Microarchitecture
 
