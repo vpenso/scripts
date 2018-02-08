@@ -4,12 +4,22 @@
 
 An **instruction** is a single operation executed by a processor (defined by the processor **instruction set**)
 
+* Processors fetch instructions from memory
+* Separation of processor and memory distinguishes programmable computers
+
 **Control-flow architecture**:
 
-Stored Program Computer (aka. Von Neumann Model)
+Stored Program Computer
 
-* Stores instructions in memory (alongside data)
-* Values in memory interpreted depending on the **control signal**
+* **Von Neumann architecture**: Single memory holds data and instructions
+  - Single set of address/data buses between processor and memory
+  - Values in memory interpreted depending on a control signal
+* **Harvard architecture**: Separate memory for data and instructions
+  - Two sets of address/data buses between processor and memory
+  - Allow simultaneous memory fetches
+* **Modified Harvard architecture**: Separate memory for data and instructions
+  - Instruction memory can be used to store data
+  - Two pieces of data can be loaded in parallel
 * Sequential instruction processing (fetch, execute, and complete) one at a time
 * Current instruction identified by the **instruction pointer** (program counter)
 * The instruction pointer is advanced sequentially except for control transfer
@@ -43,6 +53,20 @@ The ISA includes all functionality exposed to the programmer:
 * Interrupt/exception handling, access control, priority/privileges
 * Task/thread management, power & thermal management
 * Multi-threading & multi-processing support
+
+RISC vs CISC:
+
+* Reduced Instruction Set Computer (RISC)
+  - Compact, uniform instruction size ➜ easier to decode ➜ facilitates pipelines
+  - Complexity implemented as series of smaller instructions
+  - More lines of code ➜ bigger memory footprint
+  - Allow effective compiler optimization
+* Complex Instruction Set Computer (CISC)
+  - Extremely specific instructions (doing as much work as possible)
+  - Instructions not uniform in size ➜ difficult to decode
+  - Pipelines requires break down of instructions into smaller components at processor level
+  - High code density
+  - Complex processor hardware
 
 ## Microarchitecture
 
