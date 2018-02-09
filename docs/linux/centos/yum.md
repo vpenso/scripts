@@ -14,6 +14,7 @@ Package repositories:
 * [Fedora](https://admin.fedoraproject.org/mirrormanager/)
 * Fedora [EPEL](https://fedoraproject.org/wiki/EPEL)
 * [ELRepo](http://elrepo.org)
+* [Software Collections](https://www.softwarecollections.org)
 * [CERN CentOS](http://linuxsoft.cern.ch/) (CC)
 
 # Yum
