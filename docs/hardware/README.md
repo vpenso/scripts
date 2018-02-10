@@ -6,7 +6,7 @@ A computer is a machine to **process** information (data):
 
 * A **processor** (typically an electronic circuit) performs **operations** on data
 * It processes **input** information to generate a desired **output** information
-* Input/output data loaded/stored from/to **memory** (temporary storage area)
+* Input/output data loaded/stored from/to **memory** a data storage area
 * Electronic devices operate **binary** signals (electricity on/off)
 * Binary expressed by two symbols - `0` and `1` ➜ **binary digits** (bits)
 * Numbers, text represented as **binary patterns** ➜ combinations of zeros and ones
@@ -70,15 +70,24 @@ Primary storage: Cache and **RAM** (Random Access Memory):
 * **Memory address** ➜ reference to a specific memory location
   - Usually several memory cells share a single address (e.g. 8bits/1byte)
   - The **address width** limits the maximum addressable memory
-  - The address width is typically a multiple of eight: 8,16,32,64,128 bits
+  - The address width is typically a multiple of eight (8,16,32,64 bits)
 * Memory is a collection of various **memory locations**
   - Each location has a **unique address** which can be accessed in any order (in equal amount of time)
   - Memory **access** means selection and data read/write from a specific memory location
 * **Memory controller** ➜ manages data flow (read/write) between main memory and processor
 * Memory **address bus** ➜ connects the main memory to the memory controller
 
+Address width | Address locations
+--------------|------------------
+8bit          | 256 (2^8)
+16bit         | 65536 (2^16)
+32bit         | 4294967296 (2^32)
+64bit         | 1.844674407×10^19 (2^64)
+
 
 ## Processor
+
+A **processing unit** performs operations on data:
 
 * Processors ➜ **fetch** (read) instruction from memory before instruction **execute**
 
