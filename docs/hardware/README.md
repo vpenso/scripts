@@ -9,7 +9,7 @@ A computer is a machine to **process** information (data):
 * Input/output data loaded/stored from/to **memory** (temporary storage area)
 * Electronic devices operate on a **binary** signals (electricity on/off)
 * Binary expressed by two symbols - `0` and `1` ➜ **binary digits** (bits)
-* Numbers, text represented as **code** ➜ combinations of zeros and ones
+* Numbers, text represented as **binary code** ➜ combinations of zeros and ones
 
 ## Machine Code
 
