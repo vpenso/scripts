@@ -6,7 +6,7 @@ Control Groups cgroups is a Linux kernel mechanism (appeared in 2.6.24) to limit
 - Improved robustness (e.g. more reliable cleanup of jobs)
 - Improved efficiency of Slurm activities (e.g., process tracking, collection of accounting statistics) 
 
-Slurm plug-ins:
+### Plug-ins
 
 Plug-in               | Comment
 ----------------------|-----------------------------------------------------------------------------------
@@ -22,6 +22,8 @@ ProctrackType=proctrack/cgroup
 JobAcctGatherType=jobacct_gather/cgroup
 TaskPlugin=task/cgroup
 ```
+
+### Configuration
 
 The `cgroup.conf` file is read by all components using these facilities. 
 
@@ -43,6 +45,23 @@ ConstrainDevices=yes
 # prevents the kernel from swapping out program data
 MemorySwappiness=0
 ```
+
+### Usage
+
+Slurm cgroups are organized as follows:
+
+* Base directory **CgroupMountpoint** is created at `/sys/fs/cgroup`
+* A `slurm` cgroup is created in each sub-system
+* Users, jobs, steps and tasks  cgroups are created dynamically followed by the relevant numeric id
+
+```bash
+>>> ls -d /sys/fs/cgroup/*/slurm
+/sys/fs/cgroup/cpuacct/slurm      /sys/fs/cgroup/cpuset/slurm  /sys/fs/cgroup/devices/slurm  /sys/fs/cgroup/memory/slurm
+/sys/fs/cgroup/cpu,cpuacct/slurm  /sys/fs/cgroup/cpu/slurm     /sys/fs/cgroup/freezer/slurm
+```
+
+### Test
+
 
 For example the following output shows a job requesting one CPU (here with hyperthreading), but starting for processes. 
 
