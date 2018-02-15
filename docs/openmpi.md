@@ -14,8 +14,9 @@ Main code sections:
 Debian Stretch supports OpenMPI 2.0:
 
 ```bash
->>>> apt install openmpi-bin libopenmpi-dev openmpi-doc
+>>> apt install openmpi-bin libopenmpi-dev openmpi-doc
 ```
+
 
 ### From Source
 
@@ -44,6 +45,27 @@ Official source-code archive:
 >>> echo "export LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH" >> $prefix/source_me.sh
 >>> echo "export MANPATH=$prefix/share/man:$MANPATH" >> $prefix/source_me.sh
 >>> source $prefix/source_me.sh
+```
+
+### RPM Packages
+
+Build RPM packages by following the [README](https://github.com/open-mpi/ompi/tree/v3.0.x/contrib/dist/linux)
+
+* Download the latest SRPM for a given MPI version
+
+```bash
+>>> yum groupinstall -y "Development Tools"
+# infiniband
+>>> yum install -y libibverbs librdmacm libibcm libibmad libibumad libmlx4 libmlx5 librdmacm-utils
+# NUMA support, CPU affinity support
+>>> yum install -y numactl-devel hwloc-devel
+>>> wget https://www.open-mpi.org/software/ompi/v3.0/downloads/openmpi-3.0.0-1.src.rpm
+>>> rpmbuild --rebuild openmpi-3.0.0-1.src.rpm
+>>> ls ~/rpmbuild/RPMS/x86_64/openmpi*.rpm
+/root/rpmbuild/RPMS/x86_64/openmpi-3.0.0-1.el7.centos.x86_64.rpm
+# install the package and check the configuration
+>>> rpm -i ~/rpmbuild/RPMS/x86_64/openmpi*.rpm
+>>> ompi_info --param all all --level 9
 ```
 
 ## Usage
