@@ -54,9 +54,9 @@ Build RPM packages by following the [README](https://github.com/open-mpi/ompi/tr
 * Download the latest SRPM for a given MPI version
 
 ```bash
->>> yum groupinstall -y "Development Tools"
+>>> yum groupinstall -y "Development Tools" binutils binutils-devel
 # infiniband
->>> yum install -y libibverbs librdmacm libibcm libibmad libibumad libmlx4 libmlx5 librdmacm-utils
+>>> yum install -y libibcm-devel libibcommon-devel libibmad-devel libibumad-devel libibverbs-devel librdmacm-devel
 # NUMA support, CPU affinity support
 >>> yum install -y numactl-devel hwloc-devel
 >>> wget https://www.open-mpi.org/software/ompi/v3.0/downloads/openmpi-3.0.0-1.src.rpm
