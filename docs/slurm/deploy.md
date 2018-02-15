@@ -104,7 +104,15 @@ Latest Slurm release: <https://www.schedmd.com/downloads.php>
 
 ```bash
 # install dependencies
->>> yum -y install readline-devel perl-ExtUtils-MakeMaker pam-devel mysql-devel
+>>> yum -y install epel-release # needed for dependencies
+>>> yum -y install @development rpm-build \
+  bzip2-devel zlib-devel wget lz4-devel \
+  readline-devel perl-ExtUtils-MakeMaker hdf5-devel \
+  openssl openssl-devel pam-devel mysql-devel libcurl-devel \
+  hwloc hwloc-devel numactl numactl-devel lua lua-devel \
+  rrdtool-devel ncurses-devel man2html pmix-devel \
+  libibcm-devel libibcommon-devel libibmad-devel \
+  libibumad-devel libibverbs-devel librdmacm-devel
 >>> rpm -i ~/rpmbuild/RPMS/x86_64/munge*.rpm  # install munge including the development package
 # download the latest version of slurm
 >>> version=17.11.2
