@@ -1,5 +1,10 @@
-→ [documentation](http://docs.ansible.com/)  
-→ [configuration file](http://docs.ansible.com/ansible/intro_configuration.html)
+
+Cf.:
+
+* [Documentation](http://docs.ansible.com/)
+* [Configuration File](http://docs.ansible.com/ansible/intro_configuration.html)
+* [Configuration Settings](http://docs.ansible.com/ansible/latest/installation_guide/_config.html)
+* [Directory Layout](http://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html#directory-layout)
 
 ```bash
 /etc/ansible/ansible.cfg                             # global config
@@ -40,7 +45,17 @@ ansible -t <path> ...                                # store output as JSON file
 ansible ... <group> -l ~<pattern>                    # subset of group by pattern
 ```
 
-**Modules** provide the configuration capabilities. Core modules are part of Ansible, e.g. "apt"
+## Modules
+
+Modules provide the configuration capabilities. Core modules are part of Ansible, e.g. "apt"
+
+* connection modules
+* lookup modules - data access
+* filter modules - transform data
+* callback modules - register events during task execution
+* task modules
+  - self contained scripts (language agnostic)
+  - copied to target machine (JSON input and output)
 
 ```bash
 ansible-doc -l                                       # list all modules
@@ -69,7 +84,9 @@ ansible -m <module> -a <command> ...                 # execute module
 -m apt -a "name=<pkg> state=absent purge=yes"
 ```
 
-**Playbooks** orchestrate configuration **tasks** and are written in YAML:
+## Playbooks
+
+Playbooks orchestrate configuration **tasks** and are written in YAML:
 
 - Tasks are executed in order, one at a time, against machines matching a **host pattern**.
 - Tasks execute a module with specific arguments. Idempotents allows repeated execution.
