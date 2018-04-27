@@ -1,14 +1,11 @@
 
 ### ostree
 
-OSTree is a tool to manage bootable, immutable, versioned file-system trees (filetrees).
+(lib)ostree is a tool to manage bootable, immutable, versioned file-system trees:
 
 * Git-like repository that records the changes in a filetree
 * Client/server architecture to replicate filetrees (to subscribers)
-* Filetree replication protocol:
-  - Efficient (transfers only deltas over the network)
-  - Atomic (deployments are completely decoupled)
-  - Predictable, reproducible (rollback, no state drift)
+* Deduplicating object store in `/ostree/repo` (hardlinks)
 
 <http://ostree.readthedocs.io/>  
 <https://github.com/ostreedev/ostree>
@@ -22,9 +19,11 @@ OSTree is a tool to manage bootable, immutable, versioned file-system trees (fil
 
 ### rpm-ostree
 
-Filetree replication system that is also (RPM) package-aware:
+Uses ostree to atomically replicate a base OS. Supports
+"package layering" (additional RPMs layered on top of the base image).
 
-<https://rpm-ostree.readthedocs.io>
+<https://rpm-ostree.readthedocs.io>  
+<https://github.com/projectatomic/rpm-ostree>
 
 On the client side:
 
