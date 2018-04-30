@@ -8,6 +8,7 @@ Following tools help to install a base operating system (OS) into a target direc
 * **multistrap** - like debootstrap, but supports multiple package repositories
 * [polystrap](https://github.com/josch/polystrap) - creates a foreign architecture rootfs without superuser privileges
 * **`yum`** (or `dnf`) with option `--installroot`
+* [mkosi](https://github.com/systemd/mkosi) wrapper for bootstrap tools
 
 
 ```bash
