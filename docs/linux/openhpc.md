@@ -4,11 +4,19 @@ OpenHPC provides a collection of pre-built ingredients common in HPC environment
 
 <http://www.openhpc.community>
 
+Source code:
+
+<https://github.com/openhpc/ohpc>
+
 Mail Lists:
 
 <http://www.openhpc.community/support/mail-lists/>
 
-CI Infrastructure:
+Build system:
+
+<https://build.openhpc.community/>
+
+Integration Testing:
 
 <http://test.openhpc.community:8080/>
 
@@ -21,10 +29,6 @@ There are two primary ways to access the available RPMs:
 
 ### Public Repository
 
-Release package on Github:
-
-<https://github.com/openhpc/ohpc>
-
 ```bash
 >>> rpm -i https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm
 >>> cat /etc/yum.repos.d/OpenHPC.repo
@@ -34,20 +38,26 @@ OpenHPC                  OpenHPC-1.3 - Base                                  821
 OpenHPC-updates          OpenHPC-1.3 - Updates                             1,080
 ```
 
-**Meta packages** are prefixed with `ohpc-*`:
+Package naming conventions:
+
+- **meta packages** are prefixed with `ohpc-`
+- software packages sue `-ohpc` as suffix
 
 ```bash
->>> yum search ohpc- | grep ^ohpc
-ohpc-autotools.x86_64 : OpenHPC autotools
-ohpc-base.x86_64 : OpenHPC base
-ohpc-base-compute.x86_64 : OpenHPC compute node base
-ohpc-buildroot.noarch : Common build scripts used in OpenHPC packaging
-ohpc-filesystem.noarch : Common top-level OpenHPC directories
-ohpc-ganglia.x86_64 : OpenHPC Ganglia monitoring
-ohpc-gnu7-io-libs.x86_64 : OpenHPC IO libraries for GNU
-ohpc-gnu7-mpich-io-libs.x86_64 : OpenHPC IO libraries for GNU and MPICH
-ohpc-gnu7-mpich-parallel-libs.x86_64 : OpenHPC parallel libraries for GNU and
+# packages built against specific compiler variant
+package-<compiler_family>-ohpc-<package_version>-<release>.<arch>.rpm
+# packages built against compiler/MPI combination
+package-<compiler_family>-<mpi family>-ohpc-<package_version>-<release>.<arch>.r
 ```
+
+```bash
+/opt/ohpc/                         # installation path
+yum search ohpc- | grep ^ohpc      # list meta-packages
+yum search ohpc | grep -- -ohpc.   # list software paackages
+yum search ohpc openmpi            # search a specific component (i.e. openmpi)
+```
+
+
 
 ### Local Repository
 
@@ -86,4 +96,15 @@ user development and runtime environments:
 
 <https://lmod.readthedocs.io>
 
-
+```bash
+# install some compilers
+>>> yum install -y *compilers-ohpc lmod-ohpc
+# re-login, or source Lmod
+>>> source /etc/profile.d/lmod.sh
+# list available software
+>>> module avail
+# load a compiler
+>>> module load llvm5
+>>> which llc
+/opt/ohpc/pub/compiler/llvm/5.0.1/bin/llc
+```
