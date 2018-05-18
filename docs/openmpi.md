@@ -156,3 +156,12 @@ ompi_info --param btl all       # show the BTL (Byte Transfer Layer) supported
 ```
 
 Cf. [Open MPI FAQ: General run-time tuning](https://www.open-mpi.org/faq/?category=tuning)
+
+Configure the port range used by MPI:
+
+```bash
+>>> grep ports /etc/openmpi-mca-params.conf
+oob_tcp_dynamic_ipv4_ports=35000-45000
+ompi_info --param oob tcp --level 9 | grep dynamic
+             MCA oob tcp: parameter "oob_tcp_dynamic_ipv4_ports" (current value: "35000-45000",...
+```
