@@ -29,7 +29,7 @@ Zones manage **group off rules**:
 ```bash
 firewall-cmd --get-default-zone              # show default zone
 firewall-cmd --get-active-zones              # active zones
-firewall-cmd --get-zones                     # list available zones
+firewall-cmd --info-zone=public              # show public zone details
 firewall-cmd --zone=$zone --list-all         # zone configuration
 firewall-cmd --get-zone-of-interface=$iface  # zone of a network interface
 # add an network interface to a zone
