@@ -1,8 +1,8 @@
-Documents use [Markdown][1] for a basic formating of plain text, specifically [GitHub Flavored Markdown][2]. 
+Documents use [Markdown][1] for a basic formatting of plain text, specifically [GitHub Flavored Markdown][2]. 
 
 → [var/aliases/pandoc.sh](../var/aliases/pandoc.sh)
 
-Use [Pandoc][3] to generate HTML pages from Markdown with <kbd>pandoc-html-article</kbd>. Include a table of content and section numbering with <kbd>pandoc-html-book</kbd>. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 
+Use [Pandoc][3] to generate HTML pages from Markdown with `pandoc-html-article`. Include a table of content and section numbering with `pandoc-html-book`. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 
 
 → [var/lib/pandoc/html-article.template](../var/lib/pandoc/html-article.template)  
 → [var/lib/pandoc/html-book.template](../var/lib/pandoc/html-book.template)  
