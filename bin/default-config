@@ -79,7 +79,13 @@ done
 function terminal() {
   path=${1:-~/projects}
   # install all dependency packages in Debian
-  sudo apt-get --quiet=2 --assume-yes install curl git-core vim zsh python ruby
+  if command -v apt 2>&1 >/dev/null ; then
+    sudo apt-get --quiet=2 --assume-yes install curl git-core vim zsh python ruby
+  fi 
+  # install all dependency packages on ArchLinux
+  if command -v pacman 2>&1 >/dev/null ; then
+    sudo pacman --sync --quiet --noconfirm git vim zsh python ruby
+  fi
   target=${path}/scripts 
   if [ -d $target ] ; then
     echo "Scripts directory ~/projects/scripts exists!"
