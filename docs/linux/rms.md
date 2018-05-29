@@ -2,23 +2,6 @@
 
 The operating system of a data center is the **job scheduler**.
 
-### Jobs
-
-**Jobs** - Users Submit a wide variety of computational applications for processing
-
-* Different parallel **execution paradigms** (levels of parallelism)
-* Different **execution requirements** (i.e. run-time, required hardware (CPUs, RAM,etc.))
-
-App.          | Description
---------------|------------------------------------
-batch         | Single (independent) process (sequential execution)
-array         | Pleasantly (barely) parallel process (asynchronously executed)
-parallel      | Synchronously parallel processes (simultaneously execution)
-service       | Service (daemon) process (long running, persistent execution)
-analytics     | Combination of the above categories
-
-### Schedulers
-
 **Match and execute** compute jobs from multiple users **efficently** on the available computational resources
 
 - Job **lifecycle management** - Receive and queue jobs, prioritize/sort candidate jobs (queue management policies)
@@ -26,28 +9,59 @@ analytics     | Combination of the above categories
 - Job **scheduling** - Allocate resources and assign a job from the queue
 - Job **execution & monitoring** - Launch the job, track the state and collect performance metrics 
 
-Scheduler families:
+## Jobs
+
+**Jobs** - Users Submit a wide variety of computational applications for processing
+
+* Different parallel **execution paradigms** (levels of parallelism)
+* Different **execution requirements** (i.e. run-time, required hardware (CPUs, RAM,etc.))
+
+Job           | Description
+--------------|------------------------------------
+service       | Service (daemon) process (long running, persistent execution)
+batch         | Single (independent) processes (sequential execution)
+array         | Pleasantly parallel processes (asynchronously executed)
+parallel      | Synchronously parallel processes (simultaneous execution)
+periodical    | Processes executed in a defined interval
+analytics     | Combination of the above categories
+
+## Schedulers
+
+RMS supporting containers:
 
 Name                                                  | Family
 ------------------------------------------------------|-------------------
-Portable Batch System (PBS)                           | HPC (traditional)
-(Sun) GridEngine                                      | HPC (traditional)
-IBM Load Sharing Facility (LSF)                       | HPC (traditional) 
-HT (High Throughput) Condor                           | HPC (traditional)
-Cray Application Level Placement Scheduler (ALPS)     | HPC (modern)
-Simple Linux Utility for Resource Management (Slurm)  | HPC (modern)
-Apache Hadoop YARN                                    | Big Data
-Apache Mesos                                          | Big Data
-Kubernetes                                            | Big Data
+[PBS][pbs] (Portable Batch System)                    | HPC
+GridEngine                                            | HPC
+HT (High Throughput) Condor                           | HPC
+[Slurm][slurm]                                        | HPC
+[Mesos][mesos] & [Marathon][mthon]                    | CaaS
+[Kubernetes][kubs]                                    | CaaS
+Docker [Swarm][swarm]                                 | CaaS
 
-Resource management:
+[pbs]: http://pbspro.org/
+[slurm]: https://slurm.schedmd.com/
+[mesos]: http://mesos.apache.org/documentation
+[mthon]: https://mesosphere.github.io/marathon/
+[kubs]: https://kubernetes.io/docs/
+[swarm]: https://docs.docker.com/engine/swarm/
+
+Recent trend to package job execution environment into **containers** (portable, insulated, independent).
+
+Challenges of migrating HPC workloads to containers:
+
+* Execute containerized workloads with an existing HPC workload manager
+* Migrate HPC workloads to CaaS (i.e. Kubernetes, Mesos/Marathon)
+* Host HPC and CaaS concurrently on the same resources
+
+### Resource management
 
 * Heterogeneous resources - The scheduler can accommodate different hardware configurations
 * Allocation policy - Prioritization of jobs according to specific resource requirements (i.e. run-time)
 * Consumable resources - Enforced static (CPUs, RAM) and dynamic (load,bandwidth) resource constrains
 * Network-aware scheduling - Consideration of network topology by the scheduler for job allocation
 
-Scheduling methods: 
+### Scheduling methods
 
 * Timesharing - Allocate multiple jobs from one or more user on a single node
 * Backfilling - Schedule pending jobs out of order to maximize utilization
@@ -56,7 +70,7 @@ Scheduling methods:
 * Gang scheduling - Allow users to submit multiple process within a single job
 * Job dependencies - Allow user to define workflows for job execution (direct acyclic graphs (DAGs))
 
-Job placement (more sophisticated then FIFO) and execution:
+### Job placement
 
 * Prioritization - Consider user/group priorities, fair-share policies during scheduling
 * Replacement/reordering - Dynamically manged job order in the queue to react to state changes (resource, jobs, etc)
@@ -68,4 +82,5 @@ Job placement (more sophisticated then FIFO) and execution:
 * Job migration - Move jobs during execution to mitigate failure states (rebalancing of long-running or service-oriented jobs)
 * Job restarting - Automatic restart of aborted of failed jobs
 * Job preemption - Suspend low-priority jobs to free resources of required
+
 
