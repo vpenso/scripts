@@ -1,6 +1,8 @@
 # Container Orchestration
 
-**Containerized workloads** portable, insulated, independent dependencies
+_Automated arrangement, coordination, and management of software containers_
+
+Containerized workloads:  portable, insulated, independent dependencies
 
 HPC **WMS** (Workload Management Systems) with container support and **CaaS** (Container as a Service):
 
@@ -14,7 +16,7 @@ HT (High Throughput) Condor         | WMS
 [Kubernetes][kubs]                  | CaaS
 Docker [Swarm][swarm]               | CaaS
 
-¹Mesos is a common resource management system hosting multiple distributed computing (workload management) frameworks.
+¹Mesos is a common resource management system hosting multiple distributed computing (workload management) frameworks (2-level scheduling).
 
 [pbs]: http://pbspro.org/
 [slurm]: https://slurm.schedmd.com/
@@ -26,10 +28,7 @@ Docker [Swarm][swarm]               | CaaS
 HPC oriented workload management semantics do not naturally integrate with CaaS resource management:
 
 * (Help users to) move HPC workloads into containers and migrate to the CaaS resource management (cloud-style)
-* Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS)
-  - [Slurm on Google Cloud Platform](https://github.com/SchedMD/slurm/tree/slurm-17.11/contribs/gcp)
-
-Later is **2-Level Scheduling** (cf. [Mesos][mesos])
+* Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS) (cf. [Slurm on Google Cloud Platform](https://github.com/SchedMD/slurm/tree/slurm-17.11/contribs/gcp))
 
 ## Workloads
 
