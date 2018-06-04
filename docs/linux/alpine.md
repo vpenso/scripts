@@ -27,7 +27,7 @@ Reboot! Make sure an SSH service is running and the `devops` user exists:
 ```bash
 apk add bash openssh sudo rsync vim
 rc-update add sshd && rc-service sshd start
-adduser devops
+adduser -h /home/devops devops
 poweroff
 ```
 
@@ -52,6 +52,8 @@ vm login lxdev01 -r
 ```
 
 ## Usage
+
+<https://wiki.alpinelinux.org/wiki/>
 
 Packages:
 
@@ -80,3 +82,28 @@ rc-service <service> start|stop|restart
 reboot
 poweroff
 ```
+
+### Work Environment
+
+```bash
+# enable ACPI support
+rc-update add acpid
+# install a terminal
+apk add rxvt-unicode
+# install a window manager
+apk add i3wm-gaps i3status
+# install a display server
+setup-xorg-base
+# install tool-chain
+apk add firefox git
+```
+
+```bash
+# start the GUI
+xinit /usr/bin/i3
+# screen resolution
+xrandr --output qxl-0 --mode 1920x1080
+```
+
+
+
