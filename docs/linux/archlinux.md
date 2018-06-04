@@ -93,10 +93,43 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 Exit, reboot. Login as root and start customization:
 
-## Desktop
+## GUI
 
-    » pacman -S xorg-server xorg-xinit xorg-server-utils mesa xf86-video-vesa gnome
-    » systemctl enable gdm.service
+### Display Server
+
+```bash
+# install X server with tools
+pacman -S --noconfirm xorg-server xorg-xinit xorg-apps
+# list available video drivers
+pacman -Ss xf86-video
+pacman -S --noconfirm xf86-video-vesa xf86-video-qxl # for VMs
+pacman -S --noconfirm xf86-input-mouse xf86-input-keyboard
+# 
+usermod -a -G wheel $USER
+# configuration
+Xorg :0 -configure  && cp /root/xorg.conf.new /etc/X11/xorg.conf
+# shutdown 
+pkill -15 Xorg
+```
+
+```xml
+Section "Device" 
+  Identifier "qxl" 
+  Driver "qxl" 
+  Option "ENABLE_SURFACES" "False" 
+EndSection
+```
+
+### Window Manager
+
+```bash
+pacman -S i3-gaps i3status
+# start
+xinit /usr/bin/i3
+# or
+echo 'exec i3' > ~/.xinitrc ; startx
+```
+
 
 
 
