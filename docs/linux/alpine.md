@@ -88,10 +88,14 @@ poweroff
 ```bash
 # enable ACPI support
 rc-update add acpid
+# install/start D-BUS
+apk add dbus
+rc-update add dbus
+rc-service dbus start
 # install a terminal
 apk add rxvt-unicode
 # install a window manager
-apk add i3wm-gaps i3status
+apk add i3wm-gaps i3status dmenu
 # install a display server
 setup-xorg-base
 # install tool-chain
