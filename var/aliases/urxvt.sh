@@ -10,12 +10,11 @@ then
 		fi	
 	fi
 
-	# append custom config to X init
-	user_resources=$SCRIPTS/etc/Xdefaults
-        user_script="[ -f $user_resources ] && xrdb -merge $user_resources"
-	grep -q -F "$user_script" ~/.xinitrc || \
-		echo -e "\n$user_script" >> ~/.xinitrc
-
+	# append X custom config to Xresources
+	resources="#include \"$SCRIPTS/etc/Xresources.d/urxvt\""
+	grep -q -F "$resources" ~/.Xresources || \
+		echo -e "\n$resources" >> ~/.Xresources
+        # this modification will not effect running X applications
 
 	# list configurable resources
 	urxvt-resources() {
