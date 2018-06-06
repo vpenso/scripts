@@ -2,7 +2,7 @@ export HISTSIZE=100000                       # set history size
 export SAVEHIST=$HISTSIZE                    # save history after logout
 export HISTCONTROL=ignoreboth                # [BASH] ignore entries with leading white space and dupes.
 
-if [[ "$SHELL" == "*zsh" ]]
+if [[ "$SHELL" == *"zsh" ]]
 then
 	setopt append_history                        # append into history file
 	setopt inc_append_history                    # save every command before it is executed

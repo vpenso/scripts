@@ -16,7 +16,7 @@ alias NODES='noglob NODES'
 # stdin is exported as environment variable
 exp() { read n; export $1=$n ; }
 
-if [[ "$SHELL" == "*zsh" ]]
+if [[ "$SHELL" == *"zsh" ]]
 then
 	# pipe into the NODES environment variable
 	alias -g NE='| exp NODES'

@@ -83,7 +83,7 @@ uri-encode() {
 
 calc() { echo "$*" | bc -l ; }
 
-if [[ "$SHELL" == "*zsh" ]]
+if [[ "$SHELL" == *"zsh" ]]
 then
 	alias -g G='|grep'
 	alias -g GV='|grep -v'   # --invert-match

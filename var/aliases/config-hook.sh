@@ -1,4 +1,11 @@
-if [[ "$SHELL" == "*zsh" ]]
+
+if [[ "$SHELL" == *"bash" ]]
+then
+	grep -q -F source_me ~/.bashrc || \
+		echo "source $SCRIPTS/source_me.sh" >> ~/.bashrc
+fi
+
+if [[ "$SHELL" == *"zsh" ]]
 then
 	# Make sure to load the environment automatically
 	# if ZSH is configured to use the POST initialization hook
