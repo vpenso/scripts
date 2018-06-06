@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2012 Victor Penso
+# Copyright 2012-2018 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,14 +19,28 @@
 # Check if the user has provided two arguments
 if [ $# -lt 2 ]
 then
-  echo "ERROR: Not enough arguments."
-  echo "  $(basename $0) \"User Name\" e.mail@domain.org [editor]"
-  exit 1
+	echo "ERROR: Not enough arguments."
+	echo "  $(basename $0) \"User Name\" e.mail@domain.org [editor]"
+	exit 1
 fi
 
 _name=$1
 _mail=$2
 _edit=${3:-vim}
+
+ans=n
+if [ -f ~/.gitconfig ]
+then
+	echo -n 'Overwrite ~/.gitconfig (y/n)? '
+	read ans
+	[[ "$ans" = "y" ]] || exit 0
+else
+	echo -n 'Create ~/.gitconfig (y/n)? '
+	read ans
+	[[ "$ans" = "y" ]] || exit 0
+fi
+
+echo 'Writing configuration to ~/.gitconfig'
 
 git config --global user.name "$_name"
 git config --global user.email $_mail
@@ -195,8 +209,24 @@ Thumbs.db
 .Trashes
 "
 
-echo "$_gitignore_global" > $HOME/.gitignore_global
+ans=n
+if [ -f ~/.gitignore_global ]
+then
+	echo -n 'Overwrite ~/.gitignore_global (y/n)? '
+	read ans
+	[[ "$ans" = "y" ]] || exit 0
+else
+	echo -n 'Create ~/.gitignore_global (y/n)? '
+	read ans
+	[[ "$ans" = "y" ]] || exit 0
+fi
 
+echo 'Writing configuration to ~.gitignore_global'
+echo "$_gitignore_global" > ~/.gitignore_global
+
+echo -n 'Create Email pre-commit hook (y/n)? '
+read ans
+[[ "$ans" = "y" ]] || exit 0
 
 pre_commit=$(cat <<EOF
 #!/bin/sh
@@ -229,9 +259,9 @@ EOF
 )
 
 mkdir -p ~/.git/templates/hooks
-
+hook=~/.git/templates/hooks/pre-commit
+echo "Write configration to ~/.git/templates/hooks/pre-commit"
 echo "$pre_commit" > ~/.git/templates/hooks/pre-commit
-
 chmod +x ~/.git/templates/hooks/pre-commit
 
 exit 0

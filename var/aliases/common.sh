@@ -11,7 +11,6 @@ alias x=exit
 alias _=" sudo"
 alias _!=" sudo !!"
 alias __=noglob
-alias g=git
 alias t=tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
