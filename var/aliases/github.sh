@@ -1,3 +1,3 @@
 
 
-alias @github='firefox -new-tab https://github.com/vpenso'
+alias @github='$BROWSER -new-tab https://github.com/vpenso'

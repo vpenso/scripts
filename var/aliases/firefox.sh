@@ -1,3 +1,4 @@
+export BROWSER=firefox
 
 alias fl='firefox -no-remote 2>&- & ; disown'
 

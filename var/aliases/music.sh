@@ -12,15 +12,17 @@ pulserestart() {
 #
 play() { 
   # show the song played
-  if [[ $# -eq 0 ]] ; then
+  if [[ $# -eq 0 ]]
+  then
     ps -C ffplay -o command=
   # start playing song
   else
-    ffplay -nodisp $1 2>&- >&- & ; disown
+    ffplay -nodisp $1 2>&- >&- &
+    disown
   fi
 }
 
 ##
 # Stop playing a song
 #
-stop() { killall -s KILL ffplay }
+stop() { killall -s KILL ffplay ; }

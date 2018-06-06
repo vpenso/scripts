@@ -1,1 +1,0 @@
-alias slurm='noglob slurm'
