@@ -1,0 +1,4 @@
+export PROMPT='%n@%F'
+
+# Switch the ZSH right prompt off
+zsh-norprompt() { export RPROMPT='' ; }

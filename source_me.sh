@@ -44,3 +44,26 @@ done
 export PATH=$SCRIPTS/bin:$PATH
 
 PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+
+# if a Bash configuration exists
+if [ -f ~/.bashrc ]
+then
+	config="source $SCRIPTS/source_me.sh"
+	grep -q -F "$config" ~/.bashrc
+	if ! [ $? -eq 0 ]
+	then
+		echo -e "# Load generic shell configuration\n$config" >> ~/.bashrc
+		echo \"$config\" added to ~/.bashrc
+	fi
+	
+	config="source $SCRIPTS/etc/bashrc"
+	grep -q -F "$config" ~/.bashrc
+	if ! [ $? -eq 0 ]
+	then
+		echo -e "# Load bash specific user configuration\n$config" >> ~/.bashrc
+		echo \"$config\" added to ~/.bashrc
+	fi
+fi
+
+# link to the repository Zsh configuration
+ln -sf $SCRIPTS/etc/zshrc ~/.zshrc
