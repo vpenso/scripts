@@ -11,6 +11,8 @@ then
 		ccrypt \
 		firejail \
 		firefox \
+		neofetch \
+		python-pywal \
 		rsync \
 		ruby \
 		sshfs \
