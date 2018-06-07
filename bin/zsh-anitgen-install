@@ -24,6 +24,12 @@ then
         antigen bundle zsh-users/zsh-syntax-highlighting
         antigen bundle olivierverdier/zsh-git-prompt
         antigen apply
+
+	ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+        NEWLINE=$'\n'
+        export PROMPT="%n@%m:%~ $(git_super_status) $NEWLINE>>> "
+
 fi
 EOF
 

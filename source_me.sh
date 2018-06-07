@@ -65,5 +65,8 @@ then
 	fi
 fi
 
-# link to the repository Zsh configuration
+# link to the user specific Zsh configuration
 ln -sf $SCRIPTS/etc/zshrc ~/.zshrc
+# Load generic shell configuration with Zsh
+mkdir ~/.zshrc.d 2>/dev/null
+ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/scripts
