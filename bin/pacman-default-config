@@ -9,12 +9,13 @@ then
 	# install required packages
 	sudo pacman -S --noconfirm \
 		ccrypt \
+		encfs \
 		firejail \
 		firefox \
 		git \
 		neofetch \
 		python-pywal \
-		pwoerline \
+		powerline \
 		powerline-fonts \
 		rsync \
 		ruby \
