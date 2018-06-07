@@ -12,6 +12,7 @@ then
 		firejail \
 		firefox \
 		rsync \
+		ruby \
 		sshfs \
 		sshuttle \
 		tcpdump \
