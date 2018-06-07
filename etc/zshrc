@@ -11,7 +11,7 @@ setopt share_history
 setopt INTERACTIVE_COMMENTS
 
 NEWLINE=$'\n'
-export PROMPT="%n@%m:%~ $NEWLINE>>> "
+export PROMPT=$'\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m -- %!:%j \n>>> '
 
 # add additional configuration to this directory
 mkdir ~/.zshrc.d 2>/dev/null

@@ -11,13 +11,17 @@ then
 		ccrypt \
 		firejail \
 		firefox \
+		git \
 		neofetch \
 		python-pywal \
+		pwoerline \
+		powerline-fonts \
 		rsync \
 		ruby \
 		sshfs \
 		sshuttle \
 		tcpdump \
 		ttf-inconsolata \
+		vim \
 	        xclip
 fi
