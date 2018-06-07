@@ -1,14 +1,5 @@
 if [[ "$TERM" = "rxvt-unicode"* ]]
 then
-	# Install using the Pacman package manager
-	if [ -f /usr/bin/pacman ]
-	then
-		# if the Inconsolata font is missing
-		if ! [ -f /usr/share/fonts/TTF/Inconsolata-Regular.ttf ]
-		then
-			sudo pacman -Sy --noconfirm ttf-inconsolata
-		fi	
-	fi
 
 	# append X custom config to Xresources
 	resources="#include \"$SCRIPTS/etc/Xresources.d/urxvt\""

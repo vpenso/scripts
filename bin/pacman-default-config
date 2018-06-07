@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+if [ -f /usr/sbin/pacman ]
+then
+	# select fastest mirror
+	sudo pacman-mirrors --fasttrack
+	# update database & packages
+	sudo pacman -Syyu --noconfirm
+	# install required packages
+	sudo pacman -S --noconfirm \
+		ccrypt \
+		firejail \
+		firefox \
+		rsync \
+		sshfs \
+		sshuttle \
+		tcpdump \
+		ttf-inconsolata \
+	        xclip
+fi

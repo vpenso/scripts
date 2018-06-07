@@ -1,11 +1,3 @@
-if ! [[ -f /usr/sbin/ccrypt && -f /usr/sbin/xclip ]]
-then
-	if [ -f /usr/sbin/pacman ]
-	then
-		sudo pacman -Sy --noconfirm ccrypt xclip
-	fi
-fi
-
 alias pw=password
 
 # Use `password` on a remote node over SSH, and paste to local clipboard

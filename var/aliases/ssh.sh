@@ -1,17 +1,3 @@
-# install require package on ArchLinux bases distributions
-if [ -f /usr/sbin/pacman ]
-then
-	if ! [[ \
-		-f /usr/bin/sshfs && \
-		-f /usr/bin/sshuttle && \
-		-f /usr/bin/rsync && \
-		-f /usr/bin/tcpdump
-	     ]]
-	then
-		sudo pacman -Sy --noconfirm sshfs sshuttle rsync tcpdump
-	fi
-fi
-
 alias sr='ssh -l root'
       shuttle() { sshuttle -r --dns $1 0/0 ; } # Launch SSH proxy
 alias rsync='rsync -avzrtp'  # Use archive mode by default
