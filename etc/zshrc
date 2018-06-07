@@ -1,4 +1,26 @@
-export PROMPT='%n@%F'
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTFILE=~/.zsh_history
+setopt append_history
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history
 
-# Switch the ZSH right prompt off
-zsh-norprompt() { export RPROMPT='' ; }
+setopt INTERACTIVE_COMMENTS
+
+NEWLINE=$'\n'
+export PROMPT="%n@%m:%~ $NEWLINE>>> "
+
+# add additional configuration to this directory
+mkdir ~/.zshrc.d 2>/dev/null
+# if the directory is not empty
+if ! [ -z "$(ls -A ~/.zshrc.d)" ]
+then
+	for file in `\ls ~/.zshrc.d/*`
+	do 
+  		source $file
+	done
+fi
+
