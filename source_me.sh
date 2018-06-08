@@ -1,5 +1,5 @@
 #
-# Copyright 2012-2013 Victor Penso
+# Copyright 2012-2018 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+## Repository Environment Variable ##
 
 shell=$(ps -p $$ | tail -n1 | tr -s ' ' | cut -d' ' -f4)
 
@@ -42,16 +44,19 @@ export SCRIPTS=$__dir
 unset __dir
 unset __source
 
+## Load Scripts, Configuration and Aliases ##
+
+export PATH=$SCRIPTS/bin:$PATH
+PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+
 for file in `\ls $SCRIPTS/var/aliases/*.sh`
 do 
   source $file
 done
 
-export PATH=$SCRIPTS/bin:$PATH
+## Add Repository to Shell Environment ## 
 
-PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
-
-# if a Bash configuration exists
+# append repository to an existing bash configuration
 if [ -f ~/.bashrc ]
 then
 	config="source $SCRIPTS/source_me.sh"
@@ -69,8 +74,10 @@ then
 		echo -e "# Load bash specific user configuration\n$config" >> ~/.bashrc
 		echo \"$config\" added to ~/.bashrc
 	fi
+	unset config
 fi
 
+# add repository to an existing Zsh configuratrion
 # link to the user specific Zsh configuration
 ln -sf $SCRIPTS/etc/zshrc ~/.zshrc
 # Load generic shell configuration with Zsh
