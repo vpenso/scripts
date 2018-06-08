@@ -4,6 +4,7 @@ hwinfo --disk
 fdisk -l
 smartctl -a /dev/sda
 /proc/partitions
+/proc/filesystems                         # list of supported file-systems
 parted -l | grep '^Disk /dev'
 lspci | egrep "RAID|SATA"
 dmesg | grep ata[0-9] | tr -s ' ' | cut -d' ' -f3- | sort
