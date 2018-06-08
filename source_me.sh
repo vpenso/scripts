@@ -15,11 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Find the correct path even if dereferenced by a link
-__source=$0
+shell=$(ps -p $$ | tail -n1 | tr -s ' ' | cut -d' ' -f4)
 
-if [[ "$__source" == *bash* ]]; then
-  __source=${BASH_SOURCE[0]}
+if [ "$shell" = "bash" ]
+then
+  __source=$BASH_SOURCE[0]
+elif [ "$shell" = "zsh" ]
+then
+  __source="${(%):-%x}"
+else
+  echo Shell not supported
+  exit 1
 fi
 
 __dir="$( dirname $__source )"
