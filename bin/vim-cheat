@@ -1,181 +1,147 @@
 #!/bin/sh
 
-_black="\033[30m" 
-_red="\033[31m"
-_yellow="\033[33m"
-_blue="\033[34m"   
-_reset="\033[0m"   
-_bold="\033[1m"
-_underline="\033[4m"
-
-M="${_bold}${_blue}"
-R="$_reset"
-B="${_bold}"
-U="${_underline}"
 
 echo "
-           ${B}${U}NORMAL MODE${R}
+         NORMAL MODE
+ 
+    (switch to insert mode)
+             i │ insert before the cursor
+             I │ insert text on all selected lines in visual mode
+           a/A │ append right to cursor/end-of-line
+           o/O │ open new line below/above
+            cw │ delete word and enter insert mode
+             R │ replace mode
+      (cursor movement)
+           h/l │ left/right
+           j/k │ down/up
+           {/} │ beginning/end of current paragraph
+           w/b │ forward/backward one word
+           W/B │ forward/backwards one word (space separated)
+          e/ge │ next/previous end of word
+           $/0 │ end of line/first character in line
+             ^ │ first non-blank character in line
+             % │ move to matching parent
+          gg/G │ start/end of file (nG for a specific line)
+         H/M/L │ home/middle/last line on the screen
+ Ctrl-d/Ctrl-u │ scroll down/up 1/2 page
+ Ctrl-e/Ctrl-y │ scroll down/up one line
+ Ctrl-f/Ctrl-b │ scroll full screen up/down
+            ma │ mark location and jump back with 
+            'a │ jump to last mark
+        (text handling)
+           x/X │ delete character under/left to the cursor
+             r │ replace character
+	 dt|dT │ forward/backword delete until character 
+         dw/yw │ delete/copy word
+           D/C │ delete/change until end of line
+         dd/cc │ delete/change the whole line
+           s/S │ change character/line
+             J │ join two lines (delete line break)
+           u/U │ undo last edit/undo line
+        Ctrl-r │ redo last edit
+            gv │ select last block
+ 
+          VISUAL MODE
+ 
+             v │ enter visual selection mode 
+             V │ enter line selection mode 
+             y │ copy selection into buffer
+        (column selection)
+        Ctrl-v │ enter column selection mode
+             I │ insert in front of cursor (Esc to apply to all lines)
+             A │ ~ append after cursor
+      Ctrl-r\" │ paste from register
+             c │ change selection (delete and switch to insert mode)
+             r │ replace every charater in selections
+             d │ delete selection
+             o │ toggle cursor to opposite corner
+ 
+             SEARCH
+ 
+           f/F │ search char to the right/left (repeat ;/,)
+           n/N │ find next/previous occurrence
+             / │ search word in file 
+             ? │ search word in file backwards
+           */# │ search term under cursor (next/previous)
+          (substitution)
+   :s/pat/rpl/ │ first occurrence single line
+  :s/pat/rpl/g │ all occurrences single line
+  :%s/pat/rpl/ │ first occurrence in file
+ :%s/pat/rpl/g │ all occurrences in file
+:%s/pat/rpl/gc │ all occurrences in file with confirmation
 
-      ${B}(switch to insert mode)${R}
-              ${M}i │ insert before the cursor${R}
-              I │ insert text on all selected lines in visual mode
-            a/A │ append right to cursor/end-of-line
-            o/O │ open new line below/above
-             cw │ delete word and enter insert mode
-              R │ replace mode
-        ${B}(cursor movement)${R}
-            ${M}h/l │ left/right
-            j/k │ down/up${R}
-            {/} │ beginning/end of current paragraph
-            ${M}w/b │ forward/backward one word${R}
-            W/B │ forward/backwards one word (space separated)
-           e/ge │ next/previous end of word
-            $/0 │ end of line/first character in line
-              ^ │ first non-blank character in line
-              % │ move to matching parent
-           gg/G │ start/end of file (nG for a specific line)
-          H/M/L │ home/middle/last line on the screen
-  ${M}Ctrl-d/Ctrl-u │ scroll down/up 1/2 page
-  Ctrl-e/Ctrl-y │ scroll down/up one line
-  Ctrl-f/Ctrl-b │ scroll full screen up/down${R}
-             ma │ mark location and jump back with 
-             'a │ jump to last mark
-         ${B}(text handling)${R}
-            ${M}x/X │ delete character under/left to the cursor${R}
-              r │ replace character
-          ${M}dw/yw │ delete/copy word
-            D/C │ delete/change until end of line
-          dd/cc │ delete/change the whole line${R}
-            s/S │ change character/line
-              J │ join two lines (delete line break)
-            ${M}u/U │ undo last edit/undo line${R}
-         Ctrl-r │ redo last edit
-             gv │ select last block
-             ZZ │ write changes and exit
+          COPY & PASTE
 
-            ${B}${U}VISUAL MODE${R}
+           y/Y │ copy selection/line
+           p/P │ paste after/below of before/above the cursor
+     \"+y/\"+p │ copy to/paste from clipboard
+      Ctrl-R\" │ paste from clipboard (and other registers)
+          \"\" │ default register
+           \"0 │ yank register
+         \"1-9 │ shifting delete registers
+         \"a-z │ user registers (A-Z to append onto register)
+      Ctrl-R / │ search pattern register
+           \": │ last command register
+           \"_ │ black hole register
+           \"% │ last file name register
+           \", │ last inserted text register
+          :reg │ show content of all registers
 
-              ${M}v │ enter visual selection mode 
-              V │ enter line selection mode 
-              y │ copy selection into buffer${R}
-        ${B}(column selection)${R}
-         Ctrl-v │ enter column selection mode
-              I │ insert in front of cursor (Esc to apply to all lines)
-              A │ ~ append after cursor
-        Ctrl-r\" │ paste from register
-              c │ change selection (delete and switch to insert mode)
-              r │ replace every charater in selections
-              d │ delete selection
-              o │ toggle cursor to opposite corner
+            FOLDING
 
-             ${B}${U}SEARCH${R}
+            za │ toggle folding
+            zc │ close fold at the cursor
+            zo │ open fold at the cursor
+            zR │ open all folds
+            zM │ close all open folds
+            zj │ move cursor to next fold
+            zk │ move cursor to previous fold
 
-            ${M}f/F │ search char to the right/left (repeat ;/,)
-            n/N │ find next/previous occurrence${R}
-              / │ search word in file 
-              ? │ search word in file backwards
-            */# │ search term under cursor (next/previous)
-          ${B}(substitution)${R}
-    :s/pat/rpl/ │ first occurrence single line
-   :s/pat/rpl/g │ all occurrences single line
-   :%s/pat/rpl/ │ first occurrence in file
-  ${M}:%s/pat/rpl/g │ all occurrences in file${R}
- :%s/pat/rpl/gc │ all occurrences in file with confirmation
+            COMMANDS
 
-          ${B}${U}COPY & PASTE${R}
+       :e PATH │ open file/directory
+            :w │ save changes
+      :cd PATH │ change working directory 
+          :pwd │ print working directory
+         (file explorer)
+           :e. │ open explorer in working directory
+            :E │ open explorer in directory of current file
+          :sp. │ open explorer in horizontal split pane
+          :vs. │ open explorer in horizontal split pane
+ Crtl-w Ctrl-w │ switch between panes
+             - │ on directory up
+             % │ create new empty file
+             d │ create new directory
+     (map leader is comma \",\")
+            ,e │ edit configuration file
+           ,sv │ reload configuration file
+            ,l │ toggle invisible characters
+            ,/ │ clear search highlighting
+           ,ew │ open file from the directory of current file
+           ,es │ ^~ in horizontal split pane 
+           ,ev │ ^~ in vertical split pane 
+            q: │ open command line window 
+            q? │ open search history window 
+      Ctrl-w c │ close window 
+  Ctrl-Shift-P │ Show highlighting group 
+       :TOhtml │ create HTML of current file 
 
-            ${M}y/Y │ copy selection/line
-            p/P │ paste after/below of before/above the cursor${R}
-        \"+y/\"+p │ copy to/paste from clipboard
-        Ctrl-R\" │ paste from clipboard (and other registers)
-             \"\" │ default register
-             \"0 │ yank register
-           \"1-9 │ shifting delete registers
-           \"a-z │ user registers (A-Z to append onto register)
-       Ctrl-R / │ search pattern register
-             \": │ last command register
-             \"_ │ black hole register
-             \"% │ last file name register
-             \", │ last inserted text register
-           :reg │ show content of all registers
+              KEYS
 
-            ${B}${U}FOLDING${R}
+            F3 │ enable paste mode (when in insert mode)${R}
+            F5 │ toggle German spell checking 
+            F6 │ toggle English spell checking 
 
-             za │ toggle folding
-             zc │ close fold at the cursor
-             zo │ open fold at the cursor
-             zR │ open all folds
-             zM │ close all open folds
-             zj │ move cursor to next fold
-             zk │ move cursor to previous fold
-
-            ${B}${U}COMMANDS${R}
-
-        ${M}:e PATH │ open file/directory${R}
-             :w │ save changes
-       :cd PATH │ change working directory 
-           :pwd │ print working directory
-          ${B}(file explorer)${R}
-            ${M}:e. │ open explorer in working directory
-             :E │ open explorer in directory of current file${R}
-           :sp. │ open explorer in horizontal split pane
-           :vs. │ open explorer in horizontal split pane
-  Crtl-w Ctrl-w │ switch between panes
-              - │ on directory up
-              % │ create new empty file
-              d │ create new directory
-     ${B}(map leader is comma \",\")${R}
-             ,e │ edit configuration file
-            ,sv │ reload configuration file
-             ${M},l │ toggle invisible characters
-             ,/ │ clear search highlighting${R}
-            ,ew │ open file from the directory of current file
-            ,es │ ^~ in horizontal split pane 
-            ,ev │ ^~ in vertical split pane 
-             q: │ open command line window 
-             q? │ open search history window 
-       Ctrl-w c │ close window 
-   Ctrl-Shift-P │ Show highlighting group 
-        :TOhtml │ create HTML of current file 
-      
-
-              ${B}${U}KEYS${R}
-
-             ${M}F3 │ enable paste mode (when in insert mode)${R}
-             F5 │ toggle German spell checking 
-             F6 │ toggle English spell checking 
-
-               ${B}${U}GIT${R}
-
-           :Git │ run any Git command 
-         :Gdiff │ open split panes for file comparison local vs. HEAD
-       ${B}(index manipulation)${R}
-       ${M}:Gstatus │ open horizontal pane with status information${R}
-              - │ add/reset file (works in visual mode)
-          Enter │ open current dile in the window below
-              ${M}C │ execute :Gcommit${R}
-    ${B}(examine the repository history)${R}
-          :Glog │ load all previous revisions of the current file ot the 
-                │ quickfix list (limit with -NUM )
-         :Gedit │ get back to working copy
-       :Glog -- │ load all ancestral commit objects int the quickfix list
-     :Glog -- % │ ^~ limited to the current file 
-    ${B}(working the quick fix list)${R}
-         :cnext │ step back in the revision tree 
-         :cprev │ step forward in the revision tree
-        :cfirst │ jump to the latest revision
-         :clast │ jump to the oldest revision
-
-               ${B}${U}DIGRAPHS${R}
+            DIGRAPHS
          
-      :digraphs │ list a characters
-     Ctrl-k = e │ € (Euro) 
-   Ctrl-k aou : │ äöü (German umlaut)
-     Ctrl-v Esc │ Insert escape sequence ^[ 
-  Ctrl-v u 00a9 │ © (character by unicode number)
+     :digraphs │ list a characters
+    Ctrl-k = e │ € (Euro) 
+  Ctrl-k aou : │ äöü (German umlaut)
+    Ctrl-v Esc │ Insert escape sequence ^[ 
+ Ctrl-v u 00a9 │ © (character by unicode number)
 
-               ${B}${U}SPELLING${R}
+            SPELLING
          
-             z= │ list alternatives if word is incorrect
-             zG │ add the word to the spelling file
+            z= │ list alternatives if word is incorrect
+            zG │ add the word to the spelling file
 "

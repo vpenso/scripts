@@ -32,8 +32,11 @@ bindkey -v
 export KEYTIMEOUT=1    
 
 # preserver a couple of keys in insert mode
-# (list widgets with `zle -la`)
+# (list widgets with `zle -la`, list keys with `bindkey`)
 
+# make delete and backspace work
+bindkey '^[[3~' delete-char
+bindkey "^?" backward-delete-char
 # ctrl-a/ctrl-e move cursor to beginning/end of the line
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
