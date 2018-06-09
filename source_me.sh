@@ -17,18 +17,23 @@
 
 ## Repository Environment Variable ##
 
-shell=$(ps -p $$ | tail -n1 | tr -s ' ' | cut -d' ' -f4)
-
+# default location
+__source=$HOME/projects/scripts/source_me.sh
+# try to determine the source_me.sh fire location
+shell=$(ps -p $$ | tail -n1 | tr -s ' ' | sed -e 's/^[ \t]*//' | cut -d' ' -f4)
+# in Bash shells
 if [ "$shell" = "bash" ]
 then
-  __source=$BASH_SOURCE[0]
+	__source=$BASH_SOURCE[0]
+# in Zsh shells
 elif [ "$shell" = "zsh" ]
 then
-  __source="${(%):-%x}"
+	__source="${(%):-%x}"
 else
-  echo Shell not supported
-  exit 1
+	echo \[W\] Using default: \"$__source\" 
 fi
+
+
 
 __dir="$( dirname $__source )"
 while [ -h $__source ]
