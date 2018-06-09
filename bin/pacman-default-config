@@ -3,15 +3,18 @@
 if [ -f /usr/sbin/pacman ]
 then
 	# select fastest mirror
-	sudo pacman-mirrors --fasttrack
+	sudo pacman-mirrors -c Germany
 	# update database & packages
 	sudo pacman -Syyu --noconfirm
 	# install required packages
 	sudo pacman -S --noconfirm \
 		ccrypt \
 		encfs \
+		exa \
+		feh \
 		firejail \
 		firefox \
+		fzf \
 		git \
 		neofetch \
 		python-pywal \
