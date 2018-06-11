@@ -33,10 +33,6 @@ set showcmd         " display an incomplete command in the lower right corner
 set expandtab       " no real tabs please!
 set wrap            " wrap lines
 set linebreak       " don't split words
-set shiftwidth=2    " auto-indent amount when using cindent,
-                    " >>, << and stuff like that
-set softtabstop=2   " when hitting tab or backspace, how many spaces
-                    "should a tab be (see expandtab)
 set guioptions-=m   " don't show menu bar
 set guioptions-=T
 set showtabline=0   " don't show tab bar
@@ -64,13 +60,14 @@ let mapleader = ','
 " Shortcut to rapidly toggle `set list`
 nmap <leader>l :set list!<CR>
 " Use the symbols from Unicode for tab-stops and end-of-line
-set listchars=tab:▸\ ,eol:¬
-set listchars+=trail:·
+set listchars=tab:→\ ,eol:¬
+set listchars+=trail:•
+
 
 " Clearing highlighted searches
 nmap <silent> <leader>/ :nohlsearch<CR>
 
-" enable realtive line numbers
+" enable relative line numbers
 set rnu
 au BufEnter * :set rnu
 au BufLeave * :set nu
@@ -90,25 +87,36 @@ if exists("syntax on")
   syntax reset
 endif
 hi Visual       ctermfg=27   ctermbg=146
-hi SpellBad     ctermbg=224 
+hi SpellBad     ctermbg=224
 hi CursorLine   ctermbg=254 cterm=none
 hi LineNr       ctermfg=240  ctermbg=254
 hi Comment      ctermfg=249
-hi Number       ctermfg=202
+hi Number       ctermfg=166
 hi String       ctermfg=248
 hi Boolean      ctermfg=39
-hi Constant     ctermfg=70
-hi Identifier   ctermfg=166 
-hi Function     ctermfg=33
+hi Constant     ctermfg=33
+hi Identifier   ctermfg=208
+hi Function     ctermfg=26
 hi Statement    ctermfg=33
 hi PreProc      ctermfg=33   cterm=bold
 hi Type         ctermfg=160
 hi Error        ctermfg=none ctermbg=none
+"
+" highlight invisible characters
+"
+" "eol", "extends" and "precedes"
+hi NonText        ctermfg=166 cterm=bold
+" "nbsp", "tab" and "trail"
+hi SpecialKey     ctermfg=166 cterm=bold
+
+
+
 hi shQuote        ctermfg=241
 hi shOption       ctermfg=31
 hi shDerefSimple  ctermfg=34
 hi shCommandSub   ctermfg=31 ctermbg=none cterm=bold
 hi shSpecial      ctermfg=124
+
 
 hi htmlTag                        ctermfg=241
 hi htmlEndTag                     ctermfg=241
@@ -148,7 +156,7 @@ hi rubyRegexpAnchor               ctermfg=203 cterm=bold
 hi rubyRegexpBrackets             ctermfg=240 cterm=bold
 hi rubyRegexpEscape               ctermfg=26  cterm=bold
 hi rubyRegexpDot                  ctermfg=124 cterm=bold
-hi rubyRegexpCharClass            ctermfg=214 
+hi rubyRegexpCharClass            ctermfg=214
 hi rubyRegexpQuantifier           ctermfg=220
 
 hi markdownH1                     ctermfg=33 cterm=bold
