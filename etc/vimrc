@@ -1,0 +1,170 @@
+" Specify a directory for plugins
+call plug#begin('~/.vim/plugged')
+
+" list plugins to install
+
+Plug 'powerline/powerline'
+" https://github.com/vim-airline/vim-airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" run :PlugInstall
+
+" Initialize plugin system
+call plug#end()
+
+let g:airline_theme='minimalist'                  " select a custom theme
+
+filetype on         " enable file type detection
+filetype indent on  " file type specific indenting
+filetype plugin on  " load file type specific plug-ins
+filetype plugin indent on
+syntax on           " syntax highlighting on
+
+" Esc key should be recognized immediately, instead if after one second
+set timeout timeoutlen=1000 ttimeoutlen=100
+set autoindent
+set autoread        " watch files for changes
+set encoding=utf-8
+set number          " line numbers
+set showbreak=…     " if line numbers are of indicate it
+set ruler           " show the line numbers on the bar
+set showcmd         " display an incomplete command in the lower right corner
+set expandtab       " no real tabs please!
+set wrap            " wrap lines
+set linebreak       " don't split words
+set shiftwidth=2    " auto-indent amount when using cindent,
+                    " >>, << and stuff like that
+set softtabstop=2   " when hitting tab or backspace, how many spaces
+                    "should a tab be (see expandtab)
+set guioptions-=m   " don't show menu bar
+set guioptions-=T
+set showtabline=0   " don't show tab bar
+set laststatus=2    " always show status line
+set spell           " spell checking on
+set cursorline      " highlight current line
+set showmatch       " show matching brackets/parenthesis
+set incsearch       " find as you type search
+set hlsearch        " highlight search terms
+
+" Switch to paste mode, disabling all kinds of smartness
+" and enable just pasting a whole buffer of test.
+set pastetoggle=<F3>
+" switch between German and English spelling
+map <F5> :setlocal spell! spelllang=de<CR>
+map <F6> :setlocal spell! spelllang=en<CR>
+
+" To define a mapping which uses the "mapleader" variable, the
+" special string "<Leader>" can be used.  It is replaced with the
+" string value of "mapleader". If "mapleader" is not set or empty,
+" a backslash ('\') is used instead as default.
+"
+let mapleader = ','
+
+" Shortcut to rapidly toggle `set list`
+nmap <leader>l :set list!<CR>
+" Use the symbols from Unicode for tab-stops and end-of-line
+set listchars=tab:▸\ ,eol:¬
+set listchars+=trail:·
+
+" Clearing highlighted searches
+nmap <silent> <leader>/ :nohlsearch<CR>
+
+" enable realtive line numbers
+set rnu
+au BufEnter * :set rnu
+au BufLeave * :set nu
+au WinEnter * :set rnu
+au WinLeave * :set nu
+au InsertEnter * :set nu
+au InsertLeave * :set rnu
+au FocusLost * :set nu
+au FocusGained * :set rnu
+
+
+set t_Co=256
+set background=light
+" always use underline for bad spelling
+hi clear
+if exists("syntax on")
+  syntax reset
+endif
+hi Visual       ctermfg=27   ctermbg=146
+hi SpellBad     ctermbg=224 
+hi CursorLine   ctermbg=254 cterm=none
+hi LineNr       ctermfg=240  ctermbg=254
+hi Comment      ctermfg=249
+hi Number       ctermfg=202
+hi String       ctermfg=248
+hi Boolean      ctermfg=39
+hi Constant     ctermfg=70
+hi Identifier   ctermfg=166 
+hi Function     ctermfg=33
+hi Statement    ctermfg=33
+hi PreProc      ctermfg=33   cterm=bold
+hi Type         ctermfg=160
+hi Error        ctermfg=none ctermbg=none
+hi shQuote        ctermfg=241
+hi shOption       ctermfg=31
+hi shDerefSimple  ctermfg=34
+hi shCommandSub   ctermfg=31 ctermbg=none cterm=bold
+hi shSpecial      ctermfg=124
+
+hi htmlTag                        ctermfg=241
+hi htmlEndTag                     ctermfg=241
+hi htmlH3                         ctermfg=243 cterm=bold
+hi htmlLink                       ctermfg=255 cterm=bold
+hi htmlSpecialChar                ctermfg=166
+hi cssStyle                       ctermfg=241
+hi cssDefinition                  ctermfg=248
+hi cssBraces                      ctermfg=241
+hi cssTagName                     ctermfg=36
+hi cssIdentifier                  ctermfg=36 cterm=bold
+hi cssClassName                   ctermfg=36 cterm=bold
+hi cssPseudoClassId               ctermfg=23
+hi cssTextProp                    ctermfg=221
+hi cssFontProp                    ctermfg=221
+hi cssBoxProp                     ctermfg=221
+hi cssRenderProp                  ctermfg=187
+hi cssColorProp                   ctermfg=221 cterm=bold
+hi cssCommonAttr                  ctermfg=187 cterm=bold
+hi cssTextAttr                    ctermfg=187
+hi cssBoxAttr                     ctermfg=187
+hi cssUIAttr                      ctermfg=187
+hi cssColor                       ctermfg=43
+hi erubyDelimiter                 ctermfg=214 cterm=bold
+hi javaScript                     ctermfg=232
+hi javaScriptFunction             ctermfg=39 cterm=bold
+hi javaScriptIdentifier           ctermfg=208 cterm=bold
+hi javaScriptType                 ctermfg=160 cterm=bold
+hi javaScriptBoolean              ctermfg=70 cterm=bold
+hi rubySymbol                     ctermfg=208
+hi rubyBlockParameter             ctermfg=40
+hi rubyStringDelimiter            ctermfg=27
+hi rubyInterpolationDelimiter     ctermfg=203
+hi rubyStringEscape               ctermfg=240 cterm=bold
+hi rubyRegexpDelimiter            ctermfg=237 ctermbg=none cterm=bold
+hi rubyRegexpAnchor               ctermfg=203 cterm=bold
+hi rubyRegexpBrackets             ctermfg=240 cterm=bold
+hi rubyRegexpEscape               ctermfg=26  cterm=bold
+hi rubyRegexpDot                  ctermfg=124 cterm=bold
+hi rubyRegexpCharClass            ctermfg=214 
+hi rubyRegexpQuantifier           ctermfg=220
+
+hi markdownH1                     ctermfg=33 cterm=bold
+hi markdownH2                     ctermfg=33
+hi markdownH3                     ctermfg=33
+hi markdownItalic                 ctermfg=248 
+hi markdownBold                   ctermfg=248 cterm=bold
+hi markdownListMarker             ctermfg=160 cterm=bold
+hi markdownHeadingDelimiter       ctermfg=33
+hi markdownLinkText               ctermfg=252
+hi markdownLinkDelimiter          ctermfg=236
+hi markdownLinkTextDelimiter      ctermfg=236
+hi markdownUrl                    ctermfg=240
+hi markdownCode                   ctermfg=24
+hi markdownCodeBlock              ctermfg=24
+hi markdownCodeDelimiter          ctermfg=74 cterm=bold
+hi markdownLineBreak              ctermbg=153
+hi markdownId                     ctermfg=244
+hi markdownIdDeclaration          ctermfg=202
