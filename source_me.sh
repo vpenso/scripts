@@ -33,8 +33,6 @@ else
 	echo \[W\] Using default: \"$__source\" 
 fi
 
-
-
 __dir="$( dirname $__source )"
 while [ -h $__source ]
 do
@@ -69,7 +67,7 @@ then
 	if ! [ $? -eq 0 ]
 	then
 		echo -e "# Load generic shell configuration\n$config" >> ~/.bashrc
-		echo \"$config\" added to ~/.bashrc
+		echo $config added to ~/.bashrc
 	fi
 	
 	config="source $SCRIPTS/etc/bashrc"
@@ -77,14 +75,14 @@ then
 	if ! [ $? -eq 0 ]
 	then
 		echo -e "# Load bash specific user configuration\n$config" >> ~/.bashrc
-		echo \"$config\" added to ~/.bashrc
+		echo $config added to ~/.bashrc
 	fi
 	unset config
 fi
 
-# add repository to an existing Zsh configuratrion
+# add repository to an existing Zsh configuration
 # link to the user specific Zsh configuration
 ln -sf $SCRIPTS/etc/zshrc ~/.zshrc
 # Load generic shell configuration with Zsh
 mkdir ~/.zshrc.d 2>/dev/null
-ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/scripts
+ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/00_scripts
