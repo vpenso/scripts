@@ -15,6 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+if [ ! -d ~/.ssh ]
+then
+  	mkdir $HOME/.ssh
+fi
+
 # SSH agent configuration is saved to file:
 export SSH_ENV=$HOME/.ssh/agent-session
 
