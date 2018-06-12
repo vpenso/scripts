@@ -8,7 +8,9 @@ ff() {
 
 # run Firefox in a container
 ffj() { 
-	(firejail firefox --no-remote 2>&1 1>/dev/null &)
+	(firejail \
+                firefox --no-remote 2>&1 >/dev/null \
+        &) 2>&1 >/dev/null
 }
 
 # run firefox even more contained (no sound!)
