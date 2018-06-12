@@ -1,25 +1,28 @@
 alias m=music
 alias mute="amixer --quiet set Master toggle"
+
+# pass the volume in percent as first argument
 alias volume="amixer --quiet set Master"
 
-pulserestart() {
-  pulseaudio --kill
-  pulseaudio --start
+pulse-restart() {
+        pulseaudio --kill
+        pulseaudio --start
 }
 
 ##
 # Play a single song given as the first argument
 #
 play() { 
-  # show the song played
-  if [[ $# -eq 0 ]]
-  then
-    ps -C ffplay -o command=
-  # start playing song
-  else
-    ffplay -nodisp $1 2>&- >&- &
-    disown
-  fi
+        # show the song played
+        if [[ $# -eq 0 ]]
+        then
+                ps -C ffplay -o command=
+        # start playing song
+        else
+                # is part ffmpeg
+                ffplay -nodisp $1 2>&1 >/dev/null &
+                disown
+        fi
 }
 
 ##
