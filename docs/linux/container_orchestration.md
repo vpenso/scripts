@@ -4,28 +4,23 @@ _Automated arrangement, coordination, and management of software containers_
 
 Containerized workloads:  portable, insulated, independent dependencies
 
-HPC **WMS** (Workload Management Systems) with container support and **CaaS** (Container as a Service):
+* **COE** - Container Orchestration Engines, aka. Container as a Service (CaaS)
+* **WMS** - HPC Workload Management Systems with container support
 
-Name                                | Family
-------------------------------------|-------------------
-[PBS][pbs] (Portable Batch System)  | WMS
-Univa GridEngine (Navops)           | WMS
-HT (High Throughput) Condor         | WMS
-[Slurm][slurm]                      | WMS
-[Mesos][mesos]¹ & [Marathon][mthon] | CaaS
-[Kubernetes][kubs]                  | CaaS
-Docker [Swarm][swarm]               | CaaS
+Open-Source for container orchestration: 
+
+Name                                | Family | Cf.
+------------------------------------|--------|--------------------------------
+PBS (Portable Batch System)         | WMS    | http://pbspro.org
+HT (High Throughput) Condor         | WMS    | http://research.cs.wisc.edu/htcondor
+Slurm                               | WMS    | https://slurm.schedmd.com
+Mesos¹ (with Marathon)              | COE    | http://mesos.apache.org
+Kubernetes                          | COE    | https://kubernetes.io
+Docker Swarm                        | COE    | https://docs.docker.com/engine/swarm
 
 ¹Mesos is a common resource management system hosting multiple distributed computing (workload management) frameworks (2-level scheduling).
 
-[pbs]: http://pbspro.org/
-[slurm]: https://slurm.schedmd.com/
-[mesos]: http://mesos.apache.org/documentation
-[mthon]: https://mesosphere.github.io/marathon/
-[kubs]: https://kubernetes.io/docs/
-[swarm]: https://docs.docker.com/engine/swarm/
-
-HPC oriented workload management semantics do not naturally integrate with CaaS resource management:
+WMS oriented workload management semantics do not naturally integrate with COE:
 
 * (Help users to) move HPC workloads into containers and migrate to the CaaS resource management (cloud-style)
 * Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS) (cf. [Slurm on Google Cloud Platform](https://github.com/SchedMD/slurm/tree/slurm-17.11/contribs/gcp))
