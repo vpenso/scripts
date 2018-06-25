@@ -25,7 +25,7 @@ WMS oriented workload management semantics do not naturally integrate with COE:
 * (Help users to) move HPC workloads into containers and migrate to the CaaS resource management (cloud-style)
 * Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS) (cf. [Slurm on Google Cloud Platform](https://github.com/SchedMD/slurm/tree/slurm-17.11/contribs/gcp))
 
-## Workloads
+## User Workloads
 
 Users Submit a wide variety of **computational applications** (jobs, tasks) for processing
 
@@ -41,14 +41,27 @@ parallel      | Synchronously parallel processes (simultaneous execution)
 periodical    | Processes executed in a defined interval
 analytics     | Combination of the above categories
 
-## Workload Managers (Schedulers)
+## Workload Management
 
-**Match and execute** compute workloads from multiple users **efficently** on the available computational resources
+**Match/execute** user workloads **efficently** on available computing resources:
 
-- **Lifecycle management** - Receive and queue workloads, prioritize/sort candidate workloads (queue management policies)
-- **Resource management** - Collect resource capabilities and state information for the scheduler
-- **Scheduling** - Allocate resources and assign a workload from the queue
-- **Execution & monitoring** - Launch the workload, track its state and collect performance metrics 
+Classification of workload schedulers:
+
+Type             | Description
+-----------------|--------------------------------
+monolithic       | Single central scheduling for all tasks (i.e. all HPC WMS, Kubernetes, Swarm)
+two-level        | Separate resources allocation from task placement (i.e. Mesos)
+shared state     | Shared state (protocol) for multiple (application specific) schedulers (no examples)
+
+Responsibilities/components of a workload management system:
+
+Component            | Description
+---------------------|----------------------------------------
+scheduling           | Allocate resources and assign a workload from the queue
+lifecycle management | Receive and queue workloads, prioritize/sort candidate workloads (queue management policies)
+resource management  | Collect resource capabilities and state information for the scheduler
+execution/monitoring | Launch the workload, track its state and collect performance metrics 
+
 
 ### Resource management
 
@@ -59,12 +72,23 @@ analytics     | Combination of the above categories
 
 ### Scheduling methods
 
-* Timesharing - Allocate multiple workloads from one or more user on a single node
-* Backfilling - Schedule pending workloads out of order to maximize utilization
-* Job Chunking - Run similar workloads of multiple users simultaneously
-* Bin Packing - Group workloads of multiple user to optimize utilization
-* Gang scheduling - Allow users to submit multiple process within a single workload
-* Job dependencies - Allow user to define workflows for execution (direct acyclic graphs (DAGs))
+Optimize mapping of requested resources to the available resources.
+
+Method            | Description
+------------------|-------------------------------------------------
+time sharing      | Allocate multiple workloads from one or more user on a single node
+backfilling       | Schedule pending workloads out of order to maximize utilization
+job chunking      | Run similar workloads of multiple users simultaneously
+bin packing       | Group workloads of multiple user to optimize utilization
+gang scheduling   | Allow users to submit multiple process within a single workload
+job dependencies  | Allow user to define workflows for execution (direct acyclic graphs (DAGs))
+
+Many possible input metrics and tunable settings for the scheduling algorithm
+
+* Resource - amount, type, duration, cost/power, topology...
+* Account - user, group, project, tags, limits...
+* Policies - job size/age, priority, fair share, reservation,...
+
 
 ### Workload placement
 
