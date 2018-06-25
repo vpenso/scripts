@@ -41,7 +41,7 @@ parallel      | Synchronously parallel processes (simultaneous execution)
 periodical    | Processes executed in a defined interval
 analytics     | Combination of the above categories
 
-## Workload Management
+## Workload Execution
 
 **Match/execute** user workloads **efficently** on available computing resources:
 
@@ -53,26 +53,13 @@ monolithic       | Single central scheduling for all tasks (i.e. all HPC WMS, Ku
 two-level        | Separate resources allocation from task placement (i.e. Mesos)
 shared state     | Shared state (protocol) for multiple (application specific) schedulers (no examples)
 
-Responsibilities/components of a workload management system:
+Many possible **resource metrics** and **tunable settings** for the scheduling algorithm
 
-Component            | Description
----------------------|----------------------------------------
-scheduling           | Allocate resources and assign a workload from the queue
-lifecycle management | Receive and queue workloads, prioritize/sort candidate workloads (queue management policies)
-resource management  | Collect resource capabilities and state information for the scheduler
-execution/monitoring | Launch the workload, track its state and collect performance metrics 
+* Resource - amount, type, duration, cost/power, topology...
+* Account - user, group, project, tags, limits...
+* Policies - job size/age, priority, fair share, reservation,...
 
-
-### Resource management
-
-* Heterogeneous resources - The scheduler can accommodate different hardware configurations
-* Allocation policy - Prioritization of jobs according to specific resource requirements (i.e. run-time)
-* Consumable resources - Enforced static (CPUs, RAM) and dynamic (load,bandwidth) resource constrains
-* Network-aware scheduling - Consideration of network topology by the scheduler for job allocation
-
-### Scheduling methods
-
-Optimize mapping of requested resources to the available resources.
+Methods to **optimize mapping** of requested resources to the available resources:
 
 Method            | Description
 ------------------|-------------------------------------------------
@@ -83,14 +70,29 @@ bin packing       | Group workloads of multiple user to optimize utilization
 gang scheduling   | Allow users to submit multiple process within a single workload
 job dependencies  | Allow user to define workflows for execution (direct acyclic graphs (DAGs))
 
-Many possible input metrics and tunable settings for the scheduling algorithm
 
-* Resource - amount, type, duration, cost/power, topology...
-* Account - user, group, project, tags, limits...
-* Policies - job size/age, priority, fair share, reservation,...
+### Workload Management
+
+Responsibilities/components of a workload management system:
+
+Component            | Description
+---------------------|----------------------------------------
+scheduling           | Allocate resources and assign a workload from the queue
+lifecycle management | Receive and queue workloads, prioritize/sort candidate workloads
+resource management  | Collect resource capabilities and state information for the scheduler
+execution/monitoring | Launch the workload, track its state and collect performance metrics 
 
 
-### Workload placement
+**Resource management** typically involves following capabilities:
+
+Capability               | Description
+-------------------------|-------------------------------------------
+heterogeneous resources  | The scheduler can accommodate different hardware configurations
+allocation policy        | Prioritization of jobs according to specific resource requirements (i.e. run-time)
+consumable resources     | Enforced static (CPUs, RAM) and dynamic (load, bandwidth) resource constrains
+network-aware scheduling | Consideration of network topology by the scheduler for job allocation
+
+**Workload placement** is usually highly configurable:
 
 * Prioritization - Consider user/group priorities, fair-share policies during scheduling
 * Replacement/reordering - Dynamically manged job order in the queue to react to state changes (resource, jobs, etc)
