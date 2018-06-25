@@ -30,11 +30,16 @@ Users Submit a wide variety of **computational applications** (jobs, tasks) for 
 Workload      | Description
 --------------|------------------------------------
 service       | Service (daemon) process (long running, persistent execution)
+periodical    | Processes executed in a defined interval
 batch         | Single (independent) processes (sequential execution)
 array         | Pleasantly parallel processes (asynchronously executed)
 parallel      | Synchronously parallel processes (simultaneous execution)
-periodical    | Processes executed in a defined interval
 analytics     | Combination of the above categories
+
+Comparing workloads
+
+- Traditional HPC - Strict resource constrains, highly parallel, performance oriented (fast storage, low latency interconnect)
+- Data analytics - Malleable requirements, load-balanced, fault-tolerant (replication to avoid data loss)
 
 ## Workload Execution
 
