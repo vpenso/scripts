@@ -20,11 +20,6 @@ Docker Swarm                        | COE    | https://docs.docker.com/engine/sw
 
 ¹Mesos is a common resource management system hosting multiple distributed computing (workload management) frameworks (2-level scheduling).
 
-HPC oriented workload management semantics do not naturally integrate with CaaS and can be approached in two ways
-
-1. Help users to move HPC workloads into containers and migrate to CaaS resource management (cloud-style)
-2. Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS)
-
 ## User Workloads
 
 Users Submit a wide variety of **computational applications** (jobs, tasks) for processing
