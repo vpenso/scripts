@@ -20,10 +20,10 @@ Docker Swarm                        | COE    | https://docs.docker.com/engine/sw
 
 ¹Mesos is a common resource management system hosting multiple distributed computing (workload management) frameworks (2-level scheduling).
 
-WMS oriented workload management semantics do not naturally integrate with COE:
+HPC oriented workload management semantics do not naturally integrate with CaaS and can be approached in two ways
 
-* (Help users to) move HPC workloads into containers and migrate to the CaaS resource management (cloud-style)
-* Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS) (cf. [Slurm on Google Cloud Platform](https://github.com/SchedMD/slurm/tree/slurm-17.11/contribs/gcp))
+1. Help users to move HPC workloads into containers and migrate to CaaS resource management (cloud-style)
+2. Operate HPC workload management over CaaS resource management as underlying substrate (comparable to HPC on IaaS)
 
 ## User Workloads
 
@@ -70,8 +70,18 @@ bin packing       | Group workloads of multiple user to optimize utilization
 gang scheduling   | Allow users to submit multiple process within a single workload
 job dependencies  | Allow user to define workflows for execution (direct acyclic graphs (DAGs))
 
+**User defined factors** contributing to scheduling decisions:
 
-### Workload Management
+Factor             | Description
+-------------------|---------------------------------------------------
+fair-share         | Uses historic resource utilization as a factor to balance target shares
+quality of service | Special treatment of jobs based on specified criteria
+reservation        | All to reserve resources in advance
+job dependencies   | Task workflows/sequencing defined by users
+
+**Multi-factor priority** is the use of multiple factors to determine the execution of workloads.
+
+## Workload Management
 
 Responsibilities/components of a workload management system:
 
@@ -82,8 +92,9 @@ lifecycle management | Receive and queue workloads, prioritize/sort candidate wo
 resource management  | Collect resource capabilities and state information for the scheduler
 execution/monitoring | Launch the workload, track its state and collect performance metrics 
 
+### Resource Management
 
-**Resource management** typically involves following capabilities:
+Typically involves following capabilities:
 
 Capability               | Description
 -------------------------|-------------------------------------------
@@ -91,12 +102,18 @@ heterogeneous resources  | The scheduler can accommodate different hardware conf
 allocation policy        | Prioritization of jobs according to specific resource requirements (i.e. run-time)
 consumable resources     | Enforced static (CPUs, RAM) and dynamic (load, bandwidth) resource constrains
 network-aware scheduling | Consideration of network topology by the scheduler for job allocation
+accelerator support      | Specialized hardware GPUs, FPGAs, PHIs (Intel)
+power capping            | Limit the power consumption of workloads
 
-**Workload placement** is usually highly configurable:
+* At minimum resources are managed at the granularity of a node
+* Typically fine-grained management of CPU cores & memory
+* Eventually includes software licenses, network bandwidth, shared storage space, accelerators
 
-* Prioritization - Consider user/group priorities, fair-share policies during scheduling
+### Workload placement
+
+Usually highly configurable:
+
 * Replacement/reordering - Dynamically manged job order in the queue to react to state changes (resource, jobs, etc)
-* Reservation - Request resources in the future (guarantees resource availability)
 * Power-aware scheduling - Drain, shutdown unused nodes to minimize power consumption
 * Prolog/epilog support - Allow scripts to be executed before/after a job
 * Data staging - Support for copying files to local storage before job execution
