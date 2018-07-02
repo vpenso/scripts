@@ -17,9 +17,10 @@ then
 		fzf \
 		git \
 		neofetch \
-		python-pywal \
+		pandoc \
 		powerline \
 		powerline-fonts \
+		python-pywal \
 		rsync \
 		ruby \
 		sshfs \
@@ -27,5 +28,5 @@ then
 		tcpdump \
 		ttf-inconsolata \
 		vim \
-	        xclip
+                xclip
 fi
