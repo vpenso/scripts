@@ -84,9 +84,9 @@ set -g message-bg default
 
 set -g status-right ''
 set -g window-status-separator ''
-set -g status-left '#[fg=colour254,bg=colour234,bold] #S #[fg=colour234,bg=colour254,nobold]'
-set -g window-status-format "#[fg=colour244,bg=colour254]  #I #[fg=colour240] #[default]#W "
-set -g window-status-current-format "#[fg=colour254,bg=colour221,bold]#[fg=colour130,bg=colour221] #I  #[fg=colour130,bold]#W #[fg=colour221,bg=colour254,nobold]"
+set -g status-left '#[fg=colour254,bg=colour234,bold] #S #[fg=colour234,bg=colour254,nobold]'
+set -g window-status-format "#[fg=colour244,bg=colour254] #I:#[fg=colour240]#[default]#W "
+set -g window-status-current-format "#[fg=colour254,bg=colour221,bold]#[fg=colour130,bg=colour221] #I:#[fg=colour130,bold]#W #[fg=colour221,bg=colour254,nobold]"
 set -g window-status-activity-style bg=colour224
 EOF
 
