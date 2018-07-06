@@ -5,9 +5,16 @@ then
 	# select fastest mirror
 	sudo pacman-mirrors -c Germany
 	# update database & packages
-	sudo pacman -Syyu --noconfirm
+	sudo pacman --refresh \
+                    --sync \
+                    --sysupgrade \
+                    --noconfirm \
+                    --quiet
 	# install required packages
-	sudo pacman -S --noconfirm \
+	sudo pacman --sync \
+                    --needed \
+                    --noconfirm \
+                    --quiet \
 		ccrypt \
 		encfs \
 		exa \
@@ -26,7 +33,8 @@ then
 		sshfs \
 		sshuttle \
 		tcpdump \
+		tmux \
 		ttf-inconsolata \
 		vim \
-                xclip
+		xclip
 fi
