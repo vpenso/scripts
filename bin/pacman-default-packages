@@ -23,6 +23,8 @@ then
 		firefox \
 		fzf \
 		git \
+		mpd \
+		ncmpc \
 		neofetch \
 		pandoc \
 		powerline \

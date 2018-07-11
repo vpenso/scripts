@@ -1,0 +1,13 @@
+bind_to_address         "127.0.0.1"
+port                    "6666"
+music_directory         "/srv/music"
+playlist_directory      "~/.mpd/playlists"
+db_file                 "~/.mpd/mpd.db"
+log_file                "~/.mpd/mpd.log"
+pid_file                "~/.mpd/mpd.pid"
+mixer_type              "software"
+
+audio_output { 
+  type                  "alsa"
+  name                  "My ALSA Device"
+}

@@ -1,8 +1,91 @@
-alias m=music
 alias mute="amixer --quiet set Master toggle"
-
 # pass the volume in percent as first argument
 alias vol="amixer --quiet set Master"
+
+MPC_ALIAS_HELP="\
+@,  crop                Remove songs except current from playlist
++,  next                Play next song in playlist
+-,  prev                Play previous song in playlist
+~                       Remove current song from playlist
+1                       Toggles looping
+a,  add PATH            Adds directory to playlist
+c,  clear               Remove all songs from playlist
+    conf                Show MPD configuration
+d,  delete NUMS         Remove songs from playlist
+k,  kill                Kill MPD daemon
+pl, playlist            Show current playlist
+p,  play [NUM]          Plays playlist
+s,  stop                Stop playing music
+u,  update              Update database
+"
+
+if [[ -f /usr/sbin/mpd && -f /usr/sbin/mpc ]]
+then
+        MPD_PORT=6666
+        MPD_CONF=$SCRIPTS/etc/mpdconf
+        MPD_PLAYLISTS=$HOME/.mpd/playlists
+        MUSIC_DIR=/srv/music
+        
+        export MPD_PORT \
+               MPD_CONF \
+               MPD_PLAYLISTS \
+               MUSIC_DIR
+
+        alias mpc=mpc -p $MPD_PORT
+
+        if [ -d $MUSIC_DIR ]
+        then
+                # if MPD is not running
+                if ! pgrep -u $USER mpd &>/dev/null
+                then
+                        [[ -d $MPD_PLAYLISTS ]] || mkdir -p $MPD_PLAYLISTS
+                        # start MPD
+                        mpd $MPD_CONF
+                        # update music index
+                        mpc -w update
+                        echo mpd started
+                fi
+        fi
+
+        function mpc-alias() {
+        
+                local command=$1
+                # remove first argument if present
+                [[ $# -ne 0 ]] && shift
+                # for given command...
+                case "$command" in
+                        add|a)          mpc add $@ ;;
+                        clear|c)        mpc -q clear ;;
+                        conf)           tail -n+1 $MPD_CONF ;;
+                        del|d)          mpc del $@ ;;
+                        kill|k)         killall -u $USER mpd ;;
+                        next|-)         mpc next ;;
+                        list|l)         mpc ls $@ ;;
+                        play|p)         mpc play $1 ;;
+                        playlist|pl)    mpc --format '[%position%] %file%' playlist ;;
+                        prev|+)         mpc prev ;;
+                        stop|s)         mpc stop ;;
+                        update|u)       mpc update ;;
+                        ~)              mpc del 0 ;;
+                        0)              mpc current ;;
+                        1)              mpc repeat ;;
+                        @)              mpc crop ;;
+                        *)              echo -n $MPC_ALIAS_HELP ;;
+                esac
+        
+        }
+
+        alias m=mpc-alias
+
+        # if the ncurses client is installed
+        if [ -f /usr/sbin/ncmpc ]
+        then
+                alias ncmpc=ncmpc -p $MPD_PORT
+        fi
+else
+        echo mpd/mpc programs missing
+fi
+
 
 pulse-restart() {
         pulseaudio --kill
