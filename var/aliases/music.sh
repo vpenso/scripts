@@ -1,6 +1,31 @@
-alias mute="amixer --quiet set Master toggle"
-# pass the volume in percent as first argument
-alias vol="amixer --quiet set Master"
+VOL_ALIAS_HELP="\
+-                     decrease volume bu 5%
++                     increase volume by 5%
+0                     toggle mute
+% <percent>           adjust volume to percentage
+"
+
+
+if [ -f /usr/sbin/amixer ]
+then
+        function vol-amixer() {
+        
+                local command=$1
+                # remove first argument if present
+                [[ $# -ne 0 ]] && shift
+
+                case "$command" in
+                        -)                 amixer set Master 5%- ;;
+                        +)                 amixer set Master 5%+ ;;
+                        0)                 amixer --quiet set Master toggle ;;
+                        %)                 amixer --quiet set Master $1 ;;
+                        *)                 echo -n $VOL_ALIAS_HELP ;;
+                esac
+        }
+
+        alias vl=vol-amixer
+fi
+
 
 MPC_ALIAS_HELP="\
 @,  crop                Remove songs except current from playlist
