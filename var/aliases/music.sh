@@ -80,7 +80,7 @@ then
         # if the ncurses client is installed
         if [ -f /usr/sbin/ncmpc ]
         then
-                alias ncmpc=ncmpc -p $MPD_PORT
+                alias n=ncmpc -p $MPD_PORT
         fi
 else
         echo mpd/mpc programs missing
