@@ -107,8 +107,6 @@ then
         then
                 alias n=ncmpc -p $MPD_PORT
         fi
-else
-        echo mpd/mpc programs missing
 fi
 
 
