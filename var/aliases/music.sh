@@ -38,6 +38,7 @@ c,  clear               Remove all songs from playlist
     conf                Show MPD configuration
 d,  delete NUMS         Remove songs from playlist
 k,  kill                Kill MPD daemon
+l,  list                List library
 pl, playlist            Show current playlist
 p,  play [NUM]          Plays playlist
 s,  stop                Stop playing music
