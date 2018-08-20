@@ -38,4 +38,27 @@ TERMINAL
         Ctrl+Shift+Q              Close window
         Ctrl+Shift+C              Copy
         Ctrl+Shift+V              Paste
-        Ctrl+[+,-,0]              Zoom in,out,normal"
+        Ctrl+[+,-,0]              Zoom in,out,normal
+
+NAUTILUS
+
+        Ctrl-N                    New window
+        Ctrl-W                    Close window
+        Ctrl-Q                    Close all windows
+        F9                        Hide sidebar
+        Ctrl+[1,2]                List/grid view
+        Alt+[back,forward]        Go forward/back
+        Alt+[up,down]             Go to parent/selected folder
+        Ctrl+L                    Enter location
+        Space                     Preview file
+        Enter                     Open in default application
+        Ctrl-F                    Search file
+        Ctrl+Shift+N              Create folder
+        F2                        Rename
+        Ctrl-I                    File information
+        Delete                    Move to trash
+        Ctrl+[X,C,V]              Cut,Copy,Paste
+        Ctrl+A                    Select all
+        Ctrl+S                    Select by pattern
+        Ctrl+H                    Toggle hidden files
+        Ctrl+[+,-,0]              Zoom in, out, reset"
