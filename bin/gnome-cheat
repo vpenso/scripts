@@ -1,0 +1,41 @@
+#!/bin/bash
+
+echo "\
+SHELL
+
+        Alt+F2                    Command dialog
+        Alt+Space                 Switch keyboard layout
+        Super+L                   Lock screen
+        Ctrl+Alt+Delete           Log out, power off
+
+APPLICATION
+
+        Alt+Tab                   Switch application
+        System+F10                Application menu
+
+WINDOWS
+
+        System+H                  Hide/minimize window
+        System+Right/Left         Dock right/left half of workspace
+        System+Up/Down            Toggle maximize
+        Ctrl+Atl+Shift+[Up,Down]  Move window a workspace up/down
+        Alt+Space                 Activate window menu
+        Alt+F4                    Close window
+        Alt+F7                    Move window
+        Alt+F8                    Resize window
+        Super+Shift+[left,Right]  Move windows to left/right monitor
+
+WORKSPACE
+
+        Super+Page[Up,Down]
+        Ctrl+Alt+[Up,Down]        Switch workspace
+        Super+Home                First workspace
+        Super+End                 Last Workspace
+
+TERMINAL
+
+        Ctrl+Shift+N              New window
+        Ctrl+Shift+Q              Close window
+        Ctrl+Shift+C              Copy
+        Ctrl+Shift+V              Paste
+        Ctrl+[+,-,0]              Zoom in,out,normal"

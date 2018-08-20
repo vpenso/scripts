@@ -23,6 +23,7 @@ then
 		firefox \
 		fzf \
 		git \
+                mpc \
 		mpd \
 		ncmpc \
 		neofetch \
