@@ -38,5 +38,6 @@ then
 		tmux \
 		ttf-inconsolata \
 		vim \
+                vim-airline \
 		xclip
 fi
