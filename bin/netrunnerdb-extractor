@@ -124,7 +124,7 @@ begin
                                    card['faction_code']
                           end
 
-                $stdout.print "#{card['type_code']} #{card['side_code']}/#{faction} (#{card['deck_limit']})"
+                $stdout.print "#{faction} #{card['type_code']}"
 
                 fc = card['faction_cost'] || '-'
 
@@ -144,7 +144,7 @@ begin
                         end
                 stats << " link:#{card['base_link']}" if card['type_code'] == 'identity' and card['side_code'] == 'runner'
 
-                $stdout.print " #{$options.delimiter} #{stats} #{$options.delimiter} #{card['keywords'] || '-'}" 
+                $stdout.print " #{$options.delimiter} limit:#{card['deck_limit']} #{stats} #{$options.delimiter} #{card['keywords'] || '-'}" 
                 $stdout.puts
           end
   end
