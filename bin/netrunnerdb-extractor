@@ -106,10 +106,29 @@ begin
                                end
   end
 
-  Dir.glob("#{path}/pack/*.json").each do |file|
+  $stdout.puts %w(
+        Title
+        Cycle/Card
+        Faction
+        Type
+        Side
+        Decksize
+        Infl.limit
+        Link
+        Limit
+        Influence
+        Cost
+        Advance.Points
+        Agen.Points
+        Strength
+        Memory
+        Trash
+        Keywords
+  ).join(" #{$options.delimiter} ")
+
+  Dir.glob("#{path}/pack/*.json").each do |file| 
+
           JSON.parse(File.read(file)).each do |card|
-                
-                $stdout.print "#{card['title']} [#{cycles[card['pack_code']]}/#{card['position']}] "
 
                 faction = case card['faction_code']
                           when 'haas-bioroid'
@@ -123,29 +142,28 @@ begin
                           else
                                    card['faction_code']
                           end
+                
+                columns = [
+                  card['title'],
+                  "#{cycles[card['pack_code']]}/#{card['position']}",
+                  faction,
+                  card['type_code'],
+                  card['side_code'],
+                  card['minimum_deck_size'] || '-',
+                  card['influence_limit'] || '-',
+                  card['base_link'] || '-',
+                  card['deck_limit'],
+                  card['faction_cost'] || '-',
+                  card['cost'] || '-',
+                  card['advancement_cost'] || '-',
+                  card['agenda_points'] || '-',
+                  card['strength'] || '-',
+                  card['memory_cost'] || '-',
+                  card['trash_cost'] || '-',
+                  card['keywords'] || '~'
+                ]
 
-                $stdout.print "#{faction} #{card['type_code']}"
-
-                fc = card['faction_cost'] || '-'
-
-                stats = case card['type_code']
-                        when 'agenda'
-                                "inf:#{fc} adv:#{card['advancement_cost']} pts:#{card['agenda_points']}"
-                        when 'ice'
-                                "inf:#{fc} cost:#{card['cost']} str:#{card['strength']}"
-                        when 'identity'
-                                "deck:#{card['minimum_deck_size']} inf:#{card['influence_limit']}"
-                        when 'program'
-                                "inf:#{fc} cost:#{card['cost']} mem:#{card['memory_cost']}"
-                        when 'asset','upgrade'
-                                "inf:#{fc} cost:#{card['cost']} trash:#{card['trash_cost']}"
-                        else
-                                "inf:#{fc} cost:#{card['cost']}"
-                        end
-                stats << " link:#{card['base_link']}" if card['type_code'] == 'identity' and card['side_code'] == 'runner'
-
-                $stdout.print " #{$options.delimiter} limit:#{card['deck_limit']} #{stats} #{$options.delimiter} #{card['keywords'] || '-'}" 
-                $stdout.puts
+                $stdout.puts columns.join(" #{$options.delimiter} ")
           end
   end
 
