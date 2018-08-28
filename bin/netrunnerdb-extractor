@@ -1,0 +1,164 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2018 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'json'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] <command> [<arguments>]
+
+<command>
+   List commands
+
+<options>
+  -d, --debug                           Show stacktraces in case of errors.
+  -h, --help                            Show this help information.
+  -v, --version                         Print version number.
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.delimiter = '|'
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  path = ARGV.shift || raise('Requering path to NetrunneDB card JSON data')
+
+  packs = JSON.parse(File.read("#{path}/packs.json"))
+
+  cycles = {}
+  packs.each do |pack|
+        cycles[pack['code']] = case pack['cycle_code']
+                               when 'creation-and-control'
+                                       'creation'
+                               when 'data-and-destiny'
+                                       'destiny'
+                               when 'honor-and-profit'
+                                       'honor'
+                               when 'order-and-chaos'
+                                       'order'
+                               when 'red-sand'
+                                       'redsand'
+                               when 'terminal-directive'
+                                       'terminal'
+                               when 'reign-and-reverie'
+                                       'reign'
+                               else
+                                       pack['cycle_code']
+                               end
+  end
+
+  Dir.glob("#{path}/pack/*.json").each do |file|
+          JSON.parse(File.read(file)).each do |card|
+                
+                $stdout.print "#{card['title']} [#{cycles[card['pack_code']]}/#{card['position']}] "
+
+                faction = case card['faction_code']
+                          when 'haas-bioroid'
+                                  'hb'
+                          when 'neutral-corp','neutral-runner'
+                                  'neutral'
+                          when 'sunny-lebeau'
+                                  'sunny'
+                          when 'weyland-consortium'
+                                  'weyland'
+                          else
+                                   card['faction_code']
+                          end
+
+                $stdout.print "#{card['type_code']} #{card['side_code']}/#{faction} (#{card['deck_limit']})"
+
+                fc = card['faction_cost'] || '-'
+
+                stats = case card['type_code']
+                        when 'agenda'
+                                "inf:#{fc} adv:#{card['advancement_cost']} pts:#{card['agenda_points']}"
+                        when 'ice'
+                                "inf:#{fc} cost:#{card['cost']} str:#{card['strength']}"
+                        when 'identity'
+                                "deck:#{card['minimum_deck_size']} inf:#{card['influence_limit']}"
+                        when 'program'
+                                "inf:#{fc} cost:#{card['cost']} mem:#{card['memory_cost']}"
+                        when 'asset','upgrade'
+                                "inf:#{fc} cost:#{card['cost']} trash:#{card['trash_cost']}"
+                        else
+                                "inf:#{fc} cost:#{card['cost']}"
+                        end
+                stats << " link:#{card['base_link']}" if card['type_code'] == 'identity' and card['side_code'] == 'runner'
+
+                $stdout.print " #{$options.delimiter} #{stats} #{$options.delimiter} #{card['keywords'] || '-'}" 
+                $stdout.puts
+          end
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
