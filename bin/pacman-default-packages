@@ -15,6 +15,7 @@ then
                     --needed \
                     --noconfirm \
                     --quiet \
+                bat \
 		ccrypt \
 		encfs \
 		exa \

@@ -49,6 +49,9 @@ alias el='exa -l --git'
 alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
 
+alias bat='bat --theme "Monokai Extended Light"'
+
+
 ##
 # process listing
 #
