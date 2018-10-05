@@ -30,6 +30,7 @@ EuroHPC JU - Joint Undertaking
 Ref.:
 
 * [Eurolab-4-HPC Long-term Vision on High-Performance Computing][14] (2017/06)
+* [European High-Performance Computing Handbook][15] (2017/12)
 * [The EuroHPC Impact Assessment cnt'd][13]] (2018/01)
 * [EuroHPC: the European HPC Strategy][12] (2018/03)
 * [The EuroHPC Initiative and its Implementation][11]
@@ -42,3 +43,4 @@ Ref.:
 [12]: https://hpcuserforum.com/presentations/france2018/LFAtoHPCForumTeratec6-7March2018final.pdf
 [13]: https://www.evropskyvyzkum.cz/cs/storage/1370debdf347a8e837366e61761928a15d51b0f0?uid=1370debdf347a8e837366e61761928a15d51b0f0
 [14]: https://arxiv.org/pdf/1807.04521.pdf
+[15]: http://www.etp4hpc.eu/pujades/files/European%20HPC%20Handbook%202017%20-%2020%20Dec%202017%20-%201.pdf
