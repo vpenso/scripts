@@ -1,6 +1,6 @@
-## Blockhains
+## Blockchain
 
-Distributed shared **digital ledgers** of cryptographically signed transactions grouped in blocks:
+Distributed shared **digital ledger** of cryptographically signed transactions grouped in blocks:
 
 * Distributed - Without central repository and usually without a central authority
 * Shared - Blocks replicated across copies of the ledger within the network (conflicts automatically resolved by rules)
