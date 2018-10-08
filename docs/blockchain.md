@@ -70,3 +70,37 @@ Technologies used in blockchains:
 * **Chaining Blocks**
   - Blocks contain a hash digest of the previous block's header
   - Altering a block, alters its header, and subsequently alters all following blocks, which is easy to detect
+
+### Consensus Models
+
+The consensus mechanism defines the rules that decide on the contributions by the various participants of the blockchain. Basically an algorithm to select one (of many) participant to receive the right to add new transactions.
+
+* **Proof of Work** (PoW)
+  - Mine - Solve a difficult computationally intensive puzzle (with an easy to check solution)
+  - Participant publishes the next block by being the first to mine a proof
+  - The difficulty of the proof may be adjusted over time to influence how often blocks are being published
+  - An **incentive model** is used to reward publishing nodes to expand computation resources to maintain the blockchain
+* **Proof of Stake** (PoS)
+  - Stake, investment into the system by a given user (increasing the interest to maintain the blockchain)
+  - Amount of stake a participant has is a determining factor for publishing new blocks
+  - Less computing intensive compared to PoW, reward usually based on transaction fees
+  - Approaches to choose a publisher: random selection of staked users, multi-round voting, coin aging, delegate system
+* **Proof of Authority/Identity** (PoA)
+  - Identity/reputation as a stake (no need to mining)
+  - Transactions/blocks checked by approved publishers/accounts aka. validators
+  - Only non-consecutive blocks can be approved by any one validator (semi distribute trust)
+* **Proof of Elapsed Time** (PoET)
+  - Randomized timer system for network system, grants signed time-objects to participants
+  - Time-objects determined by a fair lottery system (with equal likelihood for all participants)
+  - The winning time-object selects the block leader abel to produce new transactions/blocks
+* **Round Robin**, publishers take turns in creating blocks
+
+Other terminology:
+
+* **Genesis Block** - First block (only pre-configured block), initial state of the system
+  - All subsequent blocks added to the chain based on the agreed-upon consensus model
+  - Users can verify every block independently beginning from the genesis block
+* **Ledger Conflict**
+  - Multiple blocks published at the same time, different version of the blockchain at a given moment
+  - The blockchain network needs to resolve conflicts to have consistency
+  - Resolution, i.e. adopt the longer blockchain
