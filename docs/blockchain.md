@@ -16,7 +16,6 @@ Cryptocurrency
 
 Cryptocurrency is build on blockchain technology, aka **Distributed Ledger Technology** (DLT)
 
-
 ## Blockchain
 
 Distributed shared **digital ledger** of cryptographically signed transactions grouped in blocks:
@@ -129,4 +128,20 @@ Other terminology:
   - Multiple blocks published at the same time, different version of the blockchain at a given moment
   - The blockchain network needs to resolve conflicts to have consistency
   - Resolution, i.e. adopt the longer blockchain
+
+### Smart Contracts
+
+**Expanding blockchains from just data to code.**
+
+Problem: How to trust that the right thing will happen in the future?  
+Solution: Host immutable, deterministic code on chain
+
+Code & state on the blockchain:
+
+* Interact (hold/transfer) with on-chain assets
+* Immutable (no fixes), public readable and deterministic (no external dependencies)
+* Every contract is executed by publisher nodes
+* Computation based on a fee
+
+
 
