@@ -84,9 +84,10 @@ Technologies used in blockchains:
   - Keys-pairs must be managed and the private-key securely stored
   - Often a dedicated hardware device is used to store keys
 * **Ledgers** (collection of transactions) with distributed ownership
-* **Blocks** (contains header and data)
+* **Blocks** (batches of transactions)
   - Transactions added to the blockchain when a publishing node publishes a block
   - A block contains a list of validated and authentic transactions
+  - Implemented with a header and data section
 * **Chaining Blocks**
   - Blocks contain a hash digest of the previous block's header
   - Altering a block, alters its header, and subsequently alters all following blocks, which is easy to detect
@@ -144,4 +145,15 @@ Code & state on the blockchain:
 * Computation based on a fee
 
 
+## Reference
+
+Blockchain Fundamentals, Berkley, Nadir Akhtar (2017)
+
+https://blockchain.berkeley.edu/decal/fa17/fund/  
+https://www.youtube.com/playlist?list=PLSONl1AVlZNXVI1dobdDrwv2hhIgemJuA
+
+Mastering Bitcoin, Andreas Antonopoulos
+
+https://github.com/bitcoinbook/bitcoinbook
+https://drive.google.com/file/d/0B8lgcDXI8hEfbXFYcTh6aXNqRkk/view
 

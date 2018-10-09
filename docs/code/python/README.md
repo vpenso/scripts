@@ -23,7 +23,7 @@ sys.exit(i)                     # exit with error code i
 
 Python modules executable as main program also:
 
-* A source files executed as the main program have the variable `__name__` set to `__main__`
+* Source files executed as the main program have the variable `__name__` set to `__main__`
 * Call an optional `main()` function if not loaded by an `import <module>`
 
 ```python
@@ -34,14 +34,19 @@ if __name__ == '__main__':
     main()
 ```
 
-
 # Python Language
 
 ## Variables
 
+The **assigns operation** `name = object` references values to variables:
+
+* Assignment **declares** and **initializes** a variable with a value
+* Most suitable data type for assignment is select automatically by the interpreter.
+* A cascading assignment **modifies** an object referenced by a variable
+
 ```python
 x = 1.2 + 8     # assign right expression
-x = y = z = 0   # assign the same value to multiple variables
+x = y = z = 0   # assign a single value to multiple variables
 x,y,z = 1,2,3   # multiple assignments
 x,y = y,x       # variable swap
 a,*b = [1,2,3]  # unpacking a sequence
@@ -52,7 +57,8 @@ hex(id(x))      # ...hexadecimal memory address
 globals()       # dictionary of global variables
 ```
 
-Naming Rules:
+
+**Naming conventions**:
 
 ```python
 var_with_sep    # underscore separated downcase letters
@@ -65,7 +71,16 @@ _var_           # protected use in class
 __var__         # "magic: method or attribute
 ```
 
+* Names are case sensitive
+* Python keywords can not be used as names
+
 ## Numbers
+
+Type      | Description
+----------|-------------------------------
+`int`     | Integer number are of arbitrary size
+`float`   | Floating point number precision depends on the implementation and system architecture
+`complex` | Complex number
 
 ### Literals
 
@@ -74,9 +89,11 @@ __var__         # "magic: method or attribute
 -123            # negative signed integer
 9.23            # float 
 -1.7e-6         # scientific notation
+2 + 1j          # complex number
 0b010           # 2         binary notation
 0o642           # 418       octal
-0xf3            # 243       hexadecimal 
+0xf3            # 243       hexadecimal
+None            # indefined value
 ```
 
 Types, and type-casting:
@@ -84,16 +101,16 @@ Types, and type-casting:
 ```python
 type(1)                  # <class 'int'>
 type(1.2)                # <class 'float'>
-## String to numerical
+type(None)               # <class 'NoneType'>
+## string to numerical
 int('123')               # 123
 float('1.23')            # 1.23
 ## Type check ##
 isinstance(10,int)       # True
 isinstance(1.234,float)  # True
 ```
-### Ranges
 
-Integer sequences:
+**Ranges**, integer sequences:
 
 ```python
 list(range(5))           # [0, 1, 2, 3, 4]
@@ -120,9 +137,10 @@ max([1,2,3,4,5])          # 5
 min([1,2,3,4,5])          # 1
 ```
 
-## Logic
+### Logic
 
 ```python
+## Booleans
 True               # logic true
 False              # logic fales
 not True           # False
@@ -130,6 +148,8 @@ True and True      # True
 True and False     # False
 True or False      # True
 False or False     # False
+1                  # True
+0                  # False
 ## Comparison with boolean results
 1 < 2              # True
 1 > 2              # False
@@ -142,7 +162,16 @@ False or False     # False
 1 if False else 2  # 2
 ```
 
-Conditional statements:
+## Control & Loop Constructs
+
+Block **indentation**:
+
+* Blocks of code begin with a colon (:) and contain indented lines below (no ending identifier)
+* Always use **4 spaces** for indentation
+* Single line statements may be put on the same line (considered bad style)
+* Empty blocks cause an _IndentationError_, use `pass` (a command that does nothing)`
+
+### Conditional Statements
 
 * Can go with multiple `elif` followed by a single `else`
 * First true condition is executed
@@ -356,13 +385,12 @@ ord('a')                           # 97
 
 **Raw-string** prefixed with `r` or `R` use different rules for backslash escape sequences
 
-
 ### Format
 
 ```python
 ## format() method of the String class ##
 "{}|{}".format(1,2)                            # '1|2'
-# ...postional index
+# ...positional index
 "{1},{0},{2}".format('r','s','t')              # 's,r,t'
 # ...parameter names
 "{b}{a}".format(a='s',b='t')                   # 'ts'
@@ -377,7 +405,7 @@ ord('a')                           # 97
 "{:^5}".format('s')                            # '  s  '
 ## Parametrized format ##
 '{:{a}{w}}'.format('s',a='>',w=5)              # '    s'
-# ...postional arguments
+# ...positional arguments
 '{:{}{}{}.{}}'.format(2.7182,'>','+',10,3)     # '     +2.72'
 ## Global build in function ##
 format(10.0,"7.3g")                            # '     10'
