@@ -1,5 +1,5 @@
 
-## Runtime Environment
+## Command-Line Environment
 
 Use following libraries:
 
@@ -34,14 +34,25 @@ if __name__ == '__main__':
     main()
 ```
 
+Get input from the user with the `input` function:
+
+* The argument will be printed followed by a prompt to wait for user input
+* The function returns the input provided by the user
+* Note that the return value is always of type `str`
+
+```python
+input('Give me a string: ')
+int(input('Give me a number'))
+```
+
 # Python Language
 
 ## Variables
 
-The **assigns operation** `name = object` references values to variables:
+The **assignment operation** `name = object` references values to variables:
 
 * Assignment **declares** and **initializes** a variable with a value
-* Most suitable data type for assignment is select automatically by the interpreter.
+* Most suitable data type for assignment is select automatically by the interpreter
 * A cascading assignment **modifies** an object referenced by a variable
 
 ```python
@@ -74,6 +85,18 @@ __var__         # "magic: method or attribute
 * Names are case sensitive
 * Python keywords can not be used as names
 
+**Scope** and binding:
+
+* Variables are always assigned to **local scope** current code block (i.e. within a function body)
+* `nonlocal` assigns to variables in an **outer scope** (but not global)
+* `global` assigns to a variable in the module's top level aka **global scope**
+
+```python
+globals().keys()         # prints all variable names in global scope
+locals().keys()          # prints all variable names in local scope
+```
+
+
 ## Numbers
 
 Type      | Description
@@ -96,7 +119,7 @@ Type      | Description
 None            # indefined value
 ```
 
-Types, and type-casting:
+Types, and **type-casting**:
 
 ```python
 type(1)                  # <class 'int'>
@@ -379,11 +402,19 @@ Escape sequences interpreted according to rules similar to those used by Standar
 ## Raw strings ##
 r"\t\n\\"                          # '\\t\\n\\\\'
 R"\"\n\""                          # '\\"\\n\\"'
-## Built-in function to get ASCII codes ##
-ord('a')                           # 97
 ```
 
 **Raw-string** prefixed with `r` or `R` use different rules for backslash escape sequences
+
+
+```python
+# Built-in function to get ASCII codes
+ord('a')                           # 97
+# convert to sequence pr collection types
+list('abc')                        # ['a', 'b', 'c']
+set('abc')                         # {'b', 'a', 'c'}
+tuple('abc')                       # ('a', 'b', 'c')
+```
 
 ### Format
 
@@ -477,7 +508,14 @@ with open('/etc/hosts') as f:
 
 ## Modules
 
-Load a module:
+A module is a files containing Python definitions and statements.
+
+```python
+dir(__builtins__)        # list build-in functions
+help(type)               # help text for a given modul/function
+```
+
+**Import** a module to use its functions:
 
 ```python
 import math
@@ -485,12 +523,19 @@ math.pi          # 3.141592653589793
 math.sqrt(81)    # 9.0
 ```
 
-Load module, and allow direct access to functions:
+Load module, and allow **direct access to functions**:
 
 ```python
 from math import pi,e,sin,log
 sin(pi/4)       # 0.7071067811865475
 log(e**2)       # 2.0
+```
+
+Define an **alias** for a module:
+
+```python
+import math as m
+m.pi           # 3.141592653589793
 ```
 
 Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
