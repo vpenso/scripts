@@ -1,26 +1,50 @@
 
 # Memory
 
-Physical device (integrated circuit) that stores information (code/data) temporary or permanent:
+Physical device (integrated circuit) that stores information (code/data) temporary/permanent:
 
-* Stores information in **binary representation** (binary data)
-* Broadly two types of memory:
-  * Temporary **volatile** memory requires power to maintain stored data
-  * Non-volatile **persistent** storage retains stored data after power off
+* Temporary **volatile** memory requires power to maintain stored data
+* Non-volatile **persistent** storage retains stored data after power off
 
-Storage (physical memory) is divided into a **memory hierarchy**:
+Concepts used to build memory systems a major factor in determining performance of a computer:
 
-* Internal processor **register** ➜ integrated (small & fast) memory
+* Programs exhibit **temporal locality** (tendency to reuse data accessed recently) 
+  and **spatial locality** (tendency to reference data close to recently used data)
+* Memory hierarchies take advantage of temporal/spatial locality while moving data
+  between fast/small **upper level** memory and big/slow **lower level** memory
+
+## Hierarchy
+
+A memory hierarchy separates storage into a layers/levels based on **latency** 
+(response time) and **capacity**:
+
+* Fast and large storage can not be achieved with a single level memory
+* Multiple levels of storage progressively bigger and slower
+
+Typical modern memory(/cache) hierarchy:
+
+Name      | Latency | Size
+----------|---------|----------------
+Register  | <1ns    | B
+L1 cache  | ~1ns    | ~32KB
+L2 cache  | >1ns    | <1MB
+L3 cache  | >10ns   | >1MB
+DRAM      | ~100ns  | GB
+Swap      | ~10ms   | TB
+
+As distance to the processor increases, memory size and access time increases
+
+* Internal processor **registers** ➜ integrated (small & fast) memory
   - Registers are read/written by machine instructions
   - Categories: **state-**, **address-**, and **data-registers**
-* Volatile **primary storage**:
+* Volatile primary storage:
   - Processor **cache memory** is an intermediate stage between fast registers and (slower & bigger) main memory 
   - Volatile **main memory** operating at high speed compared to secondary storage
-* Persistent **secondary storage**:
+* Persistent secondary storage:
   - **Mass storage** devices like hard disk drives and rotating optical storage (CD/DVD)
   - **Flash memory** like USB flash drives and solid-state drives (SSD)
 
-Primary storage: **RAM** (Random Access Memory) (SRAM,DRAM), **ROM** (Read Only Memory):
+## Addresses
 
 * **Memory cell** (electronic circuit) ➜ store one bit of binary data
 * **Memory address** ➜ reference to a specific memory location
@@ -47,41 +71,6 @@ Programmers see **virtual memory** provided by the system (OS + hardware):
 * The system manages the physical memory space transparent to the programmer by mapping virtual memory addresses to the limited physical memory
 * Example for the programmer/(micro) architecture trade-off
 
-## Technology
-
-**Volatile memory** (DRAM vs SRAM):
-
-* DRAM (Dynamic Random Access Memory): Capacitor charge state indicates stored value, cells lose charge over time requiring a refresh
-  - Slower access (capacitor)
-  - Higher density (cell: 1 transistor + 1 capacitor)
-  - Lower cost
-  - Requires refresh (power, performance, circuitry)
-  - Manufacturing requires capacitors and logic
-* SRAM (Static Random Access Memory): Two cross coupled inverters store a bit persistent (while powered)
-  - Faster access (no capacitor)
-  - Lower density (cell: 6 transistors)
-  - Higher cost
-  - No refresh needed
-  - Manufacturing compatible with logic process
-
-## Hierarchy
-
-A memory hierarchy separates storage into a layers/levels based on **latency** (response time) and **capacity**:
-
-* Fast and large storage can not be achieved with a single level memory
-* Multiple levels of storage progressively bigger and slower
-
-Typical modern memory(/cache) hierarchy:
-
-Name      | Latency | Size
-----------|---------|----------------
-Register  | <1ns    | B
-L1 cache  | ~1ns    | ~32KB
-L2 cache  | >1ns    | <1MB
-L3 cache  | >10ns   | >1MB
-DRAM      | ~100ns  | GB
-Swap      | ~10ms   | TB
-
 ## Cache
 
 **CPU Cache** is used to avoid repeated access to main memory (typically DRAM):
@@ -95,13 +84,17 @@ Swap      | ~10ms   | TB
 * Temporal locality is based on repetitive computations (e.g. loops) referencing the same memory
 * Spatial locality is based on a probability of related computations referencing a cluster of memory (e.g. array)
 
-Memory is logically divided into fixed-size **blocks**:
+Memory is logically divided into fixed-size **blocks**. A block (or line) is the 
+**minimum unit of information** either present or net present in a cache:
 
 * Each block maps to a **location in the cache**, determined by the **index bits** in the address
-* **Cache hit**: Use cached data instead if accessing next level memory
-* **Cache miss**: Data not cached, read block from next level memory
-* **Hit ratio**: percentage of accesses that result in cache hits
-* **Average Memory Access Time** (AMAT): Metric to analyze memory system performance
+* Cache **hit** - Use cached data instead if accessing next level memory
+* Cache **miss** - Data not cached, read block from next level memory
+* **Hit ratio**/rate - Percentage of accesses that result in cache hits
+* **Miss rate** - (1-hit rate) Fraction of memory accesses not found
+* Hit time - Time to access a level of the memory hierarchy (includes time to determine hit/miss)
+* Miss penalty - Time to replace a block in the upper level with a block from the lower level
+* **Average Memory Access Time** (AMAT) - Metric to analyze memory system performance
 
 ### Associativity
 
@@ -128,6 +121,25 @@ Types of cache misses:
 
 **Replacement policy**: Heuristic used to select the entry to replaced by uncached data (LRU (Least Recently Used))
 
+
+## Technology
+
+Primary storage: **RAM** (Random Access Memory) (SRAM,DRAM), **ROM** (Read Only Memory)
+
+**Volatile memory** (DRAM vs SRAM):
+
+* DRAM (Dynamic Random Access Memory): Capacitor charge state indicates stored value, cells lose charge over time requiring a refresh
+  - Slower access (capacitor)
+  - Higher density (cell: 1 transistor + 1 capacitor)
+  - Lower cost
+  - Requires refresh (power, performance, circuitry)
+  - Manufacturing requires capacitors and logic
+* SRAM (Static Random Access Memory): Two cross coupled inverters store a bit persistent (while powered)
+  - Faster access (no capacitor)
+  - Lower density (cell: 6 transistors)
+  - Higher cost
+  - No refresh needed
+  - Manufacturing compatible with logic process
 
 ## Modules
 
