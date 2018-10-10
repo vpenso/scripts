@@ -23,6 +23,7 @@ A memory hierarchy separates storage into a layers/levels based on **latency**
 
 Typical modern memory(/cache) hierarchy:
 
+```
 Name      | Latency | Size
 ----------|---------|----------------
 Register  | <1ns    | B
@@ -31,6 +32,7 @@ L2 cache  | >1ns    | <1MB
 L3 cache  | >10ns   | >1MB
 DRAM      | ~100ns  | GB
 Swap      | ~10ms   | TB
+```
 
 As distance to the processor increases, memory size and access time increases
 
@@ -52,12 +54,14 @@ As distance to the processor increases, memory size and access time increases
   - The **address width** limits the maximum addressable memory
   - The address width is typically a multiple of eight (8,16,32,64 bits)
 
+```
 Address width | Address locations
 --------------|------------------
 8bit          | 256 (2^8)
 16bit         | 65536 (2^16)
 32bit         | 4294967296 (2^32)
 64bit         | 1.844674407×10^19 (2^64)
+```
 
 * Memory is a collection of various **memory locations**
   - Each location has a **unique address** which can be accessed in any order (in equal amount of time)
@@ -124,9 +128,7 @@ Types of cache misses:
 
 ## Technology
 
-Primary storage: **RAM** (Random Access Memory) (SRAM,DRAM), **ROM** (Read Only Memory)
-
-Volatile memory (DRAM vs SRAM):
+**Volatile Memory**:
 
 * **SRAM** (Static Random Access Memory) - Two cross coupled inverters store a bit persistent (while powered)
   - Faster access (no capacitor), no refresh needed, access time close to cycle time
@@ -143,13 +145,48 @@ Volatile memory (DRAM vs SRAM):
   - Banks allow simultaneous read/write calle **address interleaving**
   - Fastest version called **DDR** (Double Data Rare SDRAM), data transfer at rising & falling edges of the clock
 
+**Persistent Memory** (PM pr _pmem_), aka **SCM** (Storage Class Memory):
+
+* Bridge the access-time gap between DRAM and NAND based flash-storage 
+  in the memory hierarchy, introducing a **third tier**:
+  - Connected to the system memory bus (like DRAM DIMMs) via **NVDIMMs**
+  - Accessed like volatile memory (processor load/store instructions)
+* Enables a change in computing architecture, since software is no longer 
+  bound by file-system overhead to run persistent transactions
+
+```
+Access time  | Description
+-------------|---------------------------------
+1ns          | processor operation
+<5ns         | read L2 cache
+60ns         | access memory (DRAM)
+<1us         | access persistant memory (to overcome access time gap
+20us         | read from flash memory (NAND)
+1ms          | random write to flash memory
+5ms          | read/write disk
+40s          | read tape
+```
+
+* Requires an [NVM Programming Model][pmem]
+  - New block and file semantics to applications
+  - Exposed as memory-mapped file by the operating system
+* Persistent memory aware file-system allows **DAX** (Direct Access) without 
+  using (bypass) the system page cache (unlike normal storage-based files)
+  - Application has direct load/store access to persistence via the MMU
+  - No interrupts or kernel context switches
+  - OS (only) flushs CPU caches to get data into the persistence domain
+
 Non-Volatile Memory (NVM), **NVRAM** - Retains its information when power is turned off
 
-* **RRAM** (Resistive Random-Access Memory) - Uses a dielectric solid-state material aka memristor
+* **RRAM**/ReRAM (Resistive Random-Access Memory) - Uses a dielectric solid-state material aka memristor
   - In development by multiple companies...
   - Scalable below 30nm, cycle time <10ns
-* Alternatives CBRAM (Conductive-Bridging RAM), PCM (Phase-Change Memory)
-
+* Alternatives...
+  - CBRAM (Conductive-Bridging RAM)
+  - PCM (Phase-Change Memory), aka PCRAM
+  - MRAM (Magnetoresistive RAM)
+  - FeRAM (Ferroelectric RAM)
+* 3D XPoint (Intel, Micron)
 
 ### Memory Modules
 
@@ -159,7 +196,7 @@ Memory for servers commonly sold in small boards called **DIMM** (Dual Inline Me
 * Variants of DIMM slots (i.e. DDR3 or DDR4) have **different pin counts**
 * **ECC** (Error-Correcting code) DIMMs have extra circuitry to detect/correct errors
 
-Following a list of common DIMM modules:
+Following a list of common DIMM chips:
 
 ```
  Standard     |  Chip       | Throughput
@@ -174,6 +211,7 @@ Following a list of common DIMM modules:
               | DDR3-1866   | 14.93GB/s
  DDR4 (2012)  | DDR4-2133   | 17GB/s
               | DDR4-3200   | 24GB/s
+ DDR5 (2018)  | 
 ```
 
 Display the memory **vendor, identification numbers, and type** with `dmidecode`:
@@ -237,3 +275,4 @@ Display the cache/memory hierarchy with `lshw`:
     /0/1000/4                      memory      DIMM DDR3 Synchronous [empty]
     /0/1000/5                      memory      DIMM DDR3 Synchronous [empty]
 
+[pmem]: https://docs.pmem.io/
