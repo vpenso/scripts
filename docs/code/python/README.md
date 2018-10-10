@@ -133,14 +133,6 @@ isinstance(10,int)       # True
 isinstance(1.234,float)  # True
 ```
 
-**Ranges**, integer sequences:
-
-```python
-list(range(5))           # [0, 1, 2, 3, 4]
-tuple(range(4,12))       # (4, 5, 6, 7, 8, 9, 10, 11)
-tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
-tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
-```
 
 ### Arithmetic
 
@@ -258,6 +250,24 @@ for x in (0,1,2,3):
     print(x)
 ```
 
+`range` is a function returning a series of numbers in an iterable from, commenly use with for loops:
+
+```python
+for x in range(3):
+    print(x)
+else:
+    print('no break')
+```
+
+Loops can optionally have an `else` clause executed if the iteration is completed successfull.
+
+```python
+# couple of range examples
+list(range(5))           # [0, 1, 2, 3, 4]
+tuple(range(4,12))       # (4, 5, 6, 7, 8, 9, 10, 11)
+tuple(range(0,10,2))     # (0, 2, 4, 6, 8)
+tuple(range(100,0,-10))  # (100, 90, 80, 70, 60, 50, 40, 30, 20, 10)
+```
 
 ## Sequences & Collections
 
@@ -573,14 +583,14 @@ Cf. [Python Module Index](https://docs.python.org/3/py-modindex.html)
 
 Functions are defined using the `def` keyword
 
-* Followed by the function **name**, i.e. `f`
+* Followed by the function **name** (identifier), i.e. `f`
 * **Arguments** given between parentheses followed by `:` (colon) 
 * The function **body** (blocks) must be indented
 * The `return` keyword passes values from the function 
 
 ```python
-# inculde argument with default value
-def f(x,y,z=3)
+# includes argument with default value
+def f(x,y,z=3):
     """documentation"""
     return (x,y,z)
 f(1,2)                        # (1, 2, 3)
