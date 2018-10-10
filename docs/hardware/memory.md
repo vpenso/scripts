@@ -126,37 +126,55 @@ Types of cache misses:
 
 Primary storage: **RAM** (Random Access Memory) (SRAM,DRAM), **ROM** (Read Only Memory)
 
-**Volatile memory** (DRAM vs SRAM):
+Volatile memory (DRAM vs SRAM):
 
-* DRAM (Dynamic Random Access Memory): Capacitor charge state indicates stored value, cells lose charge over time requiring a refresh
+* **SRAM** (Static Random Access Memory) - Two cross coupled inverters store a bit persistent (while powered)
+  - Faster access (no capacitor), no refresh needed, access time close to cycle time
+  - Lower density (6-8 transistors per bit), higher cost
+  - Minimal power to retain charge in standby mode
+  - Manufacturing compatible with logic process, typically integrated with the processor chip
+* **DRAM** (Dynamic Random Access Memory) - Capacitor charge state indicates stored value, cells lose charge over time requiring a refresh
   - Slower access (capacitor)
-  - Higher density (cell: 1 transistor + 1 capacitor)
-  - Lower cost
-  - Requires refresh (power, performance, circuitry)
+  - Higher density (1 transistor + 1 capacitor per bit), lower cost
+  - Requires periodic refresh (read + write), (costs power, performance, circuitry)
   - Manufacturing requires capacitors and logic
-* SRAM (Static Random Access Memory): Two cross coupled inverters store a bit persistent (while powered)
-  - Faster access (no capacitor)
-  - Lower density (cell: 6 transistors)
-  - Higher cost
-  - No refresh needed
-  - Manufacturing compatible with logic process
+* **SDRAM** (Synchronous DRAM) - Uses a clock to eliminate the time memory and processor need to synchronize
+  - Bandwidth improved by internal organization into multiple **banks** each with its own row buffer
+  - Banks allow simultaneous read/write calle **address interleaving**
+  - Fastest version called **DDR** (Double Data Rare SDRAM), data transfer at rising & falling edges of the clock
 
-## Modules
+Non-Volatile Memory (NVM), **NVRAM** - Retains its information when power is turned off
+
+* **RRAM** (Resistive Random-Access Memory) - Uses a dielectric solid-state material aka memristor
+  - In development by multiple companies...
+  - Scalable below 30nm, cycle time <10ns
+* Alternatives CBRAM (Conductive-Bridging RAM), PCM (Phase-Change Memory)
+
+
+### Memory Modules
+
+Memory for servers commonly sold in small boards called **DIMM** (Dual Inline Memory Module):
+
+* Typically contains 4-16 DRAMs chips, normally organized to be 8 bytes wide
+* Variants of DIMM slots (i.e. DDR3 or DDR4) have **different pin counts**
+* **ECC** (Error-Correcting code) DIMMs have extra circuitry to detect/correct errors
 
 Following a list of common DIMM modules:
 
-| Standard     |  TYPE       | Throughput  |
-|--------------|-------------|-------------|
-| SDRAM (1993) | PC-66       | 533MB/s     |
-|              | PC-133      | 800MB/s     |
-| DDR (1996)   | DDR-200     | 1.6GB/s     |
-|              | DDR-266     | 2.13GB/s    |
-| DDR2 (2003)  | DDR2-400    | 3.2GB/s     |
-|              | DDR2-800    | 6.4GB/s     |
-| DDR3 (2007)  | DDR3-1600   | 12.8GB/s    |
-|              | DDR3-1866   | 14.93GB/s   |
-| DDR4 (2012)  | DDR4-2133   | 17GB/s      |
-|              | DDR4-3000   | 24GB/s      |
+```
+ Standard     |  Chip       | Throughput
+--------------|-------------|-------------
+ SDRAM (1993) | SDR-66      | 533MB/s
+              | SDR-133     | 800MB/s
+ DDR (1996)   | DDR-200     | 1.6GB/s
+              | DDR-266     | 2.13GB/s
+ DDR2 (2003)  | DDR2-400    | 3.2GB/s
+              | DDR2-800    | 6.4GB/s
+ DDR3 (2007)  | DDR3-1600   | 12.8GB/s
+              | DDR3-1866   | 14.93GB/s
+ DDR4 (2012)  | DDR4-2133   | 17GB/s
+              | DDR4-3200   | 24GB/s
+```
 
 Display the memory **vendor, identification numbers, and type** with `dmidecode`:
 
