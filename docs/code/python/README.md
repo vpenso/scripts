@@ -231,6 +231,34 @@ switch = { 'a': a(), 'b': b() }
 print(switch['a'])                   # A
 ```
 
+### Loops
+
+Code blocks repeated through a number of loops (iterations):
+
+* The `break` statement executed within a loop **_breaks_ the control flow** out of the loop immediatly
+* A `continue` statement **skips to the next interation** of a loop
+
+A `while` loop executed a code block until the loop condition is false:
+
+```python
+x = 0
+while True:                    # endless loop
+    print(x)
+    if x == 3:                 # break condition
+        break                  # break the loop
+    x += 1                     # increment
+```
+
+`for` loops **iterate over a collection** of items, and execute a code block for each element:
+
+```python
+for x in (0,1,2,3):
+    if x == 2:                 # skip condition
+        continue               # skip the rest of the code block
+    print(x)
+```
+
+
 ## Sequences & Collections
 
 ### Tuple
