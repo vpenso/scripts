@@ -126,9 +126,9 @@ Types of cache misses:
 **Replacement policy**: Heuristic used to select the entry to replaced by uncached data (LRU (Least Recently Used))
 
 
-## Technology
+# Technology
 
-**Volatile Memory**:
+## Volatile Memory
 
 * **SRAM** (Static Random Access Memory) - Two cross coupled inverters store a bit persistent (while powered)
   - Faster access (no capacitor), no refresh needed, access time close to cycle time
@@ -145,25 +145,26 @@ Types of cache misses:
   - Banks allow simultaneous read/write calle **address interleaving**
   - Fastest version called **DDR** (Double Data Rare SDRAM), data transfer at rising & falling edges of the clock
 
-**Persistent Memory** (PM pr _pmem_), aka **SCM** (Storage Class Memory):
+## Persistent Memory
 
-* Bridge the access-time gap between DRAM and NAND based flash-storage 
-  in the memory hierarchy, introducing a **third tier**:
+Peristant Memory (PM, _pmem_), aka **SCM** (Storage Class Memory):
+
+* Bridge the access-time gap between DRAM and NAND based flash-storage
+  - Introducing a **third tier** in the memory hierarchy
   - Connected to the system memory bus (like DRAM DIMMs) via **NVDIMMs**
   - Accessed like volatile memory (processor load/store instructions)
-* Enables a change in computing architecture, since software is no longer 
-  bound by file-system overhead to run persistent transactions
+* Change in computing architecture...
 
 ```
 Access time  | Description
 -------------|---------------------------------
 1ns          | processor operation
 <5ns         | read L2 cache
-60ns         | access memory (DRAM)
-<1us         | access persistant memory (to overcome access time gap
+60ns         | access volatile memory (DRAM)
+<<1us        | access persistant memory (NVM)
 20us         | read from flash memory (NAND)
 1ms          | random write to flash memory
-5ms          | read/write disk
+<10ms        | read/write disk
 40s          | read tape
 ```
 
@@ -176,19 +177,23 @@ Access time  | Description
   - No interrupts or kernel context switches
   - OS (only) flushs CPU caches to get data into the persistence domain
 
-Non-Volatile Memory (NVM), **NVRAM** - Retains its information when power is turned off
+**NVM** (Non-Volatile Memory), **NVRAM** (Non-Volatile RAM):
 
 * **RRAM**/ReRAM (Resistive Random-Access Memory) - Uses a dielectric solid-state material aka memristor
   - In development by multiple companies...
   - Scalable below 30nm, cycle time <10ns
-* Alternatives...
+* Others...
   - CBRAM (Conductive-Bridging RAM)
-  - PCM (Phase-Change Memory), aka PCRAM
+  - PRAM (Phase-Change Memory)
   - MRAM (Magnetoresistive RAM)
   - FeRAM (Ferroelectric RAM)
-* 3D XPoint (Intel, Micron)
+  - STTRAM (Spin Torque Transfer RAM)
+  - SHERAM (Spin Hall Effect RAM)
+  - CNTRAM (Carbon-nanotube RAM)
+* Products:
+  - 3D XPoint (Intel, Micron), called Intel Optane
 
-### Memory Modules
+## Memory Modules
 
 Memory for servers commonly sold in small boards called **DIMM** (Dual Inline Memory Module):
 
@@ -196,7 +201,7 @@ Memory for servers commonly sold in small boards called **DIMM** (Dual Inline Me
 * Variants of DIMM slots (i.e. DDR3 or DDR4) have **different pin counts**
 * **ECC** (Error-Correcting code) DIMMs have extra circuitry to detect/correct errors
 
-Following a list of common DIMM chips:
+Following a list of common RAM chips and their throughput:
 
 ```
  Standard     |  Chip       | Throughput
@@ -211,7 +216,7 @@ Following a list of common DIMM chips:
               | DDR3-1866   | 14.93GB/s
  DDR4 (2012)  | DDR4-2133   | 17GB/s
               | DDR4-3200   | 24GB/s
- DDR5 (2018)  | 
+ DDR5 (2018)  |             |
 ```
 
 Display the memory **vendor, identification numbers, and type** with `dmidecode`:
@@ -224,6 +229,31 @@ Display the memory **vendor, identification numbers, and type** with `dmidecode`
             Serial Number: 35244B2E
             Part Number: M393B2G70BH0-YK0  
     […]
+
+NVDIMMs types:
+
+* NVDIMM-F - Flash only paired with DRAM DIMM
+* NVDIMM-N - Flash and DRAM together in the same DIMM
+* **NVDIMM-P** - True persistant memory (no DRAM/flash)
+
+Supported modes (use `ndctl` for management):
+
+* **Raw** `/dev/pemmN` (block devices)
+  - Default mode after installation
+  - Supports file-systems with or without DAX (ext4,xfs)
+* **Sector** `/dev/pemmNs` (block device with sector atomicity)
+  - Implemented with BTT (Block Translation Table)
+  - Guarantees power-fail write atomicity
+  - Only supports file-systems without DAX
+* **Memory** `/dev/pemmN` (block device supporting device DMA)
+  - Supports file-system DAX, Recommended over raw mode
+  - Requires storing extra "struct page" entries on regular system memory (or persistent memory)
+* **DAX** `/dev/daxN.M`(character device supporting DAX)
+  - Allows memory allocation/mapping (without the need of a file-system)
+  - No interactions with the kernel page cache
+  - Character device (does not support a file-system)
+  - Requiers storing extra "struct page" entries on persistant memory
+
 
 ### Module Distribution
 
