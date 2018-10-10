@@ -179,7 +179,8 @@ Access time  | Description
 
 **NVM** (Non-Volatile Memory), **NVRAM** (Non-Volatile RAM):
 
-* **RRAM**/ReRAM (Resistive Random-Access Memory) - Uses a dielectric solid-state material aka memristor
+* **RRAM**/ReRAM (Resistive Random-Access Memory)
+  - Uses a dielectric solid-state material aka **memristor**
   - In development by multiple companies...
   - Scalable below 30nm, cycle time <10ns
 * Others...
@@ -219,16 +220,6 @@ Following a list of common RAM chips and their throughput:
  DDR5 (2018)  |             |
 ```
 
-Display the memory **vendor, identification numbers, and type** with `dmidecode`:
-
-    » dmidecode --type memory | egrep "Manufacturer|Serial|Part|Type" 
-            Error Correction Type: Multi-bit ECC
-            Type: DDR3
-            Type Detail: Synchronous Registered (Buffered)
-            Manufacturer: Samsung    
-            Serial Number: 35244B2E
-            Part Number: M393B2G70BH0-YK0  
-    […]
 
 NVDIMMs types:
 
@@ -254,8 +245,18 @@ Supported modes (use `ndctl` for management):
   - Character device (does not support a file-system)
   - Requiers storing extra "struct page" entries on persistant memory
 
+### Identification
 
-### Module Distribution
+Display the memory **vendor, identification numbers, and type** with `dmidecode`:
+
+    » dmidecode --type memory | egrep "Manufacturer|Serial|Part|Type" 
+            Error Correction Type: Multi-bit ECC
+            Type: DDR3
+            Type Detail: Synchronous Registered (Buffered)
+            Manufacturer: Samsung    
+            Serial Number: 35244B2E
+            Part Number: M393B2G70BH0-YK0  
+    […]
 
 Maximum RAM capacity can be checked with `dmidecode`. The "Maximum Capacity" is the maximum RAM supported by your system, while "Number of Devices" is the number of memory (DIMM) slots available on your computer.
 
