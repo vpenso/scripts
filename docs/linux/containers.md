@@ -21,25 +21,6 @@ Major components used in Linux containers:
   - SELinux - Labeling system for file-systems and applications
   - AppAmor - Profile-based MAC (Manditory Acess Control) system for limiting applications abilities
 
-Container run-time systems:
-
-* [runc][runc]
-* [ccon][ccon]
-* [nsjail][nsjail]
-* [firejail][firejail]
-* [bubblewrap][bubble]
-* [systemd-nspawn][nspawn]
-* [singularity][sing]
-* [charliecloud][charlie]
-
-[runc]: https://github.com/opencontainers/runc
-[ccon]: https://github.com/wking/ccon
-[nsjail]: https://github.com/google/nsjail
-[firejail]: https://github.com/netblue30/firejail
-[bubble]: https://github.com/projectatomic/bubblewrap
-[nspawn]: https://github.com/systemd/systemd/blob/master/src/nspawn/nspawn.c
-[sing]: https://github.com/sylabs/singularity
-[charlie]: https://github.com/hpc/charliecloud
 
 ### Namespaces
 
@@ -88,3 +69,33 @@ unshare <args>                       # run a program in namespace
 ip-netns <args>                      # manage a network namespace
 nsenter <args>                       # enter the namespace of another program
 ```
+
+## Container Runtime
+
+Low level component used by a container engine (i.e. Docker):
+
+* Communicates with the kernel to start containerized process
+* Uses metadata to configure various namespaces (i.e. mount, cgroup) and the container security envelope (i.e. App)
+* [Open Container Initiative (OCI) Runtime Specification][ocispec]
+
+[ocispec]: https://github.com/opencontainers/runtime-spec
+
+Container run-time systems:
+
+* [runc][runc]
+* [ccon][ccon]
+* [nsjail][nsjail]
+* [firejail][firejail]
+* [bubblewrap][bubble]
+* [systemd-nspawn][nspawn]
+* [singularity][sing]
+* [charliecloud][charlie]
+
+[runc]: https://github.com/opencontainers/runc
+[ccon]: https://github.com/wking/ccon
+[nsjail]: https://github.com/google/nsjail
+[firejail]: https://github.com/netblue30/firejail
+[bubble]: https://github.com/projectatomic/bubblewrap
+[nspawn]: https://github.com/systemd/systemd/blob/master/src/nspawn/nspawn.c
+[sing]: https://github.com/sylabs/singularity
+[charlie]: https://github.com/hpc/charliecloud
