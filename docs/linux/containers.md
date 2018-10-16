@@ -1,6 +1,6 @@
+# Linux Containers
 
-
-Major components use in Linux containers:
+Major components used in Linux containers:
 
 * Kernel **Namespaces**
   - Isolation layer to implement different user-spaces views for processes
@@ -17,10 +17,14 @@ Major components use in Linux containers:
 * System call `pivot_root` - Change the root file-system for a new container
 * **Manditory Acess Control** (MAC) - Tools to enforce security controls implemented for containers (i.e. AppAmor, SELinux)
 
-
 ### Namespaces
 
-Lightweight process virtualization
+Namespaces wrap a particular global resource in an abstraction:
+
+* Processes within a namespace have a dedicated isolated instance of the global resource
+* Namespaces support the implementation of containers (lightweight virtualization)
+
+Namespaces implemented in Linux:
 
 * **mnt** mount namespace (2.4.19)
   - Specific view of the system's mounted file-systems
@@ -40,7 +44,6 @@ Lightweight process virtualization
   - Paved to way for full-unprivileged containers
 * Not implemented yet...
   - security namespace
-  - security keys namespace
   - device namespace
   - time namespace
 
@@ -50,4 +53,11 @@ System calls used for namespaces:
 * `unshare()` creates a new namespace and attaches the current process to it
 * `setns()` is used to join/leave a namespace
 
+Linux namespaces from the command-line:
 
+```bash
+/proc/$$/ns                          # per process sub-directory for each namespace
+unshare <args>                       # run a program in namespace 
+ip-netns <args>                      # manage a network namespace
+nsenter <args>                       # enter the namespace of another program
+```
