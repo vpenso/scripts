@@ -17,7 +17,6 @@ import sys
 sys.argv                        # list of command line arguments
 sys.stdout.write(s)             # write string s to standard output
 sys.stderr.write(s)             # write string s to standard error
-s = sys.stdin.read()            # read from standard input
 sys.exit(i)                     # exit with error code i
 ```
 
@@ -43,6 +42,16 @@ Get input from the user with the `input` function:
 ```python
 input('Give me a string: ')
 int(input('Give me a number'))
+```
+
+Consume data from the input pipe STDIN:
+
+```python
+# read input from STDIN
+if not sys.stdin.isatty():
+     stdin = io.StringIO(sys.stdin.read())
+else:
+     raise Exception('No input data specified, STDIN is empty')
 ```
 
 # Python Language
