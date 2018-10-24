@@ -15,12 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+"""This Script
+
+Described in details
+"""
+
 import argparse
 import logging
 import sys
 
 # Configure the command-line arguments
-params = argparse.ArgumentParser(description = 'Python command-line example program')
+params = argparse.ArgumentParser(description = __doc__, formatter_class = argparse.RawDescriptionHelpFormatter)
 params.add_argument('-d',action = 'store_const', dest='loglevel', const='debug', help='Enable debugging output')
 params.add_argument('-l', action = 'store', dest='loglevel', default='error', help='Set log-level to debug, info, warning, error, or critical')
 params.add_argument('--version', action = 'version', version = '%(prog)s 0.1')
