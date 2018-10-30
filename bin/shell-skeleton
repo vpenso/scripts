@@ -29,37 +29,46 @@ SCRIPT=${0##*/}
 # Help text for this script
 HELP=\
 "Usage: $SCRIPT [COMMAND] [ARGUMENTS]
-  
+
 Add more text here"
 
 # enable line numbers for debug output
 if [ "$_DEBUG" = "true" ] ; then
-  export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
+        export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
 fi
 
 function _debug() {
-  if [ "$_DEBUG" = "true" ]; then
-    echo 1>&2 "Debug: $@"
-  fi
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
 }
 
 function _error() {
-  echo 1>&2 "Error: $@"
-  echo "See \`$SCRIPT help\` for usage."
+        echo 1>&2 "Error: $@"
+        echo "See \`$SCRIPT help\` for usage."
 }
 
 # Parse the command line options
-ARGS=$(getopt -o h -l "help" -- "$@")
+ARGS=$(getopt -o h -l "help,version" -- "$@")
 eval set -- "$ARGS"
 while true; do
-  case "$1" in
-    -h|--help)
-      _help
-      exit 0
-      ;;
-    --) shift; break ;;
-    *) break ;;
-  esac
+        case "$1" in
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
 done
 
 
@@ -68,8 +77,10 @@ done
 # Read the command-line arguments
 _command=$1 ; shift
 case "$_command" in 
-  # call functions for each command
-  *) echo "$HELP" ;;
+        # call functions for each command
+        *)
+                echo "$HELP" 
+                ;;
 esac
 
 exit 0
