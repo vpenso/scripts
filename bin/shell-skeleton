@@ -36,6 +36,7 @@ positional arguments:
   arg                  describe the argument
 
 optional arguments:
+  -d, --debug          enable verbose output
   -h, --help           show this help message
   --version            program version number "
 
@@ -52,7 +53,7 @@ function _debug() {
 
 function _error() {
         echo 1>&2 "Error: $@"
-        echo "See \`$SCRIPT help\` for usage."
+	exit 1
 }
 
 # Parse the command line options
@@ -60,6 +61,10 @@ ARGS=$(getopt -o h -l "help,version" -- "$@")
 eval set -- "$ARGS"
 while true; do
         case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
         -h|--help)
                 echo "$HELP"
                 exit 0
