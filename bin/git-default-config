@@ -33,11 +33,11 @@ if [ -f ~/.gitconfig ]
 then
 	echo -n 'Overwrite ~/.gitconfig (y/n)? '
 	read ans
-	[[ "$ans" = "y" ]] || exit 0
+	[ "$ans" = "y" ] || exit 0
 else
 	echo -n 'Create ~/.gitconfig (y/n)? '
 	read ans
-	[[ "$ans" = "y" ]] || exit 0
+	[ "$ans" = "y" ] || exit 0
 fi
 
 echo 'Writing configuration to ~/.gitconfig'
@@ -214,11 +214,11 @@ if [ -f ~/.gitignore_global ]
 then
 	echo -n 'Overwrite ~/.gitignore_global (y/n)? '
 	read ans
-	[[ "$ans" = "y" ]] || exit 0
+	[ "$ans" = "y" ] || exit 0
 else
 	echo -n 'Create ~/.gitignore_global (y/n)? '
 	read ans
-	[[ "$ans" = "y" ]] || exit 0
+	[ "$ans" = "y" ] || exit 0
 fi
 
 echo 'Writing configuration to ~.gitignore_global'
@@ -226,7 +226,7 @@ echo "$_gitignore_global" > ~/.gitignore_global
 
 echo -n 'Create Email pre-commit hook (y/n)? '
 read ans
-[[ "$ans" = "y" ]] || exit 0
+[ "$ans" = "y" ] || exit 0
 
 pre_commit=$(cat <<EOF
 #!/bin/sh
