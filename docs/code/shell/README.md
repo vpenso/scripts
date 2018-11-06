@@ -1,7 +1,5 @@
 # Shell
 
-Modes of usage:
-
 * **Interactive**
   - Reads user input on a tty, enable users to enter/execute commands
   - Shells commonly used in interactive mode started by default upon launch of a terminal
@@ -100,35 +98,6 @@ Rarely known but very useful commands:
 
     {a,b,c}        brace expansion
     {a..z}         extened brace expansion 
-    ~              current user home directory (like $HOME)
-    ~/path         path in home directory 
-    ~user          a users home directory
-    ~+             current directory (like $PWD)
-    ~-             previous working directory 
-    ${V}           expand variable V (curly braces optional)
-    $'s'           expands string s with backslash-escaped characters replaced
-    ${V:-v}        use variable V if set, otherwise use value v
-    ${V:=v}        use variable V if set, otherwise set V to value v
-    ${V:+v}        use value v if variable V is set
-    ${V:?M}        print message M unless variable V is set
-    ${#V}          length of variable V
-    ${v%P}         remove shortest match of pattern P from the end  
-    ${v%%P}        remove longest match of pattern P from the end
-    ${v#P}         remove shortest match of pattern P from the beginning
-    ${v##P}        remove longest match of pattern P from the beginning
-    ${v/p/s}       replace first match of pattern p with string s
-    ${v//p/s}      replace every match of pattern p with string s 
-    ${p##*/}       extract filename of path p
-    ${p%/*}        extract directory name of path p
-    ${f%.*}        remove last suffix of file f
-    ${f%%.*}       remove all suffixe of file f
-    ${f#*.}        extract file extension (suffix) of file f
-    ${0##*/}       name of executed file
-    ${s%?}         remove last character of string s
-    ${s^}          first character of string s to uppercase
-    ${s,}          first character of string s to lowercase
-    ${s^^}         all characters of string s to uppercase
-    ${s,,}         all characters of string s to lowercase
     ((v+=1))       increment variable v
 
 ## Primary Expressions

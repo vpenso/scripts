@@ -34,7 +34,9 @@ A **path** specifies a unique location in the directory tree:
 Paths are constructed with the following notation:
 
 ```bash
-~                        # abbr. for the home directory
+~                        # abbr. for the home directory (like $HOME)
+~+                       # current directory (like $PWD)
+~-                       # previous working directory
 /                        # root directory
 ### absolute path
 /<dir>[/<dir>[/<file>]]  # starts with / for the root directory
