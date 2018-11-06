@@ -1,5 +1,6 @@
+# Expressions
 
-Conditional execution of commands, expressions, or functions
+Conditional expressions:
 
 * `&&` (and), `||` (or) have no precedence (left-associative)
 * Bit faster the `if...then`
@@ -17,7 +18,7 @@ $((e))         # expand, evaluate and substitute integer expression e
 
 Use the conditional operator test `[[...]]` to evaluate:
 
-```
+```bash
 # string compare
 s1 = s2         # true if strings s1 equals s2 
 s1 != s2        # true if strings s1 not equal s2
@@ -49,22 +50,6 @@ n1 -ge n2       # true if n1 greater or equal n2
 n1 -eq n2       # true if n1 equals n2
 n1 -ne n2       # true if n1 not equal n2
 ```
-
-Test on exit status of a command:
-
-```bash
-# exit 0 success, exit non 0 failure
-if command;then
-        echo 'success'
-else
-        echo 'failure'
-fi
-# similar to
-command && echo 'exit 0' || echo 'non 0 exit'
-cmd && cmd1 && echo 'successful' || echo 'one command failed'
-cmd || cmd1 # if cmd fails try cmd1
-```
-
 
 Distinguish between empty and unset strings:
 

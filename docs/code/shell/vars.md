@@ -61,16 +61,31 @@ $PWD           # current working directory
 $HOME          # user home directory
 ```
 
+### Here-Documents
+
+Write here-documents to a file:
+
 ```bash
-# mark line as comment
-;              # statement (command) separator
-a[i]=v         # store value v as element i in array a
-{c;}           # block of code anonymous subroutine
-f() {c;}       # named subroutine (key-word `function` optional)
-a=(e1 e2 ...)  # assign list of elements e1,e2,... to variable a
-${a[i]}        # use element i from array a
-${a}           # use element 0 from array a
-${a[*]}        # use all elements from array a
-${#a[*]}       # length of array a
+cat > /path/to/file <<EOF
+  ...
+EOF
 ```
 
+Store here-document in a variable:
+
+```bash
+var=$(cat <<EOF
+  ...
+EOF
+)
+```
+
+Avoid substitution and expansion by quoting the tag (here EOF):
+
+```bash
+cat <<"EOF"
+  ...
+EOF
+```
+
+Using `<<-` suppresses leading tabs. Note that the closing tag needs to be indented by tabs (not spaces).
