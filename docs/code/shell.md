@@ -101,6 +101,18 @@ Build-in Commands:
 
 ## Input/Output Redirection 
 
+STDIO (Standard Input/Output):
+
+* Buffered data stream (flow of text data) that originates at some source and may flow to one or more programs as input
+* Stream data from the output of one program (file, device) to the input of another program (file, device)
+* Infrastructure required to implement **pipes**
+
+STDIO data streams automatically opened as a file at the startup of a program:
+
+* **STDIN** (standard input) - Usually input from the keyboard, can be a redirect from any file
+* **STDOUT** (standard output) - Sends the data stream to the display by default, can be redirected to a file/pipe
+* **STDERR** (standard error) - Usually sent to the display, can be redirected to a log file
+
 Descriptors stdin 0, stdout 1, stderr 2:
 
     > f            create empty file f (same as : > f)
