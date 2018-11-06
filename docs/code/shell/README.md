@@ -82,12 +82,6 @@ Rarely known but very useful commands:
     jq             JSON processor
     xmlstarlet     XML processor
 
-## Expansion
-
-    {a,b,c}        brace expansion
-    {a..z}         extened brace expansion 
-    ((v+=1))       increment variable v
-
 ## Pattern Matching
 
     =~              pattern match operator
@@ -107,16 +101,6 @@ Rarely known but very useful commands:
     [:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]
     [:blank:]       matches a space or a tab
     [:space:]       all whitespace characters [ \t\v\f]
-
-## Control Structures
-
-    if [ e1 ] ; then ; elif [ e2 ] ; then ; else ; fi
-    case e in ; c1) ;; c2 | c3) ;; *) ;; esac 
-    for i in $(e) ; do ; done
-    for (( e1; e2; e3 )); do ; done 
-    while [ e ] ; do ; done
-    until [ e ] ; do ; done
-
 
 ## Error Handling
 
