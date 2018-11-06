@@ -2,9 +2,7 @@
 
 ```bash
 {a,b,c}        # brace expansion
-{a..z}         # extened brace expansion 
-if [ e1 ] ; then ; elif [ e2 ] ; then ; else ; fi
-case e in ; c1) ;; c2 | c3) ;; *) ;; esac 
+{a..z}         # extened brace expansion, ranges
 ```
 
 ### Branches
@@ -47,7 +45,10 @@ case "$1" in
                 echo def
                 ;;
         2|3|4)
-                echo num
+                echo 2,3,4
+                ;;
+        [a-z]*)
+                echo a-z
                 ;;
         *)
                 echo no case
@@ -100,7 +101,7 @@ while [ $i -lt 10 ] ;  do
 done
 
 # infinite loop
-while true; do
+while true ; do
 	...
 done
 ```
