@@ -13,6 +13,7 @@ V=v              # assign value v to variable V (no spaces allowed)
 $V               # expansion character, followed by a variable name V
 's'              # preserves literal value of characters in string s
 "s $V"           # preserves literal value of characters in string s except $ \ ,
+\                # escape character (preserves the literal value)
 "s \$V"          # using an escape sequenze to prevent variable expansion
 "${V}s"          # name to be expanded in braces, protect from characters not part of the name
 $'s'             # expands string s with backslash-escaped characters replaced
@@ -63,15 +64,6 @@ $HOME          # user home directory
 ```bash
 # mark line as comment
 ;              # statement (command) separator
-\              # escape character (preserves the literal value)
-:              # null-statement (returns 0)
-$[e]           # evaluate integer expression
-((e))          # expand and evaluate of integer expression e
-$((e))         # expand, evaluate and substitute integer expression e
-[[e]]          # returns bool after evaluation of the conditional expression e
-!e             # true if expression e is false
-e1 && e2       # true if both expressions e1 and e2 are true (alternative e1 -a e2)
-e1 || e2       # true if either expression e1 or e2 is true (alternative e1 -o e2)
 a[i]=v         # store value v as element i in array a
 {c;}           # block of code anonymous subroutine
 f() {c;}       # named subroutine (key-word `function` optional)
