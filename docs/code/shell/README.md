@@ -1,28 +1,24 @@
 # Shell
 
-Cursor movement, cf. `man readline`:
+Modes of usage:
 
-    tab            command line completion
-    ctrl-r         search command history
-    ctrl-l         clear screen
-    ctrl-w         delete last word
-    alt-b|f        move by word
-    ctrl-u|k       delete until start/end of line
-    ctrl-a|e       move cursor to beginning/end of line         
-    ctrl-x ctrl-e  open command in editor
+* **Interactive**
+  - Reads user input on a tty, enable users to enter/execute commands
+  - Shells commonly used in interactive mode started by default upon launch of a terminal
+* **Non-interactive**
+  - A shell executing a script (no human interaction) is always non-interactive
+  - Scripts must be executable `chmod +x <script>`
+  - The first line may indicate the script interpreter with a `#!` (shabang) i.e. `#!/usr/bin/env bash`
 
-Rarely known but very useful commands:
+If a script requires input from the users it is called **interactive script**.
 
-    nl             number lines of file
-    hd             convert to hexadecimal
-    bc             calculator
-    xargs          use input as argument to command (rather then stdin)
-    rehash         re-index executables in $PATH (Zsh)
-    reset          reset terminal
-    pv             pipe monitor
-    rename         rename multiple files
-    jq             JSON processor
-    xmlstarlet     XML processor
+Executing a script:
+
+```bash
+/path/to/script            # (recommended) interpreted defined by shabang line
+/bin/bash /path/to/script  # interpreter followed by the path to a script
+bash /path/to /script      # assumes bash is in $PATH
+```
 
 Build-in Commands: 
 
@@ -48,6 +44,31 @@ Build-in Commands:
     fg j           resume job j to foreground
     stop j         stops background job j
     trap c s       execute command c when catching signal s
+
+Cursor movement, cf. `man readline`:
+
+    tab            command line completion
+    ctrl-r         search command history
+    ctrl-l         clear screen
+    ctrl-w         delete last word
+    alt-b|f        move by word
+    ctrl-u|k       delete until start/end of line
+    ctrl-a|e       move cursor to beginning/end of line         
+    ctrl-x ctrl-e  open command in editor
+
+Rarely known but very useful commands:
+
+    nl             number lines of file
+    hd             convert to hexadecimal
+    bc             calculator
+    xargs          use input as argument to command (rather then stdin)
+    rehash         re-index executables in $PATH (Zsh)
+    reset          reset terminal
+    pv             pipe monitor
+    rename         rename multiple files
+    jq             JSON processor
+    xmlstarlet     XML processor
+
 
 ## Variables and Literals 
 
@@ -98,40 +119,6 @@ Build-in Commands:
     {c1; c2}       execute commands in current shell environment
     (c1; c2)       execute the commands inside a sub-shell environment
     c1 $(c2)       command c1 uses output of c2 as parameters
-
-## Input/Output Redirection 
-
-STDIO (Standard Input/Output):
-
-* Buffered data stream (flow of text data) that originates at some source and may flow to one or more programs as input
-* Stream data from the output of one program (file, device) to the input of another program (file, device)
-* Infrastructure required to implement **pipes**
-
-STDIO data streams automatically opened as a file at the startup of a program:
-
-* **STDIN** (standard input) - Usually input from the keyboard, can be a redirect from any file
-* **STDOUT** (standard output) - Sends the data stream to the display by default, can be redirected to a file/pipe
-* **STDERR** (standard error) - Usually sent to the display, can be redirected to a log file
-
-Descriptors stdin 0, stdout 1, stderr 2:
-
-    > f            create empty file f (same as : > f)
-    c > f          stdout of command c to file f (same as c 1> f)
-    c >> f         append stdout of c to f
-    c < f          content of file f to stdin of c (same as c 0< f)
-    c 1>&-         close stdout of command c
-    c 2> f         stderr of c to file f
-    c > f 2>&1     stdout/stderr fo command c to file f
-    c &> f         same as above
-    c1 <(c2)       stdout of command c2 to stdin of command c1
-    c1 >(c2)       stdout of command c1 to stdin of command c2
-    c < f1 > f2    content of file f1 to stdin of command c, stdout to file f2  
-    (c1 ; c2) > f  redirect stdout of multiple commands to file f (sub-shell)
-    {c1 ; c2} > f  same as above in current shell
-    c1 | c2        pipe stdout of command c1 to stdin of command c2
-    c1 |& c2       pipe stdout and stderr of command c1 to stdin of command c2
-    c | tee f      stdout of command c to screen and file f
-    c |:           pipeline sink (like >/dev/null)
 
 ## Expansion
 
