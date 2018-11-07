@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function _error() {
+        echo 1>&2 "Error: $@"
+        exit 1
+}
+
 path=$HOME/.dir_colors
 
 mkdir $path 2>/dev/null
@@ -68,7 +73,18 @@ EXEC                  01;38
 *conf                 00;38;5;27
 *cnf                  00;38;5;27
 .log                  01;38;5;196
-
 EOF
+
+path=~/.zshrc.d
+file=$path/15_dircolors
+
+if [[ -d $path ]] ; then
+	if ! [[ -f $file ]] ; then
+                echo 'eval "$(dircolors -b ~/.dir_colors/rainbow)"' > $file
+                echo "$file created"
+        fi
+else
+        _error "ZSH configuration directory $path missing"
+fi
 
 # vim: set syntax=sh:
