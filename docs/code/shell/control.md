@@ -1,10 +1,5 @@
 # Control Structures
 
-```bash
-{a,b,c}        # brace expansion
-{a..z}         # extened brace expansion, ranges
-```
-
 ### Branches
 
 Simple branching with the `if` statement:

@@ -16,6 +16,20 @@ $[e]           # evaluate integer expression
 $((e))         # expand, evaluate and substitute integer expression e
 ```
 
+Brace expansion
+
+```bash
+{a,b,c}                             # brace expansion
+{a..z}                              # extened brace expansion, ranges
+name.{foo,bar}                      # typical for files
+name{,.foo}                         # includes name
+{1..20}                             # digits
+{01..20}                            # with leading zero
+{20..1}                             # reverse
+{0..10..2}                          # use increments
+{a..d}{1..3}                        # combine braces
+```
+
 Use the conditional operator test `[[...]]` to evaluate:
 
 ```bash

@@ -6,11 +6,11 @@ Assignment operator `=` (no spaces between variable name and value)
 ```bash
 V=v              # assign value v to variable V (no spaces allowed)
 $V               # expansion character, followed by a variable name V
-export V=v       # set global variable V to value v
 echo "$V"        # prints variable v
 echo -n "$V"     # prints variable without following LF
-printf "s\n"     # print string s
+printf "${v}\n"  # print variable v
 read V           # read input into variable v
+export V=v       # set global variable V to value v
 env              # list environment variables
 unset V          # unset variable v
 ```
@@ -20,27 +20,31 @@ unset V          # unset variable v
 Manipulating and/or expanding variables
 
 ```bash
+${#V}            # length of variable V
+${0##*/}         # name of executed file
+# default values
 ${V:-v}          # use variable V if set, otherwise use value v
 ${V:=v}          # use variable V if set, otherwise set V to value v
 ${V:+v}          # use value v if variable V is set
 ${V:?M}          # print message M unless variable V is set
-${#V}            # length of variable V
+## search and replace
 ${v%P}           # remove shortest match of pattern P from the end  
 ${v%%P}          # remove longest match of pattern P from the end
 ${v#P}           # remove shortest match of pattern P from the beginning
 ${v##P}          # remove longest match of pattern P from the beginning
 ${v/p/s}         # replace first match of pattern p with string s
 ${v//p/s}        # replace every match of pattern p with string s 
+# substring removla
 ${p##*/}         # extract filename of path p
 ${p%/*}          # extract directory name of path p
 ${f%.*}          # remove last suffix of file f
 ${f%%.*}         # remove all suffixe of file f
 ${f#*.}          # extract file extension (suffix) of file f
-${0##*/}         # name of executed file
 ${s%?}           # remove last character of string s
+# Case modification
 ${s^}            # first character of string s to uppercase
-${s,}            # first character of string s to lowercase
 ${s^^}           # all characters of string s to uppercase
+${s,}            # first character of string s to lowercase
 ${s,,}           # all characters of string s to lowercase
 ```
 

@@ -39,12 +39,7 @@ Build-in Commands:
     set -x         print commands and their arguments when executed
     set -f         disable globbing
     source f       execute file f in current shell environment
-    echo "s"       prints string s to screen
-    echo -n "s"    prints string s to screen without linefeed
-    export V=v     set global variable V to value v
-    local V=v      set variable V to value v locally in function         
     eval `c`       execute command c in sub-shell and evaluate
-    read v         read value into v
     shift          remove leading positional parameter
     jobs           list active jobs associated with current shell
     disown         detach jobs from current shell
@@ -77,23 +72,3 @@ Rarely known but very useful commands:
     rename         rename multiple files
     jq             JSON processor
     xmlstarlet     XML processor
-
-## Pattern Matching
-
-    =~              pattern match operator
-    \               escape, match special character literaly
-    .               matches one 
-    ?               matches zero or one 
-    +               matches one or more 
-    *               matches any number 
-    ^               matches the beginning of a line
-    $               matches the end of a line
-    [a-z0-9]        matches any single lowercase letter or any digit
-    [^b-d]          matches any character except those in the range b to d
-    (a|e)           matches a or e
-    [:alnum:]       equivalent to [A-Za-z0-9]
-    [:alpha:]       equivalent to [A-Za-z]
-    [:digit:]       equivalent to [0-9]
-    [:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]
-    [:blank:]       matches a space or a tab
-    [:space:]       all whitespace characters [ \t\v\f]
