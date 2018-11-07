@@ -88,6 +88,7 @@ rmdir <path>         # remove a directory if it is empty
 cp <path> <path>     # copy a file
 cp -R <path> <path>  # copy a directory
 mv <path> <path>     # move a file/directory
+rename <path>        # rename multiple files according to pattern
 ```
 
 ## Search

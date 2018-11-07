@@ -21,3 +21,22 @@ else
 fi
 ```
 
+Build-in Commands:
+
+```bash
+set -v         # print shell input lines as they are read
+set -x         # print commands and their arguments when executed
+set -f         # disable globbing
+source f       # execute file f in current shell environment
+eval `c`       # execute command c in sub-shell and evaluate
+shift          # remove leading positional parameter
+jobs           # list active jobs associated with current shell
+disown         # detach jobs from current shell
+nohup          # continue job after logout
+bg             # move job to background 
+fg j           # resume job j to foreground
+stop j         # stops background job j
+trap c s       # execute command c when catching signal s
+rehash         # re-index executables in $PATH (Zsh)
+reset          # reset terminal
+```
