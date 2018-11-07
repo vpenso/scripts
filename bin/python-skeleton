@@ -54,7 +54,7 @@ logging.basicConfig(format='[%(asctime)s] %(levelname)s -- %(message)s', datefmt
 
 # read from standart input if available
 if not sys.stdin.isatty():
-    stdin = io.StringIO(sys.stdin.read())
+    stdin = sys.stdin.read()
 #else:
 #    raise Exception('No input data specified, STDIN is empty')
 
