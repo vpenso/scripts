@@ -38,8 +38,6 @@ Customize the working environment:
 * [tmux-cheat](tmux-cheat) — Most important Tmux keys
 * [tmux-default-config](tmux-default-config) — Helps to configure Tmux terminal multiplexer
 * [vim-cheat](vim-cheat) — "What was this key again?"
-* [vim-default-config](vim-default-config) — Install Vundle and my personal Vim configuration
-* [zsh-default-config](zsh-default-config) — Install antigen and my default Zsh configuration
 
 Misc
 
