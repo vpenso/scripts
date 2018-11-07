@@ -43,10 +43,6 @@ Build-in Commands:
     echo -n "s"    prints string s to screen without linefeed
     export V=v     set global variable V to value v
     local V=v      set variable V to value v locally in function         
-    dirs           show all directories in stack
-    cd ~n          go to nth directory in stack
-    pushd d        add directory d to stack
-    popd           remove directory from stack
     eval `c`       execute command c in sub-shell and evaluate
     read v         read value into v
     shift          remove leading positional parameter
@@ -101,40 +97,3 @@ Rarely known but very useful commands:
     [:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]
     [:blank:]       matches a space or a tab
     [:space:]       all whitespace characters [ \t\v\f]
-
-## Error Handling
-
-Read about the available signals with `man 7 signal`. Get a short 
-signal listing with `kill -l`. 
-
-    EXIT     0         end of program reached
-    HUP      1         disconnect 
-    INT      2         Interrupt (usally Ctrl-C)
-    KILL     9         Stop execution immediatly (can not be trapped)
-    TERM     15        default shutdown
-
-Exit and error in a sub-shell, simple cases:
-
-    (c)                execute command c in sub-shell, ignore errors
-    (c) || exit $?     same as above but propagate signal code
-
-**Catching Signals**
-
-Execute commands COMMAND on signal SIG
-
-    trap 'COMMAND' SIG [SIG,..]
-
-Trap breaking child processes
-
-    set -m
-    # rescue function executed by trap
-    ensure() {
-      echo "Clean up after child process died with signal $?."
-    }
-    # catch errors
-    trap ensure ERR
-    # execute child process
-    segfaulter &    
-    # wait for the child process to finish
-    wait $!
-

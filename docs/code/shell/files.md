@@ -74,23 +74,23 @@ pushd                # push directory to stack
 popd                 # remove directory from stack
 dirs                 # list directory stack
 cd ~<n>              # change to nth diretory from stack
-touch <file>         # create an empty file with specifed path and name
+touch <path>         # create an empty file with specifed path and name
 ```
 
 Manipulating files & directories:
 
-```
-rm <file>            # delete a file (permanently)
-mkdir <dir>          # create an (new) empty directory in the tree
-mkdir -p <dir>       # ^^ recursive create of a new directory (missing parents included)
-rmdir <dir>          # remove a directory if it is empty
+```bash
+rm <path>            # delete a file (permanently)
 rm -r <path>         # remove a directory and all its content (recursive decent)
+mkdir <path>         # create an (new) empty directory in the tree
+mkdir -p <path>      # ^^ recursive create of a new directory (missing parents included)
+rmdir <path>         # remove a directory if it is empty
 cp <path> <path>     # copy a file
-cp -R <dir> <path>   # copy a directory
+cp -R <path> <path>  # copy a directory
 mv <path> <path>     # move a file/directory
 ```
 
-### Search
+## Search
 
 The `find` command is used to search for files and directories by various criteria
 
@@ -138,7 +138,7 @@ find . -type d -exec bash -c 'for f; do echo "$f" ; done' _ {} +
 # search files within a time frame
 find . -newerat $(date -d '1 HOUR AGO' +%Y%m%d%H%M.%S) ! \
        -newerat $(date -d '10 MINUTE AGO' +%Y%m%d%H%M.%S) -print
-# find file by appendix
+# find file by appendix in currenct working directory (only)
 find . -maxdepth 1 -type f -name "*.txt"
 ```
 
