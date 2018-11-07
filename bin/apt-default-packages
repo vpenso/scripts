@@ -20,6 +20,7 @@ then
                 sshuttle \
                 tcpdump \
                 vim \
-                xclip
+                xclip \
+                zsh
         fc-cache -f # build font information cache files
 fi
