@@ -6,7 +6,7 @@ VOL_ALIAS_HELP="\
 "
 
 
-if [ -f /usr/sbin/amixer ]
+if command -v amixer |:
 then
         function vol-amixer() {
         
@@ -45,7 +45,7 @@ s,  stop                Stop playing music
 u,  update              Update database
 "
 
-if [[ -f /usr/sbin/mpd && -f /usr/sbin/mpc ]]
+if command -v mpd |: && command -v mpc |:
 then
         MPD_PORT=6666
         MPD_CONF=$SCRIPTS/etc/mpdconf

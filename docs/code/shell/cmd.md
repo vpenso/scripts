@@ -11,15 +11,7 @@ c1; c2         # execute command c1 before c2
 c1 $(c2)       # command c1 uses output of c2 as parameters
 ```
 
-Use the exeit code of a command as `if..else..` condition
-
-```bash
-if command ; then
-  ...
-else
-  
-fi
-```
+Use the exit code of a command as `if..else..` condition
 
 Build-in Commands:
 
@@ -40,3 +32,22 @@ trap c s       # execute command c when catching signal s
 rehash         # re-index executables in $PATH (Zsh)
 reset          # reset terminal
 ```
+
+Execute a command and use its exit code as condition to an if statement:
+
+```bash
+if <cmd> ; then
+	...
+else
+  	...
+fi
+```
+
+Use the command `command` to evaluate the existence of a command (in $PATH)
+
+```bash
+if command -v <cmd> >: ; then
+	...
+fi
+```
+

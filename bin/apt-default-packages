@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if command -v apt-get |:
+then
+        sudo apt-get update
+        sudo apt-get install --assume-yes \
+                ccrypt \
+                clustershell \
+                encfs \
+                fonts-inconsolata \
+                fonts-powerline \
+                git-core \
+                mpd \
+                mpc \
+                ncmpc \
+                pandoc \
+                powerline \
+                rsync \
+                sshfs \
+                sshuttle \
+                tcpdump \
+                vim \
+                xclip
+        fc-cache -f # build font information cache files
+fi
