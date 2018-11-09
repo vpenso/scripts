@@ -14,21 +14,31 @@ STDIO data streams automatically opened as a file at the startup of a program:
 
 Descriptors stdin 0, stdout 1, stderr 2:
 
-    > f            create empty file f (same as : > f)
-    c > f          stdout of command c to file f (same as c 1> f)
-    c >> f         append stdout of c to f
-    c < f          content of file f to stdin of c (same as c 0< f)
-    c 1>&-         close stdout of command c
-    c 2> f         stderr of c to file f
-    c > f 2>&1     stdout/stderr fo command c to file f
-    c &> f         same as above
-    c1 <(c2)       stdout of command c2 to stdin of command c1
-    c1 >(c2)       stdout of command c1 to stdin of command c2
-    c < f1 > f2    content of file f1 to stdin of command c, stdout to file f2  
-    (c1 ; c2) > f  redirect stdout of multiple commands to file f (sub-shell)
-    {c1 ; c2} > f  same as above in current shell
-    c1 | c2        pipe stdout of command c1 to stdin of command c2
-    c1 |& c2       pipe stdout and stderr of command c1 to stdin of command c2
-    c | tee f      stdout of command c to screen and file f
-    c |:           pipeline sink (like >/dev/null)
+    > f                     create empty file f (same as : > f)
+    c > f                   stdout of command c to file f (same as c 1> f)
+    c >> f                  append stdout of c to f
+    c < f                   content of file f to stdin of c (same as c 0< f)
+    c 1>&-                  close stdout of command c
+    c 2> f                  stderr of c to file f
+    c > f 2>&1              stdout/stderr fo command c to file f
+    c &> f                  same as above
+    c1 <(c2)                stdout of command c2 to stdin of command c1
+    c1 >(c2)                stdout of command c1 to stdin of command c2
+    c1 >(c2 > f) >(c3 > f)  process substitution ofr multiple sinks
+    c < f1 > f2             content of file f1 to stdin of command c, stdout to file f2  
+    (c1 ; c2) > f           redirect stdout of multiple commands to file f (sub-shell)
+    {c1 ; c2} > f           same as above in current shell
+    c1 | c2                 pipe stdout of command c1 to stdin of command c2
+    c1 |& c2                pipe stdout and stderr of command c1 to stdin of command c2
+    c | tee f               stdout of command c to screen and file f
+    c |:                    pipeline sink (like >/dev/null)
 
+### Commands
+
+Manipulate pipes:
+
+```bash
+tee               # write stdin to stdout and a file
+pv                # monitor the progress of data through a pipe
+mkfifo            # create a named pipe
+```

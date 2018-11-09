@@ -1,5 +1,19 @@
 
-# Sed (Stream Editor)
+```bash
+grep                    # print lines matching a pattern
+sort                    # sort lines of a text file
+uniq                    # report or omit repeated lines
+cut                     # remove sections from each line of files
+tr                      # translate or delete characters
+sed                     # stream editor for filtering and transforming text
+awk                     # pattern scanning and processing language
+fmt                     # text formater
+paste                   # merge lines of files
+split                   # split files into pieces
+tac                     # concatenate and print files in reverse
+```
+
+## Sed (Stream Editor)
 
 Use sed by piping input or reading it from a file:
 

@@ -101,7 +101,10 @@ head              # show the beginning of a file
 tail              # show the end of a file
 less              # pager for files
 pg                # ^^
+more              # ^^
+wc                # count line/chars in a file
 touch             # create empty file, change timestamp 
+nl                # number lines of a file
 ```
 
 Access control:
