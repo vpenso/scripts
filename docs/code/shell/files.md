@@ -53,16 +53,6 @@ Paths are constructed with the following notation:
 
 ## Commands
 
-List the content of a directory-tree
-
-```bash
-ls                   # list content in the working directory
-ls <path>            # list content specified by path
-ls -a <path>         # show hidden pathes also
-tree                 # show the tree structure decending from the working directory
-tree -f -l 1 <path>  # show absolute tree structure with a decending depth of 1 of specified directory
-```
-
 Navigate the directory tree:
 
 ```bash
@@ -77,6 +67,16 @@ cd ~<n>              # change to nth diretory from stack
 touch <path>         # create an empty file with specifed path and name
 ```
 
+List the content of a directory-tree
+
+```bash
+ls                   # list content in the working directory
+ls <path>            # list content specified by path
+ls -a <path>         # show hidden pathes also
+tree                 # show the tree structure decending from the working directory
+tree -f -l 1 <path>  # show absolute tree structure with a decending depth of 1 of specified directory
+```
+
 Manipulating files & directories:
 
 ```bash
@@ -89,6 +89,29 @@ cp <path> <path>     # copy a file
 cp -R <path> <path>  # copy a directory
 mv <path> <path>     # move a file/directory
 rename <path>        # rename multiple files according to pattern
+```
+
+Work with files: 
+
+```bash
+file              # determine file type
+stat              # display file status
+cat               # print file content
+head              # show the beginning of a file
+tail              # show the end of a file
+less              # pager for files
+pg                # ^^
+touch             # create empty file, change timestamp 
+```
+
+Access control:
+
+```bash
+chmod             # change file permissions
+chown             # change file owner
+getfacl           # show ACL permissions
+setfacl           # modify ACL permissions
+
 ```
 
 ## Search
@@ -142,7 +165,3 @@ find . -newerat $(date -d '1 HOUR AGO' +%Y%m%d%H%M.%S) ! \
 # find file by appendix in currenct working directory (only)
 find . -maxdepth 1 -type f -name "*.txt"
 ```
-
-
-
-
