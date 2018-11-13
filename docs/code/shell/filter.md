@@ -101,10 +101,11 @@ print command:
 
 `crush` removes duplicate blank lines: 
 
-```bash
->>> cat $(which crush)
+```sed
 #!/bin/sed -f
 /^[[:blank:]]*$/d
+```
+```bash
 >>> echo "\n\na\nb\n\nc\n" | crush
 a
 b
@@ -113,10 +114,11 @@ c
 
 `pushin` reduces multiple spaces to one
 
-```bash
->>> cat $(which pushin)     
+```sed
 #!/bin/sed -f
 s/[ ][  ]*/ /g
+```
+```
 >>> echo "a   b      c" | pushin
 a b c
 ```
