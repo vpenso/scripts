@@ -38,7 +38,7 @@ Hard block can not be unblocked by software:
 
 * Check the BIOS for WiFi related settings
 * Use the physical switch or a keyboard shortcut (typically using the `Fn` key)
-* Multiple keys can exist i.e one for WiFi and another on for Bluetooth
+* Multiple keys can exist i.e. one for WiFi and another one for Bluetooth
 
 `rfkill` kernel module configuration (check with `modinfo -p rfkill`)
 

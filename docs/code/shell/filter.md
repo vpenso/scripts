@@ -13,9 +13,35 @@ split                   # split files into pieces
 tac                     # concatenate and print files in reverse
 ```
 
-## Sed (Stream Editor)
 
-Use sed by piping input or reading it from a file:
+## Non-Printable Characters
+
+`cat` show non-printable characters with `-A` (equivalent to `-vET`)
+
+* `\<octal>` three octal digit characters (01234567) 
+* Ref. `man ascii`
+
+```bash
+>>> s="\tone\n\011two\040three\0"
+>>> echo "$s" | cat -A
+^Ione$
+^Itwo three^@$
+```
+
+^ and M- notation (100-137 ascii chars), for LF `$`, TAB `^I`, NUL `^@`
+
+`od` show non-printable chars with backslash escapes `\[abfnrtv0]`:
+
+```bash
+>>> echo "$s" | od -c
+0000000  \t   o   n   e  \n  \t   t   w   o       t   h   r   e   e  \0
+0000020  \n
+0000021
+```
+
+## Stream Editor
+
+Use `sed` (stream editor) by piping input or reading it from a file:
 
     » cat input.txt | sed 'command'
     » sed 'command' input.txt > output.txt
@@ -70,4 +96,39 @@ print command:
     N,Mp               print lines with numbers from N to M
     /P1/,/P2/p         print lines between pattern P1 and P2
     /P/{p;q;}          print first line matching pattern P
+
+### White Spaces
+
+`crush` removes duplicate blank lines: 
+
+```bash
+>>> cat $(which crush)
+#!/bin/sed -f
+/^[[:blank:]]*$/d
+>>> echo "\n\na\nb\n\nc\n" | crush
+a
+b
+c
+```
+
+`pushin` reduces multiple spaces to one
+
+```bash
+>>> cat $(which pushin)     
+#!/bin/sed -f
+s/[ ][  ]*/ /g
+>>> echo "a   b      c" | pushin
+a b c
+```
+
+`chop` removes trailing spaces
+
+```sed
+#!/bin/sed -f
+s/[[:blank:]]*$//
+```
+```bash
+>>> echo "a   b      c  " | chop | cat -A
+a   b      c$
+```
 
