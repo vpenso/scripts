@@ -1,4 +1,39 @@
-# Shell
+
+The **console** on a modern computer is typically the monitor:
+
+* Receives messages from the kernel regarding booting and shutdown progress
+* Is is possible to redirect messages fromthe console to a terminal
+
+## Terminals
+
+Terminal devices
+
+* `/dev/tty[0-9]` (teletypes, cf. manual `tty`)
+* `/dev/ttyS[0-9]` (serial port terminals)
+* `/dev/pts/[0-9]` (pseudo terminals)
+  - Virtual terminal connected to a terminal program i.e. `xterm`
+  - Cf. `pty` (pseudo-tty driver) manual
+* `getty` program watching a physical terminal (tty) port
+
+```bash
+tty                         # show assoc. pseudo terminal
+stty -a                     # show terminal settings
+ps -a                       # list processes with attached terminals
+terminfo 
+termcap                     # terminal capability data base
+tput
+tget
+reset                       # init terminal
+```
+
+**Control characters** - Display control codes like line-feed, backspace, etc. 
+
+**Escape sequences** - Series of characters that give commands to the terminal
+
+* User for cursor movement, colors, etc.
+* Consists of the ESC control character followed by a sequence of ordinary characters
+
+## Shells
 
 * **Interactive**
   - Reads user input on a tty, enable users to enter/execute commands
