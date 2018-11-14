@@ -13,13 +13,33 @@ split                   # split files into pieces
 tac                     # concatenate and print files in reverse
 ```
 
+## Characters
 
-## Non-Printable Characters
+[ASCII](https://en.wikipedia.org/wiki/ASCII) character encoding standard:
+
+* ASCII order (ASCIIbetical)
+  - Uppercase come before lowercase letters
+  - Digits and many punctuation marks come before letters
+* First 32 codes (0–31 decimal) for **control characters**
+
+Conventions to describe characters
+
+* **Octal** digit characters (01234567), `\<octal>` 1,2 or 3 
+* **Escape sequence**, starting with a backslash  `\[abfnrtv]`
+* **Caret notation**, `^` followed by a single character (usually a capital letter) 
+
+### Non-Printable Characters
+
+Non-pritnable (white-space) characters:
+
+* **space** (blank, word divider)
+* backspace (BS), `\b`, `^H`
+* **tab** (horizontal tab (HT), `\t`, `\011`, `^I`
+* **newline** (line feed (LF)), `\n`, `\012`, `^J`
+* null (NUL) `\0`, `^@`
+* escape (ESC) `\e`, `^['
 
 `cat` show non-printable characters with `-A` (equivalent to `-vET`)
-
-* `\<octal>` three octal digit characters (01234567) 
-* Ref. `man ascii`
 
 ```bash
 >>> s="\tone\n\011two\040three\0"
@@ -30,7 +50,8 @@ tac                     # concatenate and print files in reverse
 
 ^ and M- notation (100-137 ascii chars), for LF `$`, TAB `^I`, NUL `^@`
 
-`od` show non-printable chars with backslash escapes `\[abfnrtv0]`:
+`od` show non-printable chars with backslash escapes:
+
 
 ```bash
 >>> echo "$s" | od -c
@@ -38,6 +59,32 @@ tac                     # concatenate and print files in reverse
 0000020  \n
 0000021
 ```
+
+## Regex
+
+
+
+```
+=~              pattern match operator
+\               escape, match special character literaly
+.               matches one
+?               matches zero or one
+!               invert match
++               matches one or more
+*               matches any number
+^               matches the beginning of a line
+$               matches the end of a line
+[a-z0-9]        matches any single lowercase letter or any digit
+[^b-d]          matches any character except those in the range b to d
+(a|e)           matches a or e
+[:alnum:]       equivalent to [A-Za-z0-9]
+[:alpha:]       equivalent to [A-Za-z]
+[:digit:]       equivalent to [0-9]
+[:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]
+[:blank:]       matches a space or a tab
+[:space:]       all whitespace characters [ \t\v\f]
+```
+
 
 ## Stream Editor
 
