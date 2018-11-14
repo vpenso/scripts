@@ -1,4 +1,6 @@
 
+Commands used to work with text (strings): 
+
 ```bash
 grep                    # print lines matching a pattern
 sort                    # sort lines of a text file
@@ -28,6 +30,12 @@ Conventions to describe characters
 * **Escape sequence**, starting with a backslash  `\[abfnrtv]`
 * **Caret notation**, `^` followed by a single character (usually a capital letter) 
 
+```bash
+printf `\O`                         # print octal
+printf '\xH'                        # print hex H
+printf "\\$(printf %o D)"           # print decimal d
+```
+
 ### Non-Printable Characters
 
 Non-pritnable (white-space) characters:
@@ -37,7 +45,7 @@ Non-pritnable (white-space) characters:
 * **tab** (horizontal tab (HT), `\t`, `\011`, `^I`
 * **newline** (line feed (LF)), `\n`, `\012`, `^J`
 * null (NUL) `\0`, `^@`
-* escape (ESC) `\e`, `^['
+* escape (ESC) `\e`, `^[`
 
 `cat` show non-printable characters with `-A` (equivalent to `-vET`)
 
@@ -48,10 +56,9 @@ Non-pritnable (white-space) characters:
 ^Itwo three^@$
 ```
 
-^ and M- notation (100-137 ascii chars), for LF `$`, TAB `^I`, NUL `^@`
+^ and M- notation (100-137 ascii chars), for LF `$`
 
 `od` show non-printable chars with backslash escapes:
-
 
 ```bash
 >>> echo "$s" | od -c
@@ -62,18 +69,9 @@ Non-pritnable (white-space) characters:
 
 ## Regex
 
-
+Regular expressions (regex), strings of character that define a search pattern:
 
 ```
-=~              pattern match operator
-\               escape, match special character literaly
-.               matches one
-?               matches zero or one
-!               invert match
-+               matches one or more
-*               matches any number
-^               matches the beginning of a line
-$               matches the end of a line
 [a-z0-9]        matches any single lowercase letter or any digit
 [^b-d]          matches any character except those in the range b to d
 (a|e)           matches a or e
@@ -83,8 +81,38 @@ $               matches the end of a line
 [:xdigit:]      matches hexadecimal digits, equivalent to [0-9A-Fa-f]
 [:blank:]       matches a space or a tab
 [:space:]       all whitespace characters [ \t\v\f]
+\               escape, match special character literaly
+.               matches one
+?               matches zero or one
+!               invert match
++               matches one or more
+*               matches any number
+^               matches the beginning of a line
+$               matches the end of a line
+{N}             match N (number) of chars
+{N,}            match N or more chars
+{,N}            match less or equal N chars
 ```
 
+```bash
+grep "R" P        # match a regex R in files at path P 
+```
+
+Expression **comparison operator** matching string S with regex R
+
+    [[ "S" =~ "R" ]]
+
+* `0` if the regular expression matches the string
+* Sub-patterns in `()` for capturing parts of the match; matches in `BASH_REMATCH[0]`
+
+[bin/regex](../../../bin/regex) a regex with an argument list:
+
+```bash
+>>> regex '^[f,b].[o]' foo bar
+regex: ^[f,b].[o]\n
+foo matches
+bar does not match
+```
 
 ## Stream Editor
 
