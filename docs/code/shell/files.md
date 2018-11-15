@@ -51,6 +51,50 @@ Paths are constructed with the following notation:
 ./.<path>                # hide a path by prefixing it with a dot 
 ```
 
+**dotfile** treated as hidden, i.e. `~/.profile`:
+
+* File/directory name preceded by a dot `.`
+* Not displayed by default in a directory listing
+
+### ls/tree
+
+`ls` (list) show the contents of a directory-tree:
+
+```bash
+alias ls='ls -Fh --color=always'   # default to classify, human readable sizes and colors
+alias lS='ls -lS'                  # displays file size in order
+alias l='ls -1'                    # only names, one per line
+alias ll='ls -l'                   # long format
+alias l.='ls -lA -d .*'            # only hidden files
+```
+
+The **classify** option `-F` appends symbols to filenames:
+
+```
+*       executable
+/       directory
+@       link
+=       socket
+>       door (IPC)   
+|       named pipe
+```
+
+`tree` lists directories in a tree like format:
+
+```
+alias td='tree -d'                  # list only dirs 
+alias t2='tree -L 2'                # max recursive depth of 2 levels
+alias tu='tree -pfughF --du'        # permissions, user, group, sizes 
+```
+
+[exa](https://the.exa.website/) modern replacement for ls
+
+```
+alias el='exa -l --git'
+alias eG='exa -lG --git'
+alias eT='exa -lT --git --group-directories-first -@ -L 2'
+```
+
 ## Commands
 
 Navigate the directory tree:
@@ -67,17 +111,6 @@ cd ~<n>              # change to nth diretory from stack
 touch <path>         # create an empty file with specifed path and name
 ```
 
-List the content of a directory-tree
-
-```bash
-ls                   # list content in the working directory
-ls <path>            # list content specified by path
-ls -a <path>         # show hidden pathes also
-tree                 # show the tree structure decending from the working directory
-tree -f -l 1 <path>  # show absolute tree structure with a decending depth of 1 of specified directory
-```
-
-[exa](https://the.exa.website/) modern replacement for ls
 
 Manipulating files & directories:
 
