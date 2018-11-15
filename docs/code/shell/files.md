@@ -58,7 +58,7 @@ Paths are constructed with the following notation:
 
 ### ls/tree
 
-`ls` (list) show the contents of a directory-tree:
+**`ls`** (list) show the contents of a directory-tree:
 
 ```bash
 alias ls='ls -Fh --color=always'   # default to classify, human readable sizes and colors
@@ -79,17 +79,36 @@ The **classify** option `-F` appends symbols to filenames:
 |       named pipe
 ```
 
-`tree` lists directories in a tree like format:
+The `LS_COLORS` variable is used to define colors for the ls command.
+Use the **`dircolors`** program for a more complex configuration:
 
+```bash
+# a simple file with a color configuration
+cat > ~/.dircolors <<EOF
+TERM screen-256color
+RESET                 0
+FILE                  00;38;5;241
+DIR                   00;38;5;244
+LINK                  00;38;5;239
+EOF
+# load the configuration on shell init
+echo 'eval "$(dircolors -b ~/.dircolors)"' >> ~/.profile
 ```
-alias td='tree -d'                  # list only dirs 
-alias t2='tree -L 2'                # max recursive depth of 2 levels
-alias tu='tree -pfughF --du'        # permissions, user, group, sizes 
+
+Comprehensive example in the [bin/dir-colors](../../../bin/dir-colors) program
+
+
+**`tree`** lists directories in a tree like format:
+
+```bash
+alias td='tree -d'                 # list only dirs 
+alias t2='tree -L 2'               # max recursive depth of 2 levels
+alias tu='tree -pfughF --du'       # permissions, user, group, sizes 
 ```
 
 [exa](https://the.exa.website/) modern replacement for ls
 
-```
+```bash
 alias el='exa -l --git'
 alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
