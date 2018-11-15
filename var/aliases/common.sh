@@ -51,6 +51,10 @@ alias eT='exa -lT --git --group-directories-first -@ -L 2'
 
 alias bat='bat --theme "Monokai Extended Light"'
 
+##
+# permissions
+#
+alias perms="stat -c '%A %a %U %u %G %g'"
 
 ##
 # process listing
