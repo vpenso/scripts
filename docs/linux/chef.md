@@ -174,7 +174,26 @@ firewall-cmd --permanent --zone public --add-service https
 firewall-cmd --reload
 ```
 
-RBAC (role-based access control) to restrict access to objects:
+Manage services:
+
+```bash
+chef-server-ctl service-list
+chef-server-ctl hup|int|kill|once|restart|start|stop|tail|term [<service>]
+```
+
+List of services:
+
+* bifrost - authorize requests to the Chef server
+* bookshelf - stores cookbooks (and all associated objects)
+* nginx - HTTP API Chef server
+* opscode-erchef - service that is used to handle Chef server API requests
+* opscode-expander - process data pulled from the rabbitmq, to be indexed by the opscode-solr4 service
+* opscode-solr4 - service is used to create the search indexes used for searching objects
+* postgresql - database to store node, object, and user data
+* rabbitmq - message queue that is used by the Chef server to get search data to Apache Solr
+* redis-lb - key-value store used in conjunction with Nginx to route requests and populate request data
+
+### RBAC (role-based access control) 
 
 <https://docs.chef.io/server_orgs.html>
 
