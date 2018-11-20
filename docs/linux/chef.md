@@ -1,20 +1,21 @@
 
 
 
-# Usage
-
-The Chef client packages:
+# Chef
 
 <https://downloads.chef.io/chef>
 
+Client:
+
 ```bash
 ## Debian Stretch (using the Jessie package)
-wget https://packages.chef.io/files/stable/chef/13.5.3/debian/8/chef_13.5.3-1_amd64.deb
-dpkg -i chef_13.5.3-1_amd64.deb
+wget https://packages.chef.io/files/stable/chef/14.7.17/debian/9/chef_14.7.17-1_amd64.deb
+dpkg -i chef_14.7.17-1_amd64.deb
 ## CentOS 7
-wget https://packages.chef.io/files/stable/chef/13.7.16/el/7/chef-13.7.16-1.el7.x86_64.rpm
-yum install -y ./chef-13.7.16-1.el7.x86_64.rpm
+wget https://packages.chef.io/files/stable/chef/14.7.17/el/7/chef-14.7.17-1.el7.x86_64.rpm
+yum install -y chef-14.7.17-1.el7.x86_64.rpm
 ```
+
 
 ## Knife
 
@@ -158,21 +159,54 @@ AccuracySec=300sec
 
 # Server
 
-Dummy deployment for a [chef-server](https://downloads.chef.io/chef-server) package:
+Dummy deployment for a [chef-server-core](https://downloads.chef.io/chef-server) package:
 
-→ [Install the Chef Server](https://docs.chef.io/install_server.html), official documentation from [docs.chef.io](http://docs.chef.io)
+<https://docs.chef.io/install_server.html>
 
 ```bash
-wget https://packages.chef.io/files/stable/chef-server/12.15.7/el/7/chef-server-core-12.15.7-1.el7.x86_64.rpm
-yum -y install chef-server-core-12.15.7-1.el7.x86_64.rpm
-#3 Deploy the chef server
+wget https://packages.chef.io/files/stable/chef-server/12.18.14/el/7/chef-server-core-12.18.14-1.el7.x86_64.rpm
+yum install -y chef-server-core-12.18.14-1.el7.x86_64.rpm
+# configure the chef server
 chef-server-ctl reconfigure
 ## open the firewall
 firewall-cmd --permanent --zone public --add-service http
 firewall-cmd --permanent --zone public --add-service https
 firewall-cmd --reload
-## dummy user and orga
+```
+
+RBAC (role-based access control) to restrict access to objects:
+
+<https://docs.chef.io/server_orgs.html>
+
+* **organization** - top-level entity, contains the default groups (admins, clients, users, etc.)
+* **group** - define access to objects and tasks (users inherit group permissions)
+* **user** - (non-administrator) manage data that is uploaded (may access web  UI)
+* **client** - actor that has permission to access server, usually a client node
+
+```bash
+chef-server-ctl user-list
+chef-server-ctl org-list
+chef-server-ctl org-show <name>
+chef-server-ctl org-create <name> "<desc>" [--association_user <admin> --filename /path/to/validator.pem]
+chef-server-ctl org-delete <name>
+chef-server-ctl org-user-add <name> <user> [--admin]
+chef-server-ctl org-user-remove <name> <user>
+```
+
+Example of creating a organisation `devops` with an admin user `devops`:
+
+```bash
 su devops -c 'mkdir ~/.chef'
 chef-server-ctl user-create devops dev ops dops@devops.test 'devops' --filename /home/devops/.chef/devops.pem
-chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops.pem
+chef-server-ctl org-create devops 'devops people' --association_user devops --filename /etc/chef/devops-validator.pem
 ```
+
+**server admins** create, read, update, and delete user accounts with `knife user` (`pivotal` (a superuser account))
+
+```bash
+chef-server-ctl grant-server-admin-permissions <user>
+chef-server-ctl list-server-admins
+chef-server-ctl remove-server-admin-permissions <user?
+```
+
+
