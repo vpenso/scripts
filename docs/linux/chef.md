@@ -16,15 +16,19 @@
   - Configuration code ensures all nodes comply with policy (determined by run-list)
   - **Declarative** interface describes desired state of compute resources
 
-**Resources**, fundamental building blocks:
+Fundamental building blocks:
 
-* Resources describe desired state of system component, i.e. packages, services, users, cf. [Resources Reference](https://docs.chef.io/resource_reference.html)
-* A **recipe** is a collection of resources for a common configuration entity
-  - Order matters, resources applied in order
+* **Resources** describe desired state of system component, i.e. packages, services, users, cf. [Resources Reference](https://docs.chef.io/resource_reference.html)
+* A **recipe** is a collection of resources 
+  - Configure a single system component
+  - Order matters (resources applied in order)
 * A **cookbook** is a group(/package) of recipes with a common configuration domain
   - Distribution unit (synced with the server)
   - Versioned, re-usable
   - Includes templates, (meta-)data
+* A **role** is a configuration applied to multiple nodes
+* Data bags store global variables (secrets)
+* [Environments](https://docs.chef.io/environments.html) map a workflow (i.e. production, staging, testing) within an organisation
 
 
 ## Knife
@@ -128,7 +132,7 @@ yum install -y chef-14.7.17-1.el7.x86_64.rpm
 * Converges (resources & providers)
 * Saves node & runs handlers
 
-**run list**, ordered collection of policies
+[Run list](https://docs.chef.io/run_lists.html), ordered collection of policies
 
 * Obtained from the Chef server
 * Used to ensure node compliance
