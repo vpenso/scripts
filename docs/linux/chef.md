@@ -8,12 +8,24 @@
   - Treated like any other code base (stored in version control)
   - Reconstruct service from code, data backup, and compute resources
 * Written in Ruby (DSL), open source (Apache License 2.0) 
-* Hosted vs. Self-Hosted  vs. Serverless 
-* RESTful API (key-based auth with signed headers)
-* Idempotent (chef-client), pulls conf. policy from Chef server
+  - Provides a **domain-specific language** (DSL) to specify **policies** (desired state of a system)
+  - Policy describes the desired state (statically or dynamically defined)
+  - **Extensible** (cookbooks, recipes, etc)
+  -  RESTful API (key-based auth with signed headers)
+* **Idempotent** (chef-client), pulls conf. policy from Chef server
   - Configuration code ensures all nodes comply with policy (determined by run-list)
-  - **Declarative interface** describes desired state f compute resources
-* Extensible (cookbooks, recipes, etc)
+  - **Declarative** interface describes desired state of compute resources
+
+**Resources**, fundamental building blocks:
+
+* Resources describe desired state of system component, i.e. packages, services, users, cf. [Resources Reference](https://docs.chef.io/resource_reference.html)
+* A **recipe** is a collection of resources for a common configuration entity
+  - Order matters, resources applied in order
+* A **cookbook** is a group(/package) of recipes with a common configuration domain
+  - Distribution unit (synced with the server)
+  - Versioned, re-usable
+  - Includes templates, (meta-)data
+
 
 ## Knife
 
