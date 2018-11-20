@@ -242,6 +242,9 @@ Other Chef server implementations:
 
 ```bash
 chef-server-ctl user-list
+chef-server-ctl user-create <user> <name> <name> <email> <password> -f /path/to/user.pem
+chef-server-ctl list-user-keys <user> --verbose
+chef-server-ctl delete-user-key <user> <key>
 chef-server-ctl org-list
 chef-server-ctl org-show <name>
 chef-server-ctl org-create <name> "<desc>" [--association_user <admin> --filename /path/to/validator.pem]
