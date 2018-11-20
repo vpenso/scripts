@@ -3,19 +3,17 @@
 
 # Chef
 
-<https://downloads.chef.io/chef>
-
-Client:
-
-```bash
-## Debian Stretch (using the Jessie package)
-wget https://packages.chef.io/files/stable/chef/14.7.17/debian/9/chef_14.7.17-1_amd64.deb
-dpkg -i chef_14.7.17-1_amd64.deb
-## CentOS 7
-wget https://packages.chef.io/files/stable/chef/14.7.17/el/7/chef-14.7.17-1.el7.x86_64.rpm
-yum install -y chef-14.7.17-1.el7.x86_64.rpm
-```
-
+* Framework for defining **infrastructure as code** 
+  - Programmatically provision & configure components
+  - Treated like any other code base (stored in version contorl)
+  - Reconstruct service from code, data backup, and compute resources
+* Written in Ruby (DSL), open source (Apache License 2.0) 
+* Hosted vs. Self-Hosted  vs. Serverless 
+* RESTful API (key-based auth with signed headers)
+* Idempotent (chef-client), pulls conf. policy from Chef server
+  - Configuration code ensures all nodes comply with policy (determined by run-list)
+  - Declarative interface describes desired of compute resources
+* Extensible (cookbooks, recipes, etc)
 
 ## Knife
 
@@ -99,10 +97,30 @@ knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client
 
 ## Client
 
-Official documentation from [docs.chef.io](http://docs.chef.io):
+`chef-client` configures a node,
 
-→ [chef-client](https://docs.chef.io/ctl_chef_client.html)  
-→ [client.rb](https://docs.chef.io/config_rb_client.html)
+* Runs `ohai` & builds node attributes
+* Connects to the server (registers & syncs cookbooks, etc.)
+* Compiles resources (libs, attr., recipes)
+* Converges (resources & providers)
+* Saves node & runs handlers
+
+
+Install:
+
+<https://downloads.chef.io/chef>
+
+```bash
+## Debian Stretch (using the Jessie package)
+wget https://packages.chef.io/files/stable/chef/14.7.17/debian/9/chef_14.7.17-1_amd64.deb
+dpkg -i chef_14.7.17-1_amd64.deb
+## CentOS 7
+wget https://packages.chef.io/files/stable/chef/14.7.17/el/7/chef-14.7.17-1.el7.x86_64.rpm
+yum install -y chef-14.7.17-1.el7.x86_64.rpm
+```
+
+<https://docs.chef.io/ctl_chef_client.html>  
+<https://docs.chef.io/config_rb_client.html>
 
 ### Manual
 
@@ -192,6 +210,11 @@ List of services:
 * postgresql - database to store node, object, and user data
 * rabbitmq - message queue that is used by the Chef server to get search data to Apache Solr
 * redis-lb - key-value store used in conjunction with Nginx to route requests and populate request data
+
+Other Chef server implementations:
+
+* [goiardi](https://github.com/ctdk/goiardi)
+* [chef-zero](https://github.com/chef/chef-zero)
 
 ### RBAC (role-based access control) 
 
