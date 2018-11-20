@@ -5,14 +5,14 @@
 
 * Framework for defining **infrastructure as code** 
   - Programmatically provision & configure components
-  - Treated like any other code base (stored in version contorl)
+  - Treated like any other code base (stored in version control)
   - Reconstruct service from code, data backup, and compute resources
 * Written in Ruby (DSL), open source (Apache License 2.0) 
 * Hosted vs. Self-Hosted  vs. Serverless 
 * RESTful API (key-based auth with signed headers)
 * Idempotent (chef-client), pulls conf. policy from Chef server
   - Configuration code ensures all nodes comply with policy (determined by run-list)
-  - Declarative interface describes desired of compute resources
+  - **Declarative interface** describes desired state f compute resources
 * Extensible (cookbooks, recipes, etc)
 
 ## Knife
@@ -97,18 +97,7 @@ knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client
 
 ## Client
 
-`chef-client` configures a node,
-
-* Runs `ohai` & builds node attributes
-* Connects to the server (registers & syncs cookbooks, etc.)
-* Compiles resources (libs, attr., recipes)
-* Converges (resources & providers)
-* Saves node & runs handlers
-
-
-Install:
-
-<https://downloads.chef.io/chef>
+Install [chef package](https://downloads.chef.io/chef) including [chef-client](https://docs.chef.io/ctl_chef_client.html):
 
 ```bash
 ## Debian Stretch (using the Jessie package)
@@ -119,12 +108,22 @@ wget https://packages.chef.io/files/stable/chef/14.7.17/el/7/chef-14.7.17-1.el7.
 yum install -y chef-14.7.17-1.el7.x86_64.rpm
 ```
 
-<https://docs.chef.io/ctl_chef_client.html>  
-<https://docs.chef.io/config_rb_client.html>
+**`chef-client`** (on managed nodes):
 
-### Manual
+* Runs `ohai` & builds node attributes
+* Connects to the server (registers & syncs cookbooks, etc.)
+* Compiles resources (libs, attr., recipes)
+* Converges (resources & providers)
+* Saves node & runs handlers
 
-Chef-client configuration file example:
+**run list**, ordered collection of policies
+
+* Obtained from the Chef server
+* Used to ensure node compliance
+
+### Configuration
+
+Customize the [client.rb](https://docs.chef.io/config_rb_client.html) configuration file:
 
 ```bash
 >>> cat /etc/chef/client.rb
@@ -175,7 +174,7 @@ AccuracySec=300sec
 ```
 
 
-# Server
+## Server
 
 Dummy deployment for a [chef-server-core](https://downloads.chef.io/chef-server) package:
 
