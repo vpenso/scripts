@@ -91,7 +91,7 @@ chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 
 The `ssh-agent` is used for SSH public key authentication:
 
-* Keeps track of user's identity keys and their passphrases
+* **Keeps track of user's identity keys and their passphrases**
 * Many Linux distributions automatically start an ssh-agent on login
 * Keys are added to an running ssh-agent with `ssh-add`
 
@@ -111,7 +111,8 @@ Identity added: /home/jdow/.ssh/id_rsa (/home/jdoe/.ssh/id_rsa)
 ```
 
 
-The script [ssh-agent-session][05] helps to use a single _ssh-agent_ session in multiple shells. 
+The script [ssh-agent-session][05] helps to use a **single SSH agent session in multiple shells**.
+
 It will start a new agent and store the connection information to `~/.ssh/agent-session`. 
 
 ```bash
