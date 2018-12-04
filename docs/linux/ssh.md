@@ -8,8 +8,6 @@ SSH (Secure SHell) network protocol:
 * File transfer, the SSH protocol family includes two file transfer protocols.
 * **Port forwarding**, arbitrary TCP sessions can be forwarded over an SSH connection
 
-Command used with SSH
-
 ```bash
 ssh                 # login to a remote server
 scp                 # copy files from/to a remote server
@@ -20,18 +18,46 @@ ssh-agent           # daemon temporarily storing the private key
 ssh-keyscan         # manage host fingerprints
 sshuttle            # private network tunnel over SSH
 sshfs               # mount remote file-systems over SSH
+~/.ssh/config       # client configuration
 ```
+
+Establish a **remote connection** to a server `<user>@<server>`:
+
+* `<user>` is a login account name on the remote server, i.e. "jdow"
+* `<server>` is an IP address or domain name of the server to connect to, i.e. `pool.devops.test`
+
+```bash
+>>> ssh jdow@pool.devops.test↵
+The authenticity of host 'pool.devops.test' (10.10.10.10)' can't be established.
+RSA key fingerprint is 96:15:0e:e7:70:09:60:9a:c4:f6:89:05:be:ed:be:c6.
+Are you sure you want to continue connecting (yes/no)? yes↵
+Warning: Permanently added 'pool.devops.test' (RSA) to the list of known hosts.
+jdow@pool.devops.test's password:↵
+jdow@node1: exit↵
+```
+
+* The system will ask you to accept the remote computer into the list of known hosts
+* Make sure fingerprint is trustworthy before accepting
+* Type in your password before you can login
+* Use `exit` to logout from the remote computer and end the ssh session
 
 ## Public-Key Authentication
 
 **SSH key** (asymmetric cryptography):
 
 * Provides cryptographic strength that even extremely long passwords can not offer
-* Grant access to servers; allows automated, password-less login
+* Grants access to servers; allows automated, password-less login
 * Users can **self-provision a key pair** (authentication credential)
 * Each SSH key pair includes two keys:
   - **Public key** that is copied to the SSH server(s)
-  - **Private key** that remains (only) with the user
+  - **Private key** that remains (only) with the user (aka. identity key)
+
+```bash
+# generate a key pare in ~/.ssh
+ssh-keygen -q -f ~/.ssh/id_rsa -t rsa
+# change the passphrase of a private key
+ssh-keygen -f ~/.ssh/id_rsa -p
+```
 
 **Extremely important that the privacy of the private key is guarded carefully!**
 
@@ -44,7 +70,11 @@ SSH servers grant access based on **authorized keys**
 * An SSH server receives a public key from a user and considers the key trustworthy
 * Server marks the key as authorized in its `authorized_keys` file
 
-## ssh-agent-session
+```bash
+ssh-copy-id jdoe@pool.devops.test:
+```
+
+## SSH Agent
 
 Usually users start an SSH agent the following way:
 
