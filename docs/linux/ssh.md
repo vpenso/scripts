@@ -25,13 +25,13 @@ sshfs               # mount remote file-systems over SSH
 ~/.ssh/config       # client configuration
 ```
 
-SSH is not a true shell (command interpreter)
+SSH is not a true shell (command interpreter):
 
-* Creates a channel for running a shell on a remote computer (with end-to-end encryption)
+* It creates a channel for running a shell on a remote computer (with end-to-end encryption)
 * SSH is a protocol, not a product
   - Specification of how to conduct secure communication over a network
   - Covers authentication, encryption, and the integrity of data transmitted over a network
-* **Must used implementations is [OpenSSH](https://www.openssh.com/)**
+* **Most used implementations is [OpenSSH](https://www.openssh.com/)**
 
 ### Remote Login
 
@@ -62,11 +62,9 @@ The SSH **known hosts** prevents attacks based on subverting the naming services
 * At first connection a public counterpart of the host key gets stored on the client in the `~/.ssh/known_hosts` file
 * Each subsequent connection is authenticated using the server public key
 
-Lost, hanging SSH connections by an **escape sequence `~.`**
+Lost, hanging SSH connections by an **escape sequence `~.`**. List of all available escapes with `~?`:
 
-List of all available escapes with `~?`:
-
-```bash
+```
 Supported escape sequences:
   ~.  - terminate connection (and any multiplexed sessions)
   ~B  - send a BREAK to the remote system
