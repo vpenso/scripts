@@ -24,9 +24,9 @@ sshfs               # mount remote file-systems over SSH
 Establish a **remote connection** to a server `<user>@<server>`:
 
 * `<user>` is a login account name on the remote server, i.e. "jdow"
-* `<server>` is an IP address or domain name of the server to connect to, i.e. `pool.devops.test`
+* `<server>` is an IP address or domain name of the server to connect to, i.e. "pool.devops.test"
 
-```bash
+```
 >>> ssh jdow@pool.devops.test↵
 The authenticity of host 'pool.devops.test' (10.10.10.10)' can't be established.
 RSA key fingerprint is 96:15:0e:e7:70:09:60:9a:c4:f6:89:05:be:ed:be:c6.
@@ -39,7 +39,7 @@ jdow@node1: exit↵
 * The system will ask you to accept the remote computer into the list of known hosts
 * Make sure fingerprint is trustworthy before accepting
 * Type in your password before you can login
-* Use `exit` to logout from the remote computer and end the ssh session
+* Use `exit` to logout from the remote computer and end the SSH session
 
 ## Public-Key Authentication
 
@@ -59,7 +59,7 @@ ssh-keygen -q -f ~/.ssh/id_rsa -t rsa
 ssh-keygen -f ~/.ssh/id_rsa -p
 ```
 
-**Extremely important that the privacy of the private key is guarded carefully!**
+**It is extremely important that the privacy of the private key is guarded carefully!**
 
 * **Encrypting the private key** with a passphrase
 * Users require the passphrase to use/decrypt the private key
@@ -71,7 +71,19 @@ SSH servers grant access based on **authorized keys**
 * Server marks the key as authorized in its `authorized_keys` file
 
 ```bash
-ssh-copy-id jdoe@pool.devops.test:
+# copy a public key to a remove server
+ssh-copy-id jdow@pool.devops.test:
+```
+
+Alternativly:
+
+```bash
+# copy the public key to a remove server
+scp ~/.ssh/id_rsa.pub jdow@pool.devops.test:/tmp
+# append the public key to the authorized_keys file
+cat /tmp/id_rsa.pub >> ~/.ssh/authorized_keys
+# make sure the file permissions are correct
+chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 ```
 
 ## SSH Agent
