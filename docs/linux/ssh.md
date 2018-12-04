@@ -22,10 +22,12 @@ sshfs               # mount remote file-systems over SSH
 ~/.ssh/config       # client configuration
 ```
 
-Establish a **remote connection** to a server `<user>@<server>`:
+### Remote Login
 
-* `<user>` is a login account name on the remote server, i.e. "jdow"
-* `<server>` is an IP address or domain name of the server to connect to, i.e. "pool.devops.test"
+Establish a remote connection to a server `<user>@<server>`:
+
+* `<user>` is a **login account** name on the remote server, i.e. "jdow"
+* `<server>` is an **IP address** or **hostname** of the server to connect to, i.e. "pool.devops.test"
 
 ```
 >>> ssh jdow@pool.devops.test↵
@@ -41,6 +43,26 @@ jdow@node1: exit↵
 * Make sure fingerprint is trustworthy before accepting
 * Type in your password before you can login
 * Use `exit` to logout from the remote computer and end the SSH session
+
+### Copy Files
+
+`scp` (secure copy) moves files across SSH connections:
+
+* Source and/or destination can be located on a remote computer
+* Option **`-r` copies recursively** all file in the directory tree
+
+```bash
+# copy files to a remote server
+scp -r /local/path/ jdow@pool.devops.test:remote/path/
+# copy files from a remote server
+scp -r jdow@pool.devops.test:remote/file/ /local/path
+```
+
+Transfer a signification amount of data by increasing the speed with an alternative encryption method:
+
+```bash
+scp -c blowfish -r jdow@pool.devops.test:/path/to/data/ /local/path/to/data
+```
 
 ## Public-Key Authentication
 
