@@ -15,6 +15,7 @@ rsync               # ^^ (delta sync.)
 ssh-keygen          # generate an ssh public/private key pair
 ssh-copy-id         # copy a public key to a server
 ssh-agent           # daemon temporarily storing the private key
+ssh-add             # add a private key to an SSH agent
 ssh-keyscan         # manage host fingerprints
 sshuttle            # private network tunnel over SSH
 sshfs               # mount remote file-systems over SSH
@@ -75,7 +76,7 @@ SSH servers grant access based on **authorized keys**
 ssh-copy-id jdow@pool.devops.test:
 ```
 
-Alternativly:
+Alternatively:
 
 ```bash
 # copy the public key to a remove server
@@ -88,35 +89,52 @@ chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 
 ## SSH Agent
 
-Usually users start an SSH agent the following way:
+The `ssh-agent` is used for SSH public key authentication:
 
-    » eval $(ssh-agent)
-    Agent pid 2157
-    » ssh-add ~/.ssh/id_rsa 
-    Enter passphrase for /home/jdoe/.ssh/id_rsa:
-    Identity added: /home/jdoe/.ssh/id_rsa (/home/jdoe/.ssh/id_rsa)
-    » ssh-add -l 
-    2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
-    4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:cd project/id_rsa (RSA)
+* Keeps track of user's identity keys and their passphrases
+* Many Linux distributions automatically start an ssh-agent on login
+* Keys are added to an running ssh-agent with `ssh-add`
 
-Keys are added with `ssh-add`. The script [ssh-agent-session][05] helps to use a single _ssh-agent_ session in multiple shells. 
+Start an SSH agent the following way:
+
+```bash
+>>> eval $(ssh-agent)
+Agent pid 2157
+# load an private key into the agent
+>>> ssh-add ~/.ssh/id_rsa 
+Enter passphrase for /home/jdow/.ssh/id_rsa:
+Identity added: /home/jdow/.ssh/id_rsa (/home/jdoe/.ssh/id_rsa)
+# list loaded private keys
+>>> ssh-add -l 
+2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
+4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:cd project/id_rsa (RSA)
+```
+
+
+The script [ssh-agent-session][05] helps to use a single _ssh-agent_ session in multiple shells. 
 It will start a new agent and store the connection information to `~/.ssh/agent-session`. 
 
-    » source ssh-agent-session
-    ssh-agent started, session in /home/jdoe/.ssh/agent-session
-    » ssh-add ~/.ssh/id_rsa 
-    […]
+```bash
+>>> source ssh-agent-session
+ssh-agent started, session in /home/jdow/.ssh/agent-session
+>>> ssh-add ~/.ssh/id_rsa 
+[…]
+```
 
 Another shell can bind to the same agent:
 
-    » source ssh-agent-session
-    ssh-agent running with process ID 19264
-    » ssh-add -l 
-    […]
+```bash
+>>> source ssh-agent-session
+ssh-agent running with process ID 19264
+>>> ssh-add -l 
+[…]
+```
 
 It is convenient to source this script within the shell profile, in order to bind all shells to a single _ssh-agent_ instance.
 
-    » echo "source /path/to/ssh-agent-session" >> ~/.zshrc
+```bash
+echo "source /path/to/ssh-agent-session" >> ~/.zshrc
+```
 
 ## ssh-fs
 
