@@ -12,17 +12,18 @@ SSH (Secure SHell) network protocol:
 * **Port forwarding**, arbitrary TCP sessions can be forwarded over an SSH connection
 
 ```bash
-ssh                 # login to a remote server
-scp                 # copy files from/to a remote server
-rsync               # ^^ (delta sync.)
-ssh-keygen          # generate an ssh public/private key pair
-ssh-copy-id         # copy a public key to a server
-ssh-agent           # daemon temporarily storing the private key
-ssh-add             # add a private key to an SSH agent
-ssh-keyscan         # manage host fingerprints
-sshuttle            # private network tunnel over SSH
-sshfs               # mount remote file-systems over SSH
-~/.ssh/config       # client configuration
+ssh                       # login to a remote server
+scp                       # copy files from/to a remote server
+rsync                     # ^^ (delta sync.)
+ssh-keygen                # generate an ssh public/private key pair
+ssh-copy-id               # copy a public key to a server
+ssh-agent                 # daemon temporarily storing the private key
+ssh-add                   # add a private key to an SSH agent
+ssh-keyscan               # manage host fingerprints
+sshuttle                  # private network tunnel over SSH
+sshfs                     # mount remote file-systems over SSH
+~/.ssh/config             # client configuration
+~/.ssh/authorized_keys    # authorized keys on a server
 ```
 
 SSH is not a true shell (command interpreter):
@@ -192,6 +193,36 @@ It is convenient to source this script within the shell profile, in order to bin
 ```bash
 echo "source /path/to/ssh-agent-session" >> ~/.zshrc
 ```
+
+
+## Fingerprints
+
+Used for **identification/verification of the host** connecting to:
+
+```bash
+/etc/ssh/ssh_host_*                     # host key pairs
+~/.ssh/known_hosts                      # verified host fingerprints on the client
+ssh-keygen -l -f <pubkey>               # get the fingerprint of a public key
+ssh-keygen -lv -f <pubkey>              # ^^ include identicon
+ssh -o VisualHostKey=yes ...            # show identicon at login
+# add fingerprint of a server host key to known hosts
+ssh-keyscan -H <hostname> >> ~/.ssh/known_hosts
+# genreate fingerprint DNS records on a host
+ssh-keygen -r `hostname`
+```
+
+* Fingerprint are based on the host public key
+* First client connection includes **server key discovery**
+  - Fingerprint presented to the user for verification
+  - Accepting a fingerprint adds it to the `~/.ssh/known_hosts` **known host file**
+* The client automatically checks the fingerprint each login, warns if it changes
+* Differing fingerprints (changed host key) indicate a potential man-in-the-middle attack
+* Visual fingerprint, **identicons** (generated icons, to recognize or distinguish textual information)
+
+Fingerprint verification (during server key discovery):
+
+* Published by host administrators (e.g. on an HTTPS server)
+* SSHFP (RFC4255) publishes fingerprints as DNS records
 
 ## ssh-fs
 
