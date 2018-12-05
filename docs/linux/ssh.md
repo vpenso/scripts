@@ -197,11 +197,11 @@ echo "source /path/to/ssh-agent-session" >> ~/.zshrc
 
 ## Fingerprints
 
-Used for **identification/verification of the host** connecting to:
+Used for **identification/verification of the host**:
 
 ```bash
 /etc/ssh/ssh_host_*                     # host key pairs
-~/.ssh/known_hosts                      # verified host fingerprints on the client
+~/.ssh/known_hosts                      # accepted host fingerprints on the client
 ssh-keygen -l -f <pubkey>               # get the fingerprint of a public key
 ssh-keygen -lv -f <pubkey>              # ^^ include identicon
 ssh -o VisualHostKey=yes ...            # show identicon at login
@@ -215,14 +215,14 @@ ssh-keygen -r `hostname`
 * First client connection includes **server key discovery**
   - Fingerprint presented to the user for verification
   - Accepting a fingerprint adds it to the `~/.ssh/known_hosts` **known host file**
-* The client automatically checks the fingerprint each login, warns if it changes
+* Fingerprint **verification methods**:
+  - Published by host administrators (e.g. on an HTTPS server)
+  - SSHFP (RFC4255) publishes fingerprints as DNS records
+* The client automatically checks the fingerprint each login, and warns eventually
 * Differing fingerprints (changed host key) indicate a potential man-in-the-middle attack
 * Visual fingerprint, **identicons** (generated icons, to recognize or distinguish textual information)
 
-Fingerprint verification (during server key discovery):
-
-* Published by host administrators (e.g. on an HTTPS server)
-* SSHFP (RFC4255) publishes fingerprints as DNS records
+[ssh-known-hosts][04] adds, removes or updates a host fingerprint in `~/.ssh/known_hosts`
 
 ## ssh-fs
 
@@ -308,6 +308,7 @@ Limit tunneling to a range of IP addresses, or to exclude (option `-x range`) ce
     » ssh-tunnel co example.org 203.0.113.0/24
     » ssh-tunnel co example.org -x 192.0.2.0/24 -x 198.51.100.0/24 0/0
 
+[04]: ../../bin/ssh-known-hosts
 [05]: ../../bin/ssh-agent-session
 [06]: ../../bin/ssh-fs
 [10]: ../../bin/ssh-instance
