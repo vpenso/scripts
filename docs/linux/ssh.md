@@ -202,6 +202,7 @@ Used for **identification/verification of the host**:
 ```bash
 /etc/ssh/ssh_host_*                     # host key pairs
 ~/.ssh/known_hosts                      # accepted host fingerprints on the client
+ssh-keygen -H -F <host>                 # search for a host in known_hosts
 ssh-keygen -l -f <pubkey>               # get the fingerprint of a public key
 ssh-keygen -lv -f <pubkey>              # ^^ include identicon
 ssh -o VisualHostKey=yes ...            # show identicon at login
