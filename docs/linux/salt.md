@@ -29,6 +29,22 @@ Multiple execution methods:
 * "Dump" devices (salt-proxy)
 * Multiple masters (salt-syndic)
 
+Integration
+
+* VM/container orchestration [SaltVirt](https://docs.saltstack.com/en/latest/topics/virt/index.html#salt-virt-tutorial)
+  * LibVirt [Cloud Controller](https://docs.saltstack.com/en/latest/topics/tutorials/cloud_controller.html), modules [execution](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.virt.html), [runner](https://docs.saltstack.com/en/latest/ref/runners/all/salt.runners.virt.html)
+  * [LXC management](https://docs.saltstack.com/en/latest/topics/tutorials/cloud_controller.html)
+  * Docker modules [state](https://docs.saltstack.com/en/latest/ref/states/all/salt.states.docker.html), [execution](https://docs.saltstack.com/en/develop/ref/modules/all/salt.modules.docker.html)
+  * Provider interface [Salt Cloud](https://docs.saltstack.com/en/latest/topics/cloud/index.html)
+* [Network Automation](https://docs.saltstack.com/en/latest/topics/network_automation/index.html) with proxies:
+  - [netiko](https://docs.saltstack.com/en/develop/ref/proxy/all/salt.proxy.netmiko_px.html)
+  - [napalm](https://docs.saltstack.com/en/develop/ref/proxy/all/salt.proxy.napalm.html)
+  - [cisconso](https://docs.saltstack.com/en/develop/ref/proxy/all/salt.proxy.cisconso.html)
+* BMCs with [Proxy minion](https://docs.saltstack.com/en/latest/topics/proxyminion/index.html) or...
+  - IPMI [states](https://docs.saltstack.com/en/latest/ref/states/all/salt.states.ipmi.html), [execution module](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.ipmi.html)
+  - HP ILO [execution module](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.ilo.html)
+  - Dell DRAC [states](https://docs.saltstack.com/en/latest/ref/states/all/salt.states.drac.html), [execution module](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.drac.html), [runners](https://docs.saltstack.com/en/latest/ref/runners/all/salt.runners.drac.html)
+
 
 ## Master
 
