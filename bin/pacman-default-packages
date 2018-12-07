@@ -41,5 +41,6 @@ then
 		ttf-inconsolata \
 		vim \
                 vim-airline \
-		xclip
+		xclip \
+                zsh-completions
 fi
