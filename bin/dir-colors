@@ -7,10 +7,14 @@ function _error() {
 
 path=$HOME/.dir_colors
 
+# delete a file if it exists...
+[ -f $path ] && rm $path
+#...before createing a new directory
 mkdir $path 2>/dev/null
 
 cat > $path/rainbow <<EOF
 TERM screen-256color
+TERM xterm-256color
 RESET                 0
 FILE                  00;38;5;241
 DIR                   00;38;5;244
