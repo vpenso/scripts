@@ -7,7 +7,7 @@ SSH (Secure SHell) network protocol:
   * `ssh` (SSH client) connects to `sshd` on a remote server
 * Transparently **encrypted communication** (optionally compressed)
 * **Public key authentication** (optionally replacing password authentication)
-* Authentication of the server (making man-in-the-middle attack more difficult)
+* Authentication of the server (making man-in-the-middle attacks more difficult)
 * File transfer, the SSH protocol family includes two file transfer protocols.
 * **Port forwarding**, arbitrary TCP sessions can be forwarded over an SSH connection
 
@@ -63,21 +63,7 @@ The SSH **known hosts** prevents attacks based on subverting the naming services
 * At first connection a public counterpart of the host key gets stored on the client in the `~/.ssh/known_hosts` file
 * Each subsequent connection is authenticated using the server public key
 
-Lost, hanging SSH connections by an **escape sequence `~.`**. List of all available escapes with `~?`:
-
-```
-Supported escape sequences:
-  ~.  - terminate connection (and any multiplexed sessions)
-  ~B  - send a BREAK to the remote system
-  ~C  - open a command line
-  ~R  - Request rekey (SSH protocol 2 only)
-  ~^Z - suspend ssh
-  ~#  - list forwarded connections
-  ~&  - background ssh (when waiting for connections to terminate)
-  ~?  - this message
-  ~~  - send the escape character by typing it twice
-(Note that escapes are only recognized immediately after newline.)
-```
+Close hanging SSH connections using an **escape sequence `~.`**.
 
 ### Copy Files
 
@@ -129,7 +115,7 @@ SSH servers grant access based on **authorized keys**
 * Server marks the key as authorized in its `authorized_keys` file
 
 ```bash
-# copy a public key to a remove server
+# copy a public key to a remote server
 ssh-copy-id jdow@pool.devops.test:
 ```
 
@@ -225,38 +211,45 @@ ssh-keygen -r `hostname`
 
 [ssh-known-hosts][04] adds, removes or updates a host fingerprint in `~/.ssh/known_hosts`
 
-## ssh-fs
+## SSHFS
 
-Install _sshfs_ on Debian (>= 7):
+[SSHFS][sshfs] **mounts remote directories** over a SSH connection (implementation used [FUSE][libfuse] (Filesystem in Userspace))
 
-    » sudo apt-get install sshfs
-    » sudo adduser $USER fuse
-    » sudo tail -4 /etc/fuse.conf
-    # Allow non-root users to specify the 'allow_other' or 'allow_root'
-    # mount options.
-    #
-    user_allow_other
-    » sudo /etc/init.d/udev restart
+[sshfs]: https://github.com/libfuse/sshfs
+[libfuse]: https://github.com/libfuse/libfuse
 
-1. Install the `sshfs` package with APT.
-2. Add your user account to the group _fuse_.
-3. Uncomment `user_allow_other` in the file `/etc/fuse.conf`.
-4. Restart the udev mapper.
+```bash
+# install on CentOS (requries EPEL)
+yum install -y fuse-sshfs
+# install on Debian
+apt install -y sshfs
+# install on Arch
+pacman -S sshfs
+```
 
 Mount a directory from a remote host:
 
-    » sshfs [user@]host[:port] /mnt/path -C -o reconnect,auto_cache,follow_symlinks
-    » fusermount -u /mnt/pat
+```bash
+# mount a remote directory
+sshfs -C -o reconnect,auto_cache,follow_symlinks [user@]host[:port] /mnt/path 
+# unmount the remote directory
+fusermount -u /mnt/path
+```
 
-The script [ssh-fs][06] simplifies this process:
+[ssh-fs][06] is a script to simplifies this process:
 
-    » ssh-fs mount example.org:docs ~/docs
-    » ssh-fs mount jdoe@example.org:/data /data
-    » ssh-fs list 
-    example.org:docs on /home/jdoe/docs
-    example.org:/data on /data
-    » ssh-fs umount /data
-    » ssh-fs umount ~/docs
+```bash
+# mount remote directories
+>>> ssh-fs mount example.org:docs ~/docs
+>>> ssh-fs mount jdoe@example.org:/data /data
+# list mounted directories
+>>> ssh-fs list 
+example.org:docs on /home/jdoe/docs
+example.org:/data on /data
+# unmount remote directories
+>>> ssh-fs umount /data
+>>> ssh-fs umount ~/docs
+```
 
 ## ssh-instance
 
