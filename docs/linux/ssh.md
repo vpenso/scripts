@@ -254,17 +254,11 @@ example.org:/data on /data
 
 [sshuttle][sshuttle] is part **transparent proxy**, part **VPN** (Virtual Private Network), and part SSH:
 
-* Requires remote login over SSH to a node with Python installed (no need for a complicated pre-existing infrastructure)
-+ Needs root access on localhost to modify your system firewall to tunnel all traffic through a remote SSH connection
-* Supports **DNS tunneling** to use the DNS servers from the remote node 
-
-```bash
-# install on Debian
-apt install -y sshuttle
-```
-
 [sshuttle]: https://github.com/sshuttle/sshuttle
 
+* Requires remote login over SSH to a node with Python installed (no need for a complicated pre-existing infrastructure)
++ Needs root access on localhost to modify your system firewall to tunnel all traffic through a remote SSH connection
+* Supports **DNS tunneling** to use the DNS servers from the remote node
 
 Connect to a remote network (first the Sudo password is prompted, next the SSH login password):
 
@@ -285,7 +279,7 @@ The script ↴ [ssh-tunnel][15] simplifies this process:
 […]
 >>> ssh-tunnel connect jdoe@example.org
 local sudo] Password: 
-jdoe@example.org's password: 
+jdoe@example.org password: 
 Connected.
 […]
 >>> ssh-tunnel status
