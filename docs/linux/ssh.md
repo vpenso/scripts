@@ -85,7 +85,7 @@ Transfer a signification amount of data by increasing the speed with an alternat
 scp -c blowfish -r jdow@pool.devops.test:/path/to/data/ /local/path/to/data
 ```
 
-## Public-Key Authentication
+### Public-Key Authentication
 
 **SSH key** (asymmetric cryptography):
 
@@ -130,58 +130,7 @@ cat /tmp/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 ```
 
-## SSH Agent
-
-The `ssh-agent` is used for SSH public key authentication:
-
-* **Keeps track of user's identity keys and their passphrases**
-* Many Linux distributions automatically start an ssh-agent on login
-* Keys are added to an running ssh-agent with `ssh-add`
-
-Start an SSH agent the following way:
-
-```bash
->>> eval $(ssh-agent)
-Agent pid 2157
-# load an private key into the agent
->>> ssh-add ~/.ssh/id_rsa 
-Enter passphrase for /home/jdow/.ssh/id_rsa:
-Identity added: /home/jdow/.ssh/id_rsa (/home/jdoe/.ssh/id_rsa)
-# list loaded private keys
->>> ssh-add -l 
-2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
-4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:cd project/id_rsa (RSA)
-```
-
-
-The script [ssh-agent-session][05] helps to use a **single SSH agent session in multiple shells**.
-
-It will start a new agent and store the connection information to `~/.ssh/agent-session`. 
-
-```bash
->>> source ssh-agent-session
-ssh-agent started, session in /home/jdow/.ssh/agent-session
->>> ssh-add ~/.ssh/id_rsa 
-[…]
-```
-
-Another shell can bind to the same agent:
-
-```bash
->>> source ssh-agent-session
-ssh-agent running with process ID 19264
->>> ssh-add -l 
-[…]
-```
-
-It is convenient to source this script within the shell profile, in order to bind all shells to a single _ssh-agent_ instance.
-
-```bash
-echo "source /path/to/ssh-agent-session" >> ~/.zshrc
-```
-
-
-## Fingerprints
+### Fingerprints
 
 Used for **identification/verification of the host**:
 
@@ -209,11 +158,61 @@ ssh-keygen -r `hostname`
 * Differing fingerprints (changed host key) indicate a potential man-in-the-middle attack
 * Visual fingerprint, **identicons** (generated icons, to recognize or distinguish textual information)
 
-[ssh-known-hosts][04] adds, removes or updates a host fingerprint in `~/.ssh/known_hosts`
+The script ↴ [ssh-known-hosts][04] adds, removes or updates a host fingerprint in `~/.ssh/known_hosts`
+
+## SSH Agent
+
+The `ssh-agent` is used for SSH public key authentication:
+
+* **Keeps track of user's identity keys and their passphrases**
+* Many Linux distributions automatically start an ssh-agent on login
+* Keys are added to an running ssh-agent with `ssh-add`
+
+Start an SSH agent the following way:
+
+```bash
+>>> eval $(ssh-agent)
+Agent pid 2157
+# load an private key into the agent
+>>> ssh-add ~/.ssh/id_rsa 
+Enter passphrase for /home/jdow/.ssh/id_rsa:
+Identity added: /home/jdow/.ssh/id_rsa (/home/jdoe/.ssh/id_rsa)
+# list loaded private keys
+>>> ssh-add -l 
+2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
+4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:cd project/id_rsa (RSA)
+```
+
+
+The script ↴ [ssh-agent-session][05] helps to use a **single SSH agent session in multiple shells**.
+
+It will start a new agent and store the connection information to `~/.ssh/agent-session`. 
+
+```bash
+>>> source ssh-agent-session
+ssh-agent started, session in /home/jdow/.ssh/agent-session
+>>> ssh-add ~/.ssh/id_rsa 
+[…]
+```
+
+Another shell can bind to the same agent:
+
+```bash
+>>> source ssh-agent-session
+ssh-agent running with process ID 19264
+>>> ssh-add -l 
+[…]
+```
+
+It is convenient to source this script within the shell profile, in order to bind all shells to a single _ssh-agent_ instance.
+
+```bash
+echo "source /path/to/ssh-agent-session" >> ~/.zshrc
+```
 
 ## SSHFS
 
-[SSHFS][sshfs] **mounts remote directories** over a SSH connection (implementation used [FUSE][libfuse] (Filesystem in Userspace))
+The script ↴ [SSHFS][sshfs] **mounts remote directories** over a SSH connection (implementation used [FUSE][libfuse] (Filesystem in Userspace))
 
 [sshfs]: https://github.com/libfuse/sshfs
 [libfuse]: https://github.com/libfuse/libfuse
@@ -251,6 +250,58 @@ example.org:/data on /data
 >>> ssh-fs umount ~/docs
 ```
 
+## Sshuttle
+
+[sshuttle][sshuttle] is part **transparent proxy**, part **VPN** (Virtual Private Network), and part SSH:
+
+* Requires remote login over SSH to a node with Python installed (no need for a complicated pre-existing infrastructure)
++ Needs root access on localhost to modify your system firewall to tunnel all traffic through a remote SSH connection
+* Supports **DNS tunneling** to use the DNS servers from the remote node 
+
+```bash
+# install on Debian
+apt install -y sshuttle
+```
+
+[sshuttle]: https://github.com/sshuttle/sshuttle
+
+
+Connect to a remote network (first the Sudo password is prompted, next the SSH login password):
+
+```bash
+sshuttle --dns --remote [user@]host[:port] --daemon --pidfile=/tmp/sshuttle.pid 0/0
+```
+
+This will route all your traffic (including DNS requests) transparently through SSH. Disconnect with:
+
+```bash
+kill $(cat /tmp/sshuttle.pid)
+```
+
+The script ↴ [ssh-tunnel][15] simplifies this process:
+
+```bash
+>>> ssh-tunnel help
+[…]
+>>> ssh-tunnel connect jdoe@example.org
+local sudo] Password: 
+jdoe@example.org's password: 
+Connected.
+[…]
+>>> ssh-tunnel status
+Sshuttle running with PID 15083.
+>>> ssh-tunnel disconnect
+>>> ssh-tunnel status
+Sshuttle not connected.
+```
+
+Limit tunneling to a range of IP addresses, or to exclude (option `-x range`) certain IP ranges.
+
+```bash
+ssh-tunnel co example.org 203.0.113.0/24
+ssh-tunnel co example.org -x 192.0.2.0/24 -x 198.51.100.0/24 0/0
+```
+
 ## ssh-instance
 
 The script [ssh-instance][10] generates an `ssh_config` file used to address a specific host.
@@ -268,39 +319,6 @@ The script [ssh-instance][10] generates an `ssh_config` file used to address a s
     […]
 
 
-## ssh-tunnel
-
-On Debian (>= 7) and Ubuntu (>= 11.10) install _shuttle_ with:
-
-    » sudo apt-get install sshuttle
-
-Connect to a remote network is (first the Sudo password is prompted, next the SSH login password):
-
-    » sshuttle --dns --remote [user@]host[:port] --daemon --pidfile=/tmp/sshuttle.pid 0/0
-
-This will route all your traffic (including DNS requests) transparently through SSH. Disconnect with:
-
-    » kill $(cat /tmp/sshuttle.pid)
-
-The script [ssh-tunnel][15] simplifies this process:
-
-    » ssh-tunnel help
-    […]
-    » ssh-tunnel connect jdoe@example.org
-    [local sudo] Password: 
-    jdoe@example.org's password: 
-    Connected.
-    […]
-    » ssh-tunnel status
-    Sshuttle running with PID 15083.
-    » ssh-tunnel disconnect
-    » ssh-tunnel status
-    Sshuttle not connected.
-
-Limit tunneling to a range of IP addresses, or to exclude (option `-x range`) certain IP ranges.
-
-    » ssh-tunnel co example.org 203.0.113.0/24
-    » ssh-tunnel co example.org -x 192.0.2.0/24 -x 198.51.100.0/24 0/0
 
 [04]: ../../bin/ssh-known-hosts
 [05]: ../../bin/ssh-agent-session
