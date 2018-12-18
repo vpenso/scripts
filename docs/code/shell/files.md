@@ -51,12 +51,8 @@ Paths are constructed with the following notation:
 ./.<path>                # hide a path by prefixing it with a dot 
 ```
 
-**dotfile** treated as hidden, i.e. `~/.profile`:
 
-* File/directory name preceded by a dot `.`
-* Not displayed by default in a directory listing
-
-### ls/tree
+## ls/tree
 
 **`ls`** (list) show the contents of a directory-tree:
 
@@ -67,6 +63,11 @@ alias l='ls -1'                    # only names, one per line
 alias ll='ls -l'                   # long format
 alias l.='ls -lA -d .*'            # only hidden files
 ```
+
+**dotfile** treated as hidden, i.e. `~/.profile`:
+
+* File/directory name preceded by a dot `.`
+* Not displayed by default in a directory listing
 
 The **classify** option `-F` appends symbols to filenames:
 
@@ -112,6 +113,30 @@ alias tu='tree -pfughF --du'       # permissions, user, group, sizes
 alias el='exa -l --git'
 alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
+```
+
+### Naming Conventions
+
+* File names typically use **alphanumeric characters** (mostly lower case), underscores, hyphens and periods
+* **`-` or `_` separates logical words**, e.g. `this_is_a_file.txt` (note that `CamelCase` is normally not used)
+* Executables (including shell scripts) usually never have any type of extension
+* Files with a specific format use dot **`.` to separate the (file-type) extension**, e.g. `image.jpg`
+* Capitalized file names are used for high-lighting e.g. `README.md`
+* Following characters must be quoted if they are to represent themselves:
+  - `|&;<>()$\"'` as well as `␣⇥↵` space, tab and newline
+  - `*?[#~=%` depending on conditions
+  - Quoting mechanisms are the escape character `\`, single-quotes (literal value) and double-quotes (`$` variable expansion)
+
+```bash
+# examples on escaping files names
+>>> touch 'foo?bar' foo\ bar foo%bar foo~bar "foo*bar" foo\$\ bar
+# list file names with special characters
+>>> ls | grep -E '\s|\*|\?|\$|%'                                 
+foo bar
+foo?bar
+foo$ bar
+foo*bar
+foo%bar
 ```
 
 ## Commands
