@@ -107,7 +107,7 @@ alias t2='tree -L 2'               # max recursive depth of 2 levels
 alias tu='tree -pfughF --du'       # permissions, user, group, sizes 
 ```
 
-`[exa](https://the.exa.website/)` is a modern replacement for ls
+[`exa`](https://the.exa.website/) is a modern replacement for ls
 
 ```bash
 alias el='exa -l --git'
