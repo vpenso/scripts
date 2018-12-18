@@ -115,11 +115,11 @@ alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
 ```
 
-### Naming Conventions
+## Naming Conventions
 
 Naming files/directories:
 
-* File names typically use `A–Za–z0–9._-` **alphanumeric characters** (mostly lower case), underscores, hyphens and periods
+* File names typically use `A–Za–z0–9._-` **alphanumeric characters** (mostly lower case), underscores, hyphens, periods
 * **`-` or `_` separates logical words**, e.g. `this_is_a_file.txt` (note that `CamelCase` is normally not used)
 * Executables (including shell scripts) usually never have any type of extension
 * Files with a specific format use dot **`.` to separate the** (file-type) **extension**, e.g. `image.jpg`
