@@ -2,14 +2,9 @@
 
 ```bash
 nmcli radio wifi on|off       # toggle Wifi with NetworkManager
-```
-
-Identify the wireless driver (Linux kernel module):
-
-```bash
-iw                             # show wireless device configuration
-lshw -C network                
-lspci -nnk | grep -A2 0280     # use the PCI class code to find the wireless device
+iw list                       # show wireless device capabilities
+iw dev wlan0 scan             # scan for networks
+iw dev wlan0 link             # link connection status
 ```
 
 Configuration of the wireless driver (i.e. Intel ` iwlwifi`, broadcom `b43`)
