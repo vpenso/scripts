@@ -5,6 +5,7 @@ nmcli radio wifi on|off       # toggle Wifi with NetworkManager
 iw list                       # show wireless device capabilities
 iw dev wlan0 scan             # scan for networks
 iw dev wlan0 link             # link connection status
+ip link set wlan0 up          # bring the interface up 
 ```
 
 Configuration of the wireless driver (i.e. Intel ` iwlwifi`, broadcom `b43`)
@@ -22,9 +23,9 @@ systool -av -m M               # ^^
 # list access points SSISs
 iw dev wlan0 scan | grep -i ssid
 # generate connection configuration for SSID
-wpa_passphrase '<SSID>' >> /etc/wpa_supplicant.conf
-# connect with the access point
-wpa_supplicant -B -D <driver> -i wlan0 -c /etc/wpa_supplicant.conf
+wpa_passphrase '<SSID>' | tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+# reconfigure the WLAN interface
+wpa_cli -i wlan0 reconfigure
 ```
 
 ### rfkill
