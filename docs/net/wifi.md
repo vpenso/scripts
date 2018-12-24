@@ -19,6 +19,8 @@ systool -av -m M               # ^^
 
 ### WPA
 
+Connect to an encrypted (WEP, WPA, WPA2) wireless network with [wpa_supplicant][wpa]:
+
 ```bash
 # list access points SSISs
 iw dev wlan0 scan | grep -i ssid
@@ -27,6 +29,8 @@ wpa_passphrase '<SSID>' | tee -a /etc/wpa_supplicant/wpa_supplicant.conf
 # reconfigure the WLAN interface
 wpa_cli -i wlan0 reconfigure
 ```
+
+[wpa]: http://w1.fi/wpa_supplicant/
 
 ### rfkill
 
