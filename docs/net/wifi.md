@@ -16,6 +16,17 @@ systool -av -m M               # ^^
 /etc/modprobe.d/*.conf         # module specific configuration files
 ```
 
+### WPA
+
+```bash
+# list access points SSISs
+iw dev wlan0 scan | grep -i ssid
+# generate connection configuration for SSID
+wpa_passphrase '<SSID>' >> /etc/wpa_supplicant.conf
+# connect with the access point
+wpa_supplicant -B -D <driver> -i wlan0 -c /etc/wpa_supplicant.conf
+```
+
 ### rfkill
 
 The rfkill subsystem registers devices capable of transmitting RF (WiFi, Bluetooth, GPS, FM, NFC)
