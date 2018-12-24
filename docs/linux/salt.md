@@ -45,6 +45,18 @@ Integration
   - HP ILO [execution module](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.ilo.html)
   - Dell DRAC [states](https://docs.saltstack.com/en/latest/ref/states/all/salt.states.drac.html), [execution module](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.drac.html), [runners](https://docs.saltstack.com/en/latest/ref/runners/all/salt.runners.drac.html)
 
+## Install
+
+<https://repo.saltstack.com/>
+
+The latest release:
+
+```bash
+echo 'deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main' > /etc/apt/sources.list.d/saltstack.list
+wget -O - https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add -
+apt update && apt install slat-minion
+```
+
 
 ## Master
 

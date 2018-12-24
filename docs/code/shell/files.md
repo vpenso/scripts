@@ -51,12 +51,8 @@ Paths are constructed with the following notation:
 ./.<path>                # hide a path by prefixing it with a dot 
 ```
 
-**dotfile** treated as hidden, i.e. `~/.profile`:
 
-* File/directory name preceded by a dot `.`
-* Not displayed by default in a directory listing
-
-### ls/tree
+## ls/tree
 
 **`ls`** (list) show the contents of a directory-tree:
 
@@ -67,6 +63,11 @@ alias l='ls -1'                    # only names, one per line
 alias ll='ls -l'                   # long format
 alias l.='ls -lA -d .*'            # only hidden files
 ```
+
+**dotfile** treated as hidden, i.e. `~/.profile`:
+
+* File/directory name preceded by a dot `.`
+* Not displayed by default in a directory listing
 
 The **classify** option `-F` appends symbols to filenames:
 
@@ -106,7 +107,7 @@ alias t2='tree -L 2'               # max recursive depth of 2 levels
 alias tu='tree -pfughF --du'       # permissions, user, group, sizes 
 ```
 
-[exa](https://the.exa.website/) modern replacement for ls
+[`exa`](https://the.exa.website/) is a modern replacement for ls
 
 ```bash
 alias el='exa -l --git'
@@ -114,52 +115,32 @@ alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
 ```
 
-## Commands
+## Naming Conventions
 
-Navigate the directory tree:
+Naming files/directories:
 
-```bash
-pwd                  # print working directory
-cd <path>            # change to specified directory
-cd                   # no path argument changes to the home directory of the login user
-cd -                 # change to previous directory
-pushd                # push directory to stack
-popd                 # remove directory from stack
-dirs                 # list directory stack
-cd ~<n>              # change to nth diretory from stack
-touch <path>         # create an empty file with specifed path and name
-```
-
-
-Manipulating files & directories:
+* File names typically use `A–Za–z0–9._-` **alphanumeric characters** (mostly lower case), underscores, hyphens, periods
+* **`-` or `_` separates logical words**, e.g. `this_is_a_file.txt` (note that `CamelCase` is normally not used)
+* Executables (including shell scripts) usually never have any type of extension
+* Files with a specific format use dot **`.` to separate the** (file-type) **extension**, e.g. `image.jpg`
+  - Identifier specified as a suffix to the name
+  - Indicates a characteristic of the file contents or its intended use
+* Capitalized file names are used for high-lighting e.g. `README.md`
+* Following characters must be quoted if they are to represent themselves:
+  - `|&;<>()$\"'` as well as `␣⇥↵` space, tab and newline
+  - `*?[#~=%` depending on conditions
+  - Quoting mechanisms are the escape character `\`, single-quotes (literal value) and double-quotes (`$` variable expansion)
 
 ```bash
-rm <path>            # delete a file (permanently)
-rm -r <path>         # remove a directory and all its content (recursive decent)
-mkdir <path>         # create an (new) empty directory in the tree
-mkdir -p <path>      # ^^ recursive create of a new directory (missing parents included)
-rmdir <path>         # remove a directory if it is empty
-cp <path> <path>     # copy a file
-cp -R <path> <path>  # copy a directory
-mv <path> <path>     # move a file/directory
-rename <path>        # rename multiple files according to pattern
-ln -s <path> <link>  # create a symbolic link
-```
-
-Work with files: 
-
-```bash
-file              # determine file type
-stat              # display file status
-cat               # print file content
-head              # show the beginning of a file
-tail              # show the end of a file
-less              # pager for files
-pg                # ^^
-more              # ^^
-wc                # count line/chars in a file
-touch             # create empty file, change timestamp 
-nl                # number lines of a file
+# examples on escaping files names
+>>> touch 'foo?bar' foo\ bar foo%bar foo~bar "foo*bar" foo\$\ bar
+# list file names with special characters
+>>> ls | grep -E '\s|\*|\?|\$|%'
+foo bar
+foo?bar
+foo$ bar
+foo*bar
+foo%bar
 ```
 
 ## Permissions
@@ -255,13 +236,63 @@ chmod 4755                # setuid
 chmod 2755                # setgid
 ```
 
-
-
 ### ACL
 
 ```
 getfacl           # show ACL permissions
 setfacl           # modify ACL permissions
+```
+
+
+
+
+
+# Commands
+
+Navigate the directory tree:
+
+```bash
+pwd                  # print working directory
+cd <path>            # change to specified directory
+cd                   # no path argument changes to the home directory of the login user
+cd -                 # change to previous directory
+pushd                # push directory to stack
+popd                 # remove directory from stack
+dirs                 # list directory stack
+cd ~<n>              # change to nth diretory from stack
+touch <path>         # create an empty file with specifed path and name
+```
+
+
+Manipulating files & directories:
+
+```bash
+rm <path>            # delete a file (permanently)
+rm -r <path>         # remove a directory and all its content (recursive decent)
+mkdir <path>         # create an (new) empty directory in the tree
+mkdir -p <path>      # ^^ recursive create of a new directory (missing parents included)
+rmdir <path>         # remove a directory if it is empty
+cp <path> <path>     # copy a file
+cp -R <path> <path>  # copy a directory
+mv <path> <path>     # move a file/directory
+rename <path>        # rename multiple files according to pattern
+ln -s <path> <link>  # create a symbolic link
+```
+
+Work with files: 
+
+```bash
+file              # determine file type
+stat              # display file status
+cat               # print file content
+head              # show the beginning of a file
+tail              # show the end of a file
+less              # pager for files
+pg                # ^^
+more              # ^^
+wc                # count line/chars in a file
+touch             # create empty file, change timestamp 
+nl                # number lines of a file
 ```
 
 ## Find
