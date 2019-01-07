@@ -2,14 +2,10 @@
 
 ```bash
 nmcli radio wifi on|off       # toggle Wifi with NetworkManager
-```
-
-Identify the wireless driver (Linux kernel module):
-
-```bash
-iw                             # show wireless device configuration
-lshw -C network                
-lspci -nnk | grep -A2 0280     # use the PCI class code to find the wireless device
+iw list                       # show wireless device capabilities
+iw dev wlan0 scan             # scan for networks
+iw dev wlan0 link             # link connection status
+ip link set wlan0 up          # bring the interface up 
 ```
 
 Configuration of the wireless driver (i.e. Intel ` iwlwifi`, broadcom `b43`)
@@ -20,6 +16,21 @@ systool -av -m M               # ^^
 /proc/cmdline                  # arguments from the kernel (on boot)
 /etc/modprobe.d/*.conf         # module specific configuration files
 ```
+
+### WPA
+
+Connect to an encrypted (WEP, WPA, WPA2) wireless network with [wpa_supplicant][wpa]:
+
+```bash
+# list access points SSISs
+iw dev wlan0 scan | grep -i ssid
+# generate connection configuration for SSID
+wpa_passphrase '<SSID>' | tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+# reconfigure the WLAN interface
+wpa_cli -i wlan0 reconfigure
+```
+
+[wpa]: http://w1.fi/wpa_supplicant/
 
 ### rfkill
 
