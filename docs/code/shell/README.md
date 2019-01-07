@@ -1,8 +1,12 @@
+# Shell
 
-The **console** on a modern computer is typically the monitor:
+A shell is the program which actually **processes commands** and **returns output**.
 
-* Receives messages from the kernel regarding booting and shutdown progress
-* Is is possible to redirect messages fromthe console to a terminal
+* **Terminal** - Wrapper program which runs a shell
+* **Console** - Special terminal, on a modern computer typically the monitor
+  - Receives messages from the kernel regarding booting and shutdown progress
+  - Modern Linux systems provide **virtual consoles**
+  - Access with a key combination including function keys (e.g. Ctrl+Alt+F2)
 
 ## Terminals
 
