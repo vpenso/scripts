@@ -4,7 +4,7 @@
 
 * Long **lasting knowledge** unlike many other computer skills
 * Powerful **expressive** way of communicating with a computer
-* Complete **control** over the operating system components and their operation
+* Complete (technically advanced) **control** over the system components
 * Facilitates **automation** for time consuming repetitive tasks
 * **Diversity** of tooling and interfaces (makes difficult tasks possible)
 * Improves **productivity** with increased proficiency
@@ -12,7 +12,7 @@
 A [shell][sh] is a user-interface for access to an operating-system:
 
 * Shells fall into one of two categories – command-line and graphical
-* Usually refers to a text interface called **command-line interpreter** (CLI) (e.g. [bash][bs], [zsh][zh])
+* Usually refers to a text interface called [command-line interpreter][cli] (CLI) (e.g. [bash][bs], [zsh][zh])
 * A (text) **terminal** is a wrapper program which runs a shell (typically synonymous with a shell)
 
 ## Terminal
@@ -45,6 +45,20 @@ reset                       # init terminal
 ```
 
 ## Command Interpreters
+
+Anatomy of a command-line:
+
+* The **prompt** indicate readiness to accept command input by the user
+  - Literally prompts the user to take action
+  - Customizable, may include information like user/hostname, working directory, etc. 
+* **Commands** are a large vocabulary of instructions and queries:
+  - Internal - recognized and processed by the command line interpreter itself
+  - Included - separate executable file part of the operating system
+  - External - executable files added by other parties for specific purposes and applications
+* **Parameters** are required and/or optional arguments/options to commands:
+  - **Arguments** are positional inputs to the command
+  - **Options** (flags/switches) modify the operation of a command
+* Delimiters between command line elements are whitespace characters and the end-of-line delimiter
 
 Two modes of operations:
 
@@ -97,6 +111,7 @@ Cursor movement, cf. `man readline`:
 
 [bs]: https://en.m.wikipedia.org/wiki/Bash_(Unix_shell)
 [cc]: https://en.m.wikipedia.org/wiki/Control_character
+[cl]: https://en.m.wikipedia.org/wiki/Command-line_interface
 [es]: https://en.m.wikipedia.org/wiki/Escape_sequence
 [sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
 [tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
