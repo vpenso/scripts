@@ -12,8 +12,13 @@
 A [shell][sh] is a user-interface for access to an operating-system:
 
 * Shells fall into one of two categories – command-line and graphical
-* Usually refers to a text interface called [command-line interpreter][cli] (CLI) (e.g. [bash][bs], [zsh][zh])
+* Usually refers to a text interface called [command-line interpreter][cl] (CLI) (e.g. [bash][bs], [zsh][zh])
 * A (text) **terminal** is a wrapper program which runs a shell (typically synonymous with a shell)
+
+[bs]: https://en.m.wikipedia.org/wiki/Bash_(Unix_shell)
+[cl]: https://en.m.wikipedia.org/wiki/Command-line_interface
+[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
+[zh]: https://en.m.wikipedia.org/wiki/Z_shell
 
 ## Command Interpreters
 
@@ -42,17 +47,24 @@ Two modes of operations:
 
 ### Cursor
 
+A text [cursor][cu] (aka caret) indicates the current position for user interaction:
+
+* Typically an underscore or solid rectangle or vertical line, flashing or steady
+* Indicates the **insertion point** in text mode
+* The cursor can be moved by pressing various keys (arrows, page up/down, home/end key, etc.)
+
 Cursor movement, cf. `man readline`:
 
-    tab            command line completion
-    ctrl-r         search command history
-    ctrl-l         clear screen
-    ctrl-w         delete last word
-    alt-b|f        move by word
-    ctrl-u|k       delete until start/end of line
-    ctrl-a|e       move cursor to beginning/end of line
-    ctrl-x ctrl-e  open command in editor
+    tab                   command line completion
+    ctrl-r                search command history
+    ctrl-l                clear screen
+    ctrl-w                delete last word
+    alt-b|f               move by word
+    ctrl-u|k              delete until start/end of line
+    ctrl-a|e              move cursor to beginning/end of line
+    ctrl-x ctrl-e         open command in editor
 
+[cu]: https://en.m.wikipedia.org/wiki/Cursor_(user_interface)
 
 ## Scripts
 
@@ -83,16 +95,16 @@ the `PATH` environment variable:
 #!/usr/bin/env bash
 ```
 
-[bs]: https://en.m.wikipedia.org/wiki/Bash_(Unix_shell)
-[cl]: https://en.m.wikipedia.org/wiki/Command-line_interface
-[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
-[zh]: https://en.m.wikipedia.org/wiki/Z_shell
 
 ## References
 
 File                 | Description
 ---------------------|----------------------------------------
-[term.md][tm]        | Text Terminals
+[files.md][fs]       | Files & directories, ls/tree, name conventions, permissions
+[history.md][hy]     | Access and manipulate the command history
+[term.md][tm]        | Text **terminals**, terminal emulators configuration & usage
 
 
+[fs]: files.md
+[hy]: history.md
 [tm]: term.md
