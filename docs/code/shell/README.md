@@ -86,14 +86,21 @@ Cursor movement, cf. `man readline`:
 Most executable programs support:
 
 * `-h`, `--help` options that displays a description of the command's supported syntax and options
-* **man page** (manual) with a detailed command documentation
+* `man` [man pages][mn] (manuals) with a detailed command documentation
+* `info` displays the official documentation format [textinfo][ti] of the GNU project
 
 ```bash
 type <command>                 # displays the kind of command the shell will execute
 which <command>                # determine the exact location of a given executable
 man <command>                  # man page for a given command
+info <command>                 # documentation of the GNU project
+whatis <command>               # display one-line manual page descriptions                        
+apropos <keyword>              # search for commands by keyword
 ## bash builtin help
 help                           # list of builtin commands
 help -m <command>              # help for a specific builtin command
 ```
+
+[mn]: https://en.m.wikipedia.org/wiki/Man_page
+[ti]: https://www.gnu.org/software/texinfo/
 
