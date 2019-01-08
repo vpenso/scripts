@@ -5,13 +5,15 @@ File                 | Description
 ---------------------|----------------------------------------
 [files.md][fs]       | Files & directories, ls/tree, name conventions, permissions
 [history.md][hy]     | Access and manipulate the command history
-[scripts.md][sc]     | Shell scripts...
 [term.md][tm]        | Text **terminals**, terminal emulators configuration & usage
+[text.md][tx]        | Work with plain text, encoding, non-printable chars, etc.
+[scripts.md][sc]     | Shell scripts...
 
 [fs]: files.md
 [hy]: history.md
 [sc]: scripts.md
 [tm]: term.md
+[tx]: text.md
 
 # Shell
 
