@@ -13,35 +13,29 @@ A [shell][sh] is a user-interface for access to an operating-system:
 
 * Shells fall into one of two categories – command-line and graphical
 * Usually refers to a text interface called **command-line interpreter** (CLI) (e.g. [bash][bs], [zsh][zh])
-* A (text) **terminal**  is a wrapper program which runs a shell (typically synonymous with a shell)
-  - Historically an [electromechanical hardware device][tm] (e.g. keyboard/screen) for display and input of data
-  - [Terminal emulators][te] mimic a hardware (video) terminal in software
-* A **console** is a special terminal (on a modern computer typically the monitor)
-  - Receives messages from the kernel regarding booting and shutdown progress
-  - Modern Linux systems provide **virtual consoles**
+* A (text) **terminal** is a wrapper program which runs a shell (typically synonymous with a shell)
+
+## Terminal
+
+Text terminals is a serial computer interface for text entry and display:
+
+* Historically [keyboard/screen][tm] for display and input of data on a remote computer (central mainframe)
+* [Terminal emulators][te] mimic a hardware (video) terminal in software
+* A system **console** is a special terminal (on modern computers a directly connected monitor/keyboard)
+  - Receives messages from the OS regarding booting/shutdown progress
+  - Modern Linux systems support **virtual consoles** to provide several text terminals on a single computer
   - Access with a key combination including function keys (e.g. Ctrl+Alt+F2)
-
-[bs]: https://en.m.wikipedia.org/wiki/Bash_(Unix_shell)
-[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
-[tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
-[te]: https://en.wikipedia.org/wiki/Terminal_emulator
-[zh]: https://en.m.wikipedia.org/wiki/Z_shell
-
-
-### Terminal
-
-Terminal devices
-
-* `/dev/tty[0-9]` (teletypes, cf. manual `tty`)
-* `/dev/ttyS[0-9]` (serial port terminals)
-* `/dev/pts/[0-9]` (pseudo terminals)
-  - Virtual terminal connected to a terminal program i.e. `xterm`
-  - Cf. `pty` (pseudo-tty driver) manual
-* `getty` program watching a physical terminal (tty) port
+* [Control characters][cc] display control codes like line-feed, backspace, etc.
+* [Escape sequences][es], series of characters that give commands to the terminal
+  - User for cursor movement, colors, etc.
+  - Consists of the ESC control character followed by a sequence of ordinary characters
 
 ```bash
+/dev/tty[0-9]               # teletypes, cf. man `tty`
+/dev/pts/[0-9]              # pseudo terminals, cf man `pty`
 tty                         # show assoc. pseudo terminal
 stty -a                     # show terminal settings
+getty                       # program watching a physical terminal (tty) port
 ps -a                       # list processes with attached terminals
 terminfo 
 termcap                     # terminal capability data base
@@ -50,14 +44,7 @@ tget
 reset                       # init terminal
 ```
 
-**Control characters** - Display control codes like line-feed, backspace, etc. 
-
-**Escape sequences** - Series of characters that give commands to the terminal
-
-* User for cursor movement, colors, etc.
-* Consists of the ESC control character followed by a sequence of ordinary characters
-
-### Bash
+## Bash
 
 * **Interactive**
   - Reads user input on a tty, enable users to enter/execute commands
@@ -99,5 +86,15 @@ Cursor movement, cf. `man readline`:
     ctrl-w         delete last word
     alt-b|f        move by word
     ctrl-u|k       delete until start/end of line
-    ctrl-a|e       move cursor to beginning/end of line         
+    ctrl-a|e       move cursor to beginning/end of line
     ctrl-x ctrl-e  open command in editor
+
+
+
+[bs]: https://en.m.wikipedia.org/wiki/Bash_(Unix_shell)
+[cc]: https://en.m.wikipedia.org/wiki/Control_character
+[es]: https://en.m.wikipedia.org/wiki/Escape_sequence
+[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
+[tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
+[te]: https://en.wikipedia.org/wiki/Terminal_emulator
+[zh]: https://en.m.wikipedia.org/wiki/Z_shell
