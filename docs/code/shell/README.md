@@ -44,7 +44,9 @@ tget
 reset                       # init terminal
 ```
 
-## Bash
+## Command Interpreters
+
+Two modes of operations:
 
 * **Interactive**
   - Reads user input on a tty, enable users to enter/execute commands
@@ -62,6 +64,8 @@ Executing a script:
 /bin/bash /path/to/script  # interpreter followed by the path to a script
 bash /path/to /script      # assumes bash is in PATH
 ```
+
+### Shebang
 
 The first line may indicate the script interpreter with a 
 `#!` (shabang), i.e. the absolute path to the interpreter

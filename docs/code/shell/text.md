@@ -1,3 +1,4 @@
+# Text
 
 Commands used to work with text (strings): 
 
