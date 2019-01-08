@@ -1,3 +1,6 @@
+
+Reference to other documents in this directory:
+
 File                 | Description
 ---------------------|----------------------------------------
 [files.md][fs]       | Files & directories, ls/tree, name conventions, permissions
@@ -7,6 +10,7 @@ File                 | Description
 
 [fs]: files.md
 [hy]: history.md
+[sc]: scripts.md
 [tm]: term.md
 
 # Shell
@@ -76,4 +80,20 @@ Cursor movement, cf. `man readline`:
     ctrl-x ctrl-e         open command in editor
 
 [cu]: https://en.m.wikipedia.org/wiki/Cursor_(user_interface)
+
+### Help
+
+Most executable programs support:
+
+* `-h`, `--help` options that displays a description of the command's supported syntax and options
+* **man page** (manual) with a detailed command documentation
+
+```bash
+type <command>                 # displays the kind of command the shell will execute
+which <command>                # determine the exact location of a given executable
+man <command>                  # man page for a given command
+## bash builtin help
+help                           # list of builtin commands
+help -m <command>              # help for a specific builtin command
+```
 
