@@ -1,14 +1,31 @@
 # Shell
 
-A shell is the program which actually **processes commands** and **returns output**.
+A [shell][sh] is a user-interface for access to an operating-system.
 
-* **Terminal** - Wrapper program which runs a shell
-* **Console** - Special terminal, on a modern computer typically the monitor
+* Shells fall into one of two categories – command-line and graphical
+* "Shell" typically refers to a text interfaces called **command-line interpreter** (CLI)
+* A (text) **terminal**  is a wrapper program which runs a shell (typically synonymous with a shell)
+  - Historically an [electromechanical hardware device][tm] (e.g. keyboard/screen) for display and input of data (on a mainframe computer)
+  - [Terminal emulators][te] mimic a hardware (video) terminal in software
+* A **console** is a special terminal (on a modern computer typically the monitor)
   - Receives messages from the kernel regarding booting and shutdown progress
   - Modern Linux systems provide **virtual consoles**
   - Access with a key combination including function keys (e.g. Ctrl+Alt+F2)
 
-## Terminals
+[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
+[tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
+[te]: https://en.wikipedia.org/wiki/Terminal_emulator
+
+**Why, learn it?**
+
+* Long **lasting knowledge** unlike many other application computer skills
+* Powerful **expressive** way of communicating with a computer
+* Complete **control** over the operating system components and their operation
+* Facilitates **automation** for time consuming repetitive tasks
+* **Diversity** of tooling and interfaces (makes difficult tasks possible)
+* Improves **productivity** with increased proficiency
+
+### Terminals
 
 Terminal devices
 
