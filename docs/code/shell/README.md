@@ -1,3 +1,14 @@
+File                 | Description
+---------------------|----------------------------------------
+[files.md][fs]       | Files & directories, ls/tree, name conventions, permissions
+[history.md][hy]     | Access and manipulate the command history
+[scripts.md][sc]     | Shell scripts...
+[term.md][tm]        | Text **terminals**, terminal emulators configuration & usage
+
+[fs]: files.md
+[hy]: history.md
+[tm]: term.md
+
 # Shell
 
 **Why, learn it?**
@@ -66,45 +77,3 @@ Cursor movement, cf. `man readline`:
 
 [cu]: https://en.m.wikipedia.org/wiki/Cursor_(user_interface)
 
-## Scripts
-
-If a script requires input from the users it is called **interactive script**.
-
-Executing a script:
-
-```bash
-/path/to/script            # (recommended) interpreted defined by shabang line
-/bin/bash /path/to/script  # interpreter followed by the path to a script
-bash /path/to /script      # assumes bash is in PATH
-```
-
-### Shebang
-
-The first line may indicate the script interpreter with a 
-`#!` (shabang), i.e. the absolute path to the interpreter
-executable:
-
-```bash
-#!/bin/bash
-```
-
-Execute a script file with the bash executable found in 
-the `PATH` environment variable:
-
-```bash
-#!/usr/bin/env bash
-```
-
-
-## References
-
-File                 | Description
----------------------|----------------------------------------
-[files.md][fs]       | Files & directories, ls/tree, name conventions, permissions
-[history.md][hy]     | Access and manipulate the command history
-[term.md][tm]        | Text **terminals**, terminal emulators configuration & usage
-
-
-[fs]: files.md
-[hy]: history.md
-[tm]: term.md
