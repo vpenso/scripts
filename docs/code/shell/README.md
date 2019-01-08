@@ -1,31 +1,34 @@
 # Shell
 
-A [shell][sh] is a user-interface for access to an operating-system.
-
-* Shells fall into one of two categories – command-line and graphical
-* "Shell" typically refers to a text interfaces called **command-line interpreter** (CLI)
-* A (text) **terminal**  is a wrapper program which runs a shell (typically synonymous with a shell)
-  - Historically an [electromechanical hardware device][tm] (e.g. keyboard/screen) for display and input of data (on a mainframe computer)
-  - [Terminal emulators][te] mimic a hardware (video) terminal in software
-* A **console** is a special terminal (on a modern computer typically the monitor)
-  - Receives messages from the kernel regarding booting and shutdown progress
-  - Modern Linux systems provide **virtual consoles**
-  - Access with a key combination including function keys (e.g. Ctrl+Alt+F2)
-
-[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
-[tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
-[te]: https://en.wikipedia.org/wiki/Terminal_emulator
-
 **Why, learn it?**
 
-* Long **lasting knowledge** unlike many other application computer skills
+* Long **lasting knowledge** unlike many other computer skills
 * Powerful **expressive** way of communicating with a computer
 * Complete **control** over the operating system components and their operation
 * Facilitates **automation** for time consuming repetitive tasks
 * **Diversity** of tooling and interfaces (makes difficult tasks possible)
 * Improves **productivity** with increased proficiency
 
-### Terminals
+A [shell][sh] is a user-interface for access to an operating-system:
+
+* Shells fall into one of two categories – command-line and graphical
+* Usually refers to a text interface called **command-line interpreter** (CLI) (e.g. [bash][bs], [zsh][zh])
+* A (text) **terminal**  is a wrapper program which runs a shell (typically synonymous with a shell)
+  - Historically an [electromechanical hardware device][tm] (e.g. keyboard/screen) for display and input of data
+  - [Terminal emulators][te] mimic a hardware (video) terminal in software
+* A **console** is a special terminal (on a modern computer typically the monitor)
+  - Receives messages from the kernel regarding booting and shutdown progress
+  - Modern Linux systems provide **virtual consoles**
+  - Access with a key combination including function keys (e.g. Ctrl+Alt+F2)
+
+[bs]: https://en.m.wikipedia.org/wiki/Bash_(Unix_shell)
+[sh]: https://en.m.wikipedia.org/wiki/Shell_(computing)
+[tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
+[te]: https://en.wikipedia.org/wiki/Terminal_emulator
+[zh]: https://en.m.wikipedia.org/wiki/Z_shell
+
+
+### Terminal
 
 Terminal devices
 
@@ -54,7 +57,7 @@ reset                       # init terminal
 * User for cursor movement, colors, etc.
 * Consists of the ESC control character followed by a sequence of ordinary characters
 
-## Shells
+### Bash
 
 * **Interactive**
   - Reads user input on a tty, enable users to enter/execute commands
