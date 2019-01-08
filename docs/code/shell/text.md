@@ -16,14 +16,50 @@ split                   # split files into pieces
 tac                     # concatenate and print files in reverse
 ```
 
-## Characters
+## Encoding
 
-[ASCII](https://en.wikipedia.org/wiki/ASCII) character encoding standard:
+[Code][co], system of rules to **convert information** (letters, words, sound, images) 
+into another form or representation for data transmissions/storage:
+
+* **Decoding** is the reverse process, converting code symbols back
+* [Character encodings][cc] are representations of textual data
+* Character encoding associated with a specific character set (collection or representable characters)
+
+[co]: https://en.m.wikipedia.org/wiki/Code
+[cc]: https://en.m.wikipedia.org/wiki/Character_encoding
+
+```bash
+locale                   # current language and encoding settings           
+localectl                # ^^with systemd tools
+file -bi <file>          # show file encoding
+# change encoding from ASCII to UTF-8
+iconv -f utf-8 -t ascii -o <out_file> <in_file>
+# change encoding from UTF-8 charset to ASCII, omit invalid characters
+iconv -c -f utf-8 -t ascii -o <out_file> <in_file>
+```
+
+### Standards
+
+[ASCII][ai], single byte encoding only using the bottom **7 bits**
 
 * ASCII order (ASCIIbetical)
   - Uppercase come before lowercase letters
   - Digits and many punctuation marks come before letters
 * First 32 codes (0–31 decimal) for **control characters**
+* Many 8-bit encodings which are supersets of ASCII
+
+[UTF-8][u8], general-purpose way of representing [Unicode][un] characters
+
+* Character encoded as sequence of 1-4 bytes (variable width character encoding)
+* Designed for backward **compatibility with ASCII** (valid ASCII text is valid UTF-8-encoded Unicode)
+* Unicode [code charts][uc]
+
+[ai]: https://en.m.wikipedia.org/wiki/ASCII
+[uc]: http://www.unicode.org/charts/
+[un]: https://en.m.wikipedia.org/wiki/Unicode
+[u8]: https://en.m.wikipedia.org/wiki/UTF-8 
+
+### Conversion
 
 Conventions to describe characters
 

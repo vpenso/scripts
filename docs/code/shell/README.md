@@ -8,7 +8,7 @@ File                 | Description
 [term.md][tm]        | Text terminals, terminal emulators configuration & usage
 [text.md][tx]        | Work with plain text, encoding, non-printable chars, etc.
 [scripts.md][sc]     | Shell scripts...
-[vars.md][va]        | Shell variables, subsitution, built-in variables, etc.
+[vars.md][va]        | Shell variables, subsitution, built-in variables, stings, environment variables etc.
 
 [fs]: files.md
 [hy]: history.md
