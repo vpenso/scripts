@@ -1,5 +1,36 @@
 
-# Markdown
+
+# Plain Text
+
+**Why Plain Text?**
+
+* Any computer can read plain text, **no proprietary software**
+* **Compatible with everything**: devices (mobile, PC), text editors, applications, etc.
+* **Sustainable over time**  since plain text documents have always been, and will always be, universally accessible
+* Enforces **simple organization** (accessibility) with files and directories
+* Favors content with **simple text structres** like headings, paragraphs, lists
+* **Prevents distraction** from tools like modern [WYSIWIG][wy] word processors
+* **Fast & productive** by focusing on the content
+
+[wy]: https://en.wikipedia.org/wiki/WYSIWYG
+
+## Todo.txt
+
+[Todo.txt][tx] is a task list format in plain text:
+
+    [(<priority>)] [<date>] [<due>] [@<context> ...] [+<project> ...] <description>  
+
+Fields:
+
+- priority: (optional) upper case character enclosed in parentheses
+- date: (optional) task creation date in the format `YYYY-MM-DD`
+- context: (optional) context preceded by an @, project preceded by a + 
+- description: task description
+- due: (optional) due date for the task in the format `due:YYYY-MM-DD`
+
+[tx]: http://todotxt.org/ 
+
+## Markdown
 
 Documents use [Markdown][1], specifically [GitHub Flavored Markdown][2]:
 
@@ -26,7 +57,7 @@ Documents use [Markdown][1], specifically [GitHub Flavored Markdown][2]:
   - [mdcut](https://github.com/lunaryorn/mdcat)
 * [dillinger](https://github.com/joemccann/dillinger) online editor
 
-### Pandoc
+## Pandoc
 
 Use [Pandoc][3] to generate HTML pages from Markdown with `pandoc-html-article`. Include a table of content and section numbering with `pandoc-html-book`. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 
 
