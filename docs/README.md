@@ -62,6 +62,7 @@ Alternatives are [ASCIIdoc][ad] or [Textile][tl]
   - [remark](https://github.com/gnab/remark)
   - [reveal](https://github.com/hakimel/reveal.js)
   - [cleaver](https://github.com/jdan/cleaver)
+  - [markdeck](https://github.com/arnehilmann/markdeck)
   - [marp](https://github.com/yhatt/marp/)
 * Command-line viewer:
   - [mdless](https://github.com/ttscoff/mdless)
