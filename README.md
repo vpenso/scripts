@@ -2,12 +2,13 @@
 
 Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell environment.
 
-* [bin/](bin/) – scripts for various purposes developed to make my life easier.
-* [docs/](docs/) – collects notes about work with It infrastructure 
+* [bin/](bin/) – Scripts for various purposes...
+* [docs/](docs/) – Notes about It technologies... 
+* [etc/](etc/) – Configuration files...
 
 ## License
 
-Copyright 2012-2016 Victor Penso
+Copyright 2012-2019 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public
