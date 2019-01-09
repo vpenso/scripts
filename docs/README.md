@@ -33,7 +33,7 @@ Fields:
 
 [tx]: http://todotxt.org/ 
 
-## Structures Text
+## [Documents][dc]
 
 **Documents in this repository use [Markdown][md]**, specifically [GitHub Flavored Markdown][gm]:
 
@@ -43,11 +43,14 @@ Fields:
 * **Flexible** selection of output formats including HTML, PDF, LateX, etc.
 * Standardization: RFC7763/7764, [CommonMark][cm]
 
+Alternatives are [ASCIIdoc][ad] or [Textile][tl]
 
-
+[ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
 [cm]: https://commonmark.org/
+[dc]: https://en.m.wikipedia.org/wiki/Document
 [gm]: https://help.github.com/categories/writing-on-github/
 [md]: https://en.m.wikipedia.org/wiki/Markdown
+[tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
 
 ### Ecosystem
 
