@@ -2,7 +2,7 @@
 
 # Plain Text
 
-**Why Plain Text?**
+**Why [Human-readable][hr] Plain Text?**
 
 * Any computer can read plain text, **no proprietary software**
 * **Compatible with everything**: devices (mobile, PC), text editors, applications, etc.
@@ -11,10 +11,13 @@
 * Favors content with **simple text structres** like headings, paragraphs, lists
 * **Prevents distraction** from tools like modern [WYSIWIG][wy] word processors
 * **Fast & productive** by focusing on the content
+* Enables **powerful text processing tools** available on the command-line (e.g. GNU [coreutils][cu])
 
+[hr]: https://en.m.wikipedia.org/wiki/Human-readable_medium
 [wy]: https://en.wikipedia.org/wiki/WYSIWYG
+[cu]: https://www.gnu.org/software/coreutils/manual/coreutils.html
 
-## Todo.txt
+## Todo List
 
 [Todo.txt][tx] is a task list format in plain text:
 
@@ -30,15 +33,21 @@ Fields:
 
 [tx]: http://todotxt.org/ 
 
-## Markdown
+## Structures Text
 
-Documents use [Markdown][1], specifically [GitHub Flavored Markdown][2]:
+**Documents in this repository use [Markdown][md]**, specifically [GitHub Flavored Markdown][gm]:
 
 * **Readable** text for humans (non detracting markup)
 * **Easy** minimal formatting instructions
 * **Portable** cross-platform documents, editable in any text-capable application
 * **Flexible** selection of output formats including HTML, PDF, LateX, etc.
-* Standardization: RFC7763/7764, [CommonMark](https://commonmark.org/) 
+* Standardization: RFC7763/7764, [CommonMark][cm]
+
+
+
+[cm]: https://commonmark.org/
+[gm]: https://help.github.com/categories/writing-on-github/
+[md]: https://en.m.wikipedia.org/wiki/Markdown
 
 ### Ecosystem
 
@@ -77,8 +86,6 @@ For example to generate an HTML page from a document in this directory:
 2. Load the `pandoc-html-*` aliases into your shell environment with → [source_me.sh][10].
 3. Generate an HTML page from a Markdown file.
 
-[1]: https://en.m.wikipedia.org/wiki/Markdown
-[2]: https://help.github.com/categories/writing-on-github/
 [3]: https://de.wikipedia.org/wiki/Pandoc 
 [4]: http://pandoc.org/installing.html
 [5]: https://en.wikipedia.org/wiki/Cascading_Style_Sheets
