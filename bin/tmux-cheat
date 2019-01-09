@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Action key is Ctrl-a
-Hold Shift to select text with mouse
+echo \
+"Hold Shift to select text with mouse.
 
     Ctrl-a ?       │ show key binding
     Ctrl-a -       │ new horizontal pane
@@ -16,28 +16,12 @@ Hold Shift to select text with mouse
     Ctrl-a d       │ detach from session (run tmux attach)
     Ctrl-a a       │ send prefix key to program in pane 
     Ctrl-a [       │ enter scroll mode (press q to exit) 
-    
-Shell key-binding
-
-    Ctrl-r         │ search command history 
-    Ctrl-p         │ last command
-    Ctrl-z         │ suspend process to background 
-    Ctrl-c         │ break current execution
-    Ctrl-t         │ transpose current character
-    Ctrl-a         │ cursor to beginning of line
-    Ctrl-e         │ cursor to end of line
-    Ctrl-l         │ clear screen
-    Ctrl-u         │ discard line
-    Ctrl-w         │ remove last word 
-    Ctrl-k         │ remove until end of line 
-    Ctrl-b         │ cursor one word left 
-    Ctrl-f         │ cursor one word right 
 
 Simultaneous keyboard input on all panes:
 
     Ctrl-a :setw synchronize-panes [on|off]
 
-Reload the configuration file
+Reload the configuration file.
 
     Ctrl-a :source-file ~/.tmux.conf
 "

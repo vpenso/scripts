@@ -76,14 +76,21 @@ A text [cursor][cu] (aka caret) indicates the current position for user interact
 
 Cursor movement, cf. `man readline`:
 
-    tab                   command line completion
-    ctrl-r                search command history
-    ctrl-l                clear screen
-    ctrl-w                delete last word
-    alt-b|f               move by word
-    ctrl-u|k              delete until start/end of line
-    ctrl-a|e              move cursor to beginning/end of line
-    ctrl-x ctrl-e         open command in editor
+
+    tab            │ command line completion
+    Ctrl-r         │ search command history
+    Ctrl-p         │ last command
+    Ctrl-z         │ suspend process to background
+    Ctrl-c         │ break current execution
+    Ctrl-t         │ transpose current character
+    Ctrl-a         │ cursor to beginning of line
+    Ctrl-e         │ cursor to end of line
+    Ctrl-l         │ clear screen
+    Ctrl-u         │ discard line
+    Ctrl-w         │ remove last word
+    Ctrl-k         │ remove until end of line
+    Ctrl-b         │ cursor one word left
+    Ctrl-f         │ cursor one word right
 
 [cu]: https://en.m.wikipedia.org/wiki/Cursor_(user_interface)
 

@@ -68,15 +68,9 @@ The **prefix key** is used to send commands into tmux, and is customized in the 
 set-option -g prefix C-a
 ```
 
-This sets the default leader prefix to `Ctrl-a`.
-
-Keys         | Description
--------------|-------------
-`Ctrl-a ?`   | Show key binding
-`Ctrl-a d`   | Detach from running sessions
-
-
+This sets the default leader prefix to `Ctrl-a`, cf. [etc/tmux.conf][tc].
 
 [tb]: https://leanpub.com/the-tao-of-tmux/read
 [tm]: https://manpages.debian.org/tmux
+[tc]: ../../../etc/tmux.conf
 
