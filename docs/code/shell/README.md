@@ -5,7 +5,7 @@ File                 | Description
 ---------------------|----------------------------------------
 [files.md][fs]       | Files & directories, ls/tree, name conventions, permissions
 [history.md][hy]     | Access and manipulate the command history
-[term.md][tm]        | Text terminals, terminal emulators configuration & usage
+[term.md][tm]        | Text terminals, terminal emulators, terminal multiplexers
 [text.md][tx]        | Work with plain text, encoding, non-printable chars, etc.
 [scripts.md][sc]     | Shell scripts...
 [stdio.md][io]       | stdin/stdout, pipes

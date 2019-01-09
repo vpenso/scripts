@@ -62,15 +62,22 @@ tmux list-sessions              # list running sessions
 tmux attach-session             # attach to running sessions
 ```
 
-The **prefix key** is used to send commands into tmux, and is customized in the configuration file, e.g.:
+The **prefix key** (default Ctrl-b) is used to send commands into tmux, and is customized in the configuration file, e.g.:
 
 ```
 set-option -g prefix C-a
 ```
 
-This sets the default leader prefix to `Ctrl-a`, cf. [etc/tmux.conf][tc].
+This sets the default leader prefix to **Ctrl-a**.
+
+File                       | Description
+---------------------------|------------------------------------------------
+[etc/tmux.conf][tc]        | Example tmux configuration file within this repository
+[bin/tmux-cheat][th]       | Print minimal tmux cheat sheet for above configuration
+
 
 [tb]: https://leanpub.com/the-tao-of-tmux/read
 [tm]: https://manpages.debian.org/tmux
 [tc]: ../../../etc/tmux.conf
+[th]: ../../../bin/tmux-cheat
 
