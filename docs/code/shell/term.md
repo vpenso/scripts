@@ -72,12 +72,14 @@ This sets the default leader prefix to **Ctrl-a**.
 
 File                       | Description
 ---------------------------|------------------------------------------------
+[var/aliases/tmux.sh][ta]  | Load custom tmux configuration from this repository
 [etc/tmux.conf][tc]        | Example tmux configuration file within this repository
 [bin/tmux-cheat][th]       | Print minimal tmux cheat sheet for above configuration
 
 
+[ta]: ../../../var/aliases/tmux.sh
 [tb]: https://leanpub.com/the-tao-of-tmux/read
-[tm]: https://manpages.debian.org/tmux
 [tc]: ../../../etc/tmux.conf
 [th]: ../../../bin/tmux-cheat
+[tm]: https://manpages.debian.org/tmux
 

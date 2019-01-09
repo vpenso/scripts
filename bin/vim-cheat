@@ -50,14 +50,14 @@ echo "
         Ctrl-v │ enter column selection mode
              I │ insert in front of cursor (Esc to apply to all lines)
              A │ ~ append after cursor
-      Ctrl-r\" │ paste from register
+       Ctrl-r\" │ paste from register
              c │ change selection (delete and switch to insert mode)
              r │ replace every charater in selections
              d │ delete selection
              o │ toggle cursor to opposite corner
- 
+
              SEARCH
- 
+
            f/F │ search char to the right/left (repeat ;/,)
            n/N │ find next/previous occurrence
              / │ search word in file 
@@ -74,17 +74,17 @@ echo "
 
            y/Y │ copy selection/line
            p/P │ paste after/below of before/above the cursor
-     \"+y/\"+p │ copy to/paste from clipboard
-      Ctrl-R\" │ paste from clipboard (and other registers)
-          \"\" │ default register
-           \"0 │ yank register
-         \"1-9 │ shifting delete registers
-         \"a-z │ user registers (A-Z to append onto register)
+       \"+y/\"+p │ copy to/paste from clipboard
+       Ctrl-R\" │ paste from clipboard (and other registers)
+            \"\" │ default register
+            \"0 │ yank register
+          \"1-9 │ shifting delete registers
+          \"a-z │ user registers (A-Z to append onto register)
       Ctrl-R / │ search pattern register
-           \": │ last command register
-           \"_ │ black hole register
-           \"% │ last file name register
-           \", │ last inserted text register
+            \": │ last command register
+            \"_ │ black hole register
+            \"% │ last file name register
+            \", │ last inserted text register
           :reg │ show content of all registers
 
             FOLDING
