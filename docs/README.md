@@ -3,7 +3,7 @@ Documents use [Markdown][1], specifically [GitHub Flavored Markdown][2]:
 * **Readable** text for humans (non detracting markup)
 * **Easy** minimal formatting instructions
 * **Portable** cross-platform documents, editable in any text-capable application
-* **Flexible** selection of output formats including HTML, PDFi, LateX, etc.
+* **Flexible** selection of output formats including HTML, PDF, LateX, etc.
 * Standardization: RFC7763/7764, [CommonMark](https://commonmark.org/) 
 
 ### Ecosystem
