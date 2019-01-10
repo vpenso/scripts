@@ -29,24 +29,24 @@ Version control systems differ in where the repository lives:
 * Enables to **review the history** of files
 * Allows **in-deeps comparison** between different versions of files
 
+
+# Git
+
+[Git][gi], distributed version control system, cf.:
+
+* [The Git Parable][gp]
+* [Git® Notes for Professionals book][gn]
+
+[gi]: https://git-scm.com/
+[gn]: https://goalkicker.com/GitBook/
+[gp]: http://tom.preston-werner.com/2009/05/19/the-git-parable.html
+
 **Why Using Git?**
 
 * **Free and open source** distributed version control system (no central server)
 * **Fast** since all operations performed locally
 * **Implicit backup** since multiple copies are stored in distributed locations
 * All data is store **cryptographicaly secured** (temper proof)
-
-# Git
-
-* **DAG** (Direct Acyclic Graph), each node represents a commit
-* **Commits**, immutable (can not be modified)
-  - identified by a unique SHA
-  - Child commits point to 1..N parent commits (typically 1 or 2)
-  - `HEAD` is the active commit, parent of the next commit
-* **Tags**, fixed pointer to a commit
-* **Branches**, floating pointer that move on commit
-  - Files in `.git/refs/heads` (local), `.git/refs/remotes` (remote)
-  - Contains the SHA of the commit it's pointing at
 
 ### Repository
 
@@ -69,6 +69,17 @@ git remote -v                            # list configured remote repositories
 ```
 
 ### Commit & Checkout
+
+
+[Commits][cm] **adds the latest changes to the repository**
+
+* **Immutable** (can not be modified)
+
+* identified by a unique SHA
+* Child commits point to 1..N parent commits (typically 1 or 2)
+* `HEAD` revision is the active commit, parent of the next commit
+
+[cm]: https://en.m.wikipedia.org/wiki/Commit_(version_control)
 
 Files have three states: 
 
@@ -113,6 +124,11 @@ GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'na
 
 ### Branch
 
+**Branches**, floating pointer that move on commit
+
+- Files in `.git/refs/heads` (local), `.git/refs/remotes` (remote)
+- Contains the SHA of the commit it's pointing at
+
 ```bach
 git clone -b <name> <url>                # clone a remote repository, checkout branch
 git pull --all                           # fetch all remote branches
@@ -127,6 +143,8 @@ git rebase <branch>                      # rebase HEAD onto branch
 
 
 ### Tags
+
+**Tags**, fixed pointer to a commit
 
 ```bash
 git ls-remote --tags <repo>              # list tags of remote repository
