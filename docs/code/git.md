@@ -5,7 +5,7 @@
 * Remembers the **history of files**, to enable access to older versions
 * Helps to coordinate and **share changes** among users (and locations)
 
-A [**repository**][rp] is the VCS data structure that stores data & metadata.
+A [**repository**][rp] (a database of changes) it the data structure that stores files with history and metadata.
 
 Version control systems differ in where the repository lives:
 
@@ -48,6 +48,63 @@ Version control systems differ in where the repository lives:
 * **Implicit backup** since multiple copies are stored in distributed locations
 * All data is store **cryptographicaly secured** (temper proof)
 
+TODO: content-addressable filesystem, DAG 
+
+### Commits
+
+[Commits][cm] **adds the latest changes to the repository**
+
+* Commits are identified by a **unique commit ID** and include:
+  - ID of the previous commit(s)
+  - Content, commit date & messages
+  - Committer's name and email address
+* Commits are **immutable** (can not be modified) afterwards (except HEAD)
+* Child commits point to 1..N parent commits (typically 1 or 2)
+* `HEAD` revision is the active commit, parent of the next commit
+* The [SHA-1 hash][ha]) commit id cryptographically secures the commit
+
+[cm]: https://en.m.wikipedia.org/wiki/Commit_(version_control)
+[ha]: https://en.m.wikipedia.org/wiki/Cryptographic_hash_function
+
+Files have three states: 
+
+* **Modified** - Changed file(s) in working directory, not committed to repository
+* **Staged** - Marked modified file(s), current version to be committed to repository 
+* **Committed** - Data is safely stored in your local repository
+
+States belong to one of the following three storage positions:
+
+* The **Working directory** (checkout) contains the editable copy of the repository
+* The **staging area** (index) holds all marked changes read to commit
+* The **git repository** `.git/` stores all files, meta-data
+
+The **basic workflow**:
+
+1. Modify a file from the working directory, check with `git status`
+2. Accept a change to the staging are by adding a file with  `git add`
+3. Perform a `git commit` that permanently stores files in staging to the repository
+
+```bash
+git status                               # state of files in the working directory
+git add <path>                           # add new/modified file to staging area
+git add .                                # add all current changes to staging area
+git diff                                 # show differences between working directory and staging area
+git diff --cached                        # show differences between HEAD and staging area
+git commit -m '<message>'                # commit files in staging area
+git commit -am '<message>'               # commit all local changes
+git commit --amend                       # change last commit
+git checkout                             # discard changes in working directory
+git checkout -- <file>                   # discard changes in file
+git checkout <commit> <file>             # checkout specific version of a file
+git reset HEAD <file>                    # discard file from staging ares
+git reset HEAD --                        # discard all changes in the staging area
+git reset --hard                         # discard uncommited changes
+git reset --hard <hash>                  # discard until specified commit
+git clean -f                             # recursivly remove file not in version control
+GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
+                                          # Set the commiter for a single commit
+```
+
 ### Repository
 
 ```bash
@@ -67,60 +124,6 @@ git show <name>                          # show remote commit history
 git remote add <name> <uri>              # configure a remote repository
 git remote -v                            # list configured remote repositories
 ```
-
-### Commit & Checkout
-
-
-[Commits][cm] **adds the latest changes to the repository**
-
-* **Immutable** (can not be modified)
-
-* identified by a unique SHA
-* Child commits point to 1..N parent commits (typically 1 or 2)
-* `HEAD` revision is the active commit, parent of the next commit
-
-[cm]: https://en.m.wikipedia.org/wiki/Commit_(version_control)
-
-Files have three states: 
-
-* **Modified** - Changed file(s) in working directory, not committed to repository
-* **Staged** - Marked modified file(s), current version to be committed to repository 
-* **Committed** - Data is safely stored in your local repository
-
-States belong to one of the following three storage positions:
-
-* The **Working directory** contains the editable copy of the repository
-* The **staging area** (index) holds all marked changes read to commit
-* The **git repository** `.git/` stores all files, meta-data
-
-The **basic workflow**:
-
-1. Modify a file from the working directory, check with `git status`
-2. Accept a change to the staging are by adding a file with  `git add`
-3. Perform a `git commit` that permanently stores files in staging to the repository
-
-```bash
-git status                               # state of repository
-git add <path>                           # add new/modified file to staging area
-git add .                                # add all current changes to staging area
-git diff                                 # show differences between working directory
-                                         # and staging area
-git diff --cached                        # show differences between HEAD and staging area
-git commit -m '<message>'                # commit files in staging area
-git commit -am '<message>'               # commit all local changes
-git commit --amend                       # change last commit
-git checkout                             # discard changes in working directory
-git checkout -- <file>                   # discard changes in file
-git checkout <commit> <file>             # checkout specific version of a file
-git reset HEAD <file>                    # discard file from staging ares
-git reset HEAD --                        # discard all changes in the staging area
-git reset --hard                         # discard uncommited changes
-git reset --hard <hash>                  # discard until specified commit
-git clean -f                             # recursivly remove file not in version control
-GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
-                                          # Set the commiter for a single commit
-```
-
 
 ### Branch
 
