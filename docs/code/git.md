@@ -24,17 +24,40 @@ Version control systems differ in where the repository lives:
 
 **Why Use Version Control?**
 
-* **Prevent deletion**, accidentally lose of data
-* Capability to **revert changes** in the code/information
-* Enables to **review the history** of the development
-* Allows **in-deeps comparison** between different version of code
+* **Prevent deletion**, accidentally lose of files
+* Capability to **revert changes** to files
+* Enables to **review the history** of files
+* Allows **in-deeps comparison** between different versions of files
 
-## Setup
+**Why Using Git?**
+
+* **Free and open source** distributed version control system (no central server)
+* **Fast** since all operations performed locally
+* **Implicit backup** since multiple copies are stored in distributed locations
+* All data is store **cryptographicaly secured** (temper proof)
+
+## Git
+
+* **DAG** (Direct Acyclic Graph), each node represents a commit
+* **Commits**, immutable (can not be modified)
+  - identified by a unique SHA
+  - Child commits point to 1..N parent commits (typically 1 or 2)
+  - `HEAD` is the active commit, parent of the next commit
+* **Tags**, fixed pointer to a commit
+* **Branches**, floating pointer that move on commit
+  - Files in `.git/refs/heads` (local), `.git/refs/remotes` (remote)
+  - Contains the SHA of the commit it's pointing at
+* **Staging area** (the index)
+  - Changes read to commit
+
+### Configuration
+
+Customize the user configuration:
 
 ```bash
+~/.gitconfig                                 # user configuration file
+~/.gitignore_global                          # rules for ignoring files in every Git repository
 git help config                              # configuration documentation
-git-default-config '<name>' <mail> <editor>
-~/.gitconfig                                 # user configuration
 git config --list                            # dump configuration
 git config --global <key> <value>            # set configuration
 git config --global alias.<abr> '<command>'  # set command alias
@@ -44,8 +67,13 @@ git config --global --unset http.proxy
 git config --global --unset https.proxy      # disable network proxy
 ```
 
+File                       | Description
+---------------------------|-----------------------------------------------------
+[git-default-config][gc]   | Example script dot deploy a custom user configuration
 
-## Usage
+[gc]: ../../bin/git-default-config
+
+### Repository
 
 ```bash
 git init                                 # initializes a new repository in $PWD
