@@ -1,3 +1,33 @@
+# Version Control
+
+**Version Control System** (VCS) (aka _source control_ or _revision control_):
+
+* Remembers the **history of files**, to enable access to older versions
+* Helps to coordinate and **share changes** among users (and locations)
+
+A [**repository**][rp] is the VCS data structure that stores data & metadata.
+
+Version control systems differ in where the repository lives:
+
+* **Distributed** (i.e. Git, Mercurial)
+  - File history in a hidden repository folder inside the working copy
+  - Checkouts, commits interact with the local repository folder
+  - Different copies of the repository synchronized by the version control software
+  - Typically repositories distributed with multiple public/private repositories
+* **Centralised** (i.e. CVS, Subversion)
+  - Dedicated central server, stores files' history and controls access
+  - Separate local working copy from the "master copy" on the server
+  - Working copy only stores the current versions (history in the server repository)
+  - Checkouts, commits require connection to the server
+
+[rp]: https://en.m.wikipedia.org/wiki/Repository_(version_control)
+
+**Why Use Version Control?**
+
+* **Prevent deletion**, accidentally lose of data
+* Capability to **revert changes** in the code/information
+* Enables to **review the history** of the development
+* Allows **in-deeps comparison** between different version of code
 
 ## Setup
 
@@ -39,9 +69,9 @@ git remote -v                            # list configured remote repositories
 
 Files have three states: 
 
-- "Committed": Data is safely stored in your local repository
-- "Modified": Changed file in working directory, not committed to repository
-- "Staged": Marked modified file in current version to be committed to repository 
+- **Committed** - Data is safely stored in your local repository
+- **Modified** - Changed file in working directory, not committed to repository
+- **Staged** - Marked modified file in current version to be committed to repository 
 
 ```bash
 git status                               # state of repository
