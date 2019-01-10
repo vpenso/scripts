@@ -7,6 +7,7 @@ File                 | Description
 [history.md][hy]     | Access and manipulate the command history
 [term.md][tm]        | Text terminals, terminal emulators, terminal multiplexers
 [text.md][tx]        | Work with plain text, encoding, non-printable chars, etc.
+[regex.md][rg]       | Regular expressions, grep...
 [scripts.md][sc]     | Shell scripts...
 [stdio.md][io]       | stdin/stdout, pipes
 [vars.md][va]        | Shell variables, subsitution, built-in variables, stings, environment variables etc.
@@ -14,6 +15,7 @@ File                 | Description
 [fs]: files.md
 [hy]: history.md
 [io]: stdio.md
+[rg]: regex.md
 [sc]: scripts.md
 [tm]: term.md
 [tx]: text.md
