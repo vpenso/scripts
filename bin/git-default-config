@@ -224,44 +224,4 @@ fi
 echo 'Writing configuration to ~.gitignore_global'
 echo "$_gitignore_global" > ~/.gitignore_global
 
-echo -n 'Create Email pre-commit hook (y/n)? '
-read ans
-[ "$ans" = "y" ] || exit 0
-
-pre_commit=$(cat <<EOF
-#!/bin/sh
-
-EMAIL=\$(git config user.email)
-
-if [ -z "\$EMAIL" ] 
-then 
-  # user.email is empty
-  echo "ERROR: [pre-commit hook] Aborting commit because user.email is missing. Configure user.email for this repository by running: '$ git config user.email name@example.com'. Make sure not to configure globally and use the correct email."
-  exit 1
-fi
-
-exec < /dev/tty
-
-ans=n
-# user.email is not empty
-echo -n "Continue with user.email \$EMAIL (y/n): "
-read ans
-
-if [ "\$ans" = "y" ]
-then  
-  exit 0
-else
-  exit 1
-fi
-
-exit 0
-EOF
-)
-
-mkdir -p ~/.git/templates/hooks
-hook=~/.git/templates/hooks/pre-commit
-echo "Write configration to ~/.git/templates/hooks/pre-commit"
-echo "$pre_commit" > ~/.git/templates/hooks/pre-commit
-chmod +x ~/.git/templates/hooks/pre-commit
-
 exit 0
