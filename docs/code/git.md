@@ -36,7 +36,7 @@ Version control systems differ in where the repository lives:
 * **Implicit backup** since multiple copies are stored in distributed locations
 * All data is store **cryptographicaly secured** (temper proof)
 
-## Git
+# Git
 
 * **DAG** (Direct Acyclic Graph), each node represents a commit
 * **Commits**, immutable (can not be modified)
@@ -47,31 +47,6 @@ Version control systems differ in where the repository lives:
 * **Branches**, floating pointer that move on commit
   - Files in `.git/refs/heads` (local), `.git/refs/remotes` (remote)
   - Contains the SHA of the commit it's pointing at
-* **Staging area** (the index)
-  - Changes read to commit
-
-### Configuration
-
-Customize the user configuration:
-
-```bash
-~/.gitconfig                                 # user configuration file
-~/.gitignore_global                          # rules for ignoring files in every Git repository
-git help config                              # configuration documentation
-git config --list                            # dump configuration
-git config --global <key> <value>            # set configuration
-git config --global alias.<abr> '<command>'  # set command alias
-git config --global http.proxy $proxy
-git config --global https.proxy $proxy       # use a network proxy
-git config --global --unset http.proxy
-git config --global --unset https.proxy      # disable network proxy
-```
-
-File                       | Description
----------------------------|-----------------------------------------------------
-[git-default-config][gc]   | Example script dot deploy a custom user configuration
-
-[gc]: ../../bin/git-default-config
 
 ### Repository
 
@@ -97,9 +72,21 @@ git remote -v                            # list configured remote repositories
 
 Files have three states: 
 
-- **Committed** - Data is safely stored in your local repository
-- **Modified** - Changed file in working directory, not committed to repository
-- **Staged** - Marked modified file in current version to be committed to repository 
+* **Modified** - Changed file(s) in working directory, not committed to repository
+* **Staged** - Marked modified file(s), current version to be committed to repository 
+* **Committed** - Data is safely stored in your local repository
+
+States belong to one of the following three storage positions:
+
+* The **Working directory** contains the editable copy of the repository
+* The **staging area** (index) holds all marked changes read to commit
+* The **git repository** `.git/` stores all files, meta-data
+
+The **basic workflow**:
+
+1. Modify a file from the working directory, check with `git status`
+2. Accept a change to the staging are by adding a file with  `git add`
+3. Perform a `git commit` that permanently stores files in staging to the repository
 
 ```bash
 git status                               # state of repository
@@ -123,13 +110,6 @@ GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'na
                                           # Set the commiter for a single commit
 ```
 
-Repository specific committer in at `.git/config` file:
-
-```
-[user]
-  name = devops
-  email = devops@devops.test
-```
 
 ### Branch
 
@@ -172,6 +152,37 @@ git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate -
 git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
                                           # list commt messages one by line
 git log --follow -p -- <file>             # follow changes to a single file
+```
+
+### Configuration
+
+Customize the user configuration:
+
+```bash
+~/.gitconfig                                 # user configuration file
+~/.gitignore_global                          # rules for ignoring files in every Git repository
+git help config                              # configuration documentation
+git config --list                            # dump configuration
+git config --global <key> <value>            # set configuration
+git config --global alias.<abr> '<command>'  # set command alias
+git config --global http.proxy $proxy
+git config --global https.proxy $proxy       # use a network proxy
+git config --global --unset http.proxy
+git config --global --unset https.proxy      # disable network proxy
+```
+
+File                       | Description
+---------------------------|-----------------------------------------------------
+[git-default-config][gc]   | Example script dot deploy a custom user configuration
+
+[gc]: ../../bin/git-default-config
+
+Repository specific committer in at `.git/config` file:
+
+```
+[user]
+  name = devops
+  email = devops@devops.test
 ```
 
 ## git-repos
