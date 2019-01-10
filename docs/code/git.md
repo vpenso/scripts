@@ -50,31 +50,31 @@ Version control systems differ in where the repository lives:
 
 TODO: content-addressable filesystem, DAG 
 
-### Commits
+## Commits
 
-[Commits][cm] **adds the latest changes to the repository**
+[Commit][cm] to **add the latest changes** to the repository:
 
-* Commits are identified by a **unique commit ID** and include:
+* Commits are identified by a **unique commit ID** and include
   - ID of the previous commit(s)
   - Content, commit date & messages
   - Committer's name and email address
 * Commits are **immutable** (can not be modified) afterwards (except HEAD)
-* Child commits point to 1..N parent commits (typically 1 or 2)
+* Child commits point to **1..N parent commits** (typically 1 or 2)
 * `HEAD` revision is the active commit, parent of the next commit
-* The [SHA-1 hash][ha]) commit id cryptographically secures the commit
+* The [SHA-1 hash][ha] commit id makes the commit **cryptographically secure**
 
 [cm]: https://en.m.wikipedia.org/wiki/Commit_(version_control)
 [ha]: https://en.m.wikipedia.org/wiki/Cryptographic_hash_function
 
-Files have three states: 
+**Files states** include the following three: 
 
 * **Modified** - Changed file(s) in working directory, not committed to repository
 * **Staged** - Marked modified file(s), current version to be committed to repository 
 * **Committed** - Data is safely stored in your local repository
 
-States belong to one of the following three storage positions:
+File states belong to one of the following three **storage positions**:
 
-* The **Working directory** (checkout) contains the editable copy of the repository
+* The **working directory** (checkout) contains the editable copy of the repository
 * The **staging area** (index) holds all marked changes read to commit
 * The **git repository** `.git/` stores all files, meta-data
 
@@ -83,6 +83,8 @@ The **basic workflow**:
 1. Modify a file from the working directory, check with `git status`
 2. Accept a change to the staging are by adding a file with  `git add`
 3. Perform a `git commit` that permanently stores files in staging to the repository
+
+List of commands to move files between staging and repository:
 
 ```bash
 git status                               # state of files in the working directory
@@ -101,11 +103,11 @@ git reset HEAD --                        # discard all changes in the staging ar
 git reset --hard                         # discard uncommited changes
 git reset --hard <hash>                  # discard until specified commit
 git clean -f                             # recursivly remove file not in version control
+# Set the committer name & email for a single commit
 GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
-                                          # Set the commiter for a single commit
 ```
 
-### Repository
+## Repository
 
 ```bash
 git init                                 # initializes a new repository in $PWD
@@ -125,7 +127,20 @@ git remote add <name> <uri>              # configure a remote repository
 git remote -v                            # list configured remote repositories
 ```
 
-### Branch
+## Logs
+
+```bash
+git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
+                                          # list files
+git log -1 --stat                         # show last commit
+git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
+                                          # show commits with a list of cahnges files
+git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
+                                          # list commt messages one by line
+git log --follow -p -- <file>             # follow changes to a single file
+```
+
+## Branch
 
 **Branches**, floating pointer that move on commit
 
@@ -145,7 +160,7 @@ git rebase <branch>                      # rebase HEAD onto branch
 ```
 
 
-### Tags
+## Tags
 
 **Tags**, fixed pointer to a commit
 
@@ -162,18 +177,6 @@ git push --tags <name>                   # push all local tags to remote reposit
 git tag -l | xargs git tag -d            # delete all local tags
 ```
 
-### Logs
-
-```bash
-git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
-                                          # list files
-git log -1 --stat                         # show last commit
-git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
-                                          # show commits with a list of cahnges files
-git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
-                                          # list commt messages one by line
-git log --follow -p -- <file>             # follow changes to a single file
-```
 
 ### Configuration
 
