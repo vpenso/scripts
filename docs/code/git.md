@@ -89,7 +89,7 @@ The **basic workflow**:
 List of commands to move files between staging and repository:
 
 ```bash
-git status                               # state of files in the working copy
+git status                               # state of files in the working tree
 git add <path>                           # add new/modified file to staging area
 git add .                                # add all current changes to staging area
 git diff                                 # show differences between working copt and staging area
@@ -97,7 +97,7 @@ git diff --cached                        # show differences between HEAD and sta
 git commit -m '<message>'                # commit files in staging area
 git commit -am '<message>'               # commit all local changes
 git commit --amend                       # change last commit
-git checkout                             # discard changes in working copy
+git checkout                             # discard changes in working tree
 git checkout -- <file>                   # discard changes in file
 git checkout <commit> <file>             # checkout specific version of a file
 git reset HEAD <file>                    # discard file from staging ares
@@ -111,34 +111,35 @@ GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'na
 
 ## Repository
 
-Git repository includes...
+A repository includes four kinds of objects:
 
-* Four kinds of objects: blob, tree, commit, tag
-* Collection of refs, branches and tags
-* A **ref** is a named mutable pointer to an object (usually a commit)
-* Automatically stores the [Directed Acyclic Graph][dag] (DAG) of objects rooted at these refs
+- A **blob** ([binary large object][blo]) is the content of a file
+- A **tree** object is the equivalent of a directory (cf. [Merkle tree][mkt])
+- A **commit** object links tree objects together into a history
+- A **tag** object is a container that contains a reference to another object
 
-[dag]: https://en.m.wikipedia.org/wiki/Directed_acyclic_graph
+[blo]: https://en.wikipedia.org/wiki/Binary_large_object
+[mkt]: https://en.wikipedia.org/wiki/Merkle_tree
+
 
 Every **working copy** has its own Git repository in the `.git` subdirectory:
 
 * With arbitrarily many branches and tags
 * Most important ref is `HEAD` (which refers to the current branch)
-* Stores the index (staging area) for changes on top of HEAD that will become part of the next commit
-* Files outside of `.git` are the working tree
-
+* Stores the index (staging area) for changes on top of **HEAD** that will become part of the next commit
+* Files outside of `.git` are called the **working tree**
 
 ```bash
-.git/                                    # meta-data and object database
+.git/                                    # git repository directory
 .git/config                              # configuration of the repository
-.gitignore                               # files to ignore in local repository
+.gitignore                               # files to ignore in the working tree
 ```
 
 ### Init & Clone
 
-Create `init` (initialize) a repository in `.git/`: 
+Create, `init` (initialize) a repository in `.git/`: 
 
-* A **bare** repositories (by definition) has no working copy attached
+* A **bare** repositories (by definition) has no working tree attached
 * It's conventional to give bare repositories the extension `.git`
 * Update a bare repository by pushing to it (using `git push`) from another repository
 
@@ -154,13 +155,12 @@ Copy, `clone` a repository from another location over HTTP, SSH, the Git
 protocol or another path to a local repository:
 
 ```
-# clone a remote repository and create a working copy
-git clone <uri> [<path>]
-# optionally provide the target directory
+# clone a remote repository and create a working copy, optionally provide the target directory
+git clone <uri> [<path>] 
 ```
 
-
 ### Push & Pull
+
 
 
 ```bash
@@ -174,7 +174,30 @@ git remote add <name> <uri>              # configure a remote repository
 git remote -v                            # list configured remote repositories
 ```
 
-## Logs
+## References
+
+A **reference** `ref` is a (named mutable) pointer to an object (usually a commit)
+
+* Git knows different types of references:
+  - **heads** refers to an object locally
+  - **remotes** refers to an object which exists in a remote repository
+  - **stash** refers to an object not yet committed
+  - **tags** referenc another object
+
+Automatically stores as [Directed Acyclic Graph][dag] (DAG) of objects
+
+[dag]: https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+Referring to objects:
+
+* Use its full SHA-1 commit ID e.g. `66f67970e73b5ad213d9bc69f7e6497b6bfc1b75`
+* Truncated commit id s long as it is unambiguous e.g. `66f6797`
+* You can refer to a branch or tag by name
+* Append a `^` to get the (first) parent, `^2` second parent, etc.
+* Append `:<path>` for a file or directory inside commit’s tree
+* Cf. `git help rev-parse`
+
+### Logs
 
 ```bash
 git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
@@ -187,7 +210,7 @@ git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s 
 git log --follow -p -- <file>             # follow changes to a single file
 ```
 
-## Branch
+### Branch
 
 **Branches**, floating pointer that move on commit
 
@@ -207,7 +230,7 @@ git rebase <branch>                      # rebase HEAD onto branch
 ```
 
 
-## Tags
+### Tags
 
 **Tags**, fixed pointer to a commit
 
@@ -225,7 +248,7 @@ git tag -l | xargs git tag -d            # delete all local tags
 ```
 
 
-### Configuration
+## Configuration
 
 Customize the user configuration:
 
