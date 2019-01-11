@@ -1,5 +1,3 @@
-# Version Control
-
 **Version Control System** (VCS) (aka _source control_ or _revision control_):
 
 * Remembers the **history of files**, to enable access to older versions
@@ -99,10 +97,8 @@ git mv <sfile> <dfile>                   # move a file in working tree, plut app
                                          # addtions/removals in the index
 git commit                               # make a commit out of the current index
 ```
-
-More sophisticated usage of the command above:
-
 ```bash
+# more sophisticated usage of the commands above
 git add .                                # add all current changes in working tree into the index
 git commit -m '<message>'                # commit files in staging area
 git commit -am '<message>'               # commit all local changes
@@ -146,10 +142,8 @@ git diff                                 # show difference between working tree 
 git diff --cached                        # show difference between HEAD and index
 git diff <commit>                        # show difference between commit and the working tree
 ```
-
-More sophisticated usage of the command above:
-
-```bash
+```
+# More sophisticated usage of the commands above:
 git log -1 --stat                         # show last commit
 git log --follow -p -- <file>             # follow changes to a single file
 ```
@@ -182,14 +176,15 @@ Every **working copy** has its own Git repository in the `.git` subdirectory:
 git ls-files --exclude-standard --ignored --others
 ```
 
-### Create A New Repository
+### Create New Repositories
 
-Create, `init` (initialize) a **new repository** in `.git/`: 
+Create, **`init` (initialize) a new repository** in `.git/`: 
 
 * Create an empty repository in the **current working directory**
 * By default it will have one **master branch**
 
-```
+```bash
+# initialize a new repository
 git init                                 
 ```
 
@@ -199,7 +194,8 @@ Repositories used for clone, push and pull usually are a **bare repository**:
 * It's conventional to give bare repositories the extension (suffix) `.git` (instead of `project/.git`)
 * Update a bare repository by pushing to it (using `git push`) from another repository
 
-```
+```bash
+# intialize a new repository without working tree
 git init --bare /path/to/project.git
 ```
 
@@ -211,22 +207,24 @@ Git allows bidirectional communication between any number of repositories:
 * Supports many protocols: SSH, HTTPS, DAV, Git protocol, Rsync, and a path to a local repository
 * Allows centralized and/or distributed development models
 
-Copy, `clone` a repository from another location:
+Copy, **`clone` a repository** from another location:
 
-```
+```bash
 # clone a remote repository and create a working copy, optionally provide the target directory
 git clone <url> [<path>] 
 ```
 
-Following syntax may be used for remote URLs:
+Following syntax references remote URLs and local paths:
 
 ```
+# remote
 ssh://[user@]host.xz[:port]/path/to/repo.git/
 git://host.xz[:port]/path/to/repo.git/
 http[s]://host.xz[:port]/path/to/repo.git/
 [user@]host.xz:/~[user]/path/to/repo.git/
-/path/to/repo.git/
+# local
 file:///path/to/repo.git/
+/path/to/repo.git/
 ```
 
 Remote repositories are configured in `.git/config` (cf. `git help git-config`):  
@@ -236,24 +234,38 @@ Remote repositories are configured in `.git/config` (cf. `git help git-config`):
   - Automatically create a **master branch** that tracks `origin/master`
 * Checkout of a local branch from a remote branch automatically creates a **tracking branch**
 
-```
+```bash
 # clone a remote repository and checkout a specific branch
 git clone -b <branch> <url> [<path>]                
 ```
 
-### Push & Pull
+Modify references to other repositories:
 
 ```bash
-git fetch <name>                         # download commit from origin
+git remote -v                            # list references to remote repos (including URLs)
+git remote add <name> <url>              # add a reference to a remote repository
+```
+
+### Synchronize Repositories
+
+
+
+```bash
+# update current (tracking) branch from origin/<branch> (short for git fetch; git merge origin/<branch>)
+git pull                                 
+# push current (tracking) branch to origin/<branch> (git pull first)
+git push
+```
+
+```bash
+git fetch <name>                         # download commit from remote-tracking branches under
 git pull <name> <branch>                 # download & merge changes from remote
 git pull --all                           # fetch all remote branches
 git push <name> <branch>                 # upload local changes to remote repository
-git remote add <name> <uri>              # configure a remote repository
-git remote -v                            # list configured remote repositories
 ```
 
 
-### Branch & Tags
+## Branch & Tags
 
 **Branches**, floating pointer that move on commit
 
@@ -289,6 +301,8 @@ git push <name> <tag>                    # push local tag to remote repository
 git push --tags <name>                   # push all local tags to remote repository
 git tag -l | xargs git tag -d            # delete all local tags
 ```
+
+TODO: rebase, stash
 
 
 ## Configuration
