@@ -189,7 +189,9 @@ Create, `init` (initialize) a **new repository** in `.git/`:
 * Create an empty repository in the **current working directory**
 * By default it will have one **master branch**
 
-    git init                                 
+```
+git init                                 
+```
 
 Repositories used for clone, push and pull usually are a **bare repository**:
 
@@ -197,7 +199,9 @@ Repositories used for clone, push and pull usually are a **bare repository**:
 * It's conventional to give bare repositories the extension (suffix) `.git` (instead of `project/.git`)
 * Update a bare repository by pushing to it (using `git push`) from another repository
 
-    git init --bare /path/to/project.git
+```
+git init --bare /path/to/project.git
+```
 
 ### Remote Repositories
 
@@ -207,22 +211,37 @@ Git allows bidirectional communication between any number of repositories:
 * Supports many protocols: SSH, HTTPS, DAV, Git protocol, Rsync, and a path to a local repository
 * Allows centralized and/or distributed development models
 
-
-Copy, `clone` a repository from another location
+Copy, `clone` a repository from another location:
 
 ```
 # clone a remote repository and create a working copy, optionally provide the target directory
-git clone <uri> [<path>] 
-# clone a remote repository and checkout a specific branch
-git clone -b <branch> <uri>                
+git clone <url> [<path>] 
 ```
 
-Remote repositoires are configured in `.git/config`: 
+Following syntax may be used for remote URLs:
+
+```
+ssh://[user@]host.xz[:port]/path/to/repo.git/
+git://host.xz[:port]/path/to/repo.git/
+http[s]://host.xz[:port]/path/to/repo.git/
+[user@]host.xz:/~[user]/path/to/repo.git/
+/path/to/repo.git/
+file:///path/to/repo.git/
+```
+
+Remote repositories are configured in `.git/config` (cf. `git help git-config`):  
 
 * Freshly cloned repository have...
   - One remote repository called `origin` (default source to pull/push)
   - Automatically create a **master branch** that tracks `origin/master`
 * Checkout of a local branch from a remote branch automatically creates a **tracking branch**
+
+```
+# clone a remote repository and checkout a specific branch
+git clone -b <branch> <url> [<path>]                
+```
+
+### Push & Pull
 
 ```bash
 git fetch <name>                         # download commit from origin
