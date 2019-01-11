@@ -182,45 +182,59 @@ Every **working copy** has its own Git repository in the `.git` subdirectory:
 git ls-files --exclude-standard --ignored --others
 ```
 
-### Init & Clone
+### Create A New Repository
 
-Create, `init` (initialize) a repository in `.git/`: 
+Create, `init` (initialize) a **new repository** in `.git/`: 
 
-* A **bare** repositories (by definition) has no working tree attached
-* It's conventional to give bare repositories the extension `.git`
+* Create an empty repository in the **current working directory**
+* By default it will have one **master branch**
+
+    git init                                 
+
+Repositories used for clone, push and pull usually are a **bare repository**:
+
+* A bare repositories (by definition) has **no working tree** attached
+* It's conventional to give bare repositories the extension (suffix) `.git` (instead of `project/.git`)
 * Update a bare repository by pushing to it (using `git push`) from another repository
 
-```bash
-# create an empty repository in the current directory (by default it
-# will have one branch named master)
-git init                                 
-# create a bare repository in a specified path (.git suffix by convention)
-git init --bare /path/to/project.git
-```
+    git init --bare /path/to/project.git
 
-Copy, `clone` a repository from another location over HTTP, SSH, the Git 
-protocol or another path to a local repository:
+### Remote Repositories
+
+Git allows bidirectional communication between any number of repositories:
+
+* A Git repository can be configured with **references to any number of remotes**
+* Supports many protocols: SSH, HTTPS, DAV, Git protocol, Rsync, and a path to a local repository
+* Allows centralized and/or distributed development models
+
+
+Copy, `clone` a repository from another location
 
 ```
 # clone a remote repository and create a working copy, optionally provide the target directory
 git clone <uri> [<path>] 
+# clone a remote repository and checkout a specific branch
+git clone -b <branch> <uri>                
 ```
 
-### Push & Pull
+Remote repositoires are configured in `.git/config`: 
 
-
+* Freshly cloned repository have...
+  - One remote repository called `origin` (default source to pull/push)
+  - Automatically create a **master branch** that tracks `origin/master`
+* Checkout of a local branch from a remote branch automatically creates a **tracking branch**
 
 ```bash
-git fetch <name>                         # download all changes from remote
+git fetch <name>                         # download commit from origin
 git pull <name> <branch>                 # download & merge changes from remote
+git pull --all                           # fetch all remote branches
 git push <name> <branch>                 # upload local changes to remote repository
-git show <name>                          # show remote commit history
 git remote add <name> <uri>              # configure a remote repository
 git remote -v                            # list configured remote repositories
 ```
 
 
-### Branch
+### Branch & Tags
 
 **Branches**, floating pointer that move on commit
 
@@ -228,23 +242,23 @@ git remote -v                            # list configured remote repositories
 - Contains the SHA of the commit it's pointing at
 
 ```bach
-git clone -b <name> <url>                # clone a remote repository, checkout branch
-git pull --all                           # fetch all remote branches
-git branch                               # list local branches
-git branch -r                            # list remote branches
+git branch                               # list branches in repository (* marks the current branch)
+git checkout <branch>                    # switch to branch (update HEAD, index, and working tree)
+git checkout -b <branch> [<commit>]      # create new branch at commit (defaults to HEAD), and switch to it
+git branch -d <branch>                   # delete branch
+git branch -m <branch> <nbranch>         # remane branach to nbranch
+git tag <name> [<commit>]                # create new tag  to commit (defaults to HEAD)
+git tag -d <name>                        # delete tag
+```
+
+```bash
+git branch -r                            # list available emote branches
+git branch -a                            # list available local and remote branches
 git branch -dr <remote/branch>           # delete remote branch
 git checkout -b <name> <remote/branch>   # checkout remote branch
 git checkout <branch>                    # checkout local branch
 git merge <branch>                       # merge into current HEAD
 git rebase <branch>                      # rebase HEAD onto branch
-```
-
-
-### Tags
-
-**Tags**, fixed pointer to a commit
-
-```bash
 git ls-remote --tags <repo>              # list tags of remote repository
 git fetch                                # fetch remote tags
 git tag -l                               # list local tags
