@@ -5,7 +5,14 @@
 * Remembers the **history of files**, to enable access to older versions
 * Helps to coordinate and **share changes** among users (and locations)
 
-A [**repository**][rp] (a database of changes) it the data structure that stores files with history and metadata.
+**Why Use Version Control?**
+
+* **Prevent deletion**, accidentally lose of files
+* Capability to **revert changes** in files
+* Enables to **review the history** of files
+* Allows **in-deeps comparison** between different versions of files
+
+A [**repository**][rp] (a database of changes) is the data structure that stores files with history and metadata.
 
 Version control systems differ in where the repository lives:
 
@@ -22,12 +29,6 @@ Version control systems differ in where the repository lives:
 
 [rp]: https://en.m.wikipedia.org/wiki/Repository_(version_control)
 
-**Why Use Version Control?**
-
-* **Prevent deletion**, accidentally lose of files
-* Capability to **revert changes** to files
-* Enables to **review the history** of files
-* Allows **in-deeps comparison** between different versions of files
 
 
 # Git
@@ -35,7 +36,7 @@ Version control systems differ in where the repository lives:
 [Git][gi], distributed version control system, cf.:
 
 * [The Git Parable][gp]
-* [Git® Notes for Professionals book][gn]
+* [Git Notes for Professionals book][gn]
 
 [gi]: https://git-scm.com/
 [gn]: https://goalkicker.com/GitBook/
@@ -48,54 +49,55 @@ Version control systems differ in where the repository lives:
 * **Implicit backup** since multiple copies are stored in distributed locations
 * All data is store **cryptographicaly secured** (temper proof)
 
-TODO: content-addressable filesystem, DAG 
+TODO: content-addressable filesystem
 
 ## Commits
 
 [Commit][cm] to **add the latest changes** to the repository:
 
-* Commits are identified by a **unique commit ID** and include
+* A commit include...
   - ID of the previous commit(s)
   - Content, commit date & messages
-  - Committer's name and email address
+  - Author and committer name and email address
+* The **commit ID** ([SHA-1 hash][ha]) cryptographically certifies the 
+  integrity of the entire history of the repository up to that commit
 * Commits are **immutable** (can not be modified) afterwards (except HEAD)
 * Child commits point to **1..N parent commits** (typically 1 or 2)
 * `HEAD` revision is the active commit, parent of the next commit
-* The [SHA-1 hash][ha] commit id makes the commit **cryptographically secure**
 
 [cm]: https://en.m.wikipedia.org/wiki/Commit_(version_control)
 [ha]: https://en.m.wikipedia.org/wiki/Cryptographic_hash_function
 
 **Files states** include the following three: 
 
-* **Modified** - Changed file(s) in working directory, not committed to repository
+* **Modified** - Changed file(s) in working copy, not committed to repository
 * **Staged** - Marked modified file(s), current version to be committed to repository 
 * **Committed** - Data is safely stored in your local repository
 
 File states belong to one of the following three **storage positions**:
 
-* The **working directory** (checkout) contains the editable copy of the repository
-* The **staging area** (index) holds all marked changes read to commit
+* The **working copy** (checkout) contains editable files (a copy of the repository data)
+* The **staging area** (index) holds all marked changes ready to commit
 * The **git repository** `.git/` stores all files, meta-data
 
 The **basic workflow**:
 
-1. Modify a file from the working directory, check with `git status`
+1. Modify a file in the working copy, check with `git status`
 2. Accept a change to the staging are by adding a file with  `git add`
 3. Perform a `git commit` that permanently stores files in staging to the repository
 
 List of commands to move files between staging and repository:
 
 ```bash
-git status                               # state of files in the working directory
+git status                               # state of files in the working copy
 git add <path>                           # add new/modified file to staging area
 git add .                                # add all current changes to staging area
-git diff                                 # show differences between working directory and staging area
+git diff                                 # show differences between working copt and staging area
 git diff --cached                        # show differences between HEAD and staging area
 git commit -m '<message>'                # commit files in staging area
 git commit -am '<message>'               # commit all local changes
 git commit --amend                       # change last commit
-git checkout                             # discard changes in working directory
+git checkout                             # discard changes in working copy
 git checkout -- <file>                   # discard changes in file
 git checkout <commit> <file>             # checkout specific version of a file
 git reset HEAD <file>                    # discard file from staging ares
@@ -109,16 +111,61 @@ GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'na
 
 ## Repository
 
+Git repository includes...
+
+* Four kinds of objects: blob, tree, commit, tag
+* Collection of refs, branches and tags
+* A **ref** is a named mutable pointer to an object (usually a commit)
+* Automatically stores the [Directed Acyclic Graph][dag] (DAG) of objects rooted at these refs
+
+[dag]: https://en.m.wikipedia.org/wiki/Directed_acyclic_graph
+
+Every **working copy** has its own Git repository in the `.git` subdirectory:
+
+* With arbitrarily many branches and tags
+* Most important ref is `HEAD` (which refers to the current branch)
+* Stores the index (staging area) for changes on top of HEAD that will become part of the next commit
+* Files outside of `.git` are the working tree
+
+
 ```bash
-git init                                 # initializes a new repository in $PWD
-git init --bare [<path>]                 # create a repository without working directory
 .git/                                    # meta-data and object database
-.git/config                              # configuration of the repository in $PWD
+.git/config                              # configuration of the repository
 .gitignore                               # files to ignore in local repository
+```
+
+### Init & Clone
+
+Create `init` (initialize) a repository in `.git/`: 
+
+* A **bare** repositories (by definition) has no working copy attached
+* It's conventional to give bare repositories the extension `.git`
+* Update a bare repository by pushing to it (using `git push`) from another repository
+
+```bash
+# create an empty repository in the current directory (by default it
+# will have one branch named master)
+git init                                 
+# create a bare repository in a specified path (.git suffix by convention)
+git init --bare /path/to/project.git
+```
+
+Copy, `clone` a repository from another location over HTTP, SSH, the Git 
+protocol or another path to a local repository:
+
+```
+# clone a remote repository and create a working copy
+git clone <uri> [<path>]
+# optionally provide the target directory
+```
+
+
+### Push & Pull
+
+
+```bash
 git ls-files --exclude-standard --ignored --others
                                          # list ignored files
-git clone <uri> [<path>]                 # clone a remote repository and checkout
-                                         # working directory
 git fetch <name>                         # download all changes from remote
 git pull <name> <branch>                 # download & merge changes from remote
 git push <name> <branch>                 # upload local changes to remote repository
