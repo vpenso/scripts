@@ -201,7 +201,7 @@ git init --bare /path/to/project.git
 
 ### Remote Repositories
 
-Git allows bidirectional communication between any number of repositories:
+Git allows **bidirectional synchronisation** between any number of repositories:
 
 * A Git repository can be configured with **references to any number of remotes**
 * Supports many protocols: SSH, HTTPS, DAV, Git protocol, Rsync, and a path to a local repository
@@ -227,10 +227,10 @@ file:///path/to/repo.git/
 /path/to/repo.git/
 ```
 
-Remote repositories are configured in `.git/config` (cf. `git help git-config`):  
+Remote repositories are **configured in `.git/config`** (cf. `git help git-config`):
 
 * Freshly cloned repository have...
-  - One remote repository called `origin` (default source to pull/push)
+  - One reference to the  **`origin` remote repository** (default source to pull/push)
   - Automatically create a **master branch** that tracks `origin/master`
 * Checkout of a local branch from a remote branch automatically creates a **tracking branch**
 
@@ -242,13 +242,19 @@ git clone -b <branch> <url> [<path>]
 Modify references to other repositories:
 
 ```bash
-git remote -v                            # list references to remote repos (including URLs)
-git remote add <name> <url>              # add a reference to a remote repository
+git remote -v                               # list references to remote repos (including URLs)
+git remote add <remote_ame> <remote_url>    # add a reference to a remote repository
+git remote show <remote_name>               # inspect a remote repository
+git remote rename <old_name> <new_name>     # rename a reference to a remote repository
+git remote rm <remote_name>                 # delete a reference to a remote repository
 ```
 
 ### Synchronize Repositories
 
+Git repositories are **not automatically synchronised**:
 
+* Requires a **manual `pull` of remote commits** into the local repository
+* Requires a **manual `push` of commits** into a remote repository
 
 ```bash
 # update current (tracking) branch from origin/<branch> (short for git fetch; git merge origin/<branch>)
@@ -256,12 +262,15 @@ git pull
 # push current (tracking) branch to origin/<branch> (git pull first)
 git push
 ```
-
 ```bash
-git fetch <name>                         # download commit from remote-tracking branches under
-git pull <name> <branch>                 # download & merge changes from remote
-git pull --all                           # fetch all remote branches
-git push <name> <branch>                 # upload local changes to remote repository
+git pull --all                           # update all local branches from their corresponding remote branches
+git pull <remote_name> <branch_name>     # update current branch from a specific remote banch
+git push <remote_name> <branch_name>     # push specific branch to a remote
+```
+```bash
+git fetch <remote_name>                   # download all branches from a remote repository
+git fetch <remote_name> <branch_name>     # download a specific brnach from remote
+git fetch --all                           # download all branches from all remotes
 ```
 
 
