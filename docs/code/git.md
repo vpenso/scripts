@@ -29,8 +29,6 @@ Version control systems differ in where the repository lives:
 
 [rp]: https://en.m.wikipedia.org/wiki/Repository_(version_control)
 
-
-
 # Git
 
 [Git][gi], distributed version control system, cf.:
@@ -88,8 +86,6 @@ The **basic workflow**:
 2. Accept a change to the staging are by adding a file with  `git add`
 3. Perform a `git commit` that permanently stores files in staging to the repository
 
-List of the commands involved:
-
 ```bash
 git status                               # show files changed in the working tree and index
 git add <file>                           # add/update file from the working tree into
@@ -104,17 +100,15 @@ git mv <sfile> <dfile>                   # move a file in working tree, plut app
 git commit                               # make a commit out of the current index
 ```
 
-More example use-cases for the commands above:
+More sophisticated usage of the command above:
 
 ```bash
 git add .                                # add all current changes in working tree into the index
-git diff --cached                        # show differences between HEAD and staging area
 git commit -m '<message>'                # commit files in staging area
 git commit -am '<message>'               # commit all local changes
 git commit --amend                       # change last commit
 # Set the committer name & email for a single commit
 GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
-git checkout                             # discard changes in working tree
 git checkout <commit> <file>             # checkout specific version of a file
 git reset HEAD --                        # discard all changes in the staging area
 git reset --hard                         # discard uncommited changes
@@ -145,20 +139,18 @@ Referring to objects:
 * Append `:<path>` for a file or directory inside commit’s tree
 * Cf. `git help rev-parse`
 
-### Logs
-
 ```bash
+git log                                  # list commits (on the current branch)
+git show <object>                        # show object (e.g. path for a commit, content of a file)
 git diff                                 # show difference between working tree and index
+git diff --cached                        # show difference between HEAD and index
+git diff <commit>                        # show difference between commit and the working tree
 ```
 
+More sophisticated usage of the command above:
+
 ```bash
-git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
-                                          # list files
 git log -1 --stat                         # show last commit
-git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
-                                          # show commits with a list of cahnges files
-git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
-                                          # list commt messages one by line
 git log --follow -p -- <file>             # follow changes to a single file
 ```
 
@@ -297,7 +289,19 @@ Repository specific committer in at `.git/config` file:
   email = devops@devops.test
 ```
 
-## git-repos
+### Aliases
+
+
+```bash
+git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
+                                          # list files
+git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
+                                          # show commits with a list of cahnges files
+git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
+                                          # list commt messages one by line
+```
+
+### Multiple Repositories
 
 [git-repos][git-repos] helps to solve the following three use-cases:
 
