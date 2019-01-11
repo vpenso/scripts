@@ -11,7 +11,8 @@ fi
 
 mkdir ~/.zshrc.d 2>/dev/null
 
-cat > ~/.zshrc.d/anitgen <<'EOF'
+# add git prompt configuration to the ZSH config directory
+cat > ~/.zshrc.d/05_anitgen <<'EOF'
 if [ -f ~/.zsh/antigen.zsh ]
 then
         source ~/.zsh/antigen.zsh
