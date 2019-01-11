@@ -21,7 +21,7 @@ Version control systems differ in where the repository lives:
   - Checkouts, commits interact with the local repository folder
   - Different copies of the repository synchronized by the version control software
   - Typically repositories distributed with multiple public/private repositories
-* **Centralised** (i.e. CVS, Subversion)
+* **Centralized** (i.e. CVS, Subversion)
   - Dedicated central server, stores files' history and controls access
   - Separate local working copy from the "master copy" on the server
   - Working copy only stores the current versions (history in the server repository)
@@ -80,33 +80,86 @@ File states belong to one of the following three **storage positions**:
 * The **staging area** (index) holds all marked changes ready to commit
 * The **git repository** `.git/` stores all files, meta-data
 
+### Construct Commits
+
 The **basic workflow**:
 
 1. Modify a file in the working copy, check with `git status`
 2. Accept a change to the staging are by adding a file with  `git add`
 3. Perform a `git commit` that permanently stores files in staging to the repository
 
-List of commands to move files between staging and repository:
+List of the commands involved:
 
 ```bash
-git status                               # state of files in the working tree
-git add <path>                           # add new/modified file to staging area
-git add .                                # add all current changes to staging area
-git diff                                 # show differences between working copt and staging area
+git status                               # show files changed in the working tree and index
+git add <file>                           # add/update file from the working tree into
+                                         # the index
+git checkout <file>                      # undo modifications to file in the working
+                                         # tree (by reading it back from the index)
+git reset <file>                         # unstage changes to file in the index (without
+                                         # touching the working tree)
+git rm <file>                            # delete file from the index and working tree
+git mv <sfile> <dfile>                   # move a file in working tree, plut appropriate
+                                         # addtions/removals in the index
+git commit                               # make a commit out of the current index
+```
+
+More example use-cases for the commands above:
+
+```bash
+git add .                                # add all current changes in working tree into the index
 git diff --cached                        # show differences between HEAD and staging area
 git commit -m '<message>'                # commit files in staging area
 git commit -am '<message>'               # commit all local changes
 git commit --amend                       # change last commit
+# Set the committer name & email for a single commit
+GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
 git checkout                             # discard changes in working tree
-git checkout -- <file>                   # discard changes in file
 git checkout <commit> <file>             # checkout specific version of a file
-git reset HEAD <file>                    # discard file from staging ares
 git reset HEAD --                        # discard all changes in the staging area
 git reset --hard                         # discard uncommited changes
 git reset --hard <hash>                  # discard until specified commit
-git clean -f                             # recursivly remove file not in version control
-# Set the committer name & email for a single commit
-GIT_COMMITTER_NAME='<name>' GIT_COMMITTER_EMAIL='<mail>' git commit --author 'name <mail>'
+git clean -f                             # recursivly remove files not in version control
+```
+
+### Display Changes
+
+A **reference** `ref` is a (named mutable) pointer to an object (usually a commit)
+
+* Git knows different types of references:
+  - **heads** refers to an object locally
+  - **remotes** refers to an object which exists in a remote repository
+  - **stash** refers to an object not yet committed
+  - **tags** reference another object
+
+Automatically stores as [Directed Acyclic Graph][dag] (DAG) of objects
+
+[dag]: https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+Referring to objects:
+
+* Use its full SHA-1 commit ID e.g. `66f67970e73b5ad213d9bc69f7e6497b6bfc1b75`
+* Truncated commit id s long as it is unambiguous e.g. `66f6797`
+* You can refer to a branch or tag by name
+* Append a `^` to get the (first) parent, `^2` second parent, etc.
+* Append `:<path>` for a file or directory inside commit’s tree
+* Cf. `git help rev-parse`
+
+### Logs
+
+```bash
+git diff                                 # show difference between working tree and index
+```
+
+```bash
+git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
+                                          # list files
+git log -1 --stat                         # show last commit
+git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
+                                          # show commits with a list of cahnges files
+git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
+                                          # list commt messages one by line
+git log --follow -p -- <file>             # follow changes to a single file
 ```
 
 ## Repository
@@ -133,6 +186,8 @@ Every **working copy** has its own Git repository in the `.git` subdirectory:
 .git/                                    # git repository directory
 .git/config                              # configuration of the repository
 .gitignore                               # files to ignore in the working tree
+# list ignored files
+git ls-files --exclude-standard --ignored --others
 ```
 
 ### Init & Clone
@@ -164,8 +219,6 @@ git clone <uri> [<path>]
 
 
 ```bash
-git ls-files --exclude-standard --ignored --others
-                                         # list ignored files
 git fetch <name>                         # download all changes from remote
 git pull <name> <branch>                 # download & merge changes from remote
 git push <name> <branch>                 # upload local changes to remote repository
@@ -174,41 +227,6 @@ git remote add <name> <uri>              # configure a remote repository
 git remote -v                            # list configured remote repositories
 ```
 
-## References
-
-A **reference** `ref` is a (named mutable) pointer to an object (usually a commit)
-
-* Git knows different types of references:
-  - **heads** refers to an object locally
-  - **remotes** refers to an object which exists in a remote repository
-  - **stash** refers to an object not yet committed
-  - **tags** referenc another object
-
-Automatically stores as [Directed Acyclic Graph][dag] (DAG) of objects
-
-[dag]: https://en.wikipedia.org/wiki/Directed_acyclic_graph
-
-Referring to objects:
-
-* Use its full SHA-1 commit ID e.g. `66f67970e73b5ad213d9bc69f7e6497b6bfc1b75`
-* Truncated commit id s long as it is unambiguous e.g. `66f6797`
-* You can refer to a branch or tag by name
-* Append a `^` to get the (first) parent, `^2` second parent, etc.
-* Append `:<path>` for a file or directory inside commit’s tree
-* Cf. `git help rev-parse`
-
-### Logs
-
-```bash
-git ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
-                                          # list files
-git log -1 --stat                         # show last commit
-git log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)" --decorate --numstat
-                                          # show commits with a list of cahnges files
-git log --pretty=format:"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset"
-                                          # list commt messages one by line
-git log --follow -p -- <file>             # follow changes to a single file
-```
 
 ### Branch
 
