@@ -32,15 +32,6 @@ Version control systems differ in where the repository lives:
 
 # Git
 
-[Git][gi], distributed version control system, cf.:
-
-* [The Git Parable][gp]
-* [Git Notes for Professionals book][gn]
-
-[gi]: https://git-scm.com/
-[gn]: https://goalkicker.com/GitBook/
-[gp]: http://tom.preston-werner.com/2009/05/19/the-git-parable.html
-
 **Why Using Git?**
 
 * **Free and open source** distributed version control system (no central server)
@@ -438,6 +429,12 @@ Each directory is followed by a list of remotes using the notation of <tt>git re
 
 # References
 
-[1] The ultimate git merge vs rebase tutorial, Toby Fleming (2018)  
+[1] _The ultimate git merge vs rebase tutorial_, Toby Fleming (2018)  
 <https://tobywf.com/2018/01/the-ultimate-git-merge-vs-rebase-tutorial/>
+
+[2] _The Git Parable_, Tom Preston-Werner (2009)  
+<http://tom.preston-werner.com/2009/05/19/the-git-parable.html>
+
+[3] _Git Notes for Professionals_  
+<https://goalkicker.com/GitBook/>
 
