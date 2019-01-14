@@ -142,13 +142,18 @@ Referring to objects:
 git log                                  # list commits (on the current branch)
 git show <object>                        # show object (e.g. path for a commit, content of a file)
 git diff                                 # show difference between working tree and index
-git diff --cached                        # show difference between HEAD and index
+git diff --cached                        # show difference between HEAD and index (staged changes)
 git diff <commit>                        # show difference between commit and the working tree
 ```
 ```
 # More sophisticated usage of the commands above:
-git log -1 --stat                         # show last commit
+git log --stat                            # list changed files
+git log -1 ...                            # show last commit
+git log --decorate --oneline --graph      # prettier graph-like structure
 git log --follow -p -- <file>             # follow changes to a single file
+git log -p                                # with changes inline
+git log -S "<regex>"                      # search for string
+git shortlog -en                          # summarizes git log and groups by author
 ```
 
 ## Repository
@@ -176,7 +181,10 @@ Every **working copy** has its own Git repository in the `.git` subdirectory:
 .git/config                              # configuration of the repository
 .gitignore                               # files to ignore in the working tree
 # list ignored files
-git ls-files --exclude-standard --ignored --others
+git status --ignored
+git clean -Xn                            # display a list of ignored files
+git clean -Xf                            # remove the previously displayed files
+git check-ignore -v <file>               # check if file is ignored
 ```
 
 ### Create New Repositories
@@ -234,7 +242,7 @@ Remote repositories are **configured in `.git/config`** (cf. `git help git-confi
 
 * Freshly cloned repository have...
   - One reference to the  **`origin` remote repository** (default source to pull/push)
-  - Automatically create a **master branch** that tracks `origin/master`
+  - Automatically create a master branch that tracks `origin/master`
 * Checkout of a local branch from a remote branch automatically creates a **tracking branch**
 
 ```bash
@@ -260,22 +268,41 @@ Git repositories are **not automatically synchronised**:
 * Requires a **manual `push` of commits** into a remote repository
 
 ```bash
-# update current (tracking) branch from origin/<branch> (short for git fetch; git merge origin/<branch>)
-git pull                                 
-# push current (tracking) branch to origin/<branch> (git pull first)
+# update current (tracking) branch from upstream
+git pull                                 # short for git fetch + git merge
+# push current (tracking) branch
 git push
 ```
+
+**Merge vs. Rebase** [1]:
+
+* A **merge** combines the local branch with the remote (branch)
+  - Default merge behaviour is to perform a **fast-forward**
+  - Commits without conflicts are simply absorbed into the branch
+  - A **conflict** requires a **merge commit**
+  - Disable fast-forward `--no-ff` to force every merge to produce a merge commit
+* **rebase** applies commits from current branch onto the head of the specified branch
+  - "replaying" changes with new commits (hashes/timestamps)
+  - Merge resolution is absorbed into the new commit
+
 ```bash
+git pull --no-ff                         # disable fast-forward
+git pull --rebase                        # short for git fetch + git rebase
 git pull --all                           # update all local branches from their corresponding remote branches
 git pull <remote_name> <branch_name>     # update current branch from a specific remote banch
 git push <remote_name> <branch_name>     # push specific branch to a remote
-```
-```bash
-git fetch --all                           # download all branches from all remotes
-git fetch <remote_name>                   # download all branches from a remote repository
-git fetch <remote_name> <branch_name>     # download a specific brnach from remote
+git push -u ...                          # track remote with current branch
 ```
 
+
+
+Local changes will not be overwritten by `git pull`, ...workflow:
+
+```bash
+git stash                                # stash the changes in working tree
+git pull --rebase                        # rebase commits on the remote version of the branch
+git stash pop                            # apply changes on the current working tree
+```
 
 ## Branch & Tags
 
@@ -340,13 +367,23 @@ File                       | Description
 
 [gc]: ../../bin/git-default-config
 
-Repository specific committer in at `.git/config` file:
+### User & Mail
 
+Set username an mail address for all repositories (in `~/.gitconfig`):
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email mail@example.com
 ```
-[user]
-  name = devops
-  email = devops@devops.test
+
+Repository specific (in `.git/config`):
+
+```bash
+# from the working tree
+git config user.name "Your Name"
+git config user.email mail@example.com
 ```
+
 
 ### Aliases
 
@@ -398,3 +435,9 @@ Each directory is followed by a list of remotes using the notation of <tt>git re
 
 [git-repos]: ../bin/git-repos
 [git-default-config]: ../bin/git-default-config
+
+# References
+
+[1] The ultimate git merge vs rebase tutorial, Toby Fleming (2018)  
+<https://tobywf.com/2018/01/the-ultimate-git-merge-vs-rebase-tutorial/>
+
