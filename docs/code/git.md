@@ -1,7 +1,10 @@
 **Version Control System** (VCS) (aka _source control_ or _revision control_):
 
-* Remembers the **history of files**, to enable access to older versions
-* Helps to coordinate and **share changes** among users (and locations)
+* **History** (track changes) of files (short & long-term undo)
+* **Backup** and **restore** of a code base
+* **Collaborate** (share changes among users)
+* **Synchronization** (of distributed repositories)
+* **Sandboxing** (develop in dedicated branches)
 
 **Why Use Version Control?**
 
@@ -268,9 +271,9 @@ git pull <remote_name> <branch_name>     # update current branch from a specific
 git push <remote_name> <branch_name>     # push specific branch to a remote
 ```
 ```bash
+git fetch --all                           # download all branches from all remotes
 git fetch <remote_name>                   # download all branches from a remote repository
 git fetch <remote_name> <branch_name>     # download a specific brnach from remote
-git fetch --all                           # download all branches from all remotes
 ```
 
 
