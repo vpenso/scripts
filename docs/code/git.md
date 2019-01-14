@@ -332,9 +332,6 @@ git push --tags <name>                   # push all local tags to remote reposit
 git tag -l | xargs git tag -d            # delete all local tags
 ```
 
-TODO: rebase, stash
-
-
 ## Configuration
 
 Customize the user configuration:
