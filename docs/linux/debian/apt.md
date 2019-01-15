@@ -150,6 +150,31 @@ Numeric value for Priority `P`:
 
 ## Additional Repositories
 
+Life-cycle of Debian Releases [1]:
+
+* **Experimental** - new software package, proposed for inclusion
+  - May contain serious bugs with critical repercussions
+  - Packages never migrate to another version (except by direct manual intervention)
+* **Unstable** - very new (latest) software version (sometimes broken)
+  - Usually based on the latest upstream version from the developer 
+  - Packages build by it maintainer for **inspection** and **validation**
+  - Updates occur rapidly (following bug reports, and subsequent package rebuild)
+  - Autobuilders compile versions for all (supported) architectures
+* **Testing** (Sid) - relatively recent software with basic quality assurance (stable enough)
+  - Package will have matured; compiled on all the architectures, no recent modifications
+  - Automatic migration to testing according to elements guaranteeing a certain level of quality (>10 days in unstable, no critical bugs, etc.)
+  - Note: critical bugs are regularly found in packages included in testing
+  - Compromise between stability and novelty
+  - Testing packages promoted by a release manager to stable
+  - **freeze period**: testing blocked (no more automatic updates, only authorized changes)
+* **Stable** - changes rarely, continuous security updates
+  - Stable updates systematically include all security patches
+
+Regional redirection for Debian mirrors:
+
+<http://http.debian.net/>
+
+
 ### Backports
 
 → [official backports](https://backports.debian.org/Instructions/)
@@ -176,20 +201,41 @@ fakeroot debian/rules binary                         # build the source
 dpkg-buildpackage -us -uc                            # build the package
 ```
 
-### Unstable (Sid)
+### Testing, Unstable & Experimental
 
-Debian's development distribution is "sid", aliased to "unstable":
+Add the following repos to `/etc/apt/source.list.d/*.list`:
 
-* Packages from it will propagate into testing and then into a real release.
-* Security updates are **not** managed by the Debian security team.
+```
+deb http://deb.debian.org/debian          testing              main contrib non-free
+deb http://deb.debian.org/debian-security testing/updates      main contrib non-free
+deb http://deb.debian.org/debian          unstable             main contrib non-free
+deb http://deb.debian.org/debian-security unstable/updates     main contrib non-free
+deb http://deb.debian.org/debian          experimental         main contrib non-free
+deb http://deb.debian.org/debian-security experimental/updates main contrib non-free
+```
 
-```bash
->>> cat /etc/apt/sources.list.d/unstable.list
-deb http://ftp.us.debian.org/debian/ sid main
-deb-src http://ftp.us.debian.org/debian/ sid main
->>> cat /etc/apt/preferences.d/unstable
+Configure the package preferences in `/etc/apt/preferences/*.pref` to **prioritize packages in testing**
+
+```
+Package: *
+Pin: release a=stable
+Pin-Priority: 800
+
+Package: *
+Pin: release a=testing
+Pin-Priority: 950
+
 Package: *
 Pin: release a=unstable
-Pin-Priority: 2
+Pin-Priority: 700
+
+Package: *
+Pin: release a=experimental
+Pin-Priority: 500
 ```
+
+# References
+
+[1] _The Debian Administrator's Handbook_, chapter 1.6 Lifecycle of a Release  
+<https://debian-handbook.info/browse/stable/sect.release-lifecycle.html>
 
