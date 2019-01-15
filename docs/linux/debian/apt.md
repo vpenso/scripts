@@ -209,9 +209,7 @@ Add the following repos to `/etc/apt/source.list.d/*.list`:
 deb http://deb.debian.org/debian          testing              main contrib non-free
 deb http://deb.debian.org/debian-security testing/updates      main contrib non-free
 deb http://deb.debian.org/debian          unstable             main contrib non-free
-deb http://deb.debian.org/debian-security unstable/updates     main contrib non-free
 deb http://deb.debian.org/debian          experimental         main contrib non-free
-deb http://deb.debian.org/debian-security experimental/updates main contrib non-free
 ```
 
 Configure the package preferences in `/etc/apt/preferences/*.pref` to **prioritize packages in testing**
