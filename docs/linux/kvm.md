@@ -1,4 +1,13 @@
-# KVM 
+
+[QEMU/Monitor][qm]
+
+* Switching to the qemu monitor in non-graphical (-nographic) mode with **Ctrl-a**
+* Show help with `help` or `?`, `quit` to kill QEMU
+
+
+[qm]: https://en.wikibooks.org/wiki/QEMU/Monitor
+
+## KVM 
 
 KVM (Kernel Based Virtual Machine):
 
