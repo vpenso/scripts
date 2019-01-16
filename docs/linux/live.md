@@ -24,7 +24,7 @@ Start a virtual machine with the iPXE bootloader
 ```bash
 >>> wget http://boot.ipxe.org/ipxe.iso
 # start a virtual machine with the iPXE bootloader
->>> kvm -m 2048 ipxe.iso
+>>> kvm -m 2048 -nographic ipxe.iso
 ## Ctrl+B to get to the iPXE prompt
 iPXE> dhcp
 iPXE> chain http://10.1.1.28/menu
@@ -64,8 +64,9 @@ hostonly_cmdline="no"
 Include the `livenet` module:
 
 ```bash
+cp /boot/vmlinuz-$(uname -r) /var/www/html/vmlinuz
 # include live boot support into initramfs
->>> dracut -f -a livenet /var/www/html/initramfs.img
+dracut -f -a livenet /var/www/html/initramfs.img
 # iPXE kernel command line for
 >>> cat /var/www/html/menu
 #!ipxe
