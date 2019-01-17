@@ -435,3 +435,8 @@ Each directory is followed by a list of remotes using the notation of <tt>git re
 [3] _Git Notes for Professionals_  
 <https://goalkicker.com/GitBook/>
 
+[4] _How to teach Git_, Rachel M. Carmena (2018)  
+<https://rachelcarmena.github.io/2018/12/12/how-to-teach-git.html>
+
+[5] _Pro Git_ 2nd Edition, Scott Chacon and Ben Straub (2014)  
+<https://git-scm.com/book/en/v2>
