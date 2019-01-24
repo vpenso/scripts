@@ -440,3 +440,12 @@ Each directory is followed by a list of remotes using the notation of <tt>git re
 
 [5] _Pro Git_ 2nd Edition, Scott Chacon and Ben Straub (2014)  
 <https://git-scm.com/book/en/v2>
+
+[6] Gitea, self-hosted Git service  
+<https://gitea.io>
+
+[7] GitHub, commercial Git service (Microsoft)  
+<https://github.com/>
+
+[8] GitLab, commercial Git service based on Open Source core  
+<https://gitlab.com/>
