@@ -8,6 +8,8 @@ resolvectl status                       # check service status
 /etc/systemd/resolved.conf              # conf. file
 /etc/systemd/resolved.conf.d/*.conf     # drop-in conf. files
 man resolved.conf                       # conf. file man-page
+resolvectl query <ip|name>              # query DNS records
+resolvectl statistics                   # show DNS cache stats
 ```
 
 Fallback DNS addresses ensure DNS resolution in case no config is present
@@ -23,19 +25,23 @@ ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 ### Configuration
 
-Configure a custom list of DNS resolvers:
+Configure a custom list of DNS resolvers, and enable DNSSEC
 
 ```bash
 mkdir /etc/systemd/resolved.conf.d
 # use a drop in .conf file for the Quad9 primary DNS resolvers 
-cat > /etc/systemd/resolved.conf.d/name_servers.conf <<EOF
+cat > /etc/systemd/resolved.conf.d/dns.conf <<EOF
 [Resolve]
 DNS=9.9.9.9 149.112.112.112
 EOF
-# if supported by the DNS resolvers, enable DNSSEC
+# if supported by the DNS resolvers, enforce DNSSEC validation
 cat > /etc/systemd/resolved.conf.d/dnssec.conf <<EOF
 [Resolve]
 DNSSEC=true
 EOF
-
+# if supported by the DNS resolver, attempt to use DNS over TLS
+cat > /etc/systemd/resolved.conf.d/dot.conf <<EOF
+[Resolve]
+DNSOverTLS=opportunistic
+EOF
 ```

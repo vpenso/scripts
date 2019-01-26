@@ -1,6 +1,5 @@
 # Domain Name System (DNS)
 
-
 ### Domain Name Space
 
 Defines the overall naming structure of the Internet
@@ -48,3 +47,15 @@ Maps a domain name (human readable) to an IP address (machine readable)
 
 - **Resolvers** - Maps a domain name to an IP address that identifies the domains hosted location
 - Domains resolved segment by segment from the highest-level domain down (eventually queries server DNS servers)
+
+**DNSSEC** (Domain Name System Security Extensions) enable resolvers to **authenticate DNS data**
+
+- Provides data integrity, but not availability or confidentiality
+- **DNS over TLS** (DoT) is a protocol to encrypting DNS resolution, cf. [RFC7858][dot]
+
+## Reference
+
+[dot] Specification for DNS over Transport Layer Security (TLS)  
+<https://tools.ietf.org/html/rfc7858>
+
+
