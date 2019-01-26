@@ -60,14 +60,30 @@ resolvconf -u                              # update configuration after change
 
 ## Resolution
 
-DNS resolution:
+Install user-space commands for DNS resolution:
 
 ```bash
-apt install -y dnsutils              # client DNS tool chain
+apt install -y dnsutils              # Debian
+sudo pacman -Ss bind-tools           # Arch
+```
+
+The `host` command is the most simple to use:
+
+```
+host <domain>                # resolve IP address for a domain name
+     <ip>                    # resolve a domain name of an IP address
+     -C ...                  # SOA record                     
+     -a ...                  # query of type ANY
+```
+
+Commands used for DNS resolution "lookup":
+
+* `dig` uses the C resolver library
+* `nslookup` uses an internal implementation for lookup (developed as part of ISC BIND)
+
+
+```bash
 dig +short @8.8.8.8 debian.org       # query a particular DNS server
 host -t A debian.org 
 dig +trace @8.8.8.8 debian.org       # track DNS resolution
 ```
-
-
-
