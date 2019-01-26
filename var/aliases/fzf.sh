@@ -10,8 +10,7 @@ do
 done
 
 function fzf-cheat() {
-echo "$(cat <<EOF
-
+echo "
             KEYBINDING
 
          ctrl-t │ paste selection onto the command-line
@@ -28,6 +27,5 @@ echo "$(cat <<EOF
            !str │ inverse-exact-match
           !^str │ inverse-prefix-exact-match
           !str$ │ invert-suffix-exact-match
-EOF
-)"
+"
 }
