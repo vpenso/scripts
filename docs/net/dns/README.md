@@ -27,12 +27,24 @@ Name space tree divided into **zones**
 
 ### Name Server
 
-Maintains part of the domain name space 
+Maintains part of the domain name space (stores the complete information about a zone)
 
-- Stores the complete information about a zone, resolves lookups, maintains a cache
+- Listens for DNS queries, and **responds with local zone data**
+- Caches (recently retrieved) data about domains outside its name space
+- Uses its resolver to **forward queries** to other authoritative name servers
 
+**Primarey** name servers hold “authoritative” information about set of domains
 
+- Signals the change to a secondary name server (increment serial number filed in SOA)
+- **Secondary** name servers maintain a copy of zone information from a primary name server using a process called **zone transfer**
+- Zone transfer performed according to the expire time parameter in SOA
+  - Full Zone Transfer - Secondary downloads all RRs
+  - Incremental Zone Transfer - Primary notifies (IXFR protocl) about changes for an partial download
+  - Dynamic DNS (DDNS) allows DHCP server to send updates to primary DNS server
 
 ### Domain Name Resolution
 
-Maps a domain name to an IP address (standardized language to query servers)
+Maps a domain name (human readable) to an IP address (machine readable)
+
+- **Resolvers** - Maps a domain name to an IP address that identifies the domains hosted location
+- Domains resolved segment by segment from the highest-level domain down (eventually queries server DNS servers)
