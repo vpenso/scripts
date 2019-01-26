@@ -1,5 +1,3 @@
-alias f="find . -type f -exec grep -l \"$1\" {} \;;"
-
 # colorize matched patterns when using `grep` by default
 grep_command='--color=auto'
 # exclude version control repositories from search

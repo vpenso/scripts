@@ -16,6 +16,7 @@ then
                     --noconfirm \
                     --quiet \
                 bat \
+                bind-tools \
 		ccrypt \
 		encfs \
 		exa \
@@ -38,6 +39,7 @@ then
 		sshuttle \
 		tcpdump \
 		tmux \
+                tree \
 		ttf-inconsolata \
 		vim \
                 vim-airline \
