@@ -45,3 +45,10 @@ cat > /etc/systemd/resolved.conf.d/dot.conf <<EOF
 DNSOverTLS=opportunistic
 EOF
 ```
+
+systemd-resolved currently only supports `opportunistic` DNS over TLS resolution
+
+- Resolver tries resolution using DoT before fall back to traditional DNS (allowing for downgrade attacks)
+- Eventually another option will be added `strict` to prevent fallback
+
+DNS server certificates are not checked making systemd-resolved vulnerable to man-in-the-middle attacks
