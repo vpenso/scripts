@@ -1,34 +1,53 @@
+## Resolver
 
-DNS providers: 
+The resolver routines in the C library are configured by `/etc/resolv.conf`
 
-* [Quad9](https://www.quad9.net)
-* [OpenDNS](https://www.opendns.com/)
-* [Google Public DNS](https://developers.google.com/speed/public-dns/)
+* If the file is missing DNS server on localhost is queried
+* Configuration options:
+  - `nameserver` - IP (ipv4/6) address of a name server
+  - `domain` - Allows short names relative to the local domain
+  - `search` - List for hostname lookups (space separated list of domains)
+  - `options` - Modify the resolver mechanism (space separated list of options)
+* The resolve library queries server in order listed
 
-**`/etc/resolv.conf`** configuration for the local resolution of domain names
+List of popular DNS providers:
 
 ```bash
-nameserver 9.9.9.9                   # Quad9
+# Quad 9
+nameserver 9.9.9.9
 nameserver 149.112.112.112
-nameserver 208.67.222.222            # OpenDNS
+# OpenDNS
+nameserver 208.67.222.222
 nameserver 208.67.220.220
-nameserver 8.8.8.8                   # Google
+# Google
+nameserver 8.8.8.8
 nameserver 8.8.4.4
-options timeout:1                    # seconds before query via a different name server
+# CloudFlare
+nameserver 1.1.1.1
+nameserver 1.0.0.1
 ```
 
-DNS resolution:
+Some relevant options `options <opt1> <opt2>...` :
 
 ```bash
-apt install -y dnsutils              # client DNS tool chain
-dig +short @8.8.8.8 debian.org       # query a particular DNS server
-host -t A debian.org 
-dig +trace @8.8.8.8 debian.org       # track DNS resolution
+timeout:1                    # seconds before query via a different name server
+rotate                       # round-robin selection of name servers
 ```
+
+### NetworkManager
+
+Disable NetworkManager DNS configuration in `/etc/NetworkManager/NetworkManager.conf` 
+
+```bash
+[Main]
+dns=none
+```
+
+### Resolvconf
 
 **`resolvconf`** manages the resolver configuration
 
-* Links `/etc/resolv.conf` to a dynamic configured `/etc/resolvconf/run/resolv.conf`
+Links `/etc/resolv.conf` to a dynamic configured `/etc/resolvconf/run/resolv.conf`
 
 ```bash
 apt -y install resolvconf                  # install the package
@@ -39,10 +58,16 @@ echo "nameserver 8.8.8.8" >> /etc/resolvconf/resolv.conf.d/base
 resolvconf -u                              # update configuration after change
 ```
 
-Disable NetworkManager DNS configuration in `/etc/NetworkManager/NetworkManager.conf` 
+## Resolution
+
+DNS resolution:
 
 ```bash
-[Main]
-dns=none
+apt install -y dnsutils              # client DNS tool chain
+dig +short @8.8.8.8 debian.org       # query a particular DNS server
+host -t A debian.org 
+dig +trace @8.8.8.8 debian.org       # track DNS resolution
 ```
+
+
 
