@@ -77,6 +77,10 @@ Basic router configuration:
 /system identity set name="<name>"
 ```
 
+```bash
+/ip dns set server=<ip>                    # set default DNS server
+```
+
 ### Configuration Management
 
 **Backup** stores the entire system configuration (assumes restore on the same hardware). The backup-file is encrypted by default (protected by password):
@@ -216,10 +220,25 @@ Update channels:
 /system reboot
 ```
 
+### IP
+
+```bash
+/ping <ip>            # ping an IP address
+```
+
 ### Route
 
 ```bash
 /ip route print                               # print routing table
+```
+
+Set the **default route**:
+
+```
+# add a default gateway
+/ip route add gateway=<ip>
+# dst-address 0.0.0.0/0 applies to every destination address
+/ip route add dst-address=0.0.0.0/0 gateway=<gateway>
 ```
 
 ### Interfaces
@@ -271,4 +290,10 @@ Ethernet VLAN management:
 /interface wireless security-profiles set default authentication-types=wpa2-psk 
 mode=dynamic-keys wpa2-pre-shared-key=<password>
 ```
+
+
+## Reference
+
+[man] Mikrotik Manual  
+<https://wiki.mikrotik.com/wiki/Manual:TOC>
 

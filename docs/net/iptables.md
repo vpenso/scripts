@@ -3,12 +3,15 @@ Enable IP forwarding in the kernel:
 
 ```bash
 # persistant configuration
->>> grep ^net.ipv4.ip_forward /etc/sysctl.conf && sysctl -p
+grep ^net.ipv4.ip_forward /etc/sysctl.conf && sysctl -p
 net.ipv4.ip_forward=1
 # enable with sysctl
-sysctl -w net.ipv4.ip.forward=1
+sysctl -w net.ipv4.ip_forward=1
 # or enable in /proc
-echo 1 > /proc/sys/net/ipv4/ip/forward
+echo 1 > /proc/sys/net/ipv4/ip_forward
+# add a NAT with forwarding rules
+iptables -t nat -A POSTROUTING -o <ext-iface> -j MASQUERADE
+iptables -A FORWARD -i <int-iface> -j ACCEPT
 ```
 
 # iptables
