@@ -14,6 +14,14 @@ Defines the overall naming structure of the Internet:
 - Domain names contain up to 255 chars and up to 127 node levels
 - Absolute names are unique i.e. `en.wikipedia.org`
 
+## Domain Name Resolution
+
+Maps a domain name (human readable) to an IP address (machine readable)
+
+- **Resolvers** maps a domain name to an IP address that identifies the domains hosted location
+- **Resolution** is the process of obtaining answers from the DNS database (in responds to a DNS query)
+- Domains resolved segment by segment from the highest-level domain down (eventually querying many (authoritative) DNS servers)
+
 ### Domain Name Registry
 
 Different entities providing DNS services:
@@ -63,16 +71,11 @@ Domain name servers resolve DNS information:
 - Mechanism for security/privacy management by logical/physical separation of DNS information
 - Used to separate public (external) DNS resolution from internal local networks (not visible from the Internet)
 
-## Domain Name Resolution
+### DNSSEC
 
-Maps a domain name (human readable) to an IP address (machine readable)
+**DNSSEC** (Domain Name System Security Extensions) 
 
-- **Resolvers** maps a domain name to an IP address that identifies the domains hosted location
-- **Resolution** is the process of obtaining answers from the DNS database (in responds to a DNS query)
-- Domains resolved segment by segment from the highest-level domain down (eventually querying many (authoritative) DNS servers)
-
-**DNSSEC** (Domain Name System Security Extensions) enables DNS resolvers to **authenticate DNS infromation**
-
+* Enables DNS resolvers to **authenticate DNS infromation**
 * Provides data integrity, but not availability or confidentiality
 * Mechanism for including cryptographic signatures within the DNS resolution 
 * Adds DNS Resource Records (RRs): 
