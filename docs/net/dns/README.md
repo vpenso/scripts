@@ -42,39 +42,52 @@ Resource Records (RRs) store domain specifc DNS data:
 - Mail eXchange `MX`- Mail server address for the domain name
 - Canonical `CNAME` -  Name-to-name-to-IP address mapping for domain name aliasing
 
-### Name Server
+## Domain Name Servers
 
-Maintains part of the domain name space (stores the complete information about a zone):
+Domain name servers resolve DNS information:
 
-- Listens for DNS queries, and **responds** with local zone data
-- Caches (recently retrieved) data about domains outside its name space
-- Uses its resolver to **forward queries** to other authoritative name servers
+- Listens for DNS queries, **responds** with local (zone) or cached DNS data
+- Caches (recently retrieved) data about non-local domains (from other zones)
+- Uses its resolver to **forward queries** to other (authoritative) domain name servers
 
 **Primarey** name servers hold **authoritative** information about set of domains:
 
 - **Secondary** servers maintain a copy of zone information, using a process called **zone transfer**
   - Zone transfer performed according to the expire time parameter in SOA
   - Full Zone Transfer - Secondary downloads all RRs
-  - Incremental Zone Transfer - Primary notifies (IXFR protocl) about changes for an partial download
-  - Dynamic DNS (DDNS) allows DHCP server to send updates to primary DNS server
+  - Incremental Zone Transfer - Primary notifies about changes for an partial download
+- Dynamic DNS (DDNS) allows DHCP server to send updates to primary DNS server
 
-**Split(-horizon) DNS** - Client request source address dependent response of DNS data
+**Split(-horizon) DNS** send a distinguished responds to DNS queries depending on the client source address
 
 - Mechanism for security/privacy management by logical/physical separation of DNS information
-- Used to separete public (external) DNS resolution from internal local networks
+- Used to separate public (external) DNS resolution from internal local networks (not visible from the Internet)
 
-### Domain Name Resolution
+## Domain Name Resolution
 
 Maps a domain name (human readable) to an IP address (machine readable)
 
-- **Resolution** - Is the process of obtaining answers from the DNS database (in respons to queries)
-- **Resolvers** - Maps a domain name to an IP address that identifies the domains hosted location
-- Domains resolved segment by segment from the highest-level domain down (eventually queries server DNS servers)
+- **Resolvers** maps a domain name to an IP address that identifies the domains hosted location
+- **Resolution** is the process of obtaining answers from the DNS database (in responds to a DNS query)
+- Domains resolved segment by segment from the highest-level domain down (eventually querying many (authoritative) DNS servers)
 
-**DNSSEC** (Domain Name System Security Extensions) enable resolvers to **authenticate DNS data**
+**DNSSEC** (Domain Name System Security Extensions) enables DNS resolvers to **authenticate DNS infromation**
 
-- Provides data integrity, but not availability or confidentiality
-- **DNS over TLS** (DoT) is a protocol to encrypting DNS resolution, cf. RFC7858 [dot]
+* Provides data integrity, but not availability or confidentiality
+* Mechanism for including cryptographic signatures within the DNS resolution 
+* Adds DNS Resource Records (RRs): 
+  - `RRSIG` signature
+  - `DNSKEY` primary key record for zone
+  - `DS` key record fingerprint
+  - `NSEC3`  sign negative responses
+* Resolvers verify DNS resolution with with the root zone public key, IANA Trust Anchors and Keys [tak]
+
+```bash
+dig +trace <url> | grep -e RRSIG -e DS            # check for DNSSEC capability
+dig org. SOA +dnssec @8.8.8.8 | grep ';; flags'   # ^ should return the "ad" flag
+```
+
+**DNS over TLS** (DoT) is a protocol to encrypting DNS resolution, cf. RFC7858 [dot]
 
 ## Reference
 
@@ -83,3 +96,6 @@ Maps a domain name (human readable) to an IP address (machine readable)
 
 [rzd] IANA Root Zone Database  
 <http://data.iana.org/TLD/tlds-alpha-by-domain.txt>
+
+[tak] IANA Trust Anchors and Keys  
+<https://www.iana.org/dnssec/files>
