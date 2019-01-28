@@ -41,11 +41,11 @@ Management Tools:
 
 ## Console
 
-Most basic setup steps:
+First time setup:
 
-* Connect the uplink (WAN/LAN) to port 1, and a node to any other port
-* Default IP-address of the router is **192.168.88.1**
-* Default login with `ssh admin@192.168.88.1` (no password required)
+* Reset configuration: hold reset button when applying power until LED starts flashing
+* Factory pre-configured IP-address `192.168.88.1/24`(port 1), username `admin` (no password)
+* Connect a computer on port 2/3/4 and login with `ssh admin@192.168.88.1`
 
 The console allows configuration with text commands:
 

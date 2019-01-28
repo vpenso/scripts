@@ -1,4 +1,18 @@
-# Router
+# Route
+
+```bash
+routel                                               # list comprehensive routing configuration
+ip r                                                 # show routing table
+ip route get <address>                               # check which interface is used for a specific dest.
+ip route add <address>/<prefix> dev <interface>      # create network route
+ip route add <address>/<prefix> via <gateway> dev <interace> # Static routes
+ip route delete <address>/<prefix> dev <interface>   # remove network route
+ip route flush cache                                 # flush routing cash after reconfiguration
+ip route flush table main                            # empty routing table
+## -- deprecated commands -- ##
+netstat -rn                                          # show routing table
+route -n
+```
 
 * **Router**: Forwards data packets between networks 
   - **Routing**: Select a path for traffic across multiple networks depending on the destination address
@@ -15,19 +29,6 @@
   - State full firewalls depend on connection tracking of inbound and outbound traffic
   - Congestion off outbound traffic
 
-```bash
-routel                                               # list comprehensive routing configuration
-ip r                                                 # show routing table
-ip route get <address>                               # check which interface is used for a specific destination
-ip route add <address>/<prefix> dev <interface>      # create network route
-ip route add <address>/<prefix> via <gateway> dev <interace> # Static routes
-ip route delete <address>/<prefix> dev <interface>   # remove network route
-ip route flush cache                                 # flush routing cash after reconfiguration
-ip route flush table main                            # empty routing table
-## -- deprecated commands -- ##
-netstat -rn                                          # show routing table
-route -n
-```
 
 ## Default Gateway
 
