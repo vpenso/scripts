@@ -1,5 +1,10 @@
 # DHCP
 
+```
+/etc/dhcp/dhclient.conf               # DHCP client configuration
+dhclient                              # request a lease, configure network interface
+```
+
 Use `dhcping` with the broadcast IP-address to determine if a DHCP server is on the network.
 
 ```bash

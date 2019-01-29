@@ -227,9 +227,18 @@ Cf. [Mikrotik DHCP Server](https://wiki.mikrotik.com/wiki/Manual:IP/DHCP_Server)
 ```bash
 /ping <ip>                                # ping an IP address
 /ip dhcp-server print                     # print DHCP server config
+/ip dhcp-server network print detail      # print DHCP server network configuration
+/ip dhcp-server network set gateway=<gateway_IP>
+```
+
+Configure DHCP leases:
+
+```bash
 /ip pool print                            # print IP address pool
 /ip dhcp-server lease print [detail]      # print hostname, IP address, MAC address leases
 /ip dhcp-server alert> /log print         # list DHCP replies
+# associate client NIC to IP address
+/ip dhcp-server lease add address=<client_ip> mac-address=<client_mac>
 ```
 
 ### Route
