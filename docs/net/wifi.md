@@ -15,10 +15,10 @@ nmcli radio wifi on|off                 # toggle Wifi with NetworkManager
 Bring a Wifi interface up i.e. `wlp3s0`
 
 ```bash
->>> dev=wlp3s0
+>>> dev=wlp3s0                              # interface name
 >>> ip link set $dev up                     # bring the interface up
 >>> ip link show $dev
-#                                          ↓↓                                      
+#               ...the interface should go ↓↓ ...                                      
 3: wlp3s0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN mode DEFAULT group default qlen 1000
     link/ether 10:bf:48:4c:33:f8 brd ff:ff:ff:ff:ff:ff
 ```
@@ -54,11 +54,11 @@ Simple example configuration
 ctrl_interface=/var/run/wpa_supplicant
 network={
         ssid="..--WAVENET--.."
-        psk=3dc0853c7be5c2d739d938481fbe18c25bd5435c1a783bdbccc2ba3d84a0e2e7
+        psk=3dc0853c7be5c2d7...........
 }
 ```
 
-Start the service in background:
+Start the WiFi access client in background and get an IP address from DHCP:
 
 ```bash
 # AP specific configuration file
@@ -66,18 +66,24 @@ Start the service in background:
 # start in background
 >>> wpa_supplicant -B -c $file -i $dev
 >>> ip link show $dev
-#           ↓↓↓↓↓↓↓↓↓ 
-3: wlp3s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DORMANT group default qlen 1000
+#                                            ... and state should go ↓↓...
+3: wlp3s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode ....
     link/ether 10:bf:48:4c:33:f8 brd ff:ff:ff:ff:ff:ff
-# query DHCP
-dhcpcd $dev
+# query DHCP for an IP-address
+>>> dhcpcd $dev
+>>> ip link show $dev
+3: wlp3s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 10:bf:48:4c:33:f8 brd ff:ff:ff:ff:ff:ff
+#        ↓↓↓↓↓↓↓↓↓↓↓ ... IP address should be visible
+    inet 192.168.1.7/24 brd 192.168.1.255 scope global noprefixroute wlp3s0
+       valid_lft forever preferred_lft forever
 ```
 
 ### iwd
 
 `iwd` (iNet wireless daemon) aims to replace WPA supplicant
 
-- No external dependencies, base on kernel features
+- No external dependencies, base on ker`nel features
 - Can be combinded with systemd-networkd
 
 ```bash
