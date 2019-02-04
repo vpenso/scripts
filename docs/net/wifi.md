@@ -39,7 +39,7 @@ Connect to an encrypted (WEP, WPA, WPA2) wireless network with [wpa_supplicant][
 
 [wpa]: http://w1.fi/wpa_supplicant/
 
-```
+```bash
 # default configuration file
 /etc/wpa_supplicant/wpa_supplicant.conf
 # example config file
@@ -51,6 +51,9 @@ wpa_passphrase "$ssid"
 Simple example configuration
 
 ```bash
+# AP specific configuration file (evnetually called like the SSID)
+>>> file=/etc/wpa_supplicant/wavenet.conf
+>>> cat $file
 ctrl_interface=/var/run/wpa_supplicant
 network={
         ssid="..--WAVENET--.."
@@ -61,8 +64,6 @@ network={
 Start the WiFi access client in background and get an IP address from DHCP:
 
 ```bash
-# AP specific configuration file
->>>file=/etc/wpa_supplicant/wavenet.conf
 # start in background
 >>> wpa_supplicant -B -c $file -i $dev
 >>> ip link show $dev
