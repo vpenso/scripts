@@ -1,37 +1,94 @@
 # WiFI
 
 ```bash
-nmcli radio wifi on|off       # toggle Wifi with NetworkManager
-iw list                       # show wireless device capabilities
-iw dev wlan0 scan             # scan for networks
-iw dev wlan0 link             # link connection status
-ip link set wlan0 up          # bring the interface up 
+# ind wireless devices
+lspci | egrep -i --color 'wifi|wlan|wireless'
+# find the card(s) driver(s)
+lspci | egrep -i --color 'wifi|wlan|wireless' \
+      | cut -d' ' -f1 \
+      | xargs lspci -k -s
+# monitor link quality
+watch -n 1 cat /proc/net/wireless
+nmcli radio wifi on|off                 # toggle Wifi with NetworkManager
 ```
 
-Configuration of the wireless driver (i.e. Intel ` iwlwifi`, broadcom `b43`)
+Bring a Wifi interface up i.e. `wlp3s0`
 
 ```bash
-modinfo -p M                   # configuration of kernel module M 
-systool -av -m M               # ^^
-/proc/cmdline                  # arguments from the kernel (on boot)
-/etc/modprobe.d/*.conf         # module specific configuration files
+>>> dev=wlp3s0
+>>> ip link set $dev up                     # bring the interface up
+>>> ip link show $dev
+#                                          ↓↓                                      
+3: wlp3s0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN mode DEFAULT group default qlen 1000
+    link/ether 10:bf:48:4c:33:f8 brd ff:ff:ff:ff:ff:ff
 ```
 
-### WPA
+### iw
+
+`iw` (replaced `iwconfig`) (no uspport for WPA/WPA2)
+
+```bash
+iw list                                 # show wireless device capabilities
+iw dev $dev scan | grep -i ssid         # scan for wireless APs
+iw dev $dev link                        # link connection status
+```
+
+### wpa_supplicant
 
 Connect to an encrypted (WEP, WPA, WPA2) wireless network with [wpa_supplicant][wpa]:
 
-```bash
-# list access points SSISs
-iw dev wlan0 scan | grep -i ssid
-# generate connection configuration for SSID
-wpa_passphrase '<SSID>' | tee -a /etc/wpa_supplicant/wpa_supplicant.conf
-# reconfigure the WLAN interface
-wpa_cli -i wlan0 reconfigure
-```
-
 [wpa]: http://w1.fi/wpa_supplicant/
 
+```
+# default configuration file
+/etc/wpa_supplicant/wpa_supplicant.conf
+# example config file
+/usr/share/doc/wpa_supplicant/wpa_supplicant.conf
+# generate config for AP connection (add it to the config file)
+wpa_passphrase "$ssid"
+```
+
+Simple example configuration
+
+```bash
+ctrl_interface=/var/run/wpa_supplicant
+network={
+        ssid="..--WAVENET--.."
+        psk=3dc0853c7be5c2d739d938481fbe18c25bd5435c1a783bdbccc2ba3d84a0e2e7
+}
+```
+
+Start the service in background:
+
+```bash
+# AP specific configuration file
+>>>file=/etc/wpa_supplicant/wavenet.conf
+# start in background
+>>> wpa_supplicant -B -c $file -i $dev
+>>> ip link show $dev
+#           ↓↓↓↓↓↓↓↓↓ 
+3: wlp3s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DORMANT group default qlen 1000
+    link/ether 10:bf:48:4c:33:f8 brd ff:ff:ff:ff:ff:ff
+# query DHCP
+dhcpcd $dev
+```
+
+### iwd
+
+`iwd` (iNet wireless daemon) aims to replace WPA supplicant
+
+- No external dependencies, base on kernel features
+- Can be combinded with systemd-networkd
+
+```bash
+systemctl enable --now iwd           # start/enable service
+iwctl device list                    # list wireless devices
+iwctl device <dev> show              # show device details
+iwctl station list                   # list state
+iwctl station <dev> scan             # scan for networks
+iwctl station <dev> get-networks     # list networks
+iwctl station <dev> connect <ssid>   # connect to network
+```
 ### rfkill
 
 The rfkill subsystem registers devices capable of transmitting RF (WiFi, Bluetooth, GPS, FM, NFC)
