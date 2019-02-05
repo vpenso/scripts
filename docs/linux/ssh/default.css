@@ -1,0 +1,73 @@
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata);
+
+body { 
+  font-family: "Droid Serif", Helvetica, Arial, sans-serif;
+  background-color:whitesmoke;
+  line-height:1.7em
+}
+
+h1, h2, h3 {
+  margin-top:.4em;
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: normal;
+}
+
+h3 {
+  margin:0;
+  padding:0;
+}
+
+code, tt {
+  font-family: "Inconsolata","Ubuntu Mono", Consolas, "Liberation Mono", Courier, monospace;
+  padding: 1px 3px;
+  margin: 0;
+  border-radius: 3px;
+  background-color: whitesmoke;
+  box-shadow: 1px 1px gainsboro;
+  background-color: rgba(0,0,0,0.03);
+  white-space: nowrap;
+  color: rgba(0,0,0,0.7);
+}
+
+a, a code {
+  color:#0033ff;
+  text-decoration:none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  margin:0;
+  padding:.3em;
+  font-weight:bold;
+  text-align:left;
+  border-bottom: 1px solid;
+}
+
+td {
+  padding:.3em;
+  margin:0;
+  border-right: 1px solid;
+  vertical-align:top;
+}
+
+td:last-child {
+  border-right:0;
+}
+
+
+pre code {
+  display: block;
+  padding: 9.5px;
+  line-height: 1;
+  font-size: 0.9em;
+  overflow:auto;
+  width:auto;
+  white-space: pre-wrap;
+}
