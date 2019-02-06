@@ -40,7 +40,7 @@ Programs (processes) have **three data streams**:
 
 ---
 
-## Input/Output Redirection 
+## Standard Input/Output 
 
 
 STDIO data streams **automatically opened** at program start:
@@ -67,8 +67,6 @@ a < f   # input content of file f to STDIN of program a (same as a 0< f)
 ```
 
 [fld]: https://en.wikipedia.org/wiki/File_descriptor
-
-???
 
 ---
 
@@ -107,7 +105,7 @@ Limit the output to specific columns using `awk` (text-processor):
 
 ---
 
-## Composability (2)
+## I/O Redirection
 
 Shells provide a **versatile way to compose programs**:
 
