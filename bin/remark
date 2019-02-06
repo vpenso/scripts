@@ -1,0 +1,204 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2019 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+require 'erb'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] <markdown_file>
+
+<options>
+  -d, --debug                           Show stacktraces in case of errors.
+  -h, --help                            Show this help information.
+  -t, --title <title>                   Set the HTML document title
+  -v, --version                         Print version number.
+EOF
+
+# default HTML style sheet
+CSS = <<EOF
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata);
+
+body {
+  font-family: "Droid Serif", Helvetica, Arial, sans-serif;
+  background-color:whitesmoke;
+  line-height:1.7em
+}
+
+h1, h2, h3 {
+  margin-top:.4em;
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: normal;
+}
+
+h3 {
+  margin:0;
+  padding:0;
+}
+
+code, tt {
+  font-family: "Inconsolata","Ubuntu Mono", Consolas, "Liberation Mono", Courier, monospace;
+  padding: 1px 3px;
+  margin: 0;
+  border-radius: 3px;
+  background-color: whitesmoke;
+  box-shadow: 1px 1px gainsboro;
+  background-color: rgba(0,0,0,0.03);
+  white-space: nowrap;
+  color: rgba(0,0,0,0.7);
+}
+
+a, a code {
+  color:#0033ff;
+  text-decoration:none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  margin:0;
+  padding:.3em;
+  font-weight:bold;
+  text-align:left;
+  border-bottom: 1px solid;
+}
+
+td {
+  padding:.3em;
+  margin:0;
+  border-right: 1px solid;
+  vertical-align:top;
+}
+
+td:last-child {
+  border-right:0;
+}
+
+pre code {
+  display: block;
+  padding: 9.5px;
+  line-height: 1;
+  font-size: 0.9em;
+  overflow:auto;
+  width:auto;
+  white-space: pre-wrap;
+}
+
+EOF
+
+begin
+
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.css = CSS
+  $options.debug = false
+  $options.title = ''
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::WARN
+
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--title','-t',GetoptLong::REQUIRED_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--title'
+      $options.title = arg
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  file = ARGV.shift || raise('Specify input Markdown file')
+  raise("#{file} not existing") unless File.file?(file)
+  $options.markdown = File.read(file)
+
+  template = DATA.read
+
+  $stdout.puts ERB.new(template).result($options.instance_eval {binding})
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
+
+__END__
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css" media="screen">
+      <%= css %>
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+      <%= markdown %>
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
