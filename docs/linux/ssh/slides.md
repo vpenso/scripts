@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>SSH (Secure Shell)</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="default.css">
-  </head>
-  <body>
-    <textarea id="source">
-
 class: center,middle
-
 
 # SSH (Secure Shell)
 ## Working with Remote Computers
@@ -253,12 +242,3 @@ example.org:/data on /data
 » ssh-fs umount /data
 » ssh-fs umount ~/docs
 ```
-
-    </textarea>
-    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-    </script>
-    <script type="text/javascript">
-      var slideshow = remark.create();
-    </script>
-  </body>
-</html>

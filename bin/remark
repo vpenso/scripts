@@ -193,7 +193,7 @@ __END__
   </head>
   <body>
     <textarea id="source">
-      <%= markdown %>
+<%= markdown %>
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>
