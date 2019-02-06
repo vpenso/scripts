@@ -1,3 +1,21 @@
+### Compostability
+
+**Chaining multiple program together** is a powerful concept to enable a 
+compostable programs architecture. This idea originates from the 
+"[Unix philosophy][unp]":
+
+* Write programs that do one thing and do it well.
+* Write programs to work together.
+* Write programs to handle text streams, because that is a universal interface.
+
+The key character is **`|` (pipe)**:
+
+```bash
+a | b                        # run both a and b, send all output of a as input to b print the output of b
+```
+
+[unp]: https://en.wikipedia.org/wiki/Unix_philosophy
+
 ## Input/Output Redirection 
 
 STDIO (Standard Input/Output):
