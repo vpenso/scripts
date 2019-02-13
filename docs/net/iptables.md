@@ -89,6 +89,17 @@ Chains implemented in each table:
 | **security**          |            | ✓     | ✓       | ✓       |             |
 | **nat** (SNAT)        |            | ✓     |         |         | ✓           |
 
+* `DNAT` operations alter the destination address of a packet, `SNAT` operations alter the source address
+* **Chains process from top-to-bottom** (i.e. `PREROUTING` from all tables top-to-bottom, before `INPUT`)
+
+Chain traversal order:
+
+Source/Destination         | Chains
+---------------------------|-------------------------------------
+Incoming to localhost      | PREROUTING → INPUT
+Forwarding to another host | PREROUTING → FORWARD → POSTROUTING
+Localhost outgoing         | OUTPUT → POSTROUTING
+
 # Usage
 
 Store and/or restore a rule-set from a file:
@@ -209,7 +220,7 @@ iptables -A OUTPUT -p tcp --sport 110 -m state --state ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -p tcp --dports 25,465,587 -j REJECT
 ```
 
-### Sources & Destinations
+## Sources & Destinations
 
 ```bash
 # accept incoming packets from a specific IP
