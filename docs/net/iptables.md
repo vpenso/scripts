@@ -28,20 +28,29 @@ NF_IP_POST_ROUTING  | Outgoing/forwarded traffic after routing
 
 ## Rules
 
-Packet **filtering organized in rules** with a basic syntax like:
-
-    iptables <options> <chain> <matches> <target>
+Packet **filtering organized in rules**:
 
 * Rules **classify according to the type of decisions** they are used to make
 * Further organized within separate chains (representing the netfilter hooks)
+* Rules are placed within a specific chain of a specific table
+
+Basic syntax like:
+
+    iptables <options> <chain> <matches> <target>
 
 Properties of rules:
 
-Property | Description
----------|--------------------------------------------------------------
-Chain    | Rules are placed within a specific chain of a specific table
-Matches  | Criteria that a packet must meet for the associated action
-Target   | Action triggered if a packet matches
+* `chain` - Rules are placed within a specific chain of a specific table
+* `matches` - Criteria that a packet must meet for the associated action
+* `target` - Action triggered if a packet metss matching criteria of a rule
+
+### Targets
+
+Divided into multiple categories:
+
+* Terminating: Terminates evaluation within the chain
+* Non-terminating: Continue evaluation within the chain
+* Jumping: Move to a different chain for additional processing
 
 
 ## Chains
@@ -49,7 +58,6 @@ Target   | Action triggered if a packet matches
 Chains are collections of rules:
 
 * Basically **determine when rules will be evaluated**
-* Checked linearly (top to bottom)
 * If no rule matches the default is applied
 * Either built-in (i.e. INPUT) or user defined
 
