@@ -1,18 +1,4 @@
 
-Enable IP forwarding in the kernel:
-
-```bash
-# persistant configuration
-grep ^net.ipv4.ip_forward /etc/sysctl.conf && sysctl -p
-net.ipv4.ip_forward=1
-# enable with sysctl
-sysctl -w net.ipv4.ip_forward=1
-# or enable in /proc
-echo 1 > /proc/sys/net/ipv4/ip_forward
-# add a NAT with forwarding rules
-iptables -t nat -A POSTROUTING -o <ext-iface> -j MASQUERADE
-iptables -A FORWARD -i <int-iface> -j ACCEPT
-```
 
 # iptables
 
@@ -23,7 +9,7 @@ Linux subsystems to filter/classify packets/datagrams/frames:
   - Network address and port translation (NAT), masquerading, transparent proxies
   - QoS and policy routes with `iproute2`
   - Packet manipulation (mangling)
-* **nftables**, intended to replace Netfilter, configured with `nft` command
+* **nftables** [nftab] intended to replace Netfilter, configured with `nft` command
   - Reuses existing Netfilter subsystems
   - Backward compatibility layer supports `{ip,ip6}tables` commands
 
@@ -40,7 +26,7 @@ NF_IP_POST_ROUTING  | Outgoing/forwarded traffic after routing
 * Multiple modules connect to each hook in deterministic order (using a priority number)
 * Modules process a package and return a decision indicating package destination
 
-### Rules
+## Rules
 
 Packet **filtering organized in rules** with a basic syntax like:
 
@@ -58,7 +44,7 @@ Matches  | Criteria that a packet must meet for the associated action
 Target   | Action triggered if a packet matches
 
 
-### Chains
+## Chains
 
 Chains are collections of rules:
 
@@ -77,7 +63,7 @@ OUTPUT      | outgoing packets originating from localhost
 FORWARD     | packets not terminating or originating at/from localhost
 POSTROUTING | packets traverse this chain after routing
 
-### Tables
+## Tables
 
 Tables are collections of multiple chains
 
@@ -103,7 +89,7 @@ Chains implemented in each table:
 | **security**          |            | ✓     | ✓       | ✓       |             |
 | **nat** (SNAT)        |            | ✓     |         |         | ✓           |
 
-## Usage
+# Usage
 
 Store and/or restore a rule-set from a file:
 
@@ -138,7 +124,24 @@ iptables -vL -t raw
 iptables -vL -t security
 ```
 
-### Rules
+## Forwarding
+
+Enable IP forwarding in the kernel:
+
+```bash
+# persistant configuration
+grep ^net.ipv4.ip_forward /etc/sysctl.conf && sysctl -p
+net.ipv4.ip_forward=1
+# enable with sysctl
+sysctl -w net.ipv4.ip_forward=1
+# or enable in /proc
+echo 1 > /proc/sys/net/ipv4/ip_forward
+# add a NAT with forwarding rules
+iptables -t nat -A POSTROUTING -o <ext-iface> -j MASQUERADE
+iptables -A FORWARD -i <int-iface> -j ACCEPT
+```
+
+## Rules
 
 Examine tables, chains and rules:
 
@@ -159,7 +162,7 @@ iptables -A INPUT -m state —state ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -p icmp -j DROP
 ```
 
-### Services
+## Services
 
 DNS (port 53):
 
@@ -232,10 +235,10 @@ iptables -A OUTPUT -p tcp -d goolge.com -j DROP
 
 # References
 
-[netflt] Netfilter Linux kernel networking framework
-https://netfilter.org/
+[netflt] Netfilter Linux kernel networking framework  
+https://netfilter.org/  
 https://en.wikipedia.org/wiki/Netfilter
 
-[nftab] nftables in-kernel packet classification framework
+[nftab] nftables in-kernel packet classification framework  
 https://netfilter.org/projects/nftables/
 
