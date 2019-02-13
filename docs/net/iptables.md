@@ -16,57 +16,78 @@ iptables -A FORWARD -i <int-iface> -j ACCEPT
 
 # iptables
 
-Packet filter framework in Linux:
+Linux subsystems to filter/classify packets/datagrams/frames:
 
-* netfilter/xtables is the kernel-space component
-* iptables is the user-space tool
+* **netfilter** [netflt] configured with `{ip,ip6,arp,eb}tables` commands
+  - Stateless/stateful packet filtering (firewall)
+  - Network address and port translation (NAT), masquerading, transparent proxies
+  - QoS and policy routes with `iproute2`
+  - Packet manipulation (mangling)
+* **nftables**, intended to replace Netfilter, configured with `nft` command
+  - Reuses existing Netfilter subsystems
+  - Backward compatibility layer supports `{ip,ip6}tables` commands
 
-Official documentation is available at [netfilter.org](https://www.netfilter.org/documentation/)
+`netfilter` **kernel hooks** in network stack for all incomming/outgoing traffic:
+
+Hook                | Description
+--------------------|--------------------------------------------------
+NF_IP_PRE_ROUTING   | Before any routing decision
+NF_IP_LOCAL_IN      | After routing, package destined for the local system
+NF_IP_FORWARD       | After routing, package forwarded to another host
+NF_IP_LOCAL_OUT     | Locally created outbound traffic
+NF_IP_POST_ROUTING  | Outgoing/forwarded traffic after routing
+
+* Multiple modules connect to each hook in deterministic order (using a priority number)
+* Modules process a package and return a decision indicating package destination
 
 ### Rules
 
-Packet filtering is based on rules with a basic syntax like:
+Packet **filtering organized in rules** with a basic syntax like:
 
     iptables <options> <chain> <matches> <target>
 
+* Rules **classify according to the type of decisions** they are used to make
+* Further organized within separate chains (representing the netfilter hooks)
+
 Properties of rules:
 
-| Property | Description                                                  |
-|----------|--------------------------------------------------------------|
-| Chain    | Rules are placed within a specific chain of a specific table |
-| Matches  | Criteria that a packet must meet for the associated action   |
-| Target   | Action triggered if a packet matches                         | 
+Property | Description
+---------|--------------------------------------------------------------
+Chain    | Rules are placed within a specific chain of a specific table
+Matches  | Criteria that a packet must meet for the associated action
+Target   | Action triggered if a packet matches
 
 
 ### Chains
 
-Chains are collections of rules for packet filtering:
+Chains are collections of rules:
 
+* Basically **determine when rules will be evaluated**
 * Checked linearly (top to bottom)
 * If no rule matches the default is applied
 * Either built-in (i.e. INPUT) or user defined
 
 List of built-in chains
 
-| Chain       | Comment                                                  |
-|-------------|----------------------------------------------------------|
-| INPUT       | incoming packets terminating at localhost                |
-| OUTPUT      | outgoing packets originating from localhost              |
-| FORWARD     | packets not terminating or originating at/from localhost |
-| PREROUTING  | packets traverse this chain before routing               |
-| POSTROUTING | packets traverse this chain after routing                |
+Chain       | Comment
+------------|----------------------------------------------------------
+PREROUTING  | packets traverse this chain before routing
+INPUT       | incoming packets terminating at localhost
+OUTPUT      | outgoing packets originating from localhost
+FORWARD     | packets not terminating or originating at/from localhost
+POSTROUTING | packets traverse this chain after routing
 
 ### Tables
 
-Tables are collections of chains:
+Tables are collections of multiple chains
 
-| Table    | Comment                                      |
-|----------|----------------------------------------------|
-| filter   | (default) actual packet filtering            |
-| nat      | rewrite packet source/destination            |
-| mangle   | alter packet headers/contents                |
-| raw      | avoid connection tracking                    |
-| security | SELinux internal                             |
+Table    | Comment
+---------|-----------------------------------
+filter   | (default) actual packet filtering
+nat      | rewrite packet source/destination
+mangle   | alter packet headers/contents
+raw      | avoid connection tracking
+security | SELinux internal
 
 Chains implemented in each table:
 
@@ -209,4 +230,12 @@ iptables -A OUTPUT -p tcp -d www.google.com -j DROP
 iptables -A OUTPUT -p tcp -d goolge.com -j DROP
 ```
 
+# References
+
+[netflt] Netfilter Linux kernel networking framework
+https://netfilter.org/
+https://en.wikipedia.org/wiki/Netfilter
+
+[nftab] nftables in-kernel packet classification framework
+https://netfilter.org/projects/nftables/
 
