@@ -57,7 +57,7 @@ then
                MPD_PLAYLISTS \
                MUSIC_DIR
 
-        alias mpc=mpc -p $MPD_PORT
+        alias mpc="mpc -p $MPD_PORT"
 
         if [ -d $MUSIC_DIR ]
         then

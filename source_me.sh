@@ -1,5 +1,5 @@
 #
-# Copyright 2012-2018 Victor Penso
+# Copyright 2012-2019 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+function _debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
 ## Repository Environment Variable ##
 
 # default location
 __source=$HOME/projects/scripts/source_me.sh
-# try to determine the source_me.sh fire location
+# try to determine the source_me.sh file location
 shell=$(ps -p $$ | tail -n1 | tr -s ' ' | sed -e 's/^[ \t]*//' | cut -d' ' -f4)
 # in Bash shells
 if [ "$shell" = "bash" ]
@@ -53,8 +59,9 @@ export PATH=$SCRIPTS/bin:$PATH
 PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
 
 for file in `\ls $SCRIPTS/var/aliases/*.sh`
-do 
-  source $file
+do
+	_debug source $file
+  	source $file
 done
 
 ## Add Repository to Shell Environment ## 
