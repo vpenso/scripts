@@ -1,49 +1,78 @@
+## Plain Text
 
+**What is [plain text][plx]?**
 
-# Plain Text
+* Loose term for content represented with **readable characters only**
+* May include a **limited** number of characters for **text arrangement**
+* Text considered "plain" as long as it is **[human-readable][hr]**
 
-**Why [Human-readable][hr] Plain Text?**
+**Why use plain text?**
 
-* Any computer can read plain text, **no proprietary software**
-* **Compatible with everything**: devices (mobile, PC), text editors, applications, etc.
-* **Sustainable over time**  since plain text documents have always been, and will always be, universally accessible
+* Any computer can read plain text, **no proprietary software** required
+* **Compatible with everything**: devices (mobile, PC), editors, applications
+* **Sustainable over time**, plain text documents universally processable
 * Enforces **simple organization** (accessibility) with files and directories
 * Favors content with **simple text structres** like headings, paragraphs, lists
 * **Prevents distraction** from tools like modern [WYSIWIG][wy] word processors
 * **Fast & productive** by focusing on the content
-* Enables **powerful text processing tools** available on the command-line (e.g. GNU [coreutils][cu])
+* Enables **powerful text processing tools** available on the command-line
 
+
+[plx]: https://en.wikipedia.org/wiki/Plain_text
 [hr]: https://en.m.wikipedia.org/wiki/Human-readable_medium
 [wy]: https://en.wikipedia.org/wiki/WYSIWYG
 [cu]: https://www.gnu.org/software/coreutils/manual/coreutils.html
 
-## Todo List
+---
+
+## Example:  Todo List
 
 [Todo.txt][tx] is a task list format in plain text:
 
-    [(<priority>)] [<date>] [<due>] [@<context> ...] [+<project> ...] <description>  
+```
+[(<priority>)] [<date>] [<due>] [@<context> ...] [+<project> ...] <description>
+```
 
-Fields:
+Field       | Description
+------------|------------------------------
+description | task description
+priority    | (optional) upper case character enclosed in parentheses
+date        | (optional) task creation date in the format `YYYY-MM-DD`
+context     | (optional) context preceded by an @, project preceded by a + 
+due         | (optional) due date for the task in the format `due:YYYY-MM-DD`
 
-- priority: (optional) upper case character enclosed in parentheses
-- date: (optional) task creation date in the format `YYYY-MM-DD`
-- context: (optional) context preceded by an @, project preceded by a + 
-- description: task description
-- due: (optional) due date for the task in the format `due:YYYY-MM-DD`
+```
+(A) Call Mom @Phone +Family
+(A) Schedule annual checkup +Health
+(B) Outline chapter 5 +Novel @Computer
+(C) Add cover sheets @Office +TPSReports
+Plan backyard herb garden @Home
+Pick up milk @GroceryStore
+Research self-publishing services +Novel @Computer
+x Download Todo.txt mobile app @Phone
+```
 
 [tx]: http://todotxt.org/ 
 
-## [Documents][dc]
+---
 
-**Documents in this repository use [Markdown][md]**, specifically [GitHub Flavored Markdown][gm]:
+## Markdown [Documents][dc]
 
-* **Readable** text for humans (non detracting markup)
+Why use [Markdown][md] for plain text formating?
+
+* **Readable** text for humans (non distracting markup)
 * **Easy** minimal formatting instructions
-* **Portable** cross-platform documents, editable in any text-capable application
+* **Portable** cross-platform documents, editable with text-capable application
 * **Flexible** selection of output formats including HTML, PDF, LateX, etc.
 * Standardization: RFC7763/7764, [CommonMark][cm]
 
-Alternatives are [ASCIIdoc][ad] or [Textile][tl]
+**Alternatives are [ASCIIdoc][ad] or [Textile][tl]**
+
+**Markdown Ecosystem**
+
+* Conversion to other formats: [pandoc](https://github.com/jgm/pandoc), [mkdocs](https://github.com/mkdocs/mkdocs/), [readthedocs](https://github.com/rtfd/readthedocs.org)
+* Viewer Markdown in the shell: [mdless](https://github.com/ttscoff/mdless), [mdv](https://github.com/axiros/terminal_markdown_viewer), [mdcut](https://github.com/lunaryorn/mdcat)
+* Edit Markdown online: [dillinger](https://github.com/joemccann/dillinger)
 
 [ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
 [cm]: https://commonmark.org/
@@ -51,19 +80,7 @@ Alternatives are [ASCIIdoc][ad] or [Textile][tl]
 [gm]: https://help.github.com/categories/writing-on-github/
 [md]: https://en.m.wikipedia.org/wiki/Markdown
 [tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
-
-### Markdown Ecosystem
-
-* Document conversion, generation:
-  - [pandoc](https://github.com/jgm/pandoc)
-  - [mkdocs](https://github.com/mkdocs/mkdocs/)
-  - [readthedocs](https://github.com/rtfd/readthedocs.org)
-* Command-line viewer:
-  - [mdless](https://github.com/ttscoff/mdless)
-  - [mdv](https://github.com/axiros/terminal_markdown_viewer)
-  - [mdcut](https://github.com/lunaryorn/mdcat)
-* [dillinger](https://github.com/joemccann/dillinger) online editor
-
+---
 
 ## Presentations
 
@@ -84,6 +101,8 @@ Display all **keystrokes as you type** with [screenkey](https://github.com/wavex
 * **F9** start to draw, **Alt-F9** quit
 * **Shift-F9** clear screen, **Ctrl-F9** toggle visibility
 
+---
+
 ## Pandoc
 
 Use [Pandoc][3] to generate HTML pages from Markdown with `pandoc-html-article`. Include a table of content and section numbering with `pandoc-html-book`. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 
@@ -103,7 +122,6 @@ For example to generate an HTML page from a document in this directory:
 1. Install the `pandoc` package on Debian (cf. [Installing Pandoc][4]).
 2. Load the `pandoc-html-*` aliases into your shell environment with → [source_me.sh][10].
 3. Generate an HTML page from a Markdown file.
-
 
 
 [3]: https://de.wikipedia.org/wiki/Pandoc 

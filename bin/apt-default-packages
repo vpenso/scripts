@@ -10,12 +10,15 @@ then
                 fonts-inconsolata \
                 fonts-powerline \
                 git-core \
+                gromit-mpx \
+                key-mon \
                 mpd \
                 mpc \
                 ncmpc \
                 pandoc \
                 powerline \
                 rsync \
+                screenkey \
                 sshfs \
                 sshuttle \
                 tcpdump \
