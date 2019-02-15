@@ -167,9 +167,9 @@ hi markdownItalic                 ctermfg=248
 hi markdownBold                   ctermfg=248 cterm=bold
 hi markdownListMarker             ctermfg=160 cterm=bold
 hi markdownHeadingDelimiter       ctermfg=33
-hi markdownLinkText               ctermfg=252
-hi markdownLinkDelimiter          ctermfg=236
-hi markdownLinkTextDelimiter      ctermfg=236
+hi markdownLinkText               ctermfg=167
+hi markdownLinkDelimiter          ctermfg=178
+hi markdownLinkTextDelimiter      ctermfg=178
 hi markdownUrl                    ctermfg=240
 hi markdownCode                   ctermfg=24
 hi markdownCodeBlock              ctermfg=24
