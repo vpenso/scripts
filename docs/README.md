@@ -69,13 +69,13 @@ Alternatives are [ASCIIdoc][ad] or [Textile][tl]
 
 Markdown base presentation slides:
 
-- [remark](https://github.com/gnab/remark) ↴ [bin/remark](../bin/remark)
+- [remark](https://github.com/gnab/remark) (help script ↴ [bin/remark](../bin/remark))
 - [reveal](https://github.com/hakimel/reveal.js)
 - [cleaver](https://github.com/jdan/cleaver)
 - [markdeck](https://github.com/arnehilmann/markdeck)
 - [marp](https://github.com/yhatt/marp/)
 
-**Highlight the mount cursor** and **key combinations** with [key-mon](https://github.com/scottkirkwood/key-mon)
+**Highlight the mouse cursor** and **key combinations** with [key-mon](https://github.com/scottkirkwood/key-mon)
 
 Display all **keystrokes as you type** with [screenkey](https://github.com/wavexx/screenkey)
 
