@@ -67,7 +67,7 @@ Alternatives are [ASCIIdoc][ad] or [Textile][tl]
 
 ## Presentations
 
-Markdown base presentation slides:
+Markdown base **presentation slides**:
 
 - [remark](https://github.com/gnab/remark) (help script ↴ [bin/remark](../bin/remark))
 - [reveal](https://github.com/hakimel/reveal.js)
