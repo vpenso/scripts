@@ -52,23 +52,37 @@ Alternatives are [ASCIIdoc][ad] or [Textile][tl]
 [md]: https://en.m.wikipedia.org/wiki/Markdown
 [tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
 
-### Ecosystem
+### Markdown Ecosystem
 
 * Document conversion, generation:
   - [pandoc](https://github.com/jgm/pandoc)
   - [mkdocs](https://github.com/mkdocs/mkdocs/)
   - [readthedocs](https://github.com/rtfd/readthedocs.org)
-* Presentation slides:
-  - [remark](https://github.com/gnab/remark)
-  - [reveal](https://github.com/hakimel/reveal.js)
-  - [cleaver](https://github.com/jdan/cleaver)
-  - [markdeck](https://github.com/arnehilmann/markdeck)
-  - [marp](https://github.com/yhatt/marp/)
 * Command-line viewer:
   - [mdless](https://github.com/ttscoff/mdless)
   - [mdv](https://github.com/axiros/terminal_markdown_viewer)
   - [mdcut](https://github.com/lunaryorn/mdcat)
 * [dillinger](https://github.com/joemccann/dillinger) online editor
+
+
+## Presentations
+
+Markdown base presentation slides:
+
+- [remark](https://github.com/gnab/remark) ↴ [bin/remark](../bin/remark)
+- [reveal](https://github.com/hakimel/reveal.js)
+- [cleaver](https://github.com/jdan/cleaver)
+- [markdeck](https://github.com/arnehilmann/markdeck)
+- [marp](https://github.com/yhatt/marp/)
+
+**Highlight the mount cursor** and **key combinations** with [key-mon](https://github.com/scottkirkwood/key-mon)
+
+Display all **keystrokes as you type** with [screenkey](https://github.com/wavexx/screenkey)
+
+**Screen Annotation** with [gromit-mpx](https://github.com/bk138/gromit-mpx)
+
+* **F9** start to draw, **Alt-F9** quit
+* **Shift-F9** clear screen, **Ctrl-F9** toggle visibility
 
 ## Pandoc
 
@@ -89,6 +103,8 @@ For example to generate an HTML page from a document in this directory:
 1. Install the `pandoc` package on Debian (cf. [Installing Pandoc][4]).
 2. Load the `pandoc-html-*` aliases into your shell environment with → [source_me.sh][10].
 3. Generate an HTML page from a Markdown file.
+
+
 
 [3]: https://de.wikipedia.org/wiki/Pandoc 
 [4]: http://pandoc.org/installing.html
