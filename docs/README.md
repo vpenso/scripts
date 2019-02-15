@@ -80,6 +80,7 @@ Why use [Markdown][md] for plain text formating?
 [gm]: https://help.github.com/categories/writing-on-github/
 [md]: https://en.m.wikipedia.org/wiki/Markdown
 [tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
+
 ---
 
 ## Presentations
