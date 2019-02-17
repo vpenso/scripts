@@ -1,13 +1,16 @@
 File                     | Description
 -------------------------|-------------------------------------
 [cd2mp3][cd2mp3]         | Extract audio tracks from a CD and convert it into a single MP3
+[yt2mp3][yt2mp3]         | Convert a Youtube video into an MP3 file
 
 [cd2mp3]: ../bin/cd2mp3
+[yt2mp3]: ../var/aliases/youtube.sh
 
 ### Audio
 
 ```bash
-pacman -S cdrtools mp3wrap                              # dependencies on Arch/etc
+# dependencies on Arch...
+pacman -S youtube-dl cdrtools mp3wrap  
 ```
 
 Extract audio tracks from a CD and convert it into a single MP3:
