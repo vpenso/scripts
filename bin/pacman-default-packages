@@ -19,6 +19,7 @@ then
                 bind-tools \
 		ccrypt \
                 cdrtools \
+                dvdbackup \
 		encfs \
 		exa \
 		feh \
@@ -26,6 +27,7 @@ then
 		firefox \
 		fzf \
 		git \
+                handbrake \
                 mp3wrap \
                 mpc \
 		mpd \
@@ -45,6 +47,7 @@ then
 		ttf-inconsolata \
 		vim \
                 vim-airline \
+                vlc \
 		xclip \
                 youtube-dl \
                 zsh-completions

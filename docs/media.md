@@ -23,7 +23,10 @@ mp3wrap output.mp3 *.mp3               # concatenate MP# files
 ### Video
 
 ```bash
-apt install vlc libdvd-pkg dvdbackup handbrake          # install components on Debian
+# dependencies on Debian
+apt install vlc libdvd-pkg dvdbackup handbrake          
+# dependencies on Arch...
+pacman -S vlc libdvdcss dvdbackup handbrake
 ```
 
 Media player VLC:
