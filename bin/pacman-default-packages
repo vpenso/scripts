@@ -46,5 +46,6 @@ then
 		vim \
                 vim-airline \
 		xclip \
+                youtube-dl \
                 zsh-completions
 fi
