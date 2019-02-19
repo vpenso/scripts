@@ -3,6 +3,7 @@
 ```bash
 pacman -Sy                     # update package database
 pacman -Ss <string>            # search package database       
+pacman -Si <package>           # show information about package
 pacman -S <name>               # install package
 pacman -Suy                    # upgrade all packages
 pacman -R <name>               # remove package

@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+#
+# Copyright 2019 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT <name>
+
+Convert an entire CD into a single MP3 file
+
+positional argument:
+   name                name of the output file, the suffix .mp3
+                       will be added automatically
+
+optional arguments:
+  -h, --help           show this help message
+  --version            program version number "
+
+# Parse the command line options
+ARGS=$(getopt -o h -l "help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
+done
+
+CD_DRIVE=/dev/sr0
+
+name=${1:?Specify output file name (no *.mp3 suffix required)}
+name="$name.mp3"
+
+dir=$(pwd)
+tmpdir=$(mktemp -d)
+# change into a temporary directory
+cd $tmpdir
+# copy CD tracks as MP3 files
+cdda2mp3 dev=$CD_DRIVE
+# concatenate MP3s into a single file
+mp3wrap o.mp3 *.mp3
+# copy output file into the original working directory
+cp o_MP3WRAP.mp3 $dir/$name
+# go back to the working directory
+cd - >/dev/null
+# remove all artefacts
+rm -r $tmpdir
+
+ls -1 $name
+
+exit 0
