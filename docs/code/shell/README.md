@@ -1,5 +1,5 @@
 
-## Shell
+# Command-line
 
 **Why, learn it?**
 
@@ -10,14 +10,15 @@
 * **Diversity** of tooling and interfaces (makes difficult tasks possible)
 * Improves **productivity** with increased proficiency
 
-A [shell][sh] is a **user-interface** to system functions and other applications 
+Note: Very often the terms **shell**, **terminal** and **console** are used as synonym 
 
-* Shells fall into one of two categories – **command-line** and graphical
+A [shell][sh] is a **user interface** to system functions and other applications 
+
+* Shells fall into one of two categories – command-line and graphical
 * A [**terminal** emulator][te] is a wrapper interfacing a shell with the OS, i.e. [xterm][xt]
-* Usually refers to a [command-line interface][cl] (CLI), i.e. [Bash][bs] and [Zsh][zh]
+* The interface is provided by a [command-line interpreter][cl] (CLI) i.e. [Bash][bs] and [Zsh][zh]
 * Also a [text user interface][tx] (TUI) runs in a terminal, i.e. [Vim][vi] (text editor)
 
-Note: Many use shell, terminal and console as synonym 
 
 [bs]: https://en.wikipedia.org/wiki/Bash_(Unix_shell)
 [cl]: https://en.wikipedia.org/wiki/Command-line_interface
