@@ -26,10 +26,11 @@ HELP = <<EOF
 #{exec_name} [<options>] <markdown_file>
 
 <options>
-  -d, --debug                           Show stacktraces in case of errors.
-  -h, --help                            Show this help information.
+  -d, --debug                           Show stacktraces in case of errors
+  -e, --erb-template <file>             Alternative ERB template
+  -h, --help                            Show this help information
   -t, --title <title>                   Set the HTML document title
-  -v, --version                         Print version number.
+  -v, --version                         Print version number
 EOF
 
 # default HTML style sheet
@@ -162,21 +163,30 @@ begin
     when '--title'
       $options.title = arg
     when '--version'
-      $stdout.puts 0.2
+      $stdout.puts 0.3
       exit 0
     end
   end
 
+  # read the content (slides with Markdown format)
   file = ARGV.shift || raise('Specify input Markdown file')
   raise("#{file} not existing") unless File.file?(file)
   $options.markdown = File.read(file)
 
   if $options.template.empty?
+    # use template included in this script
     template = DATA.read
   else
+    # read template from a file defined by the user
     template = File.read($options.template)
   end
 
+  # use the filename as slide title if non was defined
+  if $options.title.empty?
+    $options.title = file.split('.')[0..-2].join('.')
+  end
+
+  # render the template
   $stdout.puts ERB.new(template).result($options.instance_eval {binding})
 
 rescue => exc
