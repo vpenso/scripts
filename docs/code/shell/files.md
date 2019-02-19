@@ -1,5 +1,5 @@
 
-# Files & Directories
+## Files & Directories
 
 Typically data stored in a file-systems is organized within a **tree structure**.
 
@@ -24,6 +24,10 @@ Following shows the hierarchical listing of the home directory of a use "jdow":
 │   └── /home/jdow/music/sound.mp3
 └── /home/jdow/var
 ```
+
+---
+
+## Path
 
 A **path** specifies a unique location in the directory tree: 
 
@@ -51,6 +55,7 @@ Paths are constructed with the following notation:
 ./.<path>                # hide a path by prefixing it with a dot 
 ```
 
+---
 
 ## ls/tree
 
@@ -80,6 +85,10 @@ The **classify** option `-F` appends symbols to filenames:
 |       named pipe
 ```
 
+---
+
+## ls colors
+
 The `LS_COLORS` variable is used to define colors for the ls command.
 Use the **`dircolors`** program for a more complex configuration:
 
@@ -98,6 +107,9 @@ echo 'eval "$(dircolors -b ~/.dircolors)"' >> ~/.profile
 
 Comprehensive example in the [bin/dir-colors](../../../bin/dir-colors) program
 
+---
+
+## tree & exa
 
 **`tree`** lists directories in a tree like format:
 
@@ -114,6 +126,8 @@ alias el='exa -l --git'
 alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
 ```
+
+---
 
 ## Naming Conventions
 
@@ -143,111 +157,9 @@ foo*bar
 foo%bar
 ```
 
-## Permissions
+---
 
-The `ls -l` command lists files & directories with ownership and permissions
-
-```bash
->>> ls -ld /tmp              # ownership and permissions of /tmp
-drwxrwxrwt 16 root root 4.0K Nov 15 07:44 /tmp/
- ├───────┘    ├──┘ ├──┘
- │            │    └─ group
- │            └────── owner
- └─────────────────── permissions
-```
-
-Alternatively use the `stat -c <format>` command:
-
-```bash
->>> stat -c '%A %a %U %u %G %g' /tmp
-drwxrwxrwt 1777 root 0 root 0
- ├───────┘ ├──┘ ├──┘ │ ├──┘ └─ gid
- │         │    │    │ └────── group
- │         │    │    └──────── uid
- │         │    └───────────── user
- │         └────────────────── permissions octal
- └──────────────────────────── permissions human readable
-```
-
-The human readable permission consists of three **permission triads**, 
-for the owner, the group, and all others. Each triad (i.e. `rwx`) can 
-be configured with a selection of three characters from `[r-][w-][x-st]`:
-
-```
-r             read
-w             write
-x             execute
--             no read/write/execute
-s             siduid/setgid
-t             sticky bit
-```
-
-* The **setuid/gid** bits allow users to run an executable 
-  with the permissions of the executable's owner or group
-* The **Sticky** bit only owner and root can rename/delete files/dirs
-
-### chmod/chgrp/chown
-
-```bash
-id [<user>]                     # show user/group ID
-chgrp <group> <path>            # change group ownership
-chown <user>[:<group>] <path>   # change user(/group)
-chmod <mode> <path>             # change permissions
-umask <mode>                    # set default permissions
-umask -S                        # displays mask in simbolic notation
-```
-
-Change permissions with the `chmod` command.
-The format of `<mode>` is a combination of 3 fields:
-
-* Effected triad `u` user, `g` group, `a` all or `o` others 
-* `+` add permissions, `-` remove permissions
-* Permissions, a combination of `[rwxsStT]`
-
-Examples:
-
-```bash
-chmod +r ...              # read for everyone
-chmod ug+rx ...           # add read/execute for user/group
-chmod a-r ...             # remove read access for everyone
-chmod ugo-rwx             # remove all permissions
-chmod u=rw,g=r,o= ...     # user read/write, group read, no access for others
-chmod -R u+w,go-w ...     # set permissions recursive
-```
-
-Octal notation, think of rwx an binary variables `r*2^2 + w*2^1 + x*2^0`
-
-```
-7  rwx  111
-6  rw-  110
-5  r-x  101
-4  r--  100
-3  -wx  011
-2  -w-  010
-1  --x  001
-0  ---  000 
-```
-
-Examples
-
-```bash
-chmod 1755 ...            # sticky bit
-chmod 4755                # setuid
-chmod 2755                # setgid
-```
-
-### ACL
-
-```
-getfacl           # show ACL permissions
-setfacl           # modify ACL permissions
-```
-
-
-
-
-
-# Commands
+## Commands
 
 Navigate the directory tree:
 
@@ -293,56 +205,4 @@ more              # ^^
 wc                # count line/chars in a file
 touch             # create empty file, change timestamp 
 nl                # number lines of a file
-```
-
-## Find
-
-The `find` command is used to search for files and directories by various criteria
-
-```bash
-find <path>                               # list only directories
-find <path> -name "*.txt"                 # use wildcards
-            -name "abc[a-z][0-9]"         # use regex 
-find <path> -type f                       # files only
-            -type d                       # directories onlyQ
-            -type l                       # sym links
-            -type f -path '*..*'          # file in selected dires
-            -type f -not -path '*..*'     # files not selected dirs
-find <path> -mmin n                       # modified n minutes ago
-            -mmin -n                      # less then n minutes ago
-            -mmin +n                      # more then n minutes ago
-            -amin [+-]n                   # access time n minutes ago
-            -cmin [+-]n                   # change time n minutes ago
-            -mtime [+-]n                  # modified n days ago          
-            -newermt 2007-06-07 ! -newermt 2007-06-08 # range of dates
-            -size [+-]n[kMG]              # [more|less] blocksize [KB,MB,GB]                 
-```
-
-Work with the selected files:
-
-```bash
-find ... -print | xargs -r ...            # execute a command against the found files
-find ... -print0 | xargs -r -0 ...        # files separated using null byte to supprot 
-                                          # special chars, spaces, etc.
-find ... -exec ... {} \;                  # use a subprocess to execute a command
-```
-
-Options to `-exec <command>`:
-
-* Placeholder `{}` is replaced by the file name
-* `;` end of the command to exec, might need to be escaped (with a `\`) 
-* `+` append a list of file to the command (on call)
-
-Examples:
-
-```bash
-# change permissions on directories (single call of chmod)
-find . -type d -exec chmod 770 {} +
-# embedded bash script consuming the list of files
-find . -type d -exec bash -c 'for f; do echo "$f" ; done' _ {} +
-# search files within a time frame
-find . -newerat $(date -d '1 HOUR AGO' +%Y%m%d%H%M.%S) ! \
-       -newerat $(date -d '10 MINUTE AGO' +%Y%m%d%H%M.%S) -print
-# find file by appendix in currenct working directory (only)
-find . -maxdepth 1 -type f -name "*.txt"
 ```
