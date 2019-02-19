@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css" media="screen">
+
+      .remark-slide-content {
+        font-family: Inconsolata, "Courier New", Courier, monospace;
+        font-size: 18px;
+        line-height:1.4em;
+      }
+
+      .remark-slide-content h1 {
+        font-size: 45px;
+        margin-top:.4em;
+        margin-bottom:.4em;
+        line-height:1.2em;
+      }
+
+      .remark-slide-content h2 {
+        font-size: 40px;
+        margin-top:.4em;
+        margin-bottom:.4em;
+        line-height:1.2em;
+      }
+
+      .hljs-default .hljs {
+        background-color: whitesmoke;
+       }
+
+      .remark-code {
+        font-size: 14px;
+        line-height:1em;
+        border-radius: 3px;
+      }
+
+      .remark-inline-code {
+        font-size: 16px;
+        padding-top:2px;
+        padding-bottom:2px;
+        padding-left:3px;
+        padding-right:3px;
+        border-radius: 3px;
+        color:white;
+        background-color: black;
+        white-space: nowrap;
+      }
+    
+      a, a code {
+        text-decoration:none;
+      }
+
+      table {
+        margin: 0 auto;
+        min-width:80%;
+        border-collapse: collapse;
+      }
+      th {
+        margin:0;
+        padding:.3em;
+        font-weight:bold;
+        text-align:left;
+        border-bottom: 1px solid;
+      }
+      td {
+        padding:.3em;
+        margin:0;
+        border-right: 1px solid;
+        vertical-align:top;
+      }
+      td:last-child {
+        border-right:0;
+      }
+
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+<%= markdown %>
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>

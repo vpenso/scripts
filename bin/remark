@@ -117,6 +117,7 @@ begin
   $options.css = CSS
   $options.debug = false
   $options.title = ''
+  $options.template = ''
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -128,6 +129,7 @@ begin
 
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--erb-template','-e',GetoptLong::REQUIRED_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--title','-t',GetoptLong::REQUIRED_ARGUMENT],
@@ -137,6 +139,12 @@ begin
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
+    when '--erb-template'
+      if File.exist? arg
+        $options.template = arg
+      else
+        raise("#{arg} ERB template file not existing")
+      end
     when '--help'
       $stdout.puts HELP
       exit 0
@@ -154,7 +162,7 @@ begin
     when '--title'
       $options.title = arg
     when '--version'
-      $stdout.puts 0.1
+      $stdout.puts 0.2
       exit 0
     end
   end
@@ -163,7 +171,11 @@ begin
   raise("#{file} not existing") unless File.file?(file)
   $options.markdown = File.read(file)
 
-  template = DATA.read
+  if $options.template.empty?
+    template = DATA.read
+  else
+    template = File.read($options.template)
+  end
 
   $stdout.puts ERB.new(template).result($options.instance_eval {binding})
 
