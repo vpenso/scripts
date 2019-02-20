@@ -104,6 +104,23 @@ Display all **keystrokes as you type** with [screenkey](https://github.com/wavex
 
 ---
 
+## Presentation Symbols
+
+Use Unicode symbols in presentations (instead of icons/images)
+
+Type           | Symbols
+---------------|---------------------------------------
+Arrows         | ← → ↑ ↓ ↔ ↕ ⇄ ⇅ ↲ ↳ ↱ ⇤ ↶ ↷ ↺ ↻ ↯ ↖ ➘ ➚ 
+Math           | ∞ ± ≤ ≥ ≠ ≈ ÷ × ∅ ∑ 
+Sub/Superscript| ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤ
+Punctuation    | “” »« …
+Keys           | ␣ ¶ ↹ ↵ ⏎ · ⏏ ⌥
+Common         | ° ✓ ✔ ✗ ✘ ⚠
+
+Cf. [List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
+
+---
+
 ## Pandoc
 
 Use [Pandoc][3] to generate HTML pages from Markdown with `pandoc-html-article`. Include a table of content and section numbering with `pandoc-html-book`. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 
