@@ -1,11 +1,11 @@
-## File-System Mount
+## Mount
 
 ```bash
 /etc/fstab                                      # translated by systemd-fstab-generator into units
 /etc/systemd/system/*.mount                     # mount units
 systemctl --all -t mount                        # show mounts
-systemd.special                                 # units treated specially by systemd
 ```
+
 
 Mount units must be named after the mount point directories they control, cf `systemd-escape`.
 
@@ -52,3 +52,13 @@ Use tmpfs to mount /tmp:
 >>> cp /usr/share/systemd/tmp.mount /etc/systemd/system/tmp.mount
 >>> systemctl enable tmp.mount && systemctl start tmp.mount
 ```
+
+
+## References
+
+[mnt] Systemd Mount Unit Configuration  
+https://www.freedesktop.org/software/systemd/man/systemd.mount.html
+
+[spl] Systemd Special Units  
+https://www.freedesktop.org/software/systemd/man/systemd.special.html
+
