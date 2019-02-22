@@ -92,6 +92,7 @@ Markdown base **presentation slides**:
 - [cleaver](https://github.com/jdan/cleaver)
 - [markdeck](https://github.com/arnehilmann/markdeck)
 - [marp](https://github.com/yhatt/marp/)
+- [decktape](https://github.com/astefanutti/decktape) PDF exporter for remark
 
 **Highlight the mouse cursor** and **key combinations** with [key-mon](https://github.com/scottkirkwood/key-mon)
 
