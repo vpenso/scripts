@@ -2,53 +2,54 @@
 
 if [ -f /usr/sbin/pacman ]
 then
-	# select fastest mirror
-	sudo pacman-mirrors -c Germany
-	# update database & packages
-	sudo pacman --refresh \
+        # select fastest mirror
+        sudo pacman-mirrors -c Germany
+        # update database & packages
+        sudo pacman --refresh \
                     --sync \
                     --sysupgrade \
                     --noconfirm \
                     --quiet
-	# install required packages
-	sudo pacman --sync \
+        # install required packages
+        sudo pacman --sync \
                     --needed \
                     --noconfirm \
                     --quiet \
                 bat \
                 bind-tools \
-		ccrypt \
+                ccrypt \
                 cdrtools \
                 dvdbackup \
-		encfs \
-		exa \
-		feh \
-		firejail \
-		firefox \
-		fzf \
-		git \
+                encfs \
+                exa \
+                feh \
+                firejail \
+                firefox \
+                fzf \
+                git \
+                git-annex \
                 handbrake \
                 mp3wrap \
                 mpc \
-		mpd \
-		ncmpc \
-		neofetch \
-		pandoc \
-		powerline \
-		powerline-fonts \
-		python-pywal \
-		rsync \
-		ruby \
-		sshfs \
-		sshuttle \
-		tcpdump \
-		tmux \
+                mpd \
+                ncmpc \
+                neofetch \
+                pandoc \
+                powerline \
+                powerline-fonts \
+                python-pywal \
+                rsync \
+                ruby \
+                sshfs \
+                sshuttle \
+                tcpdump \
+                tmux \
                 tree \
-		ttf-inconsolata \
-		vim \
+                ttf-inconsolata \
+                vim \
                 vim-airline \
                 vlc \
-		xclip \
+                xclip \
                 youtube-dl \
                 zsh-completions
 fi
