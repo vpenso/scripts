@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+prefix=$1
+
+for file in $(ls -1)
+do
+        mv -v $file ${1}_$(date +%s).${file#*.}
+        sleep 1
+done
