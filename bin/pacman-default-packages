@@ -29,6 +29,7 @@ then
                 git \
                 git-annex \
                 handbrake \
+                mp3info \
                 mp3wrap \
                 mpc \
                 mpd \

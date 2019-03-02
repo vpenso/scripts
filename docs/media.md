@@ -10,15 +10,18 @@ File                     | Description
 
 ```bash
 # dependencies on Arch...
-pacman -S youtube-dl cdrtools mp3wrap  
+pacman -S youtube-dl cdrtools mp3info mp3wrap
 ```
 
-Extract audio tracks from a CD and convert it into a single MP3:
+Create/change MP3 audio files:
 
 ```bash
 cdda2mp3 dev=/dev/sr0                  # copy music tracks from CD in given drive
-mp3wrap output.mp3 *.mp3               # concatenate MP# files
+mp3wrap output.mp3 *.mp3               # concatenate MP3 files
+# set ID3 description
+mp3info -t $title -a $artist -n $track $file.mp3
 ```
+
 
 ### Video
 
