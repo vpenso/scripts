@@ -100,7 +100,7 @@ Display all **keystrokes as you type** with [screenkey](https://github.com/wavex
 
 **Screen Annotation** with [gromit-mpx](https://github.com/bk138/gromit-mpx)
 
-* **F9** start to draw, **Alt-F9** quit
+* **F9** toggle painting, **Alt-F9** quit
 * **Shift-F9** clear screen, **Ctrl-F9** toggle visibility
 
 ---
