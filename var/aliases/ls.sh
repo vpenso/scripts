@@ -8,16 +8,13 @@ alias td='tree -d'                 # list only dirs
 alias t2='tree -L 2'               # max recursive depth of 2 levels
 alias tu='tree -pfughF --du'       # permissions, user, group, sizes 
 
-
-if command -v exa |:
-then
+command -v exa >&- && {
         alias el='exa -l --git'
         alias eG='exa -lG --git'
         alias eT='exa -lT --git --group-directories-first -@ -L 2'
-fi
+}
 
-if command -v lsd |:
-then
+command -v lsd >&- && {
         alias l='lsd -1'
         alias lt='lsd --tree'
-fi
+}

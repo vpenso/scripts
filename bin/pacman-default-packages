@@ -29,6 +29,7 @@ then
                 git \
                 git-annex \
                 handbrake \
+                lsd \
                 mp3info \
                 mp3wrap \
                 mpc \
@@ -43,6 +44,7 @@ then
                 ruby \
                 sshfs \
                 sshuttle \
+                surf \
                 tcpdump \
                 tmux \
                 tree \
