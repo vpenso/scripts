@@ -8,6 +8,9 @@ Plug 'powerline/powerline'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+" https://github.com/ryanoasis/vim-devicons
+Plug 'ryanoasis/vim-devicons'
+
 " run :PlugInstall
 
 " Initialize plugin system
