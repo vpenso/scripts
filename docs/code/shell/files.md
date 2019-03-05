@@ -208,3 +208,5 @@ wc                # count line/chars in a file
 touch             # create empty file, change timestamp 
 nl                # number lines of a file
 ```
+
+[bat](https://github.com/sharkdp/bat) replacement for `cat`
