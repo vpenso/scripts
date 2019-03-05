@@ -118,22 +118,8 @@ Punctuation    | “” »« …
 Keys           | ␣ ¶ ↹ ↵ ⏎ · ⏏ ⌥
 Common         | ° ✓ ✔ ✗ ✘ ⚠
 
-Cf. [List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
-
----
-
-## [Nerd Fonts][nf]
-
-Install all fonts from the Nerd Fonts [Git repository][nfr]:
-
-```bash
-cd /tmp
-git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
-nerd-fonts/install.sh && rm -rf nerd-fonts
-```
-
-[nf]:  https://nerdfonts.com/
-[nfr]: https://github.com/ryanoasis/nerd-fonts
+Cf. [List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)  
+Cf. [Nerd Fonts](https://nerdfonts.com)
 
 ---
 

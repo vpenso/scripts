@@ -12,7 +12,11 @@ pacman -Fy                     # update file database
 pacman -Fs <string>            # search package containing file
 ```
 
-AUR (Arch User Repository)
+### AUR (Arch User Repository)
+
+```bash
+pacman -S base-devel yaourt
+```
 
 <https://aur.archlinux.org/>
 

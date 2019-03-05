@@ -16,6 +16,7 @@ then
                     --noconfirm \
                     --quiet \
                 bat \
+                base-devel \
                 bind-tools \
                 ccrypt \
                 cdrtools \
@@ -55,4 +56,14 @@ then
                 xclip \
                 youtube-dl \
                 zsh-completions
+fi
+
+# Install manually if you want AUR packages
+# pacman -S yaourt
+
+if [ -f /usr/bin/yaourt ]
+then
+        yaourt -S clustershell \
+                  gromit-mpx-git \
+                  key-mon
 fi
