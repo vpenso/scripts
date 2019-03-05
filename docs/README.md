@@ -122,6 +122,21 @@ Cf. [List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_c
 
 ---
 
+## [Nerd Fonts][nf]
+
+Install all fonts from the Nerd Fonts [Git repository][nfr]:
+
+```bash
+cd /tmp
+git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
+nerd-fonts/install.sh && rm -rf nerd-fonts
+```
+
+[nf]:  https://nerdfonts.com/
+[nfr]: https://github.com/ryanoasis/nerd-fonts
+
+---
+
 ## Pandoc
 
 Use [Pandoc][3] to generate HTML pages from Markdown with `pandoc-html-article`. Include a table of content and section numbering with `pandoc-html-book`. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 

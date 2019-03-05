@@ -127,6 +127,8 @@ alias eG='exa -lG --git'
 alias eT='exa -lT --git --group-directories-first -@ -L 2'
 ```
 
+[lsd](https://github.com/Peltoche/lsd) the next gen ls command 
+
 ---
 
 ## Naming Conventions
