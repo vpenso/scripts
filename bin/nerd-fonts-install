@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+mkdir ~/.fonts |:
+
+cd /tmp
+
+for zip in Inconsolata.zip \
+           InconsolataGo.zip
+do
+        curl -Lf https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/$zip -o $zip
+        unzip $zip
+done
+
+cp -v *.{ttf,otf} ~/.fonts
+
+cd - |:
+
+fc-cache -f -v
