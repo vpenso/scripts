@@ -6,8 +6,8 @@ echo \
     Ctrl-a ?       │ show key binding
     Ctrl-a -       │ new horizontal pane
     Ctrl-a |       │ new vertical pane  
-    Alt ←/↑/→/↓    │ move between panes
-    Ctrl-a ←/↑/→/↓ │ resize panes
+    Alt ← ↑ → ↓    │ move between panes
+    Ctrl-a ← ↑ → ↓ │ resize panes
     Ctrl-a x       │ close pane
     Ctrl-a c       │ new window
     Ctrl-a ,       │ rename window

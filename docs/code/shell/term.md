@@ -3,16 +3,17 @@
 
 Text terminals is a serial computer interface for text entry and display:
 
-* Historically [keyboard/screen][tm] for display and input of data on a remote computer (central mainframe)
+* Historically [keyboard/screen][tm] for display and input of data on a remote computer
 * [Terminal emulators][te] mimic a hardware (video) terminal in software
-* A system **console** is a special terminal (on modern computers a directly connected monitor/keyboard)
+* A system **console** is a special terminal 
+  - On modern computers a directly connected monitor/keyboard
   - Receives messages from the OS regarding booting/shutdown progress
-  - Modern Linux systems support **virtual consoles** to provide several text terminals on a single computer
+  - Linux support **virtual consoles** to provide several text terminals
   - Access with a key combination including function keys (e.g. Ctrl+Alt+F2)
 * [Control characters][cc] display control codes like line-feed, backspace, etc.
 * [Escape sequences][es], series of characters that give commands to the terminal
   - User for cursor movement, colors, etc.
-  - Consists of the ESC control character followed by a sequence of ordinary characters
+  - Consists of the `ESC` control character followed by a sequence of characters
 
 ```bash
 /dev/tty[0-9]               # teletypes, cf. man `tty`
@@ -33,11 +34,14 @@ reset                       # init terminal
 [te]: https://en.wikipedia.org/wiki/Terminal_emulator
 [tm]: https://en.m.wikipedia.org/wiki/Computer_terminal
 
+---
+
 ## Terminal Multiplexer
 
-A [terminal multiplexer][tp] Manages multiple terminals within single login session (e.g. over SSH) 
+A [terminal multiplexer][tp] Manages multiple terminals within single login session:
 
-* Layout (multiplex) **multiple terminal sessions on a single screen** with split panes and tabs
+* Multiplexs several terminal sessions on a single screen
+* Organises terminal with **split panes** and **tabs**
 * **Persistence** keeps the terminal sessions during logout until reconnect
 * **Session sharing** allows connections to a single sessions from different computers
 
@@ -46,6 +50,8 @@ Commonly used terminal multiplexers are [tmux][tx] and GNU [screen][sc].
 [tp]: https://en.m.wikipedia.org/wiki/Terminal_multiplexer
 [tx]: https://github.com/tmux/tmux
 [sc]: http://www.gnu.org/software/screen/
+
+---
 
 ### tmux
 
