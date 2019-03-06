@@ -15,6 +15,7 @@ command -v exa >&- && {
 }
 
 command -v lsd >&- && {
-        alias l='lsd -1'
-        alias lt='lsd --tree'
+        alias l='lsd -1F --group-dirs first'
+        alias l.='lsd -1 --all --group-dirs first'
+        alias lt='lsd -F --tree'
 }
