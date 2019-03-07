@@ -68,7 +68,10 @@ function vi_mode_prompt_info() {
 RPS1="$(vi_mode_prompt_info)"
 RPS2=$RPS1
 
-# install Zsh package deployment
+###################################################################################
+
+# Install Zsh Antigen from GitHub
+# https://github.com/zsh-users/antigen
 if ! [ -f ~/.zsh/antigen.zsh ]
 then
 
@@ -81,11 +84,11 @@ fi
 if [ -f ~/.zsh/antigen.zsh ]
 then
         ##
-        ## Install Packages
+        ## Install plugins/bundels
         ##
 
         source ~/.zsh/antigen.zsh
-        # list of packages to install
+        # list of bundles to install
         antigen bundle git
         antigen bundle zsh-users/zsh-completions           # https://github.com/zsh-users/zsh-completions
         antigen bundle zsh-users/zsh-autosuggestions       # https://github.com/zsh-users/zsh-autosuggestions
@@ -93,6 +96,8 @@ then
         antigen bundle olivierverdier/zsh-git-prompt
         # install packages
         antigen apply
+
+        # https://github.com/zsh-users/antigen/wiki/Configuration
 
         ##
         ## Package configuration
