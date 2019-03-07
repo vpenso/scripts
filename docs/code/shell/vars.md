@@ -1,13 +1,73 @@
+# Shell Variables
 
-# Variables 
+A variable is a symbolic name (placeholder) for its value (the data it stores).
 
-Assignment operator `=` (no spaces between variable name and value)
+Declare a variable using **assignment** `=`:
 
 ```bash
-V=v              # assign value v to variable V (no spaces allowed)
-$V               # expansion character, followed by a variable name V
-echo "$V"        # prints variable v
-echo -n "$V"     # prints variable without following LF
+date=2019/11/03
+temp=21.5C
+name=alice
+```
+
+Retrieving the value of a variable using a variable **reference** with `$` (dollar):
+
+```bash
+# the "echo" command prints input to the shell
+# reference the variables "date" and "temp" to read their values
+echo $date $temp
+# not a value, just the variable name
+echo date
+```
+
+This is called variable substitution, which depends on context:
+
+```bash
+# checks if a file/directory "2019/11/03" exists in order run it
+$date
+# tries to run a command "21.5C"
+$temp
+```
+
+Overwrite the value of a variable using (re)-assignment:
+
+```bash
+date=2020/02/01
+# assign an empty (null) value
+name=
+```
+
+You cannot have spaces around the `=` operator:
+
+```bash
+# declares an empty variable "name", and tries to run a command "jdow"
+name= jdow
+# tries to run a command "name" with on argument
+name =jdow
+# tries to run a command "name" with two arguments
+name = jdown
+```
+
+Quote white-space and special characters:
+
+```bash
+# declares a variable "name" with a value "j", and tries to run a command "dow"
+name=j dow
+# quote a value including space characters
+name='j dow'
+name='j d'ow
+name=j' 'dow
+# include tab and new line
+name='j\tdow\n\n\n'
+# shell interpreter forces to close with quote
+name=j'dow
+# preserve the literal quote
+name=j\'dow
+```
+
+# TODO
+
+```bash
 printf "${v}\n"  # print variable v
 read V           # read input into variable v
 export V=v       # set global variable V to value v
