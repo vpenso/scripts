@@ -1,0 +1,69 @@
+TERM screen-256color
+TERM xterm-256color
+RESET                 0
+FILE                  00;38;5;241
+DIR                   00;38;5;244
+LINK                  00;38;5;239
+MULTIHARDLINK         00 
+FIFO                  38;5;160 # pipe
+SOCK                  38;5;160 
+DOOR                  38;5;252 
+BLK                   38;5;160 # block device driver
+CHR                   38;5;252 # character device driver
+ORPHAN                38;5;160 # symlink to nonexistent file, or non-stat'able file
+SETUID                38;5;196 # file that is setuid (u+s)
+SETGID                38;5;196 # file that is setgid (g+s)
+CAPABILITY            30;41 # file with capability
+STICKY_OTHER_WRITABLE 04;38;5;27 # dir that is sticky and other-writable (+t,o+w)
+OTHER_WRITABLE        00;38;5;196 # dir that is other-writable (o+w) and not sticky
+STICKY                38;5;196 # dir with the sticky bit set (+t) and not other-writable
+EXEC                  01;38
+
+# Documents
+.pdf                  00;38;5;40
+.ps                   00;38;5;40
+.odf                  00;38;5;40
+.md                   00;38;5;124
+.markdown             00;38;5;124
+.txt                  00;38;5;124
+.html                 00;38;5;25
+.erb                  00;38;5;25
+.css                  00;38;5;25
+*README               01;38;5;88
+*README.txt           00;38;5;88
+*readme.txt           00;38;5;88
+*README.md            01;38;5;88
+*README.markdown      01;38;5;88
+# Media
+.png                  00;38;5;28
+.jpg                  00;38;5;28
+.wmv                  00;38;5;28
+.mpg                  00;38;5;28
+.avi                  00;38;5;28
+# coding
+.rb                   00;38;5;22
+.py                   00;38;5;22
+.ipynb                00;38;5;22
+.cpp                  00;38;5;22
+.c                    00;38;5;22
+.c++                  00;38;5;22
+.bash                 00;38;5;28
+.sh                   00;38;5;28
+.pl                   00;38;5;22
+.tex                  01;38;5;245
+*Makefile             01;38;5;202
+*Rakefile             01;38;5;202
+*build.xml            01;38;5;202
+*1                    01;38;5;245
+*gitrepos             00;38;5;196
+*yml                  00;38;5;27
+*xml                  00;38;5;27
+*json                 00;38;5;27
+*cfg                  00;38;5;27
+*rc                   00;38;5;27
+*conf                 00;38;5;27
+*config               00;38;5;27
+*cnf                  00;38;5;27
+.log                  01;38;5;196
+
+# vim: set syntax=sh:

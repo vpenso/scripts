@@ -97,6 +97,13 @@ echo "
             zj │ move cursor to next fold
             zk │ move cursor to previous fold
 
+             BUFFER
+       
+          :new │ open a new buffer
+         :tabe │ open a new buffer tab
+           :ls │ list all buffers
+  
+
             COMMANDS
 
        :e PATH │ open file/directory
