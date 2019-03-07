@@ -5,6 +5,8 @@ apt-cache show gnome | grep Depends | cut -d: -f2- | tr -d ' ' | tr ',' "\n" | s
 apt install --no-install-recommends xorg gnome-core
 ```
 
+Extensions [Hide Top Bar](https://extensions.gnome.org/extension/545/hide-top-bar/)
+
 ## Tracker
 
 * [Tracker](https://github.com/GNOME/tracker) is a service persistently indexing user data to  provide a metadata database
