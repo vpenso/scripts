@@ -6,7 +6,8 @@ VOL_ALIAS_HELP="\
 "
 
 
-command -v amixer &>- {
+command -v amixer >&- && {
+
         function vol-amixer() {
         
                 local command=$1
@@ -43,7 +44,7 @@ s,  stop                Stop playing music
 u,  update              Update database
 "
 
-command -v mpd >&- && command -v mpc &>- {
+command -v mpd >&- && command -v mpc >&- && {
         MPD_PORT=6666
         MPD_CONF=$SCRIPTS/etc/mpdconf
         MPD_PLAYLISTS=$HOME/.mpd/playlists
