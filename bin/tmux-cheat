@@ -15,7 +15,15 @@ echo \
     Ctrl-a w       │ list windows
     Ctrl-a d       │ detach from session (run tmux attach)
     Ctrl-a a       │ send prefix key to program in pane 
-    Ctrl-a [       │ enter scroll mode (press q to exit) 
+
+Copy & paste (Vi style)
+
+    Ctrl-a [       │ enter scroll mode (press q to exit)
+    h,j,k,l        │ navigate to selection
+    Space          │ start selection
+    Enter          │ copy selection
+    Ctrl-a ]       │ paste selection
+
 
 Simultaneous keyboard input on all panes:
 
