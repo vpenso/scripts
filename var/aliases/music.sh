@@ -6,8 +6,7 @@ VOL_ALIAS_HELP="\
 "
 
 
-if command -v amixer |:
-then
+command -v amixer &>- {
         function vol-amixer() {
         
                 local command=$1
@@ -24,8 +23,7 @@ then
         }
 
         alias vl=vol-amixer
-fi
-
+}
 
 MPC_ALIAS_HELP="\
 @,  crop                Remove songs except current from playlist
@@ -45,8 +43,7 @@ s,  stop                Stop playing music
 u,  update              Update database
 "
 
-if command -v mpd |: && command -v mpc |:
-then
+command -v mpd >&- && command -v mpc &>- {
         MPD_PORT=6666
         MPD_CONF=$SCRIPTS/etc/mpdconf
         MPD_PLAYLISTS=$HOME/.mpd/playlists
@@ -108,7 +105,7 @@ then
         then
                 alias n=ncmpc -p $MPD_PORT
         fi
-fi
+}
 
 
 pulse-restart() {
