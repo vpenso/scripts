@@ -1,4 +1,5 @@
 command -v bat >&- && {
         export BAT_THEME=OneHalfLight
-        alias cat=bat
+        alias b=bat
+        alias bp='bat --plain'
 }
