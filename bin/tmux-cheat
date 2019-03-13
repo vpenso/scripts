@@ -4,6 +4,7 @@ echo \
 "Hold Shift to select text with mouse.
 
     Ctrl-a ?       │ show key binding
+    Ctrl-a r       │ reload ~/.tmux.conf
     Ctrl-a -       │ new horizontal pane
     Ctrl-a |       │ new vertical pane  
     Alt ← ↑ → ↓    │ move between panes
@@ -18,18 +19,16 @@ echo \
 
 Copy & paste (Vi style)
 
+    Ctrl-a /       │ enter copy mode, and start search
+    n              │ next result
+    Shift-n        │ previous result 
     Ctrl-a [       │ enter scroll mode (press q to exit)
     h,j,k,l        │ navigate to selection
-    Space          │ start selection
-    Enter          │ copy selection
+    v,Space        │ start selection
+    y,Enter        │ copy selection
     Ctrl-a ]       │ paste selection
-
 
 Simultaneous keyboard input on all panes:
 
     Ctrl-a :setw synchronize-panes [on|off]
-
-Reload the configuration file.
-
-    Ctrl-a :source-file ~/.tmux.conf
 "
