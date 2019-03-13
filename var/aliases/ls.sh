@@ -24,7 +24,7 @@ command -v exa >&- && {
 # if the `lsd` command is installed
 command -v lsd >&- && {
         alias ls=lsd
-        alias l='lsd -1F --group-dirs first'
-        alias l.='lsd -1 --all --group-dirs first'
+        alias l='lsd -1F --group-dirs=first'
+        alias l.='lsd -1 --all --group-dirs=first'
         alias lt='lsd -F --tree'
 }
