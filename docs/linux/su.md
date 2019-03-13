@@ -37,6 +37,22 @@ sudo -s <user>             # executes $SHELL as user
 sudo -E <command>          # preserver environment variables (no shell functions)
 ```
 
+Path variables are not inherited with option `--preserve-env`, therefore set them explicitly
+
+```bash
+sudo -E PATH=$HOME/bin:$PATH -- env | grep PATH
+```
+
+Run a shell with option `--shell` to execute multiple commands:
+
+```bash
+sudo -sE PATH=$HOME/bin:$PATH -- <<EOF
+        id
+        pwd
+        env | grep PATH
+EOF
+```
+
 ### Configuration
 
 Basic policy:
