@@ -19,10 +19,11 @@ echo \
 
 Copy & paste (Vi style)
 
-    Ctrl-a /       │ enter copy mode, and start search
+    Ctrl-a [       │ copy mode
+    q, Esc         │ exit copy mode
+    Ctrl-a /       │ copy mode, start search
     n              │ next result
     Shift-n        │ previous result 
-    Ctrl-a [       │ enter scroll mode (press q to exit)
     h,j,k,l        │ navigate to selection
     v,Space        │ start selection
     y,Enter        │ copy selection

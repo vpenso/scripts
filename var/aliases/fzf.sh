@@ -21,6 +21,8 @@ echo "
             KEYBINDING
 
          ctrl-t │ paste selection onto the command-line
+         tab    │ mark item
+         enter  │ select item(s)
          ctrl-r │ paste command from history
           alt-c │ cd into slected directory
         **<tab> │ trigger fuzzy completion
