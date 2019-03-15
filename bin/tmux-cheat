@@ -1,45 +1,50 @@
 #!/bin/bash
 
 echo \
-"Hold Shift to select text with mouse.
+"Control key symbol ✲  represents Ctrl-a
 
-    Ctrl-a ?       │ show key binding
-    Ctrl-a r       │ reload ~/.tmux.conf
-    Ctrl-a -       │ new horizontal pane
-    Ctrl-a |       │ new vertical pane  
-    Alt ← ↑ → ↓    │ move between panes
-    Ctrl-a ← ↑ → ↓ │ resize panes
-    Ctrl-a x       │ close pane
-    Ctrl-a c       │ new window
-    Ctrl-a ,       │ rename window
-    Ctrl-a n/p     │ next/previous window
-    Ctrl-a w       │ list windows
-    Ctrl-a d       │ detach from session (run tmux attach)
-    Ctrl-a a       │ send prefix key to program in pane 
+    ✲  ?           │ show key binding
+    ✲  r           │ reload ~/.tmux.conf
+    ✲  x           │ close pane
+    ✲  c           │ new window
+    ✲  ,           │ rename window
+    ✲  n|p         │ next/previous window
+    ✲  w           │ list windows
+    ✲  d           │ detach from session (run tmux attach)
+    ✲  a           │ send prefix key to program in pane 
 
-Copy & paste (Vi style)
+          copy & paste (Vi style)
 
-    Ctrl-a [       │ copy mode
+    ✲  [           │ copy mode
     q, Esc         │ exit copy mode
-    Ctrl-a /       │ copy mode, start search
+    ✲  /           │ copy mode, start search
     n              │ next result
-    Shift-n        │ previous result 
+    ⇧ n            │ previous result 
     h,j,k,l        │ navigate to selection
     v,Space        │ start selection
     y,Enter        │ copy selection
-    Ctrl-a ]       │ paste selection
+    ✲  ]           │ paste selection
 
              plugin manager
 
-    Ctrl-a I       │ install plugins in ~/.tmux/plugins/
-    Ctrl-a U       │ update plugins
-    Ctrl-a Alt u   │ uninstall plugins
+    ✲  I           │ install plugins in ~/.tmux/plugins/
+    ✲  U           │ update plugins
+    ✲  ⎇   u       │ uninstall plugins
 
               yank plugin
 
     y              │ copy mode selection to clipboard
-    Ctrl-a y       │ copy text from CLI to clipboard
-    Ctrl-a Y       │ copy working directory to the clipboard
+    ✲  y           │ copy text from CLI to clipboard
+    ✲  Y           │ copy working directory to the clipboard
+
+           pain control plugin
+
+    ✲  h|j|k|l     │ select pane left|below|above|right
+    ✲  ⇧  h|j|k|l  │ resize pane left|down|up|right 
+    ✲  |           │ split current pane horizontally
+    ✲  -           │ split current pane vertically
+    ✲  \           │ split current pane full width horizontally
+    ✲  _           │ split current pane full width vertically
 
 Simultaneous keyboard input on all panes:
 
