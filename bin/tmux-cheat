@@ -29,6 +29,18 @@ Copy & paste (Vi style)
     y,Enter        │ copy selection
     Ctrl-a ]       │ paste selection
 
+             plugin manager
+
+    Ctrl-a I       │ install plugins in ~/.tmux/plugins/
+    Ctrl-a U       │ update plugins
+    Ctrl-a Alt u   │ uninstall plugins
+
+              yank plugin
+
+    y              │ copy mode selection to clipboard
+    Ctrl-a y       │ copy text from CLI to clipboard
+    Ctrl-a Y       │ copy working directory to the clipboard
+
 Simultaneous keyboard input on all panes:
 
     Ctrl-a :setw synchronize-panes [on|off]
