@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+#
+# Copyright 2019 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+prefix=${1:-$ENV_PREFIX}
+test -z "$prefix" && {
+        echo Specify a target directory of set ENV_PREFIX
+        exit 1
+}
+version=${2:-2.8}
+
+# install dependencies on Debian
+command -v apt >&- && {
+        sudo apt install -qy \
+                build-essential \
+                pkg-config \
+                libevent-dev \
+                libncurses5-dev \
+                libutempter-dev
+}
+
+# work in an temporary directory
+tmp=$(mktemp -d) && cd $tmp
+
+git clone -q https://github.com/tmux/tmux
+cd tmux
+git checkout tags/$version -b build
+
+sh autogen.sh
+
+target=$prefix/tmux/$version
+./configure --prefix=$target \
+            --enable-utempter \
+            &> configure.log
+
+make j $(nproc) &> make.log
+
+make install &> install.log
+
+echo Read the build logs...
+find $(pwd) -name '*.log' | egrep 'configure|make|install'
+
+test -n "$ENV_MODULE_FILES" || {
+        echo Set ENV_MODULE_FILES for this script to create an environment modules file
+        exit 0
+}
+
+mkdir $ENV_MODULE_FILES/tmux
+cat > $ENV_MODULE_FILES/tmux/$version <<EOF
+#%Module1.0
+proc ModulesHelp { } {
+  puts stderr "tmux/$version - Adds Tmux $version to the environment"
+}
+
+module-whatis                      "Tmux $version"
+set             TMUX_PATH          $target
+prepend-path    PATH               \$TMUX_PATH/bin
+prepend-path    MANPATH            \$TMUX_PATH/share/man
+EOF
