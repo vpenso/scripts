@@ -100,7 +100,10 @@ echo "
              BUFFER
        
           :new │ open a new buffer
-         :tabe │ open a new buffer tab
+         :tabe │ new tab
+         :tabs │ list tabs
+            gt │ next tab
+            gT │ previous tab
            :ls │ list all buffers
   
 
@@ -115,6 +118,7 @@ echo "
             :E │ open explorer in directory of current file
           :sp. │ open explorer in horizontal split pane
           :vs. │ open explorer in horizontal split pane
+    **/*<name> │ fuzzy search <tab> to complete
  Crtl-w Ctrl-w │ switch between panes
              - │ on directory up
              % │ create new empty file
