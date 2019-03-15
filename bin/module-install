@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+#
+# Copyright 2019 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+prefix=${1:-$HOME/environment}
+version=${2:-4.2.2}
+
+# install dependencies on Debian
+command -v apt >&- && {
+        sudo apt install -y tcl tcl-dev
+}
+
+# work in an temporary directory
+tmp=$(mktemp -d)
+cd $tmp
+
+# get the source code, and checkout the required version
+git clone -q https://github.com/cea-hpc/modules.git
+cd modules
+git fetch -q
+git checkout -q v$version
+
+target=$prefix/modules/$version 
+module_files=$prefix/modulefiles
+./configure --prefix=$target\
+            --modulefilesdir=$module_files \
+            --with-modulepath=$module_files \
+            --disable-example-modulefiles \
+            > configure.log \
+&& \
+make -j $(nproc) &> make.log \
+&& \
+make install &> install.log
+
+echo Read the build logs...
+find $(pwd) -name '*.log' | egrep 'configure|make|install'
+
+script=$target/source_me
+# script to load this versions of modules
+cat > $script <<EOF
+DIR="\$( cd "\$( dirname "\$0" )" && pwd )"
+export PATH=\$DIR/bin:\$PATH
+source \$DIR/init/zsh
+export ENV_PREFIX=$prefix
+export ENV_MODULE_FILES=$module_files
+EOF
+echo $script created
+
+zshrc=~/.zshrc.d/99_modules
+test -d ~/.zshrc.d && cat > $zshrc <<EOF
+source $target/source_me
+module use $module_files
+EOF
+echo $zshrc created
