@@ -31,12 +31,6 @@ echo \
     ✲  U           │ update plugins
     ✲  ⎇   u       │ uninstall plugins
 
-              yank plugin
-
-    y              │ copy mode selection to clipboard
-    ✲  y           │ copy text from CLI to clipboard
-    ✲  Y           │ copy working directory to the clipboard
-
            pain control plugin
 
     ✲  h|j|k|l     │ select pane left|below|above|right
@@ -49,11 +43,22 @@ echo \
              copycat plugin
 
     ✲  /           │ regex search (strings work too)
+    ✲  C-u         │ url search (http, ftp and git urls)
+    ✲  C-f         │ file search
     n              │ jumps to the next match
     N              │ jumps to the previous match
-    ⏎              │ copy a highlighted match
+    o              │ open a highlighted selection
+    C-o            │ open a highlighted selection with the \$EDITOR
+    ⇧  s           │ search the highlighted selection with search engine 
+
                      
-Simultaneous keyboar│d input on all panes:
+              yank plugin
+
+    y              │ copy mode selection to clipboard
+    ✲  y           │ copy text from CLI to clipboard
+    ✲  Y           │ copy working directory to the clipboard
+
+Simultaneous keyboard input on all panes:
 
     Ctrl-a :setw synchronize-panes [on|off]
 "

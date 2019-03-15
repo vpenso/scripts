@@ -23,7 +23,6 @@ then
                 sshfs \
                 sshuttle \
                 tcpdump \
-                urlview \
                 vim \
                 xclip \
                 zsh
