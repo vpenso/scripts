@@ -46,7 +46,14 @@ echo \
     ✲  \           │ split current pane full width horizontally
     ✲  _           │ split current pane full width vertically
 
-Simultaneous keyboard input on all panes:
+             copycat plugin
+
+    ✲  /           │ regex search (strings work too)
+    n              │ jumps to the next match
+    N              │ jumps to the previous match
+    ⏎              │ copy a highlighted match
+                     
+Simultaneous keyboar│d input on all panes:
 
     Ctrl-a :setw synchronize-panes [on|off]
 "
