@@ -46,6 +46,9 @@ set showmatch       " show matching brackets/parenthesis
 set incsearch       " find as you type search
 set hlsearch        " highlight search terms
 
+set textwidth=80
+set colorcolumn=+1 " highlight column after 'textwidth'
+
 " Switch to paste mode, disabling all kinds of smartness
 " and enable just pasting a whole buffer of test.
 set pastetoggle=<F3>
@@ -60,11 +63,11 @@ map <F6> :setlocal spell! spelllang=en<CR>
 "
 let mapleader = ','
 
-" Shortcut to rapidly toggle `set list`
+" highlight invisible characters
+" shortcut to rapidly toggle `set list`
 nmap <leader>l :set list!<CR>
 " Use the symbols from Unicode for tab-stops and end-of-line
-set listchars=tab:→\ ,eol:¬
-set listchars+=trail:•
+set listchars=tab:▸␣,eol:¬,space:·,nbsp:␣,trail:•,precedes:«,extends:»
 
 
 " Clearing highlighted searches
@@ -84,16 +87,23 @@ au FocusGained * :set rnu
 
 set t_Co=256
 set background=light
-" always use underline for bad spelling
 hi clear
 if exists("syntax on")
   syntax reset
 endif
-hi Visual       ctermfg=27   ctermbg=146
+
+hi Visual       ctermfg=none ctermbg=230
 hi SpellBad     ctermbg=224
-hi CursorLine   ctermbg=254  cterm=none
-hi LineNr       ctermfg=240  ctermbg=254
-hi Comment      ctermfg=249
+hi CursorLine   ctermbg=255 cterm=none
+hi LineNr       ctermfg=238 ctermbg=255
+" text width indicator column
+hi ColorColumn  ctermfg=none ctermbg=255
+" eol, extends and precedes
+hi NonText      ctermfg=253
+" nbsp, tab and trail
+hi SpecialKey   ctermfg=253 cterm=bold
+
+hi Comment      ctermfg=252
 hi Number       ctermfg=166
 hi String       ctermfg=74
 hi Boolean      ctermfg=39
@@ -105,22 +115,12 @@ hi PreProc      ctermfg=33   cterm=bold
 hi Type         ctermfg=160
 hi Special      ctermfg=92
 hi Error        ctermfg=none ctermbg=none
-"
-" highlight invisible characters
-"
-" "eol", "extends" and "precedes"
-hi NonText        ctermfg=166 cterm=bold
-" "nbsp", "tab" and "trail"
-hi SpecialKey     ctermfg=166 cterm=bold
-
-
 
 hi shQuote        ctermfg=241
 hi shOption       ctermfg=31
 hi shDerefSimple  ctermfg=34
 hi shCommandSub   ctermfg=31 ctermbg=none cterm=bold
 hi shSpecial      ctermfg=124
-
 
 hi htmlTag                        ctermfg=241
 hi htmlEndTag                     ctermfg=241
