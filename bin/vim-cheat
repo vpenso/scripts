@@ -11,6 +11,7 @@ echo "
            o/O │ open new line below/above
             cw │ delete word and enter insert mode
              R │ replace mode
+      Esc, C^[ │ escape from insert mode
       (cursor movement)
            h/l │ left/right
            j/k │ down/up

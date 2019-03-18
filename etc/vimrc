@@ -49,6 +49,12 @@ set hlsearch        " highlight search terms
 set textwidth=80
 set colorcolumn=+1 " highlight column after 'textwidth'
 
+" disable the arrow keys
+noremap <Up> <nop>
+noremap <Down> <nop>
+noremap <Left> <nop>
+noremap <Right> <nop>
+
 " Switch to paste mode, disabling all kinds of smartness
 " and enable just pasting a whole buffer of test.
 set pastetoggle=<F3>
