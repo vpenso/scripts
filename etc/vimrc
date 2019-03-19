@@ -46,6 +46,9 @@ set showmatch       " show matching brackets/parenthesis
 set incsearch       " find as you type search
 set hlsearch        " highlight search terms
 
+" more powerful backspacing
+set backspace=indent,eol,start
+
 set textwidth=80
 set colorcolumn=+1 " highlight column after 'textwidth'
 
