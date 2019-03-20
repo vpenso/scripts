@@ -33,7 +33,6 @@ set guioptions-=T
 set showtabline=0   " don't show tab bar
 set laststatus=2    " always show status line
 set spell           " spell checking on
-set cursorline      " highlight current line
 set showmatch       " show matching brackets/parenthesis
 set incsearch       " find as you type search
 set hlsearch        " highlight search terms
@@ -43,6 +42,12 @@ set backspace=indent,eol,start
 set wrap            " wrap lines
 set showbreak=…     " if line numbers are of indicate it
 set expandtab       " no real tabs please!
+
+" highlight the current line & column
+set cursorline
+set cursorcolumn
+au WinLeave * set nocursorline nocursorcolumn
+au WinEnter * set cursorline cursorcolumn
 
 set textwidth=80
 set colorcolumn=+1 " highlight column after 'textwidth'
@@ -101,12 +106,19 @@ if exists("syntax on")
   syntax reset
 endif
 
-hi Visual       ctermfg=none ctermbg=230
-hi SpellBad     ctermbg=224
-hi CursorLine   ctermbg=255 cterm=none
-hi LineNr       ctermfg=238 ctermbg=255
+hi Visual ctermfg=none ctermbg=230
+" horizontal line at current cursor position
+hi CursorLine ctermbg=255 cterm=none
+" vertical line at current cursor position
+hi CursorColumn ctermfg=none ctermbg=255
 " text width indicator column
-hi ColorColumn  ctermfg=none ctermbg=255
+hi ColorColumn ctermfg=none ctermbg=254
+" line numbering on the left
+hi LineNr ctermfg=235 ctermbg=250
+" line numbering in cursor line
+hi CursorLineNR ctermfg=232 ctermbg=243 cterm=bold
+
+hi SpellBad ctermbg=224
 " eol, extends and precedes
 hi NonText      ctermfg=253
 " nbsp, tab and trail

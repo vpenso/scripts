@@ -11,20 +11,25 @@ echo "
            o/O │ open new line below/above
     Esc, <C^[> │ escape from insert mode
 
-      (cursor movement)
-       h,j,k,l │ left, down, up, right
-             w │ forward to start of next word
-             b │ backward to start of current/previous word
-             e │ forward to end of current/next word
-            ge │ backward to end of previous word
-           {,} │ beginning/end of current paragraph
-           W/B │ forward/backwards one word (space separated)
-           $/0 │ end of line/first character in line
-          ^,g_ │ first,last non-blank character in line
-           +,- │ first nonblank char of next,previous line
+            MOTIONS
+
+ [count]{hjkl} │ left, down, up, right (default one char)
+      [count]w │ word forward (start of next word)
+      [count]b │ word backward (start of current/previous word)
+      [count]e │ word forward (end of current/next word)
+     [count]ge │ word backward (end of previous word)
+             0 │ first char in current line
+             ^ │ first non-blank char in current line
+             $ │ last char in current line
+            g_ │ last non-blank char in current line
+      [count]+ │ first non-blank char of lines downward
+      [count]- │ first non-blank char of lines upward
+      [count]G │ first non-blank of line (default last line)
+      [count]( │ sentences backward
+      [count]) │ sentences forward
+      [count]{ │ paragraphs forward
+      [count]} │ paragraphs backward
              % │ move to matching parent
-          gg/G │ start/end of file (nG for a specific line)
-         H/M/L │ home/middle/last line on the screen
    <C-d>/<C-u> │ scroll down/up 1/2 page
    <C-e>/<C-y> │ scroll down/up one line
    <C-f>/<C-b> │ scroll full screen up/down
@@ -61,9 +66,11 @@ echo "
 
              SEARCH
 
-f{char}/F{char} │ search char to the next/previous (repeat ;/,)
+        f{char} │ forward search char
+        F{char} │ backward search char
+              ; │ repeat char search
    /pattern<CR> │ search word in file
-  ?/pattenr<CR> │ search word in file backwards
+   ?pattern<CR> │ search word in file backwards
             n,N │ find next/previous occurrence
             *,# │ search term under cursor (next/previous)
            (substitution)
