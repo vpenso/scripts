@@ -21,6 +21,7 @@ echo "
           e/ge │ next/previous end of word
            $/0 │ end of line/first character in line
              ^ │ first non-blank character in line
+            g_ │ last non-blank character in line
              % │ move to matching parent
           gg/G │ start/end of file (nG for a specific line)
          H/M/L │ home/middle/last line on the screen
@@ -140,7 +141,7 @@ echo "
 
               KEYS
 
-            F3 │ enable paste mode (when in insert mode)${R}
+            F3 │ enable paste mode (when in insert mode)
             F5 │ toggle German spell checking 
             F6 │ toggle English spell checking 
 
