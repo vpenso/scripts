@@ -3,7 +3,7 @@
 
 echo "
          NORMAL MODE
- 
+
     (switch to insert mode)
              i │ insert before the cursor
              I │ insert text on all selected lines in visual mode
@@ -33,7 +33,7 @@ echo "
         (text handling)
            x/X │ delete character under/left to the cursor
              r │ replace character
-	 dt|dT │ forward/backword delete until character 
+         dt|dT │ forward/backword delete until character 
          dw/yw │ delete/copy word
            D/C │ delete/change until end of line
          dd/cc │ delete/change the whole line
@@ -42,9 +42,9 @@ echo "
            u/U │ undo last edit/undo line
         Ctrl-r │ redo last edit
             gv │ select last block
- 
+
           VISUAL MODE
- 
+
              v │ enter visual selection mode 
              V │ enter line selection mode 
              y │ copy selection into buffer
@@ -100,14 +100,14 @@ echo "
             zk │ move cursor to previous fold
 
              BUFFER
-       
+
           :new │ open a new buffer
          :tabe │ new tab
          :tabs │ list tabs
             gt │ next tab
             gT │ previous tab
            :ls │ list all buffers
-  
+
 
             COMMANDS
 
@@ -146,7 +146,7 @@ echo "
             F6 │ toggle English spell checking
 
             DIGRAPHS
-         
+
      :digraphs │ list a characters
     Ctrl-k = e │ € (Euro) 
   Ctrl-k aou : │ äöü (German umlaut)
@@ -154,7 +154,7 @@ echo "
  Ctrl-v u 00a9 │ © (character by unicode number)
 
             SPELLING
-         
+
             z= │ list alternatives if word is incorrect
             zG │ add the word to the spelling file
 "
