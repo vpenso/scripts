@@ -9,38 +9,39 @@ echo "
              I │ insert text on all selected lines in visual mode
            a/A │ append right to cursor/end-of-line
            o/O │ open new line below/above
-            cw │ delete word and enter insert mode
-             R │ replace mode
-      Esc, C^[ │ escape from insert mode
+    Esc, <C^[> │ escape from insert mode
+
       (cursor movement)
-           h/l │ left/right
-           j/k │ down/up
-           {/} │ beginning/end of current paragraph
-           w/b │ forward/backward one word
+       h,j,k,l │ left, down, up, right
+             w │ forward to start of next word
+             b │ backward to start of current/previous word
+             e │ forward to end of current/next word
+            ge │ backward to end of previous word
+           {,} │ beginning/end of current paragraph
            W/B │ forward/backwards one word (space separated)
-          e/ge │ next/previous end of word
            $/0 │ end of line/first character in line
-             ^ │ first non-blank character in line
-            g_ │ last non-blank character in line
+          ^,g_ │ first,last non-blank character in line
+           +,- │ first nonblank char of next,previous line
              % │ move to matching parent
           gg/G │ start/end of file (nG for a specific line)
          H/M/L │ home/middle/last line on the screen
- Ctrl-d/Ctrl-u │ scroll down/up 1/2 page
- Ctrl-e/Ctrl-y │ scroll down/up one line
- Ctrl-f/Ctrl-b │ scroll full screen up/down
+   <C-d>/<C-u> │ scroll down/up 1/2 page
+   <C-e>/<C-y> │ scroll down/up one line
+   <C-f>/<C-b> │ scroll full screen up/down
             ma │ mark location and jump back with 
             'a │ jump to last mark
+
         (text handling)
-           x/X │ delete character under/left to the cursor
-             r │ replace character
-         dt|dT │ forward/backword delete until character 
-         dw/yw │ delete/copy word
-           D/C │ delete/change until end of line
-         dd/cc │ delete/change the whole line
-           s/S │ change character/line
+           u,U │ undo last edit, undo line
+           x,X │ delete character under, left to the cursor
              J │ join two lines (delete line break)
-           u/U │ undo last edit/undo line
-        Ctrl-r │ redo last edit
+           r,R │ replace character, replace mode
+           s,S │ change character, change line
+           D,C │ delete/change until end of line
+         dd,cc │ delete/change the whole line
+         dw,db │ delete word, delete previous word
+         dt,dT │ forward/backward delete until character 
+         <C-r> │ redo last edit
             gv │ select last block
 
           VISUAL MODE
@@ -49,40 +50,40 @@ echo "
              V │ enter line selection mode 
              y │ copy selection into buffer
         (column selection)
-        Ctrl-v │ enter column selection mode
+         <C-v> │ enter column selection mode
              I │ insert in front of cursor (Esc to apply to all lines)
              A │ ~ append after cursor
-       Ctrl-r\" │ paste from register
+        <C-r>\" │ paste from register
              c │ change selection (delete and switch to insert mode)
-             r │ replace every charater in selections
-             d │ delete selection
+             r │ replace every character in selections
+             d │ delete 
              o │ toggle cursor to opposite corner
 
              SEARCH
 
-           f/F │ search char to the right/left (repeat ;/,)
-           n/N │ find next/previous occurrence
-             / │ search word in file 
-             ? │ search word in file backwards
-           */# │ search term under cursor (next/previous)
-          (substitution)
-   :s/pat/rpl/ │ first occurrence single line
-  :s/pat/rpl/g │ all occurrences single line
-  :%s/pat/rpl/ │ first occurrence in file
- :%s/pat/rpl/g │ all occurrences in file
-:%s/pat/rpl/gc │ all occurrences in file with confirmation
+f{char}/F{char} │ search char to the next/previous (repeat ;/,)
+   /pattern<CR> │ search word in file
+  ?/pattenr<CR> │ search word in file backwards
+            n,N │ find next/previous occurrence
+            *,# │ search term under cursor (next/previous)
+           (substitution)
+    :s/pat/rpl/ │ first occurrence single line
+   :s/pat/rpl/g │ all occurrences single line
+   :%s/pat/rpl/ │ first occurrence in file
+  :%s/pat/rpl/g │ all occurrences in file
+ :%s/pat/rpl/gc │ all occurrences in file with confirmation
 
           COPY & PASTE
 
-           y/Y │ copy selection/line
-           p/P │ paste after/below of before/above the cursor
+           y,Y │ copy selection/line
+           p,P │ paste after/below of before/above the cursor
        \"+y/\"+p │ copy to/paste from clipboard
-       Ctrl-R\" │ paste from clipboard (and other registers)
+        <C-R>\" │ paste from clipboard (and other registers)
             \"\" │ default register
             \"0 │ yank register
           \"1-9 │ shifting delete registers
           \"a-z │ user registers (A-Z to append onto register)
-      Ctrl-R / │ search pattern register
+        <C-R>/ │ search pattern register
             \": │ last command register
             \"_ │ black hole register
             \"% │ last file name register
@@ -121,7 +122,7 @@ echo "
           :sp. │ open explorer in horizontal split pane
           :vs. │ open explorer in horizontal split pane
     **/*<name> │ fuzzy search <tab> to complete
- Crtl-w Ctrl-w │ switch between panes
+    <C-w><C-w> │ switch between panes
              - │ on directory up
              % │ create new empty file
              d │ create new directory
@@ -131,12 +132,11 @@ echo "
             ,l │ toggle invisible characters
             ,/ │ clear search highlighting
            ,ew │ open file from the directory of current file
-           ,es │ ^~ in horizontal split pane 
-           ,ev │ ^~ in vertical split pane 
-            q: │ open command line window 
-            q? │ open search history window 
-      Ctrl-w c │ close window
-  Ctrl-Shift-P │ Show highlighting group
+           ,es │ ^~ in horizontal split pane
+           ,ev │ ^~ in vertical split pane
+            q: │ open command line window
+            q? │ open search history window
+        <C-w>c │ close window
        :TOhtml │ create HTML of current file
 
               KEYS
@@ -145,13 +145,13 @@ echo "
             F5 │ toggle German spell checking
             F6 │ toggle English spell checking
 
-            DIGRAPHS
+    DIGRAPHS (within insert mode)
 
      :digraphs │ list a characters
-    Ctrl-k = e │ € (Euro) 
-  Ctrl-k aou : │ äöü (German umlaut)
-    Ctrl-v Esc │ Insert escape sequence ^[ 
- Ctrl-v u 00a9 │ © (character by unicode number)
+       <C-k>=e │ € (Euro)
+   <C-k>{aou}: │ äöü (German umlaut)
+    <C-v><Esc> │ Insert escape sequence ^[
+  <C-k>{<<,>>} │ «,»
 
             SPELLING
 

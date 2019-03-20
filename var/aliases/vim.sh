@@ -19,3 +19,6 @@ else
 	[[ -f ~/.vimrc ]] || \
 		ln -svf $SCRIPTS/etc/vimrc ~/.vimrc
 fi
+
+# do not source vimrc on startup, but run with `noncompatible` option
+alias v0='vim -u NONE -N'
