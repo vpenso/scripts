@@ -2,8 +2,8 @@
 
 
 echo "
-            MOTIONS
-
+            Motions
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
  [count]{hjkl} │ left, down, up, right (default one char)
       [count]w │ word forward (start of next word)
       [count]b │ word backward (start of current/previous word)
@@ -30,8 +30,8 @@ echo "
             zt │ cursor line to the top
             zb │ cursor line to the bottom
 
-             SEARCH
-
+            Search
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
        f{char} │ forward search char
        F{char} │ backward search char
              ; │ repeat in same direction
@@ -49,8 +49,8 @@ echo "
  :%s/pat/rpl/g │ all occurrences in file
 :%s/pat/rpl/gc │ all occurrences in file with confirmation
 
-        INSERT & REPLACE
-
+        Insert & Replace
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
              i │ insert text before the cursor
              I │ insert text before first non-blank in line
              a │ append text after the cursor
@@ -60,14 +60,13 @@ echo "
              R │ replace mode (chars you type replace existing chars)
       (within insert mode)
    <Esc>,<C^[> │ end insert or replace mode
-     :digraphs │ list digraph characters (command mode)
        <C-k>=e │ € (Euro)
    <C-k>{aou}: │ äöü (German umlaut)
   <C-k>{<<,>>} │ «,»
     <C-v><Esc> │ Insert escape sequence ^[
 
-             DELETE
-
+             Delete
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
       [count]x │ delete chars under and after cursor
       [count]X │ delete chars before cursor
              D │ delete until end of line
@@ -84,34 +83,30 @@ echo "
       [count]S │ delete lines and insert text
      c[count]w │ delete words and insert text
 
-          NORMAL MODE
-
+          Undo & Redo
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
              u │ undo last edit
              U │ undo line
          <C-r> │ redo last edit
-          (spelling)
+
+            Spelling
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
             z= │ list alternatives if word is incorrect
             zG │ add the word to the spelling file
 
+            Folding
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+            za │ toggle folding
+            zc │ close fold at the cursor
+            zo │ open fold at the cursor
+            zR │ open all folds
+            zM │ close all open folds
+            zj │ move cursor to next fold
+            zk │ move cursor to previous fold
 
-          VISUAL MODE
-
-             v │ enter visual selection mode 
-             V │ enter line selection mode 
-             y │ copy selection into buffer
-        (column selection)
-         <C-v> │ enter column selection mode
-             I │ insert in front of cursor (Esc to apply to all lines)
-             A │ ~ append after cursor
-        <C-r>\" │ paste from register
-             c │ change selection (delete and switch to insert mode)
-             r │ replace every character in selections
-             d │ delete 
-             o │ toggle cursor to opposite corner
-
-
-          COPY & PASTE
-
+          Copy & Paste
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+          :reg │ show content of all registers
            y,Y │ copy selection/line
            p,P │ paste after/below of before/above the cursor
        \"+y/\"+p │ copy to/paste from clipboard
@@ -125,20 +120,24 @@ echo "
             \"_ │ black hole register
             \"% │ last file name register
             \", │ last inserted text register
-          :reg │ show content of all registers
 
-            FOLDING
+          Visual Mode
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+             v │ enter visual selection mode 
+             V │ enter line selection mode 
+             y │ copy selection into buffer
+        (column selection)
+         <C-v> │ enter column selection mode
+             I │ insert in front of cursor (Esc to apply to all lines)
+             A │ ~ append after cursor
+        <C-r>\" │ paste from register
+             c │ change selection (delete and switch to insert mode)
+             r │ replace every character in selections
+             d │ delete 
+             o │ toggle cursor to opposite corner
 
-            za │ toggle folding
-            zc │ close fold at the cursor
-            zo │ open fold at the cursor
-            zR │ open all folds
-            zM │ close all open folds
-            zj │ move cursor to next fold
-            zk │ move cursor to previous fold
-
-             BUFFER
-
+            Buffers
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
           :new │ open a new buffer
          :tabe │ new tab
          :tabs │ list tabs
@@ -147,12 +146,14 @@ echo "
            :ls │ list all buffers
 
 
-            COMMANDS
-
+           Commands
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┬⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
        :e PATH │ open file/directory
             :w │ save changes
       :cd PATH │ change working directory 
           :pwd │ print working directory
+     :digraphs │ list digraph characters
+        :retab │ replace tab with spaces
          (file explorer)
            :e. │ open explorer in working directory
             :E │ open explorer in directory of current file
@@ -175,9 +176,7 @@ echo "
             q? │ open search history window
         <C-w>c │ close window
        :TOhtml │ create HTML of current file
-
-              KEYS
-
+             (keys)
             F3 │ enable paste mode (when in insert mode)
             F5 │ toggle German spell checking
             F6 │ toggle English spell checking
