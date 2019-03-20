@@ -47,6 +47,11 @@ set expandtab       " no real tabs please!
 set textwidth=80
 set colorcolumn=+1 " highlight column after 'textwidth'
 
+"no backup files at all
+set nobackup
+set nowritebackup
+set noswapfile
+
 " disable the arrow keys
 noremap <Up> <nop>
 noremap <Down> <nop>
@@ -67,6 +72,7 @@ map <F6> :setlocal spell! spelllang=en<CR>
 let mapleader = ','
 
 " highlight invisible characters
+set list
 " shortcut to rapidly toggle `set list`
 nmap <leader>l :set list!<CR>
 " Use the symbols from Unicode for tab-stops and end-of-line
