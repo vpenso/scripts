@@ -2,15 +2,6 @@
 
 
 echo "
-         NORMAL MODE
-
-    (switch to insert mode)
-             i │ insert before the cursor
-             I │ insert text on all selected lines in visual mode
-           a/A │ append right to cursor/end-of-line
-           o/O │ open new line below/above
-    Esc, <C^[> │ escape from insert mode
-
             MOTIONS
 
  [count]{hjkl} │ left, down, up, right (default one char)
@@ -29,12 +20,34 @@ echo "
       [count]) │ sentences forward
       [count]{ │ paragraphs forward
       [count]} │ paragraphs backward
-             % │ move to matching parent
-   <C-d>/<C-u> │ scroll down/up 1/2 page
-   <C-e>/<C-y> │ scroll down/up one line
-   <C-f>/<C-b> │ scroll full screen up/down
-            ma │ mark location and jump back with 
-            'a │ jump to last mark
+     [count]gk │ display line upwards
+     [count]gj │ display line downwards
+         <C-f> │ scroll down
+         <C-d> │ scroll down 1/2 page
+         <C-b> │ scroll up
+         <C-u> │ scroll up 1/2 page
+            zz │ center cursor line
+            zt │ cursor line to the top
+            zb │ cursor line to the bottom
+
+             SEARCH
+
+        f{char} │ forward search char
+        F{char} │ backward search char
+              ; │ repeat in same direction
+              , │ repeat in opposite direction
+   /pattern<CR> │ forward search word
+   ?pattern<CR> │ backward search word 
+              n │ next match
+              N │ previous match
+              * │ next word under cursor
+              # │ previous word under cursor
+           (substitution)
+    :s/pat/rpl/ │ first occurrence single line
+   :s/pat/rpl/g │ all occurrences single line
+   :%s/pat/rpl/ │ first occurrence in file
+  :%s/pat/rpl/g │ all occurrences in file
+ :%s/pat/rpl/gc │ all occurrences in file with confirmation
 
         (text handling)
            u,U │ undo last edit, undo line
@@ -48,6 +61,13 @@ echo "
          dt,dT │ forward/backward delete until character 
          <C-r> │ redo last edit
             gv │ select last block
+
+    (switch to insert mode)
+             i │ insert before the cursor
+             I │ insert text on all selected lines in visual mode
+           a/A │ append right to cursor/end-of-line
+           o/O │ open new line below/above
+    Esc, <C^[> │ escape from insert mode
 
           VISUAL MODE
 
@@ -64,21 +84,6 @@ echo "
              d │ delete 
              o │ toggle cursor to opposite corner
 
-             SEARCH
-
-        f{char} │ forward search char
-        F{char} │ backward search char
-              ; │ repeat char search
-   /pattern<CR> │ search word in file
-   ?pattern<CR> │ search word in file backwards
-            n,N │ find next/previous occurrence
-            *,# │ search term under cursor (next/previous)
-           (substitution)
-    :s/pat/rpl/ │ first occurrence single line
-   :s/pat/rpl/g │ all occurrences single line
-   :%s/pat/rpl/ │ first occurrence in file
-  :%s/pat/rpl/g │ all occurrences in file
- :%s/pat/rpl/gc │ all occurrences in file with confirmation
 
           COPY & PASTE
 
