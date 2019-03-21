@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-echo "
+cheat=$(cat <<EOF
             Motions
                ┬
  [count]{hjkl} │ left, down, up, right (default one char)
@@ -109,17 +109,17 @@ echo "
           :reg │ show content of all registers
            y,Y │ copy selection/line
            p,P │ paste after/below of before/above the cursor
-       \"+y/\"+p │ copy to/paste from clipboard
-        <C-R>\" │ paste from clipboard (and other registers)
-            \"\" │ default register
-            \"0 │ yank register
-          \"1-9 │ shifting delete registers
-          \"a-z │ user registers (A-Z to append onto register)
+       "+y/"+p │ copy to/paste from clipboard
+        <C-R>" │ paste from clipboard (and other registers)
+            "" │ default register
+            "0 │ yank register
+          "1-9 │ shifting delete registers
+          "a-z │ user registers (A-Z to append onto register)
         <C-R>/ │ search pattern register
-            \": │ last command register
-            \"_ │ black hole register
-            \"% │ last file name register
-            \", │ last inserted text register
+            ": │ last command register
+            "_ │ black hole register
+            "% │ last file name register
+            ", │ last inserted text register
 
           Visual Mode
                ┬
@@ -129,8 +129,8 @@ echo "
         (column selection)
          <C-v> │ enter column selection mode
              I │ insert in front of cursor (Esc to apply to all lines)
-             A │ ~ append after cursor
-        <C-r>\" │ paste from register
+             A │ append after cursor
+        <C-r>" │ paste from register
              c │ change selection (delete and switch to insert mode)
              r │ replace every character in selections
              d │ delete 
@@ -164,7 +164,7 @@ echo "
              - │ on directory up
              % │ create new empty file
              d │ create new directory
-     (map leader is comma \",\")
+     (map leader is comma , )
             ,e │ edit configuration file
            ,sv │ reload configuration file
             ,l │ toggle invisible characters
@@ -180,4 +180,7 @@ echo "
             F3 │ enable paste mode (when in insert mode)
             F5 │ toggle German spell checking
             F6 │ toggle English spell checking
-"
+EOF
+)
+
+echo "$cheat"
