@@ -346,12 +346,6 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 1. The script [generate_updateinfo][cefsgu] creates an `updateinfo.xml` file to be published on a CentOS package repository mirror.
 2. The [Centos-Package-Cron][cefscpc] reports advisories by mail related to packages installed on a specific node.
 
-
-
-
-
-
-
 [rhsda]: https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
 [rheus]: https://lists.centos.org/pipermail/centos-announce/
 [rhellc]: https://access.redhat.com/support/policy/updates/errata/
@@ -361,3 +355,7 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 [cefscpc]: https://github.com/wied03/centos-package-cron
 
 
+# References
+
+RPM Packaging Guide  
+https://rpm-packaging-guide.github.io/
