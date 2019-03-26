@@ -1,0 +1,9 @@
+configuration {
+        location: 2;
+        yoffset:25;
+        lines: 45;
+        modi: "window,run,ssh,keys";
+        width: 25;
+}
+
+/* vim:ft=css
