@@ -4,6 +4,7 @@ configuration {
         lines: 45;
         modi: "window,run,ssh,keys";
         width: 25;
+        sidebar-mode: true;
 }
 
 /* vim:ft=css
