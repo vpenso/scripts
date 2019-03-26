@@ -93,6 +93,7 @@ Markdown base **presentation slides**:
 - [markdeck](https://github.com/arnehilmann/markdeck)
 - [marp](https://github.com/yhatt/marp/)
 - [decktape](https://github.com/astefanutti/decktape) PDF exporter for remark
+- [md2pdf](https://md2pdf.netlify.com/)
 
 **Highlight the mouse cursor** and **key combinations** with [key-mon](https://github.com/scottkirkwood/key-mon)
 
