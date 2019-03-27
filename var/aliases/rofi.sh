@@ -1,4 +1,5 @@
 
 mkdir -p ~/.config |:
 
-ln -sf $SCRIPTS/etc/rofi ~/.config/rofi
+test -L ~/.config/rofi || \
+        ln -s $SCRIPTS/etc/rofi ~/.config/rofi
