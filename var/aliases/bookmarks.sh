@@ -1,4 +1,6 @@
+# link to the bookmarks within this repository
 test -L ~/.bookmarks || \
         ln -s $SCRIPTS/var/bookmarks ~/.bookmarks
 
-alias bm=bookmarks
+# open a bookmark in the default web-browser
+alias bm='bookmarks -o search'

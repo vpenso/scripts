@@ -124,13 +124,15 @@ begin
       # on first match
       if k =~ %r[#{pattern}]
         if $options.open
-          `#{$options.browser} #{v}`
+          `#{$options.browser} '#{v}'`
         else
           $stdout.puts v
         end
         exit 0
       end
     end
+  else
+    raise("Command #{command} unknown")
   end
 
 rescue => exc
