@@ -1,0 +1,6 @@
+search/google https://google.com/ncr
+# https://duckduckgo.com/params
+search/duckduckgo https://duckduckgo.com/?kl=wt-wt&kh=1&kae=c&kam=osm
+
+
+# vim:ft=bash

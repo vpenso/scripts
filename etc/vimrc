@@ -77,7 +77,7 @@ map <F6> :setlocal spell! spelllang=en<CR>
 let mapleader = ','
 
 " highlight invisible characters
-set list
+"set list
 " shortcut to rapidly toggle `set list`
 nmap <leader>l :set list!<CR>
 " Use the symbols from Unicode for tab-stops and end-of-line
