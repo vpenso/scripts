@@ -63,9 +63,21 @@
     text-color: darkred;
 }
 
+/* bottom bar */
 #sidebar {
-    border: 2px 0px 0px ;
-    border-color: black;
+    border:2px;
+    border-color:goldenrod;
+}
+#button.normal {
+    text-color:sandybrown;
+    background-color:ivory;
+}
+/* bottom bar selection*/
+#button.selected {
+    background-color:lemonchiffon;
+    text-color:maroon;
+    border:1px;
+    border-color:moccasin;
 }
 
 #case-indicator {
@@ -82,10 +94,6 @@
     children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
 }
 
-#button.selected {
-    background-color:gold;
-    text-color:saddlebrown;
-}
 
 
 /* vim:ft=css

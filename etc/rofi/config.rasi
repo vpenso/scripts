@@ -1,10 +1,10 @@
 configuration {
-        location: 2;
+        location:0;
         yoffset:25;
-        lines: 45;
-        modi: "window,run,ssh,keys";
-        width: 25;
-        sidebar-mode: true;
+        lines:15;
+        modi:"run,ssh,keys";
+        width:25;
+        sidebar-mode:true;
 }
 
 /* vim:ft=css
