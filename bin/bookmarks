@@ -31,6 +31,7 @@ HELP = <<EOF
 <options>
   -d, --debug                           Show stacktraces in case of errors
   -h, --help                            Show this help information
+  -k, --keys                            Print only keys with list command
   -o, --open                            Open in web browser
   -v, --version                         Print version number
 EOF
@@ -43,6 +44,7 @@ begin
   $options.bookmarks_path = [ "#{ENV['HOME']}/.bookmarks" ]
   $options.browser = 'firefox'
   $options.debug = false
+  $options.keys = false
   $options.open = false
 
   $logger = Logger.new($stderr)
@@ -56,6 +58,7 @@ begin
   GetoptLong.new(
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--keys','-k',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--open','-o',GetoptLong::NO_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
@@ -67,6 +70,8 @@ begin
     when '--help'
       $stdout.puts HELP
       exit 0
+    when '--keys'
+      $options.keys = true
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -116,7 +121,11 @@ begin
       unless pattern.empty?
         next unless k =~ %r[#{pattern}]
       end
-      $stdout.puts "#{k} ⇒  #{v}"
+      if $options.keys
+        $stdout.puts k
+      else
+        $stdout.puts "#{k} ⇒  #{v}"
+      end
     end
   when 'search','s'
     pattern = ARGV.shift || raise('No search pattern argument')
@@ -124,7 +133,7 @@ begin
       # on first match
       if k =~ %r[#{pattern}]
         if $options.open
-          `#{$options.browser} '#{v}'`
+          Kernel.exec "#{$options.browser} '#{v}' &"
         else
           $stdout.puts v
         end

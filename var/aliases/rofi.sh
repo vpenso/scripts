@@ -1,4 +1,3 @@
-
 mkdir -p ~/.config |:
 
 test -L ~/.config/rofi || \
