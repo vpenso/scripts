@@ -1,5 +1,9 @@
+* {
+    background:  rgba(0,0,0,0);
+}
+
 #window {
-    transparency: "real";
+    transparency: "screenshot";
     background-color: #ffffff99;
     border: 1px;
     border-color:lightgray;

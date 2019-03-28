@@ -22,3 +22,6 @@ https://github.com/davatorium/rofi
 
 Collcetion of Rofi user scripts  
 https://github.com/davatorium/rofi/wiki/User-scripts
+
+Rofi Transparency  
+https://blog.sarine.nl/2017/04/10/rofi-140-sneak-preview7.html
