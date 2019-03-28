@@ -24,16 +24,25 @@ exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
 #{exec_name} [<options>] <command> [<arguments>]
 
+Manages bookmark files in `~/.bookmarks/**/*.bm`
+
 <command>
   list, l [<pattern>]                   List all links, or links matching a pattern
   search, s <pattern>                   First link matching pattern
 
 <options>
+  -a, --append <string>                 Append string to the referenced URL
   -d, --debug                           Show stacktraces in case of errors
   -h, --help                            Show this help information
   -k, --keys                            Print only keys with list command
   -o, --open                            Open in web browser
   -v, --version                         Print version number
+
+environment
+  BOOKMARKS_PATH                        Colon seperated list of paths to directories
+                                        including bookmark files. Note that the 
+                                        default path ~/.bookmarks is always included.
+  BROWSER                               Option `--open` respects the $BROWSER.
 EOF
 
 begin
@@ -46,6 +55,7 @@ begin
   $options.debug = false
   $options.keys = false
   $options.open = false
+  $options.append = ''
 
   $logger = Logger.new($stderr)
   # Adjust the time format used for the logger
@@ -56,6 +66,7 @@ begin
   $logger.level = Logger::WARN
 
   GetoptLong.new(
+    ['--append','-a',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--keys','-k',GetoptLong::NO_ARGUMENT],
@@ -64,6 +75,8 @@ begin
     ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
+    when '--append'
+      $options.append = arg
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG
@@ -95,6 +108,10 @@ begin
     $options.browser = ENV['BROWSER'] unless ENV['BROWSER'].empty?
   end
 
+  if ENV.include?('BOOKMARKS_PATH')
+    $options.bookmarks_path << ENV['BOOKMARKS_PATH'].split(':')
+  end
+
   bookmarks = {}
 
   $options.bookmarks_path.each do |path|
@@ -113,14 +130,21 @@ begin
     end
   end
 
+  def pattern(words = ARGV)
+    return '.*' if words.empty?
+    return words.join('.*')
+  end
+
+  def open(url)
+    Kernel.exec "#{$options.browser} '#{url}#{$options.append}' &"
+    exit 0
+  end
+
   command = ARGV.shift || raise('No command argument!')
   case command
   when 'list','l'
-    pattern = ARGV.shift || ''
     bookmarks.each do |k,v|
-      unless pattern.empty?
-        next unless k =~ %r[#{pattern}]
-      end
+      next unless k =~ %r[#{pattern}]
       if $options.keys
         $stdout.puts k
       else
@@ -128,17 +152,13 @@ begin
       end
     end
   when 'search','s'
-    pattern = ARGV.shift || raise('No search pattern argument')
-    bookmarks.each do |k,v|
-      # on first match
-      if k =~ %r[#{pattern}]
-        if $options.open
-          Kernel.exec "#{$options.browser} '#{v}' &"
-        else
-          $stdout.puts v
-        end
-        exit 0
-      end
+    raise('No search pattern argument') if ARGV.empty?
+    bookmarks.each do |k,url|
+      next unless k =~ %r[#{pattern}]
+      puts k =~ %r[#{pattern}]
+      open(url) if $options.open
+      $stdout.puts url
+      break
     end
   else
     raise("Command #{command} unknown")
