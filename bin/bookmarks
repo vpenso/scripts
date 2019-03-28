@@ -160,7 +160,6 @@ begin
     raise('No search pattern argument') if ARGV.empty?
     bookmarks.each do |k,url|
       next unless k =~ %r[#{pattern}]
-      puts k =~ %r[#{pattern}]
       open(url) if $options.open
       $stdout.puts url
       break
