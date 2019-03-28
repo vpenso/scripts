@@ -116,8 +116,11 @@ begin
   end
 
   $options.bookmarks_path.each do |path|
-    Dir.glob("#{path}/**/*.bm").each { |file| $options.bookmark_files << file }
+    # make sure glob expands symlinks
+    Dir.glob("#{path}**{,/*/**}/*.bm").each { |file| $options.bookmark_files << file }
   end
+
+  $logger.debug $options.inspect
 
   bookmarks = {}
 
