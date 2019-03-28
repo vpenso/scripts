@@ -50,6 +50,7 @@ begin
   stdin = $stdin.tty? ? String.new : $stdin.read
 
   $options = OpenStruct.new
+  $options.bookmark_files = []
   $options.bookmarks_path = [ "#{ENV['HOME']}/.bookmarks" ]
   $options.browser = 'firefox'
   $options.debug = false
@@ -109,23 +110,27 @@ begin
   end
 
   if ENV.include?('BOOKMARKS_PATH')
-    $options.bookmarks_path << ENV['BOOKMARKS_PATH'].split(':')
+    ENV['BOOKMARKS_PATH'].split(':').each do |path| 
+      $options.bookmarks_path << path
+    end
+  end
+
+  $options.bookmarks_path.each do |path|
+    Dir.glob("#{path}/**/*.bm").each { |file| $options.bookmark_files << file }
   end
 
   bookmarks = {}
 
-  $options.bookmarks_path.each do |path|
-    Dir.glob("#{path}/**/*.bm").each do |file|
-      File.readlines(file).each do |line|
-        case line
-        when /^#/
-          next # ignore comments
-        when /^[ ]*$/
-          next # ignore empty lines
-        else
-          key, value = line.split
-          bookmarks[key] = value
-        end
+  $options.bookmark_files.each do |file|
+    File.readlines(file).each do |line|
+      case line
+      when /^#/
+        next # ignore comments
+      when /^[ ]*$/
+        next # ignore empty lines
+      else
+        key, value = line.split
+        bookmarks[key] = value
       end
     end
   end
