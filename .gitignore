@@ -2,3 +2,4 @@
 *.html
 .ipynb_checkpoints/
 aliases/unset.sh
+var/bookmarks/*-scripts
