@@ -1,0 +1,30 @@
+#!/bin/sh
+
+
+cheat=$(cat <<EOF
+
+      Windows & Workspaces
+               ┬
+     <M^Enter> │ open default terminal emulator
+         <M^-> │ tile vertial for next window
+         <M^|> │ tile horizontal for next window
+    <M^{hjkl}> │ left, down, up, right window focus
+  <M^r> {hjkl} │ resize container left, down, up, right (<Esc> to exit)
+               ┼
+     <M^[1-9]> │ switch workspace
+
+
+             Launch
+               ┬
+     <M^Enter> │ open default terminal emulator
+
+            Session
+               ┬
+         <M^C> │ reload configuration
+         <M^R> │ restart i3
+         <M^9> │ lock screen
+         <M^0> │ session menu (<Esc> to exit)
+EOF
+)
+
+echo "$cheat"

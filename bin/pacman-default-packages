@@ -30,6 +30,9 @@ then
                 git \
                 git-annex \
                 handbrake \
+                i3 \
+                i3status \
+                i3exit \
                 lsd \
                 mp3info \
                 mp3wrap \
