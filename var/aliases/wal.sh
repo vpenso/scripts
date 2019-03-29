@@ -4,5 +4,5 @@ then
         alias walli='wal -l -i'
 
         test -L ~/.wallpaper && \
-                wal -q -l -i ~/.wallpaper ||:
+                wal -e -q -l -i ~/.wallpaper ||:
 fi
