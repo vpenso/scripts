@@ -1,11 +1,11 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-default_border pixel 3
+default_border pixel 1
 #new_float normal
 hide_edge_borders smart # Hide borders
 
-client.focused #990000 #285577 #ffffff #2e9ef4 #b0c4de
-client.unfocused #333333 #222222 #888888 #292d2e #f5f5f5
+client.focused #990000 #285577 #ffffff #2e9ef4 #1e90ff
+client.unfocused #333333 #222222 #888888 #292d2e #a9a9a9
 
 ############################
 ## settings key binding   ##
