@@ -52,12 +52,15 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
+bindsym $mod+1 workspace 1:local
+bindsym $mod+2 workspace 2:remote
+bindsym $mod+3 workspace 3:docs
+bindsym $mod+4 workspace 4:scratch
+
+
 
 # Set shut down, restart and locking features
-bindsym $mod+0 mode "$mode_system"
+bindsym $mod+F10 mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
     bindsym l exec --no-startup-id i3exit lock, mode "default"
@@ -85,6 +88,11 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
+bar {
+        mode hide
+        position top
+        status_command i3status
+}
 
 ############################
 ## settings for i3-gaps:  ##
@@ -92,6 +100,6 @@ mode "resize" {
 
 # Set inner/outer gaps
 gaps inner 10
-gaps outer -4
+gaps outer 0
 
 

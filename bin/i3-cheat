@@ -15,12 +15,12 @@ cheat=$(cat <<EOF
          <M^S> │ toggel window floating mode
          <M^Q> │ close focused window
                ┼
-     <M^[1-9]> │ switch workspace
+     <M^[1-3]> │ switch workspace
 
              Launch
                ┬
      <M^Enter> │ open default terminal emulator
-         <M^d> │ open program launcher
+        <M^F2> │ open program launcher
         <M^F3> │ open bookmark launcher
 
             Session
@@ -29,8 +29,6 @@ cheat=$(cat <<EOF
          <M^R> │ restart i3
          <M^9> │ lock screen
          <M^0> │ session menu (<Esc> to exit)
-               ┼
-         <M^G> │ modify gabs configuration
 EOF
 )
 
