@@ -1,15 +1,11 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-new_window pixel 1
-new_float normal
-hide_edge_borders none # Hide borders
+default_border pixel 3
+#new_float normal
+hide_edge_borders smart # Hide borders
 
-bar {
-  i3bar_command i3bar
-  position top
-  mode hide
-}
-
+client.focused #990000 #285577 #ffffff #2e9ef4 #0066FF
+client.unfocused #333333 #222222 #888888 #292d2e #000000
 
 ############################
 ## settings key binding   ##
@@ -29,7 +25,7 @@ bindsym $mod+Shift+q kill
 # start terminal emulator
 bindsym $mod+Return exec terminator
 # start program launcher
-bindsym $mod+d exec --no-startup-id rofi -show run -theme white
+bindsym $mod+F2 exec --no-startup-id rofi -show run -theme white
 # start bookmark menu
 bindsym $mod+F3 exec ~/projects/scripts/bin/rofi-bookmarks
 # split orientation
@@ -37,11 +33,29 @@ bindsym $mod+Shift+bar split h;exec notify-send 'tile horizontally'
 bindsym $mod+minus split v;exec notify-send 'tile vertically'
 # toggle fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
+
+# toggle tiling / floating
+bindsym $mod+Shift+f floating toggle
+# move floating windows with your mouse
+floating_modifier Mod4
+
 # change focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+
 # Set shut down, restart and locking features
 bindsym $mod+0 mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
@@ -79,3 +93,5 @@ mode "resize" {
 # Set inner/outer gaps
 gaps inner 10
 gaps outer -4
+
+

@@ -9,6 +9,7 @@ cheat=$(cat <<EOF
          <M^-> │ tile vertial for next window
          <M^|> │ tile horizontal for next window
     <M^{hjkl}> │ left, down, up, right window focus
+    <M^{HJKL}> │ move focused window left, down, up right
   <M^r> {hjkl} │ resize container left, down, up, right (<Esc> to exit)
          <M^f> │ toggle window fullscreen
          <M^S> │ toggel window floating mode
