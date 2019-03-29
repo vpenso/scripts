@@ -7,6 +7,8 @@ hide_edge_borders smart # Hide borders
 client.focused #990000 #285577 #ffffff #2e9ef4 #1e90ff
 client.unfocused #333333 #222222 #888888 #292d2e #a9a9a9
 
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+
 ############################
 ## settings key binding   ##
 ############################
@@ -86,12 +88,6 @@ mode "resize" {
         # exit resize mode: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
-}
-
-bar {
-        mode hide
-        position top
-        status_command i3status
 }
 
 ############################
