@@ -1,6 +1,6 @@
 
 
-## Localization/Time
+# Localization
 
 Settings system locale:
 
@@ -9,39 +9,66 @@ Settings system locale:
 localectl                           # show language configuration
 localectl list-locales              # list vailable keys configuration
 localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"
-localectl list-keymaps              # list all available keyboard layouts
-localectl set-keymap us
 ```
 
-Types of clocks:
+## Keyboard
 
-* **RTC** (Real-Time Clock) aka hardware clock runs on battery when the machine is powered off (unplugged)
-  - Uses _local time_ (in current time zone) 
-  - Or **UTC** (Coordinated Universal Time) with an time zone dependent offset
-* **SC** (Software Clock) aka system clock 
-  - Maintained by the OS kernel during run-time driven by a timer interrupt
-  - Initialized on boot using RTC as reference.
+Keyboard **layout** (arrangement of keys on the keyboard):
 
+* Each language has its own layout.
+* QUERTY is the most widespread layout not confined to a particular geographical
+  area. Name comes from reading the first six keys appearing on the top left 
+  letter row of the keyboard.
+* QWERTZ is the normal keyboard layout in Germany, Austria and Switzerland.
+* Layout variants represents the changes made to a “macro-layout” to adjust it 
+  to a different language.
+
+Keyboard mappings - **keymaps**- (key code referenced by a key press)
+
+* Typically the language code is the same as its country code, e.g. `de` (German)
+* **Modifier** keys used to perform alterations on regular characters
+
+[X Keyboard Extension][xkb] (XKB) handels keyboard settings and layouts in X11
+
+Configuration Files:
 
 ```bash
-timedatectl                                 # show time and time zone configuration
-timedatectl set-time YYYY-MM-DD             # change the current date
-timedatectl set-time HH:MM:SS               # change the current time
-timedatectl list-timezones                  # list available time zones
-timedatectl set-timezone <zone>             # set a given time zone, e.g. Europe/Berlin
-grep ^Servers /etc/systemd/timesyncd.conf   # list time servers 
-timedatectl set-ntp true                    # enable NTP
-timedatectl set-local-rtc 0                 # RTC in UTC mode
-timedatectl set-local-rtc 1                 # RTC in locel time mode
-systemctl start systemd-timesyncd           # start the time sync daemon 
-systemctl enable systemd-timesyncd          # make the time sync daemon boot persistant 
+# configures teh default keyboard layout 
+/etc/default/keyboard
+# virtual console keymap configuration
+/etc/vconsole.conf
+# X11 XKB configuration written by localectl
+/etc/X11/xorg.conf.d/00-keyboard.conf
 ```
 
-Low-level administration tool
+Reference files:
 
 ```bash
-locale                                      # print locale settings
-hwclock                                     # manipulate the hardware clock
-/etc/adjtime                                # state file for hwclock
-/usr/share/zoneinfo                         # time zone database
+# keymap files (usually corresponds to one keyboard)
+/usr/share/kbd/keymaps
+# list of keyboard models known to XKB
+/usr/share/X11/xkb/rules/base.lst
 ```
+
+Configure two keyboard layouts, the keyboard model and options:
+
+* `--no-convert` keymap is also converted to the closest matching console keymap.
+* Option `grp:alt_shift_toggle` enabls switching the layout with **Alt+Shift**
+
+```bash
+localectl --no-convert set-x11-keymap us,de pc104 ,dvorak grp:alt_shift_toggle
+```
+```bash
+# list all available keyboard layouts
+localectl list-keymaps              
+find /usr/share/kbd/keymaps/ -type f
+# persistent configuration
+localectl set-keymap <keymap>
+# set a keymap just for current session.
+loadkeys <keymap>
+# get current keyboard layout
+setxkbmap -query | grep layout
+```
+
+[xkb]: https://www.x.org/wiki/XKB/
+
