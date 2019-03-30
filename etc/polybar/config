@@ -18,34 +18,37 @@
 
 [colors]
 ;background = ${xrdb:color0:#222}
-background = #222
-background-alt = #444
-;foreground = ${xrdb:color7:#222}
-foreground = #dfdfdf
+background = #aaffffff
+background-alt = #66ffffff
+foreground = #000000
 foreground-alt = #555
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
+highlight = #8b0000
+highlight-background = #ccfff5ee
+dim = #696969 
 
 [bar/top]
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
 height = 20
+;offset-x = 1%
 ;offset-y = 1%
-radius = 6.0
+radius = 0.0
 fixed-center = false
+background = ${colors.background}
+foreground = ${colors.foreground}
 
-background = #00000000
-foreground = #cc000000
-
-line-size = 3
+; Under-/overline pixel size
+line-size = 1
 line-color = #f00
 
 border-size = 4
-border-color = #00000000
+border-color = ${colors.background}
 
 padding-left = 0
-padding-right = 2
+padding-right = 0
 
 module-margin-left = 1
 module-margin-right = 2
@@ -56,7 +59,7 @@ font-2 = siji:pixelsize=10;1
 
 modules-left = bspwm i3
 modules-center = mpd
-modules-right = xbacklight pulseaudio xkeyboard memory cpu wlan eth battery temperature date powermenu
+modules-right = xbacklight xkeyboard pulseaudio memory cpu wlan eth battery temperature date powermenu
 
 tray-position = right
 tray-padding = 2
@@ -82,19 +85,13 @@ label = %title:0:30:...%
 
 [module/xkeyboard]
 type = internal/xkeyboard
+format = <label-layout> <label-indicator>
 blacklist-0 = num lock
-
-format-prefix = " "
-format-prefix-foreground = ${colors.foreground-alt}
-format-prefix-underline = ${colors.secondary}
-
-label-layout = %layout%
-label-layout-underline = ${colors.secondary}
-
-label-indicator-padding = 2
+label-layout = %name%
+label-indicator-padding = 1
 label-indicator-margin = 1
-label-indicator-background = ${colors.secondary}
-label-indicator-underline = ${colors.secondary}
+label-indicator-background = ${colors.highlight-background}
+label-indicator-underline = ${colors.highlight}
 
 [module/filesystem]
 type = internal/fs
@@ -143,12 +140,14 @@ label-mode-background = #f5f5f5
 
 ; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-background = #00000000
-label-focused-underline = #daa520
-label-focused-padding = ${module/bspwm.label-focused-padding}
+label-focused-foreground = ${colors.highlight}
+label-focused-background = ${colors.background}
+label-focused-underline = ${colors.highlight}
+label-focused-padding = 2
 
 ; unfocused = Inactive workspace on any monitor
 label-unfocused = %name%
+label-unfocused-foreground = ${colors.dim}
 label-unfocused-padding = ${module/bspwm.label-occupied-padding}
 
 ; visible = Active workspace on unfocused monitor
@@ -206,16 +205,17 @@ type = internal/cpu
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #f90000
-label = %percentage:2%%
+label = CPU %percentage-cores%
 
 [module/memory]
 type = internal/memory
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #4bffdc
-label = %percentage_used%%
+label = RAM %mb_total% | %mb_free%
+
+
+; https://github.com/jaagr/polybar/wiki/Module:-network
 
 [module/wlan]
 type = internal/network
@@ -239,15 +239,16 @@ ramp-signal-3 = 
 ramp-signal-4 = 
 ramp-signal-foreground = ${colors.foreground-alt}
 
+
 [module/eth]
 type = internal/network
-interface = eno1
-interval = 3.0
+interface = enp2s0
+interval = 10.0
 
-format-connected-underline = #55aa55
+format-connected-underline = #9acd32
 format-connected-prefix = " "
 format-connected-prefix-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
+label-connected = %ifname% | %local_ip%
 
 format-disconnected =
 ;format-disconnected = <label-disconnected>
@@ -265,29 +266,12 @@ label = %date% %time%
 [module/pulseaudio]
 type = internal/pulseaudio
 
-format-volume = <label-volume> <bar-volume>
-label-volume = V %percentage%%
+format-volume = <label-volume>
+label-volume = %{F#696969} Vol. %{F-} %percentage%%
 label-volume-foreground = ${root.foreground}
 
-label-muted = 🔇 muted
-label-muted-foreground = #666
-
-bar-volume-width = 10
-bar-volume-foreground-0 = #55aa55
-bar-volume-foreground-1 = #55aa55
-bar-volume-foreground-2 = #55aa55
-bar-volume-foreground-3 = #55aa55
-bar-volume-foreground-4 = #55aa55
-bar-volume-foreground-5 = #f5a70a
-bar-volume-foreground-6 = #ff5555
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.foreground-alt}
+label-muted = %{F#696969} Vol. %{F-} -
+label-muted-underline = ${colors.highlight}
 
 [module/alsa]
 type = internal/alsa
