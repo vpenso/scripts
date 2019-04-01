@@ -54,6 +54,7 @@ then
                 tmux \
                 tree \
                 ttf-inconsolata \
+                unzip \
                 vim \
                 vim-airline \
                 vlc \
