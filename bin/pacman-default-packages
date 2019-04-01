@@ -61,14 +61,6 @@ then
                 xclip \
                 youtube-dl \
                 zsh-completions
-fi
 
-# Install manually if you want AUR packages
-# pacman -S yaourt
-
-if [ -f /usr/bin/yaourt ]
-then
-        yaourt -S clustershell \
-                  gromit-mpx-git \
-                  key-mon
+        pacman -S --needed base-devel
 fi
