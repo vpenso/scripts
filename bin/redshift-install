@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# if executed on ArchLinux
+command -v pacman >&- && {
+        # install if missing
+        pacman --query redshift 2>&- || {
+                sudo pacman --sync redshift
+        }
+}
+
+# link to the configuration within this repository
+test -L ~/.config/redshift || {
+        ln --symbolic \
+           --verbose \
+           $SCRIPTS/etc/redshift ~/.config
+}
