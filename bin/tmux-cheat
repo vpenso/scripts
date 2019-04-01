@@ -1,64 +1,58 @@
 #!/bin/bash
 
 echo \
-"Control key symbol ✲  represents Ctrl-a
+"                   ┬
+    <C-a> ?        │ show key binding
+    <C-a> r        │ reload ~/.tmux.conf
+    <C-a> x        │ close pane
+    <C-a> c        │ new window
+    <C-a> ,        │ rename window
+    <C-a> {np}     │ next/previous window
+    <C-a> w        │ list windows
+    <C-a> d        │ detach from session (run tmux attach)
+    <C-a> a        │ send prefix key to program in pane 
 
-    ✲  ?           │ show key binding
-    ✲  r           │ reload ~/.tmux.conf
-    ✲  x           │ close pane
-    ✲  c           │ new window
-    ✲  ,           │ rename window
-    ✲  n|p         │ next/previous window
-    ✲  w           │ list windows
-    ✲  d           │ detach from session (run tmux attach)
-    ✲  a           │ send prefix key to program in pane 
-
-          copy & paste (Vi style)
-
-    ✲  [           │ copy mode
-    q, Esc         │ exit copy mode
-    ✲  /           │ copy mode, start search
+          Copy & paste (Vi style)
+                   ┬
+    <C-a> [        │ copy mode
+    q, <Esc>       │ exit copy mode
+    <C-a> /        │ copy mode, start search
     n              │ next result
     ⇧ n            │ previous result 
     h,j,k,l        │ navigate to selection
     v,Space        │ start selection
     y,Enter        │ copy selection
-    ✲  ]           │ paste selection
+    <C-a> ]        │ paste selection
 
-             plugin manager
+             Plugin manager
+                   ┬
+    <C-a> I        │ install plugins in ~/.tmux/plugins/
+    <C-a> U        │ update plugins
+    <C-a> <A-u>    │ uninstall plugins
 
-    ✲  I           │ install plugins in ~/.tmux/plugins/
-    ✲  U           │ update plugins
-    ✲  ⎇   u       │ uninstall plugins
+           Pain control plugin
+                   ┬
+    <C-a> {hjkl}   │ select pane left|below|above|right
+    <C-a> {HJKL}   │ resize pane left|down|up|right 
+    <C-a> |        │ split current pane horizontally
+    <C-a> -        │ split current pane vertically
+    <C-a> \        │ split current pane full width horizontally
+    <C-a> _        │ split current pane full width vertically
 
-           pain control plugin
-
-    ✲  h|j|k|l     │ select pane left|below|above|right
-    ✲  ⇧  h|j|k|l  │ resize pane left|down|up|right 
-    ✲  |           │ split current pane horizontally
-    ✲  -           │ split current pane vertically
-    ✲  \           │ split current pane full width horizontally
-    ✲  _           │ split current pane full width vertically
-
-             copycat plugin
-
-    ✲  /           │ regex search (strings work too)
-    ✲  C-u         │ url search (http, ftp and git urls)
-    ✲  C-f         │ file search
+             Copycat plugin
+                   ┬
+    <C-a> /        │ regex search (strings work too)
+    <C-a> <C-u>    │ url search (http, ftp and git urls)
+    <C-a> <C-f>    │ file search
     n              │ jumps to the next match
     N              │ jumps to the previous match
     o              │ open a highlighted selection
-    C-o            │ open a highlighted selection with the \$EDITOR
-    ⇧  s           │ search the highlighted selection with search engine 
+    <C-o>          │ open a highlighted selection with the \$EDITOR
+    S              │ search the highlighted selection with search engine 
 
-                     
-              yank plugin
-
+              Yank plugin
+                   ┬
     y              │ copy mode selection to clipboard
-    ✲  y           │ copy text from CLI to clipboard
-    ✲  Y           │ copy working directory to the clipboard
-
-Simultaneous keyboard input on all panes:
-
-    Ctrl-a :setw synchronize-panes [on|off]
+    <C-a> y        │ copy text from CLI to clipboard
+    <C-a> Y        │ copy working directory to the clipboard
 "
