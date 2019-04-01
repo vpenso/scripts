@@ -22,6 +22,9 @@ secondary = #e60053
 alert = #bd2c40
 highlight = #8b0000
 highlight-background = #ccfff5ee
+focus = #000066
+focus-background = #11000066
+urgent = #ff3300
 dim = #696969 
 
 [bar/top]
@@ -125,36 +128,31 @@ type = internal/i3
 format = <label-state> <label-mode>
 index-sort = true
 wrapping-scroll = false
-
 ; Only show workspaces on the same output as the bar
 ;pin-workspaces = true
-
 label-mode-padding = 2
 label-mode-foreground = #000
 label-mode-background = #f5f5f5
-
 ; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-foreground = ${colors.highlight}
+label-focused-foreground = ${colors.focus}
 label-focused-background = ${colors.background}
-label-focused-underline = ${colors.highlight}
+label-focused-underline = ${colors.focus}
 label-focused-padding = 2
-
 ; unfocused = Inactive workspace on any monitor
 label-unfocused = %name%
-label-unfocused-foreground = ${colors.dim}
-label-unfocused-padding = ${module/bspwm.label-occupied-padding}
-
+label-unfocused-foreground = ${colors.foreground}
+label-unfocused-padding = 2
 ; visible = Active workspace on unfocused monitor
 label-visible = %name%
-label-visible-background = ${self.label-focused-background}
-label-visible-underline = ${self.label-focused-underline}
-label-visible-padding = ${self.label-focused-padding}
-
+label-visible-background = ${colors.background}
+label-visible-foreground = ${colors.urgent}
+label-visible-padding = 2
 ; urgent = Workspace with urgency hint set
 label-urgent = %name%
-label-urgent-background = ${module/bspwm.label-urgent-background}
-label-urgent-padding = ${module/bspwm.label-urgent-padding}
+label-urgent-background = ${colors.background}
+label-urgent-foreground = ${colors.urgent}
+label-urgent-padding = 2
 
 [module/mpd]
 type = internal/mpd
