@@ -16,9 +16,7 @@ then
                     --noconfirm \
                     --quiet \
                 bat \
-                base-devel \
                 bind-tools \
-                ccrypt \
                 cdrtools \
                 compton \
                 dvdbackup \
@@ -31,7 +29,7 @@ then
                 git \
                 git-annex \
                 handbrake \
-                i3 \
+                i3-gaps \
                 i3exit \
                 lsd \
                 mp3info \
@@ -45,12 +43,14 @@ then
                 powerline \
                 powerline-fonts \
                 python-pywal \
+                rofi \
                 rsync \
                 ruby \
                 sshfs \
                 sshuttle \
                 surf \
                 tcpdump \
+                terminator \
                 tmux \
                 tree \
                 ttf-inconsolata \
