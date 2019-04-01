@@ -61,6 +61,4 @@ then
                 xclip \
                 youtube-dl \
                 zsh-completions
-
-        pacman -S --needed base-devel
 fi

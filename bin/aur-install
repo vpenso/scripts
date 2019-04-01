@@ -1,0 +1,19 @@
+#! /usr/bin/env bash
+
+# install build tools if missing
+pacman --query --group base-devel &>/dev/null || \
+        sudo pacman --refresh \
+                    --sync \
+                    --noconfirm \
+                    --quiet base-devel
+
+packages=${1:?Missing package name}
+
+# unless the package is installed
+pacman --query $package 2>/dev/null || {
+        # download the source code repository
+        git clone https://aur.archlinux.org/${package}.git
+        cd $package
+        # install build dependencies, build the package and install
+        makepkg --syncdeps --rmdeps --install
+}
