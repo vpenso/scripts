@@ -14,7 +14,7 @@ Files                           | Description
 
 [0]: redshift.conf
 [1]: ../../bin/redshift-install
-[2]: ../../var/aliases/redshift.sh]
+[2]: ../../var/aliases/redshift.sh
 
 Get latitude/longitude coordinates from [GeoNames][geon]
 
