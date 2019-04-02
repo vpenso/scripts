@@ -11,6 +11,7 @@ package=${1:?Missing package name}
 
 # unless the package is installed
 pacman --query $package 2>/dev/null || {
+        cd /tmp
         # download the source code repository
         git clone https://aur.archlinux.org/${package}.git
         cd $package
