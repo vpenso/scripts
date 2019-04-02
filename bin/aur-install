@@ -7,7 +7,7 @@ pacman --query --group base-devel &>/dev/null || \
                     --noconfirm \
                     --quiet base-devel
 
-packages=${1:?Missing package name}
+package=${1:?Missing package name}
 
 # unless the package is installed
 pacman --query $package 2>/dev/null || {
