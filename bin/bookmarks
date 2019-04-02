@@ -158,7 +158,8 @@ begin
   command = ARGV.shift || raise('No command argument!')
   case command
   when 'list','l'
-    bookmarks.each do |k,v|
+    # sort keys alphanumerical
+    bookmarks.sort.to_h.each do |k,v|
       next unless k =~ %r[#{pattern}]
       if $options.keys
         $stdout.puts k
