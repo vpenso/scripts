@@ -4,8 +4,12 @@ default_border pixel 1
 #new_float normal
 hide_edge_borders smart # Hide borders
 
-client.focused #990000 #285577 #ffffff #2e9ef4 #1e90ff
-client.unfocused #333333 #222222 #888888 #292d2e #a9a9a9
+# do not move over the edge of the container
+focus_wrapping no
+
+client.focused          #990000 #ffffff #000000 #2e9ef4 #1e90ff
+client.focused_inactive #333333 #ffffff #000000 #292d2e #a9a9a9
+client.unfocused        #333333 #ffffff #000000 #292d2e #a9a9a9
 
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 
@@ -43,6 +47,13 @@ bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+f floating toggle
 # move floating windows with your mouse
 floating_modifier Mod4
+# toggle between floating/tiling container
+bindsym $mod+t focus mode_toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 
 # change focus
 bindsym $mod+h focus left

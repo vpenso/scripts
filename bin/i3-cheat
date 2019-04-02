@@ -10,15 +10,21 @@ cheat=$(cat <<EOF
     <M^{hjkl}> │ left, down, up, right window focus
     <M^{HJKL}> │ move focused window left, down, up right
   <M^r> {hjkl} │ resize container left, down, up, right (<Esc> to exit)
-         <M^f> │ toggle window fullscreen
-         <M^S> │ toggel window floating mode
          <M^Q> │ close focused window
                ┼
-     <M^[1-3]> │ switch workspace
+         <M^f> │ container fullscreen (toggle)
+         <M^F> │ container floating mode (toggle)
+         <M^t> │ toggle movement between floating/tiling containers
+         <M^s> │ stack containers layout
+         <M^w> │ tab   containers layout
+         <M^e> │ split containers layout
+               ┼
+     <M^[1-4]> │ switch workspace
 
              Launch
                ┬
      <M^Enter> │ open default terminal emulator
+        <M^F1> │ open termite
         <M^F2> │ open program launcher
         <M^F3> │ open bookmark launcher
 
