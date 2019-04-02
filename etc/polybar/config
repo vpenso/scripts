@@ -61,7 +61,7 @@ modules-right = xbacklight xkeyboard pulseaudio memory cpu wlan eth battery temp
 
 tray-position = right
 tray-padding = 2
-;tray-background = #0063ff
+tray-background = ${colors.background-alt}
 
 ;wm-restack = bspwm
 ;wm-restack = i3
