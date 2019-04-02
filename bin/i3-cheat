@@ -2,7 +2,6 @@
 
 
 cheat=$(cat <<EOF
-
       Windows & Workspaces
                ┬
      <M^Enter> │ open default terminal emulator
@@ -29,6 +28,14 @@ cheat=$(cat <<EOF
          <M^R> │ restart i3
          <M^9> │ lock screen
          <M^0> │ session menu (<Esc> to exit)
+
+            Screen
+               ┬
+         <M^d> │ menu to move between screens
+         {hlp} │ move container left,right,primary screen
+         {HLP} │ move workspace left,right,primary screen
+         <Esc> │ exit 
+
 EOF
 )
 

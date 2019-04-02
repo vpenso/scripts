@@ -91,6 +91,22 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
+# Move containers/workspaces between screens
+bindsym $mod+d mode "$display"
+set $display container: h,l,p (left/right/primary) | workspace: H,L,P (left,right/primary)
+mode "$display" {
+        bindsym h move container to output left
+        bindsym l move container to output right
+        bindsym p move container to output primary
+        bindsym Shift+h move workspace to output left
+        bindsym Shift+l move workspace to output right
+        bindsym Shift+p move workspace to output primary
+#        # exit resize mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+
 ############################
 ## settings for i3-gaps:  ##
 ############################
