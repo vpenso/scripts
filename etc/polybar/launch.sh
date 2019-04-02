@@ -12,7 +12,13 @@ findiface() {
   ip a | grep '^[0-9]: ' | tr -d ' ' | cut -d: -f2 | grep $1 | head -1
 }
 
-# variables used within the polybar config
+#
+# Environment variable used by the Polybar configuration
+#
+
+# find the primary monitor
+export MONITOR=$(xrandr | grep 'connected primary' | cut -d' ' -f1)
+# find the Ethernet and Wifi network interface
 export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface en)
 
