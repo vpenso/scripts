@@ -47,8 +47,8 @@ line-color = #f00
 border-size = 4
 border-color = ${colors.background}
 
-padding-left = 0
-padding-right = 0
+padding-left = 2
+padding-right = 2
 
 module-margin-left = 1
 module-margin-right = 2
