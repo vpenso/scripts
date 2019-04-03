@@ -25,6 +25,8 @@ highlight-background = #ccfff5ee
 focus = #000066
 focus-background = #11000066
 urgent = #ff3300
+hint = #ff8c00
+goot = #008800
 dim = #696969 
 
 [bar/top]
@@ -57,7 +59,7 @@ font-2 = siji:pixelsize=10;1
 
 modules-left = bspwm i3
 modules-center = mpd
-modules-right = xbacklight xkeyboard pulseaudio memory cpu wlan eth battery temperature date powermenu
+modules-right = xbacklight xkeyboard pulseaudio memory cpu wlan eth battery temperature date
 
 tray-position = right
 tray-padding = 2
@@ -288,51 +290,31 @@ battery = BAT0
 adapter = ADP1
 full-at = 98
 
-format-charging = <animation-charging> <label-charging>
-format-charging-underline = #ffb52a
+label-charging = %percentage%% (%time%)
+format-charging = <label-charging>
+format-charging-underline = ${colors.background}
 
-format-discharging = <animation-discharging> <label-discharging>
-format-discharging-underline = ${self.format-charging-underline}
+label-discharging = %percentage%% (%consumption%W)
+format-discharging = <label-discharging>
+format-discharging-underline = ${colors.urgent}
 
-format-full-prefix = " "
-format-full-prefix-foreground = ${colors.foreground-alt}
-format-full-underline = ${self.format-charging-underline}
-
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-foreground = ${colors.foreground-alt}
-
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-foreground = ${colors.foreground-alt}
-animation-charging-framerate = 750
-
-animation-discharging-0 = 
-animation-discharging-1 = 
-animation-discharging-2 = 
-animation-discharging-foreground = ${colors.foreground-alt}
-animation-discharging-framerate = 750
+label-full = Full
+format-full = <label-full>
+format-full-underline = ${colors.background}
 
 [module/temperature]
 type = internal/temperature
 thermal-zone = 0
 warn-temperature = 60
 
-format = <ramp> <label>
-format-underline = #f50a4d
-format-warn = <ramp> <label-warn>
-format-warn-underline = ${self.format-underline}
+format = <label>
+format-underline = ${colors.background}
+format-warn = <label-warn>
+format-warn-underline = ${colors.highlight}
 
 label = %temperature-c%
 label-warn = %temperature-c%
-label-warn-foreground = ${colors.secondary}
-
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
-ramp-foreground = ${colors.foreground-alt}
+label-warn-foreground = ${colors.foreground}
 
 [module/powermenu]
 type = custom/menu
