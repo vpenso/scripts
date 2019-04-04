@@ -147,5 +147,5 @@ then
         export ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
         export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 
-        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(git_super_status) \n▪▶ '
+        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(git_super_status) \n>>> '
 fi

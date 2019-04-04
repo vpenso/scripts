@@ -29,6 +29,7 @@ then
                 git \
                 git-annex \
                 handbrake \
+                kitty \
                 i3-gaps \
                 i3exit \
                 lsd \
@@ -50,7 +51,7 @@ then
                 sshuttle \
                 surf \
                 tcpdump \
-                terminator \
+                termite \
                 tmux \
                 tree \
                 ttf-inconsolata \
