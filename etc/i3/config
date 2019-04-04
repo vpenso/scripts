@@ -117,6 +117,11 @@ mode "$display" {
         bindsym Escape mode "default"
 }
 
+# Always float certain windows
+#
+# use bin/i3-get-window-criteria to identify window properotes
+
+for_window [class="feh"] floating enable
 
 ############################
 ## settings for i3-gaps:  ##
