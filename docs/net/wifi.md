@@ -9,7 +9,6 @@ lspci | egrep -i --color 'wifi|wlan|wireless' \
       | xargs lspci -k -s
 # monitor link quality
 watch -n 1 cat /proc/net/wireless
-nmcli radio wifi on|off                 # toggle Wifi with NetworkManager
 ```
 
 Bring a Wifi interface up i.e. `wlp3s0`
@@ -22,6 +21,25 @@ Bring a Wifi interface up i.e. `wlp3s0`
 3: wlp3s0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN mode DEFAULT group default qlen 1000
     link/ether 10:bf:48:4c:33:f8 brd ff:ff:ff:ff:ff:ff
 ```
+
+## NetworkManager
+
+GNOME NetworkManager configures and monitors Wifi network connections [1]:
+
+```bash
+nmcli radio wifi on|off                 # toggle Wifi
+nmcli dev wifi                          # list available Wifi APs
+```
+
+Connect to Wifi using the **NetworkManager applet** [2].
+
+Start the applet on session it within the **i3 Window Manager**:
+
+```bash
+# start NetworkManager applet
+exec_always --no-startup-id nm-applet
+```
+
 
 ### iw
 
@@ -122,3 +140,11 @@ Hard block can not be unblocked by software:
 options rfkill master_switch_mode=2
 options rfkill default_state=1
 ```
+
+# References
+
+[1] GNOME Network Manager  
+https://wiki.gnome.org/Projects/NetworkManager/
+
+[2] NetworkManager Gnome Applet  
+https://gitlab.gnome.org/GNOME/network-manager-applet
