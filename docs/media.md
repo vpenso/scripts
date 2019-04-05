@@ -9,6 +9,13 @@ File                     | Description
 ### Audio
 
 ```bash
+# verify that sound modules are loaded
+lsmod | grep '^snd' | column -t
+# list audio devices
+aplay -l
+aplay -L | grep :CARD
+# produce noise on a device
+speaker-test -D default:PCH -c 2
 # dependencies on Arch...
 pacman -S youtube-dl cdrtools mp3info mp3wrap
 ```
