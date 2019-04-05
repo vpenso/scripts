@@ -43,6 +43,7 @@ then
                 polybar \
                 powerline \
                 powerline-fonts \
+                pulseaudio \
                 python-pywal \
                 rofi \
                 rsync \

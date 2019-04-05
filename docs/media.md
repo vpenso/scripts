@@ -6,7 +6,7 @@ File                     | Description
 [cd2mp3]: ../bin/cd2mp3
 [yt2mp3]: ../var/aliases/youtube.sh
 
-### Audio
+## Audio
 
 ```bash
 # verify that sound modules are loaded
@@ -30,7 +30,7 @@ mp3info -t $title -a $artist -n $track $file.mp3
 ```
 
 
-### Video
+## Video
 
 ```bash
 # dependencies on Debian
@@ -39,11 +39,20 @@ apt install vlc libdvd-pkg dvdbackup handbrake
 pacman -S vlc libdvdcss dvdbackup handbrake
 ```
 
-Media player VLC:
 
-<https://www.videolan.org>
+### Youtube-dl
 
-Video transcoder Handbrake:
+Select video quality
 
-<https://handbrake.fr/>
+```bash
+# list available formats
+youtube-dl -F $url
+# download with a specified format
+youtube-dl -f $video[+$audio]
+# both should be numerical values
+```
+
+
+
+
 
