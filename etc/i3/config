@@ -119,9 +119,10 @@ mode "$display" {
 
 # Always float certain windows
 #
-# use bin/i3-get-window-criteria to identify window properotes
+# use bin/i3-get-window-criteria to identify window properties
 
 for_window [class="feh"] floating enable
+for_window [class="vlc"] floating enable
 
 ############################
 ## settings for i3-gaps:  ##
