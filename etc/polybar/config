@@ -30,7 +30,7 @@ goot = #008800
 dim = #696969 
 
 [bar/top]
-monitor = ${env:MONITOR:HDMI-1}
+monitor = ${env:PRIMARY_DISPLAY}
 width = 100%
 height = 20
 ;offset-x = 1%

@@ -17,7 +17,10 @@ findiface() {
 #
 
 # find the primary monitor
-export MONITOR=$(xrandr | grep 'connected primary' | cut -d' ' -f1)
+# Todo: check if primary monitor is connected, otherwise use the next connected
+# device
+export PRIMARY_DISPLAY=$(xrandr | grep ' connected' | cut -d' ' -f1 | head -1)
+echo PRIMARY_DISPLAY=$PRIMARY_DISPLAY
 # find the Ethernet and Wifi network interface
 export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface en)

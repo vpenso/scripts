@@ -10,6 +10,12 @@ Files                      | Description
 [etc/polybar/config][3]    | Configuration within this repository
 [etc/polybar/launch.sh][4] | Launch script used with i3 window manager
 
+Test the configuration:
+
+```bash
+polybar --config=$SCRIPTS/etc/polybar/config top
+```
+
 Launch Polybar with i3 (cf. `~/.i3/config`):
 
 ```bash
