@@ -16,11 +16,17 @@ findiface() {
 # Environment variable used by the Polybar configuration
 #
 
-# find the primary monitor
-# Todo: check if primary monitor is connected, otherwise use the next connected
-# device
-export PRIMARY_DISPLAY=$(xrandr | grep ' connected' | cut -d' ' -f1 | head -1)
+# check if a monitor is configured as primary
+if xrandr | grep ' connected primary' &>/dev/null
+then
+        PRIMARY_DISPLAY=$(xrandr | grep ' connected primary' | cut -d' ' -f1 | head -1)
+# otherwise use the first connected output display as primary
+else
+        PRIMARY_DISPLAY=$(xrandr | grep ' connected' | cut -d' ' -f1 | head -1)
+fi
+export PRIMARY_DISPLAY
 echo PRIMARY_DISPLAY=$PRIMARY_DISPLAY
+
 # find the Ethernet and Wifi network interface
 export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface en)
