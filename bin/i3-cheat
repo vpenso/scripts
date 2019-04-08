@@ -37,12 +37,13 @@ cheat=$(cat <<EOF
           Workspaces
                ┬
      <M^[1-4]> │ switch workspace
+    <M^x> {jk} │ move window to next/previous workspaces 
 
             Screens
                ┬
          <M^d> │ menu to move between screens
-         {hlp} │ move container left,right,primary screen
-         {HLP} │ move workspace left,right,primary screen
+         {hlp} │ move container to left,right,primary screen
+         {HLP} │ move workspace to left,right,primary screen
          <Esc> │ exit 
 
           Scratchpad
