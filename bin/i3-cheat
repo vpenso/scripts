@@ -2,32 +2,6 @@
 
 
 cheat=$(cat <<EOF
-      Windows & Workspaces
-               ┬
-     <M^Enter> │ open default terminal emulator
-         <M^-> │ tile vertial for next window
-         <M^|> │ tile horizontal for next window
-    <M^{hjkl}> │ left, down, up, right window focus
-    <M^{HJKL}> │ move focused window left, down, up right
-  <M^r> {hjkl} │ resize container left, down, up, right (<Esc> to exit)
-         <M^Q> │ close focused window
-               ┼
-         <M^f> │ container fullscreen (toggle)
-         <M^F> │ container floating mode (toggle)
-         <M^t> │ toggle movement between floating/tiling containers
-         <M^s> │ stack containers layout
-         <M^w> │ tab   containers layout
-         <M^e> │ split containers layout
-               ┼
-     <M^[1-4]> │ switch workspace
-
-             Launch
-               ┬
-     <M^Enter> │ open default terminal emulator
-        <M^F1> │ open termite
-        <M^F2> │ open program launcher
-        <M^F3> │ open bookmark launcher
-
             Session
                ┬
          <M^C> │ reload configuration
@@ -35,13 +9,46 @@ cheat=$(cat <<EOF
          <M^9> │ lock screen
          <M^0> │ session menu (<Esc> to exit)
 
-            Screen
+            Launch
+               ┬
+     <M^Enter> │ open default terminal emulator
+        <M^F1> │ open termite
+        <M^F2> │ open program launcher
+        <M^F3> │ open bookmark launcher
+
+            Windows
+               ┬
+         <M^-> │ tile vertial for next window
+         <M^|> │ tile horizontal for next window
+    <M^{hjkl}> │ left, down, up, right window focus
+    <M^{HJKL}> │ move focused window left, down, up right
+  <M^r> {hjkl} │ resize container left, down, up, right (<Esc> to exit)
+         <M^Q> │ close focused window
+
+          Containers
+               ┬
+         <M^f> │ container fullscreen (toggle)
+         <M^F> │ container floating mode (toggle)
+         <M^t> │ toggle movement between floating/tiling containers
+         <M^s> │ stack containers layout
+         <M^w> │ tab   containers layout
+         <M^e> │ split containers layout
+
+          Workspaces
+               ┬
+     <M^[1-4]> │ switch workspace
+
+            Screens
                ┬
          <M^d> │ menu to move between screens
          {hlp} │ move container left,right,primary screen
          {HLP} │ move workspace left,right,primary screen
          <Esc> │ exit 
 
+          Scratchpad
+               ┬
+<M^S^<Bslash>> │ move window to scratchpad
+  <M^<Bslash>> │ toggle scratchpad window
 EOF
 )
 

@@ -3,7 +3,6 @@
 default_border pixel 1
 #new_float normal
 hide_edge_borders smart # Hide borders
-
 # do not move over the edge of the container
 focus_wrapping no
 
@@ -11,8 +10,8 @@ client.focused          #990000 #ffffff #000000 #2e9ef4 #1e90ff
 client.focused_inactive #333333 #ffffff #000000 #292d2e #a9a9a9
 client.unfocused        #333333 #ffffff #000000 #292d2e #a9a9a9
 
+# start the status bar
 exec_always --no-startup-id ~/.config/polybar/launch.sh
-
 exec_always --no-startup-id nm-applet
 
 ############################
@@ -21,7 +20,6 @@ exec_always --no-startup-id nm-applet
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
-
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -73,6 +71,20 @@ bindsym $mod+2 workspace 2: remote
 bindsym $mod+3 workspace 3: docs
 bindsym $mod+4 workspace 4: scratch
 
+#
+# Scratchpad
+# ----------
+#
+# move a window to the scratchpad workspace
+bindsym $mod+Shift+BackSpace move scratchpad
+# toggle visibility of the scratchpad window
+bindsym $mod+BackSpace scratchpad show
+
+
+#
+# Session Menu
+# ------------
+#
 # Set shut down, restart and locking features
 bindsym $mod+0 mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
@@ -89,6 +101,12 @@ mode "$mode_system" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+
+
+#
+# Window Size Menu
+# ----------------
+#
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
 mode "resize" {
@@ -102,6 +120,10 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
+#
+# Workspace Menu
+# --------------
+#
 # Move containers/workspaces between screens
 bindsym $mod+d mode "$display"
 set $display container: h,l,p (left/right/primary) | workspace: H,L,P (left,right/primary)
@@ -117,7 +139,9 @@ mode "$display" {
         bindsym Escape mode "default"
 }
 
-# Always float certain windows
+#
+# Float Windows
+# -------------
 #
 # use bin/i3-get-window-criteria to identify window properties
 
