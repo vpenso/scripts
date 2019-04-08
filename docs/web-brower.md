@@ -1,4 +1,15 @@
 
+Default browser in X11 settings:
+
+```bas
+# search XDG settings for browser keys
+xdg-settings --list | grep browser
+# show the current default browser
+xdg-settings get default-web-browser
+```
+
+## Firefox
+
 Install latest version:
 
 ```bash
