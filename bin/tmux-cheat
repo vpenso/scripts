@@ -8,9 +8,13 @@ echo \
     <C-a> ,        │ rename window
     <C-a> {np}     │ next/previous window
     <C-a> w        │ list windows
-    <C-a> d        │ detach from session (run tmux attach)
     <C-a> a        │ send prefix key to program in pane 
     <C-a> x        │ hide status bar
+
+               Sessions
+                   ┬
+    <C-a> d        │ detach from session (run tmux attach)
+    <C-a> $        │ rename session
 
           Copy & paste (Vi style)
                    ┬
