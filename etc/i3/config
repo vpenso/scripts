@@ -163,6 +163,7 @@ for_window [class="feh"] floating enable
 for_window [class="vlc"] floating enable
 for_window [class="Arandr"] floating enable
 for_window [class="Virt-viewer"] floating enable
+for_window [class="Terminator" title="Terminator Preferences"] floating enable
 
 ############################
 ## settings for i3-gaps:  ##
