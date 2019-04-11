@@ -4,13 +4,13 @@ echo \
 "                   ┬
     <C-a> ?        │ show key binding
     <C-a> r        │ reload ~/.tmux.conf
-    <C-a> x        │ close pane
     <C-a> c        │ new window
     <C-a> ,        │ rename window
     <C-a> {np}     │ next/previous window
     <C-a> w        │ list windows
     <C-a> d        │ detach from session (run tmux attach)
     <C-a> a        │ send prefix key to program in pane 
+    <C-a> x        │ hide status bar
 
           Copy & paste (Vi style)
                    ┬
