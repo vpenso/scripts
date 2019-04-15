@@ -27,12 +27,10 @@ then
                 firefox \
                 fzf \
                 git \
-                git-annex \
                 handbrake \
                 kitty \
                 i3-gaps \
                 i3exit \
-                lsd \
                 mp3info \
                 mp3wrap \
                 mpc \
@@ -54,6 +52,7 @@ then
                 surf \
                 tcpdump \
                 termite \
+		terminator \
                 tmux \
                 tree \
                 ttf-inconsolata \
