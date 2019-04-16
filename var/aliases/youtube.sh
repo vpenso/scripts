@@ -3,7 +3,7 @@
 # https://github.com/rg3/youtube-dl
 
 alias yt2mp3='youtube-dl --extract-audio --audio-format mp3'
-alias yt2mp4-360p='youtube-dl -f 243+140'
+alias yt2mp4-360p='youtube-dl -f 134+140'
 alias yt2mp4-480p='youtube-dl -f 135+140'
 alias yt2mp4-720p='youtube-dl -f 136+140'
 alias yt2mp4-720p60='youtube-dl -f 298+140'
