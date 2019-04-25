@@ -50,6 +50,7 @@ then
                 sshfs \
                 sshuttle \
                 surf \
+                sxiv \
                 tcpdump \
                 termite \
 		terminator \
