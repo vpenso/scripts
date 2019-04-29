@@ -3,8 +3,25 @@
 # https://github.com/rg3/youtube-dl
 
 alias yt2mp3='youtube-dl --extract-audio --audio-format mp3'
-alias yt2mp4-360p='youtube-dl -f 134+140'
-alias yt2mp4-480p='youtube-dl -f 135+140'
-alias yt2mp4-720p='youtube-dl -f 136+140'
-alias yt2mp4-720p60='youtube-dl -f 298+140'
-alias yt2mp4-1080p60='youtube-dl -f 299+140'
+
+# do not expand URL on Zsh
+
+function youtube() {
+        if [[ $# -eq 1 ]]
+        then
+                youtube-dl -F "$@"
+                return
+        fi
+
+        if [[ $# -eq 2 ]]
+        then
+                youtube-dl -f $2 "$1"
+        fi
+}
+
+if command -v noglob >&-
+then
+        alias yt='noglob youtube'
+else
+        alias yt=youtube
+fi
