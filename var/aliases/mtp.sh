@@ -18,4 +18,5 @@ then
                         simple-mptfs --device $1 $2
                 fi
         }
+        # unmount with: fusermount -u ~/mnt
 fi
