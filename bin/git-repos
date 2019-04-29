@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 #
-# Copyright 2012 Victor Penso
+# Copyright 2012-2019 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ require 'getoptlong'
 require 'json'
 require 'fileutils'
 
-version = 0.2
+version = 0.21
 
 exec_name = File.split(__FILE__)[-1]
 
@@ -130,13 +130,13 @@ class GitRepos
           ahead = `git rev-list #{remote}..HEAD`
           ahead = ahead.empty? ? 0 : ahead.split.length 
           # if local HEAD is ahead of a remote branch
-          remotes << "\033[31m#{SYMBOL[:ahead]}\033[0m#{ahead} #{remote}" if ahead.to_i > 0
+          remotes << "#{SYMBOL[:ahead]}#{ahead} #{remote}" if ahead.to_i > 0
         end
         status = 'git status -s'
         status_empty = `#{status}`.empty?
         show = true unless status_empty
         show = true unless remotes.empty?
-        $stdout.puts "Git in \033[1;30m#{path.gsub(%r[^#{ENV['HOME']}],'~')}\033[0m" if show
+        $stdout.puts "-- #{path.gsub(%r[^#{ENV['HOME']}],'~')}" if show
         $stdout.puts remotes.join("\n") unless remotes.empty?
         system("#{status} -b") unless status_empty
       end
