@@ -23,12 +23,14 @@ cheat=$(cat <<EOF
     <M^{hjkl}> │ left, down, up, right window focus
     <M^{HJKL}> │ move focused window left, down, up right
   <M^r> {hjkl} │ resize container left, down, up, right (<Esc> to exit)
-         <M^Q> │ close focused window
+         <M^q> │ close focused window
 
           Containers
                ┬
          <M^f> │ container fullscreen (toggle)
          <M^F> │ container floating mode (toggle)
+  <M^m> {hjkl} │ move left,up,down,right
+       <M^m> q │ kill container
          <M^t> │ toggle movement between floating/tiling containers
          <M^s> │ stack containers layout
          <M^w> │ tab   containers layout
