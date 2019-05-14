@@ -28,3 +28,13 @@ command -v lsd >&- && {
         alias l.='lsd -1 --all --group-dirs=first'
         alias lt='lsd -F --tree'
 }
+
+function dir-files() {
+        # recursive find all directories
+        for d in $(find . -maxdepth 5 -type d)
+        do
+                # count number of files in the directory
+                echo -n $(find $d -type f | wc -l)
+                echo ' '${d/\.\//}
+        done
+}
