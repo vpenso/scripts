@@ -14,16 +14,22 @@ Enables PCIe **adapter sharing for virtual machines and containers**.
   - Virtual devices are referred to as **Virtual Functions** (VF)
 * By default, SR-IOV is disabled and the PF behaves as a regular PCIe device
 
-Physical Function:
+Physical function:
 
 * Function of a PCIe adapter that supports the SR-IOV interface, advertises by 
   the device's SR-IOV capabilities
 * Used to **dynamically allocate VFs** controlled by the PF via registers 
   encapsulated in the capability
+* The max. number of VFs limited by the device hardware (up to 256 acc. to spec.)
+* Typical supports L2 sorter/switcher, link controls
+
+Virtual function:
+
 * Each VF's PCI configuration space can be accessed by...
   - its own bus, slot and function number (Routing ID)
   - a PCI memory space, which is used to map its register set
-* The max. number of VFs limited by the device hardware (up to 256 acc. to spec.)
+* Can move data in and out of DMA
+* Dedicated Tx/Rx queues
 
 SR-IOV drivers are implemented in the Linux kernel:
 
