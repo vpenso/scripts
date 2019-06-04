@@ -73,6 +73,7 @@ Why use [Markdown][md] for plain text formating?
 * Conversion to other formats: [pandoc](https://github.com/jgm/pandoc), [mkdocs](https://github.com/mkdocs/mkdocs/), [readthedocs](https://github.com/rtfd/readthedocs.org)
 * Viewer Markdown in the shell: [mdless](https://github.com/ttscoff/mdless), [mdv](https://github.com/axiros/terminal_markdown_viewer), [mdcut](https://github.com/lunaryorn/mdcat)
 * Edit Markdown online: [dillinger](https://github.com/joemccann/dillinger)
+* [Markor](https://github.com/gsantner/markor) for Android
 
 [ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
 [cm]: https://commonmark.org/
