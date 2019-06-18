@@ -22,15 +22,27 @@ Package repositories:
 Yum is the Red Hat package manager 
 
 ```bash
+yum clean all                     # clean up all the repository metadata caches
+yum makecache                     # update metadata for the currently enabled repositories
 yum repolist all                  # list package repositories
 yum repolist enabled              # list enabled repos only
+```
+
+Search & Information
+
+```bash
+yum search <package>              # search all the available packages to match a name
 yum list                          # list all available packages
 yum list <package>                # search for the specific package with name
 yum --disablerepo='*' list available --enablerepo=<repo>
                                   # list package provided by a given repo
-yum search <package>              # search all the available packages to match a name
 yum info <package>                # information of a package
 repoquery -l <package>            # list files in a package
+```
+
+Install & Update:
+
+```bash
 yum -y install <package>          # install package by name (assume yes)
 yum -y install --nogpgcheck <package> 
                                   # install unsigned packages by name (assume yes)
@@ -48,8 +60,6 @@ yum groupremove <group>           # delete a group package
 yum list installed                # list installed packages
 yum list available [<regex>]      # list all packages in all enabled repositories available to install
 yum provides <path>               # find which package a specific file belongs to
-yum makecache                     # update metadata for the currently enabled repositories
-yum clean all                     # clean up all the repository metadata caches
 ```
 
 ### Versions
