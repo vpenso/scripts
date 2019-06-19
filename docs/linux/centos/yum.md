@@ -8,15 +8,6 @@ Packages use following name specification:
     name-[epoch:]version-release
     name-[epoch:]version-release.arch
 
-Package repositories:
-
-* [CentOS](https://www.centos.org/download/mirrors/)
-* [Fedora](https://admin.fedoraproject.org/mirrormanager/)
-* Fedora [EPEL](https://fedoraproject.org/wiki/EPEL)
-* [ELRepo](http://elrepo.org)
-* [Software Collections](https://www.softwarecollections.org)
-* [CERN CentOS](http://linuxsoft.cern.ch/) (CC)
-
 # Yum
 
 Yum is the Red Hat package manager 
