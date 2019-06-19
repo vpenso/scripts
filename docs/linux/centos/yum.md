@@ -323,6 +323,9 @@ Create a local repository to host RPM packages:
 
 # Security Updates
 
+Package errata are listings from the package manager (upstream) with 
+updates for when CVE’s and vulnerabilities are found.
+
 ## Red Hat
 
 Red Hat **Security Advisories** (RHSA) inform customers about security flaws for all Red Hat products:
@@ -339,6 +342,11 @@ Security issues receiving special attention by Red Hat are documented by **Vulne
 
 Data related to security is programmatically available with the Red Hat [Security Data API][rhsda]. Red Hat customers may have access to [Extended Update Support][rheus] (EUS) which provides update channels to stay with a minor version of the base OS. The support time frames are explained at Red Hat [Enterprise Linux Life Cycle][rhellc].
 
+Information is kept in the `UPDATEINFO.XML` file for each repository upstream.
+
+* Use the yum-plugin-security plugin, to list all vulnerable packages `yum list-sec cves`
+* Update any package that has listed errata with `yum update --security`
+
 ## CentOS
 
 CentOS Security Advisories (CESA) are continuously published to the **announcement mailing list**:
@@ -347,11 +355,19 @@ CentOS Security Advisories (CESA) are continuously published to the **announceme
 
 CESA follows RHSA on its respective mailing-lists closely keeping the same naming convention.
 
-**_Packages distributed by the CentOS repositories do not provide security information!_**
+**_Packages distributed by the CentOS repositories do not provide security errata information!_**
+
+CentOS does not have official errata: the CentOS upstream repos do not have an `UPDATEINFO.XML`
 
 ### CEFS
 
-[CentOS Errata for Spacewalk][cefs] (CEFS) imports security errata information from the CentOS announce mailing list and provides it to a [Spacewalk](http://spacewalk.redhat.com/) server. Following scripts are bases on the security [errata XML file][cefsxml] published by CEFS.
+**CentOS Errata for Spacewalk** (CEFS) imports security errata information 
+from the CentOS announce mailing list and provides it to a 
+[Spacewalk](http://spacewalk.redhat.com/) server:
+
+<http://cefs.steve-meier.de/>
+
+Following scripts are bases on the security [errata XML file][cefsxml] published by CEFS.
 
 1. The script [generate_updateinfo][cefsgu] creates an `updateinfo.xml` file to be published on a CentOS package repository mirror.
 2. The [Centos-Package-Cron][cefscpc] reports advisories by mail related to packages installed on a specific node.
@@ -359,13 +375,24 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 [rhsda]: https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
 [rheus]: https://lists.centos.org/pipermail/centos-announce/
 [rhellc]: https://access.redhat.com/support/policy/updates/errata/
-[cefs]: http://cefs.steve-meier.de/ 
 [cefsxml]: http://cefs.steve-meier.de/errata.latest.xml
 [cefsgu]: https://github.com/vmfarms/generate_updateinfo
 [cefscpc]: https://github.com/wied03/centos-package-cron
 
+## CERN CentOS
+
+[Cern CentOS][cernc] is a customized distribution that is built on top of the CentOS Core
+
+* Fully compatible with CentOS Core therefore with the [ Red Hat ] Enterprise Linux
+* It includes [security, enhancement and bugfix errata][ccera]
+
+Available for mirroring at <http://linuxsoft.cern.ch/>
+
+[cernc]: https://linux.web.cern.ch/linux/centos.shtml
+[ccera]: https://linux.web.cern.ch/linux/updates/updates-cc7.shtml
 
 # References
 
 RPM Packaging Guide  
 https://rpm-packaging-guide.github.io/
+
