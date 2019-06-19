@@ -47,7 +47,7 @@ base      | Packages that form CentOS (minor) point releases
 updates   | Security, bugfix or enhancement updates, issued between the regular update sets for point releases
 addons    | Packages not provided by upstream, used to build the CentOS distribution
 
-List of CentOS repositories
+List of CentOS related package repositories:
 
 Name                  | Description
 ----------------------|------------------------
@@ -59,12 +59,12 @@ OpenHPC               | https://github.com/openhpc/ohpc
 
 
 
-# Package Errata
+## Package Errata
 
 Package errata are listings from the package manager (upstream) with 
 updates for when CVE’s and vulnerabilities are found.
 
-## Red Hat
+### Red Hat
 
 Red Hat **Security Advisories** (RHSA) inform customers about security flaws for all Red Hat products:
 
@@ -85,7 +85,7 @@ Information is kept in the `UPDATEINFO.XML` file for each repository upstream.
 * Use the yum-plugin-security plugin, to list all vulnerable packages `yum list-sec cves`
 * Update any package that has listed errata with `yum update --security`
 
-## CentOS
+### CentOS
 
 CentOS Security Advisories (CESA) are continuously published to the **announcement mailing list**:
 
@@ -96,8 +96,6 @@ CESA follows RHSA on its respective mailing-lists closely keeping the same namin
 **_Packages distributed by the CentOS repositories do not provide security errata information!_**
 
 CentOS does not have official errata: the CentOS upstream repos do not have an `UPDATEINFO.XML`
-
-### CEFS
 
 **CentOS Errata for Spacewalk** (CEFS) imports security errata information 
 from the CentOS announce mailing list and provides it to a 
@@ -117,7 +115,7 @@ Following scripts are bases on the security [errata XML file][cefsxml] published
 [cefsgu]: https://github.com/vmfarms/generate_updateinfo
 [cefscpc]: https://github.com/wied03/centos-package-cron
 
-## CERN CentOS
+### CERN CentOS
 
 [Cern CentOS][cernc] is a customized distribution that is built on top of the CentOS Core
 
