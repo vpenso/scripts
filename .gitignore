@@ -1,3 +1,4 @@
+etc/nnn/plugins
 *.nfs*
 *.html
 .ipynb_checkpoints/
