@@ -247,21 +247,6 @@ apply_updates = yes
 >>> systemctl list-timers '*dnf-automatic*'
 ```
 
-# Package Server
-
-Simple **test HTTP server** setup:
-
-```bash
->>> yum -y install httpd && systemctl enable httpd && systemctl start httpd
-# Grant access to the HTTP port, or disable the firewall 
->>> firewall-cmd --permanent --add-service=http && firewall-cmd --reload
->>> systemctl stop firewalld && systemctl disable firewalld
-# Disable SELinux
->>> grep ^SELINUX= /etc/selinux/config
-SELINUX=disabled
->>> setenforce 0 && sestatus
-```
-
 # References
 
 RPM Packaging Guide  

@@ -1,5 +1,3 @@
-# Package Server
-
 Simple **HTTP server** setup:
 
 ```bash
