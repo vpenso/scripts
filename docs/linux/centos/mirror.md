@@ -21,7 +21,7 @@ SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
 
-## Synchronise with a CentOS Repository
+# Yum Repository
 
 Utilities to install:
 
@@ -54,10 +54,7 @@ do
 done
 ```
 
-## Periodic Updates
-
-
-Using Systemd units:
+Periodic Updates using Systemd units:
 
 ```bash
 >>> cat /etc/systemd/system/reposync.service
@@ -80,7 +77,67 @@ OnUnitInactiveSec=2h
 WantedBy=multi-user.target
 >>> systemctl start reposync.timer
 ``` 
-### Custom Repository
+
+# Full Mirror Sync
+
+Full mirror (of a file-system) including ISO images and network install:
+
+```bash
+mkdir /var/www/html/centos
+rsync --verbose \
+      --archive \
+      --compress \
+      --delete \
+      rsync://linuxsoft.cern.ch/centos \
+      /var/www/html/centos
+```
+
+Note: You can use any CentOS mirror [1] with an `rsync://` endpoint.
+
+Create a systemd service unit [2] to execute `rsync`:
+
+```bash
+# write a unit file to execute rsync
+cat > /etc/systemd/system/rsync-centos-mirror.service <<EOF
+[Unit]
+Description=Rsync CentOS Mirror
+
+[Service]
+ExecStartPre=-/usr/bin/mkdir -p /var/www/html/centos
+ExecStart=/usr/bin/rsync -avz --delete rsync://linuxsoft.cern.ch/centos /var/www/html/centos
+Type=oneshot
+EOF
+# load the configuration
+systemctl daemon-reload
+# start rsync
+systemctl start rsync-centos-mirror
+# follow the rsync log...
+journalctl -f -u rsync-centos-mirror
+```
+
+Use a systemd timer unit to periodically execute the service above:
+
+```bash
+cat > /etc/systemd/system/rsync-centos-mirror.timer <<EOF
+[Unit]
+Description=Periodically Rsync CentOS Mirror
+
+[Timer]
+OnStartupSec=300s
+OnUnitInactiveSec=2h
+
+[Install]
+WantedBy=multi-user.target
+EOF
+# enable and start the timer unit
+systemctl daemon-reload
+systemctl enable --now rsync-centos-mirror.timer
+# check the date for next activation
+systemctl list-timers rsync*
+```
+
+
+## Custom Repository
 
 Create a local repository to host RPM packages:
 
@@ -91,3 +148,14 @@ Create a local repository to host RPM packages:
 ## move RPM packages into $path
 >>> createrepo --update $path                                 # update once packages have been added
 ```
+
+# Reference
+
+[1] List of CentOS Mirrors  
+<https://www.centos.org/download/mirrors/>
+
+[2] Systemd Service Unit  
+<https://www.freedesktop.org/software/systemd/man/systemd.service.html>
+
+[3] Systemd Timer Unit  
+<https://www.freedesktop.org/software/systemd/man/systemd.timer.html>
