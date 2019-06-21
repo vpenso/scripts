@@ -262,55 +262,6 @@ SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
 
-### Package Mirror
-
-Mirror CentOS packages on a (private) local mirror.
-
-```bash
->>> yum -y install yum-utils createrepo                       # install the tools
->>> path=/var/www/html/centos/7/os/x86_64/                    # path ot the package repository
-## repeat for all repo IDs to mirror
->>> yum repolist                                              # list repo IDs
->>> mkdir -p $path && createrepo $path                        # intialize CentOS base repo
->>> reposync -gml --download-metadata -r base -p $path        # sync repo
->>> createrepo -v --update $path/base -g comps.xml            # update repo after each sync
-```
-
-Periodic package mirror sync with Systemd units:
-
-```bash
->>> cat /etc/systemd/system/reposync.service
-[Unit]
-Description=Mirror package repository
-
-[Service]
-ExecStart=/usr/bin/reposync -gml --download-metadata -r base -p /var/www/html/centos/7/os/x86_64/
-ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/7/os/x86_64/base -g comps.xml
-Type=oneshot
->>> cat /etc/systemd/system/reposync.timer 
-[Unit]
-Description=Periodically execute package mirror sync
-
-[Timer]
-OnStartupSec=300s
-OnUnitInactiveSec=2h
-
-[Install]
-WantedBy=multi-user.target
->>> systemctl start reposync.timer
-``` 
-### Custom Repository
-
-Create a local repository to host RPM packages:
-
-```bash
->>> yum -y install yum-utils createrepo                       # install the tools
->>> path=/var/www/html/repo                                   # directory holding the repository
->>> mkdir -p $path && createrepo $path                        # intialize the package repository
-## move RPM packages into $path
->>> createrepo --update $path                                 # update once packages have been added
-```
-
 # References
 
 RPM Packaging Guide  

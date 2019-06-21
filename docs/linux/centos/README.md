@@ -1,8 +1,9 @@
 # CentOS Linux
 
-Built from publicly available open-source source code provided by Red Hat
+CentOS (Community Enterprise Operating System):
 
-Aims to be **functionally compatible with Red Hat Enterprise Linux**
+* Built from publicly available open-source source code provided by Red Hat
+* Aims to be **functionally compatible with Red Hat Enterprise Linux**
 
 Expected delays after upstream publishes updates, and new releases:
 
