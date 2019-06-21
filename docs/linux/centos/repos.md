@@ -54,18 +54,25 @@ do
 done
 ```
 
-Periodic Updates using Systemd units:
+Create a systemd service unit [2] to execute `reposync` and `createrep`:
 
 ```bash
->>> cat /etc/systemd/system/reposync.service
+cat > /etc/systemd/system/reposync-centos.service <<EOF
 [Unit]
 Description=Mirror package repository
 
 [Service]
-ExecStart=/usr/bin/reposync -gml --download-metadata -r base -p /var/www/html/centos/7/os/x86_64/
-ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/7/os/x86_64/base -g comps.xml
+ExecStart=/usr/bin/reposync -gml --download-metadata -r base -r updates -p /var/www/html/centos
+ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/base -g comps.xml
+ExecStartPost=/usr/bin/createrepo -v --update /var/www/html/centos/updates
 Type=oneshot
->>> cat /etc/systemd/system/reposync.timer 
+EOF
+```
+
+Use a systemd timer unit [3] to periodically execute the service above:
+
+```bash
+cat > /etc/systemd/system/reposync-centos.timer <<EOF
 [Unit]
 Description=Periodically execute package mirror sync
 
@@ -75,7 +82,7 @@ OnUnitInactiveSec=2h
 
 [Install]
 WantedBy=multi-user.target
->>> systemctl start reposync.timer
+EOF
 ``` 
 
 # Full Mirror Sync
@@ -137,7 +144,7 @@ systemctl list-timers rsync*
 ```
 
 
-## Custom Repository
+# Custom Repository
 
 Create a local repository to host RPM packages:
 
