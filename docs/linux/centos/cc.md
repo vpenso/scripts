@@ -1,5 +1,12 @@
 # Cern CentOS 7
 
+Cern CentOS [01] is a customized distribution that is built on top of the CentOS
+
+* Fully compatible with CentOS therefore with the [Red Hat] Enterprise Linux
+* Includes **security, enhancement and bugfix errata** [03]
+
+Available for mirroring at <http://linuxsoft.cern.ch/>
+
 List or package repositories used by default:
 
 ```bash
@@ -14,7 +21,7 @@ List or package repositories used by default:
 
 ## Security Updates
 
-Install security updates [2]:
+Install security updates [03]:
 
 ```bash
 # check for security related package updates
@@ -24,15 +31,18 @@ Install security updates [2]:
 ...
 # install all security updates
 >>> yum --security update
-# enable automatic system updates [1]
+# enable automatic system updates [02]
 >>> systemctl enable yum-autoupdate
 
 ```
 
 # References
 
-[1] Cern CentOS - Software Management  
+[01] CERN CentOS  
+<https://linux.web.cern.ch/linux/centos.shtml>
+
+[02] Cern CentOS - Software Management  
 <http://linux.web.cern.ch/linux/scientific5/docs/softwaremgmt.shtml#sysconfenable>
 
-[2] System Updates for CERN CentOS 7  
+[03] System Updates for CERN CentOS 7  
 <http://linux.web.cern.ch/linux/updates/updates-cc7.shtml>

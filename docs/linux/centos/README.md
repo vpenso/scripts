@@ -114,19 +114,6 @@ Following scripts are bases on the security [errata XML file][cefsxml] published
 [cefsgu]: https://github.com/vmfarms/generate_updateinfo
 [cefscpc]: https://github.com/wied03/centos-package-cron
 
-### CERN CentOS
-
-[Cern CentOS][cernc] is a customized distribution that is built on top of the CentOS Core
-
-* Fully compatible with CentOS Core therefore with the [ Red Hat ] Enterprise Linux
-* It includes [security, enhancement and bugfix errata][ccera]
-
-Available for mirroring at <http://linuxsoft.cern.ch/>
-
-[cernc]: https://linux.web.cern.ch/linux/centos.shtml
-[ccera]: https://linux.web.cern.ch/linux/updates/updates-cc7.shtml
-
-
 # References
 
 ### CentOS
