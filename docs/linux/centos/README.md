@@ -58,8 +58,6 @@ Software Collections  | https://www.softwarecollections.org
 RPM Fusion            | https://rpmfusion.org
 OpenHPC               | https://github.com/openhpc/ohpc
 
-
-
 ## Package Errata
 
 Package errata are listings from the package manager (upstream) with 
@@ -131,6 +129,8 @@ Available for mirroring at <http://linuxsoft.cern.ch/>
 
 # References
 
+### CentOS
+
 [1] The CentOS Rebuild and Release Process  
 <https://wiki.centos.org/FAQ/General/RebuildReleaseProcess>
 
@@ -164,5 +164,3 @@ Available for mirroring at <http://linuxsoft.cern.ch/>
 
 [11] CentOS Project, Youtube  
 <https://www.youtube.com/user/TheCentOSProject>
-
-

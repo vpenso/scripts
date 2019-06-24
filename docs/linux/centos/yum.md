@@ -12,12 +12,6 @@ Packages use following name specification:
 
 Yum is the Red Hat package manager 
 
-```bash
-yum clean all                     # clean up all the repository metadata caches
-yum makecache                     # update metadata for the currently enabled repositories
-yum repolist all                  # list package repositories
-yum repolist enabled              # list enabled repos only
-```
 
 Search & Information
 
@@ -105,6 +99,8 @@ yum history package-list <package>   # Trace history of a package
 
 ## Configuration
 
+Files & Directories:
+
 ```bash
 /etc/yum.conf                       # local global configuration file
 /etc/yum.repos.d/*.repo             # configure individual repositories
@@ -112,9 +108,20 @@ yum history package-list <package>   # Trace history of a package
 /var/cache/yum/                     # local package cache
 ```
 
-Configure package repositories with:
+Metadata & Cache:
 
 ```bash
+yum makecache                     # update metadata for the currently enabled repositories
+yum clean metadata                # delete all package repository metadata
+yum clean all                     # clean up all the repository metadata & caches
+```
+
+Inspection:
+
+```bash
+yum repolist all                        # list package repositories
+yum repolist enabled                    # list enabled repos only
+yum repo-pkgs <repo> list               # list all packages in a repository
 yum-config-manager                      # display the current values of global yum options
 yum-config-manager | grep '\[.*\]'      # list only the sections
 yum-config-manager --add-repo <url>     # add a repository to /etc/yum.repos.d/
@@ -122,7 +129,6 @@ yum-config-manager --enable <repo>      # enable a repository
 yum-config-manager --disable <repo>     # disable a repository
 yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
                                         # show URLs to the repositories 
-yum clean metadata                      # delete all package repository metadata
 ```
 
 Site local repository configuration file:
@@ -134,15 +140,6 @@ name=site-local
 baseurl=http://lxrepo01.devops.test/repo
 enabled=1
 gpgcheck=0
-```
-
-[EPEL](https://fedoraproject.org/wiki/EPEL), install `epel-release` included in the CentOS Extras repository:
-
-```bash
->>> yum -y install epel-release
->>> ls -1 /etc/yum.repos.d/epel*
-/etc/yum.repos.d/epel.repo
-/etc/yum.repos.d/epel-testing.repo
 ```
 
 ## Yum-Cron
