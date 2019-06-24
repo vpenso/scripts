@@ -36,6 +36,82 @@ Install security updates [03]:
 
 ```
 
+# Mirror
+
+`rsync` the the CERN CentOS Mirror
+
+```bash
+mkdir -p /var/www/html/cern/centos/7
+rsync --verbose \
+      --archive \
+      --compress \
+      --delete \
+      rsync://linuxsoft.cern.ch/cc7/os \
+      rsync://linuxsoft.cern.ch/cc7/updates \
+      rsync://linuxsoft.cern.ch/cc7/extras \
+      rsync://linuxsoft.cern.ch/cc7/cern \
+      /var/www/html/cern/centos/7
+```
+
+Using a systemd unit:
+
+```bash
+# file containing the URI to download the package mirror from
+mkdir /etc/systemd/system/rsync-cern-centos-mirror.service.d
+cat > /etc/systemd/system/rsync-cern-centos-mirror.service.d/endpoint.conf <<EOF
+[Service]
+Environment="OS=rsync://linuxsoft.cern.ch/cc7/os"
+Environment="UPDATES=rsync://linuxsoft.cern.ch/cc7/updates"
+Environment="EXTRAS=rsync://linuxsoft.cern.ch/cc7/extras"
+Environment="CERN=rsync://linuxsoft.cern.ch/cc7/cern"
+EOF
+# service unit to rync with the URIs defined above
+mkdir -p /var/www/html/cern/centos/7
+cat > /etc/systemd/system/rsync-cern-centos-mirror.service <<EOF
+[Unit]
+Description=Rsync CERN CentOS Mirror
+
+[Service]
+ExecStartPre=-/usr/bin/mkdir -p /var/www/html/centos
+ExecStart=/usr/bin/rsync \
+  --verbose \
+  --archive \
+  --compress \
+  --delete \
+  \${OS} \
+  \${UPDATES} \
+  \${EXTRAS} \
+  \${CERN} \
+  /var/www/html/cern/centos/7
+Type=oneshot
+EOF
+# load the configuration
+systemctl daemon-reload
+# start rsync
+systemctl start rsync-cern-centos-mirror
+# follow the rsync log...
+journalctl -f -u rsync-cern-centos-mirror
+```
+
+Periodically execute the service above:
+
+```bash
+cat > /etc/systemd/system/rsync-cern-centos-mirror.timer <<EOF
+[Unit]
+Description=Periodically Rsync CERN CentOS Mirror
+
+[Timer]
+OnStartupSec=300s
+OnUnitInactiveSec=2h
+
+[Install]
+WantedBy=multi-user.target
+EOF
+# enable and start the timer unit
+systemctl daemon-reload
+systemctl enable --now rsync-cern-centos-mirror.timer
+```
+
 # References
 
 [01] CERN CentOS  
