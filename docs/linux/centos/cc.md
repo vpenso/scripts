@@ -66,13 +66,12 @@ Environment="EXTRAS=rsync://linuxsoft.cern.ch/cc7/extras"
 Environment="CERN=rsync://linuxsoft.cern.ch/cc7/cern"
 EOF
 # service unit to rync with the URIs defined above
-mkdir -p /var/www/html/cern/centos/7
 cat > /etc/systemd/system/rsync-cern-centos-mirror.service <<EOF
 [Unit]
 Description=Rsync CERN CentOS Mirror
 
 [Service]
-ExecStartPre=-/usr/bin/mkdir -p /var/www/html/centos
+ExecStartPre=-/usr/bin/mkdir -p /var/www/html/cern/centos/7
 ExecStart=/usr/bin/rsync \
   --verbose \
   --archive \
