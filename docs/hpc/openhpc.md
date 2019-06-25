@@ -75,18 +75,37 @@ SELINUX=disabled
 >>> yum -y install yum-utils createrepo
 ```
 
-Distribution tarballs:
+### Distribution Archives
 
 <http://build.openhpc.community/dist>
 
 Setup the package repository
 
 ```bash
->>> wget http://build.openhpc.community/dist/1.3.4/OpenHPC-1.3.4.CentOS_7.x86_64.tar
->>> tar -vxf OpenHPC-1.3.4.CentOS_7.x86_64.tar
->>> mkdir -p /var/www/html/openhpc/1.3
->>> mv CentOS_7/{noarch,updates,x86_64} /var/www/html/openhpc/1.3/
->>> createrepo /var/www/html/openhpc/1.3/
+wget http://build.openhpc.community/dist/1.3.4/OpenHPC-1.3.4.CentOS_7.x86_64.tar
+tar -vxf OpenHPC-1.3.4.CentOS_7.x86_64.tar
+mkdir -p /var/www/html/openhpc/1.3
+mv CentOS_7/{noarch,updates,x86_64} /var/www/html/openhpc/1.3/
+createrepo /var/www/html/openhpc/1.3/
+```
+
+### Mirror
+
+<http://build.openhpc.community/OpenHPC:/>
+
+```bash
+mkdir -p /var/www/html/openhpc/1.3
+rsync --archive \
+      --verbose \
+      --compress \
+      --copy-links \
+      --hard-links \
+      --keep-dirlinks \
+      --exclude src \
+      --exclude repocache \
+      --delay-updates \
+      rsync://build.openhpc.community/OpenHPC/1.3/CentOS_7/ \
+      /var/www/html/openhpc/1.3
 ```
 
 ## Environment Modules
