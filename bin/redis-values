@@ -20,7 +20,6 @@ require 'ostruct'
 require 'getoptlong' 
 require 'logger'
 require 'json'
-require 'tempfile'
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
@@ -138,7 +137,7 @@ class Redis
 
   def pipe(stdin)
     # Don't use string interpolation for the input pipe, since it is limited in size
-    tmpfile = System::exec('tempfile').chomp
+    tmpfile = System::exec('mktemp').chomp
     # Write the input Redis commands to a temporary file 
     File.open(tmpfile,'w') { |f| f.write stdin }
     begin
