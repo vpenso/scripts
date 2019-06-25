@@ -135,7 +135,7 @@ user development and runtime environments:
 [04] OpenHPC Mail Lists  
 <http://www.openhpc.community/support/mail-lists/>
 
-[05] OpenHPC Build system  
+[05] OpenHPC Build Service  
 <https://build.openhpc.community/>
 
 [06] OpenHPC Integration Testing  
