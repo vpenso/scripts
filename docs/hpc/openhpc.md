@@ -1,33 +1,28 @@
 # OpenHPC
 
-OpenHPC provides a collection of pre-built ingredients common in HPC environments
+OpenHPC [01] provides a collection of pre-built ingredients common in 
+HPC environments:
 
-<http://www.openhpc.community>
+* Linux Foundation Project, guided by a Technical Steering Committee (TSC)
+* Members from academics, research labs and industry [03]
 
-Source code:
+# Software Repository
 
-<https://github.com/openhpc/ohpc>
+Fundamentally OpenHPC is a **software repository**
 
-Mail Lists:
+* Supported distros: `yum` (CentOS/RHEL), `zypper` (SLES)
+* Supported archtectures: aarch64, x86_64
+* Incremental updates at roughly quarterly intervals [07]
+* A [component list][list] is available in the Wiki [08]
 
-<http://www.openhpc.community/support/mail-lists/>
-
-Build system:
-
-<https://build.openhpc.community/>
-
-Integration Testing:
-
-<http://test.openhpc.community:8080/>
-
-## Software Repository
+[list]: https://github.com/openhpc/ohpc/wiki/Component-List-v1.3.8
 
 There are two primary ways to access the available RPMs:
 
 * Enable public OpenHPC repo(s) on head node that can route to internet
 * Host a local mirror of the OpenHPC repo(s) within your datacenter
 
-### Public Repository
+## Public Repository
 
 ```bash
 >>> rpm -i https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm
@@ -57,9 +52,7 @@ yum search ohpc | grep -- -ohpc.   # list software paackages
 yum search ohpc openmpi            # search a specific component (i.e. openmpi)
 ```
 
-
-
-### Local Repository
+## Local Repository
 
 Simple HTTP server:
 
@@ -108,7 +101,7 @@ rsync --archive \
       /var/www/html/openhpc/1.3
 ```
 
-## Environment Modules
+# Environment Modules
 
 Lmod implementation of environmental modules to provide standard 
 user development and runtime environments:
@@ -127,3 +120,29 @@ user development and runtime environments:
 >>> which llc
 /opt/ohpc/pub/compiler/llvm/5.0.1/bin/llc
 ```
+
+# References
+
+[01] OpenHPC Community Site  
+<http://www.openhpc.community>
+
+[02] OpenHPC Source code on GitHub  
+<https://github.com/openhpc/ohpc>
+
+[03] OpenHPC Porject Members  
+<http://www.openhpc.community/about-us/participants/>
+
+[04] OpenHPC Mail Lists  
+<http://www.openhpc.community/support/mail-lists/>
+
+[05] OpenHPC Build system  
+<https://build.openhpc.community/>
+
+[06] OpenHPC Integration Testing  
+<http://test.openhpc.community:8080/>
+
+[07] OpenHPC - Release History and Roadmap  
+<https://github.com/openhpc/ohpc/wiki/Release-History-and-Roadmap>
+
+[08] OpenHPC Wiki  
+<https://github.com/openhpc/ohpc/wiki>
