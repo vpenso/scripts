@@ -20,8 +20,10 @@ then
                 ncmpc \
                 pandoc \
                 powerline \
+                python3-pip \
                 rofi \
                 rsync \
+                ruby \
                 screenkey \
                 sshfs \
                 sshuttle \
