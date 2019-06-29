@@ -6,13 +6,14 @@ then
         sudo apt-get install --assume-yes \
                 ccrypt \
                 clustershell \
+                compton \
                 encfs \
                 feh \
                 fonts-inconsolata \
                 fonts-powerline \
                 git-core \
                 gromit-mpx \
-                imagemagic \
+                imagemagick \
                 key-mon \
                 mpd \
                 mpc \
@@ -24,6 +25,7 @@ then
                 screenkey \
                 sshfs \
                 sshuttle \
+                sxiv \
                 tcpdump \
                 vim \
                 xclip \

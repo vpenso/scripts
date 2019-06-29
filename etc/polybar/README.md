@@ -34,6 +34,7 @@ apt install -y \
         ccache \
         cmake \
         cmake-data \
+        compton \
         pkg-config \
         python3-sphinx \
         libcairo2-dev \
