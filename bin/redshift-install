@@ -8,6 +8,12 @@ command -v pacman >&- && {
         }
 }
 
+command -v apt >&- && {
+        dpkg -l redshift &>/dev/null || {
+                sudo apt install -y redshift
+        }
+}
+
 # link to the configuration within this repository
 test -L ~/.config/redshift || {
         ln --symbolic \
