@@ -12,12 +12,14 @@ then
                 fonts-powerline \
                 git-core \
                 gromit-mpx \
+                imagemagic \
                 key-mon \
                 mpd \
                 mpc \
                 ncmpc \
                 pandoc \
                 powerline \
+                rofi \
                 rsync \
                 screenkey \
                 sshfs \

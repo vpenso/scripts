@@ -6,3 +6,6 @@ then
         test -L ~/.wallpaper && \
                 wal -e -q -l -i ~/.wallpaper ||:
 fi
+
+# install on Debian
+# pip3 install pywal
