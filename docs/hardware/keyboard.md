@@ -1,10 +1,39 @@
 # Mechanical Keyboards
 
-### Size
+Mechanical keyboards use a mechanical mechanism (key switch) 
+to record a key stroke:
+
+Most keyboards are not mechanical, broadly two categories:
+
+* **Capacitive** (most common type of keyboard)
+  - Designed to be cheap an easy to produce
+  - Light "squishy",  quiet typing experience
+  - Rubber domes over a membrane contact sheet
+  - Do not physically complete a circuit
+  - Change in current flow on the key matrix detected by the processor
+  - Rated at 1-10 million key strokes
+* **Mechanical**
+  - Designed for quality and durability
+  - More comfortable and enjoyable typing experience
+  - Better precision in gaming
+  - Different level of audible and tactile response
+  - More durable 20-100 million key strokes
+
+### Qualities
+
+The "feel" of a keyboard varies depending on the following qualities:
+
+* Switch types (force, feedback)
+* Switch mount construction
+* Case construction (sturdiness, angel, stand)
+* Keycap construction (shape, size)
+* Keycap print (readability)
+
+### Sizes
 
 List of keyboard sizes [05]:
 
-* **Full-size**, 100%
+* **Full-size**, 100%, 104/105 keys
   - Alphanumeric keys
   - Arrow keys (navigation cluster)
   - Function keys (F-row)
@@ -35,31 +64,48 @@ List of keyboard sizes [05]:
 Typically missing keys are available on a  different layer 
 accessed by an `Fn` function key.
 
+### Layouts
+
+Different **mechanical layouts** [07], [08]:
+
+* **ISO**
+  - Enter/return key: horizontal **L shape**
+  - Smaller shift keys
+* **ANSI**
+  - Predominantly in the United States
+  - Enter/return key: vertical **wide rectangle**
+* Others: JIS (Japan), KS, ABNT
+
+Latin-script keyboard layouts:
+
+* **QUERTY**
+  - Most widespread layout
+  - 
+* Dvorak
+* Colemark
+
+
 ## Switches
 
-### Technologies
+On mechanical keyboards the switch determines how typing feels.
 
-* Capacitive
-  - Do not physically complete a circuit
-  - Change in current flow on the key matrix detected by the processor
-* Mechanical
-  - Different level of audible and tactile response
-  - More durable than rubber dome keyboards
-
-### Categories
+### Switch Types
 
 Mechanical switches, divided into three categories:
 
-* Linear (i.e. Cherry MX Brown)
-  - Keystroke consistent and smooth (no tactile 'bump')
-  - No tactile feedback
-  - No click noise
+* Linear (i.e. Cherry MX Red)
+  - Recommended for a quieter environment
+  - Consistent (straight-down), smooth key press
+  - No tactile feedback (bump)
+  - No audible click noise
   - More rapid actuation
-  - Tesistance increases in a linear fashion along the travel of the key
-* Tactile (i.e. Cherry MX Blue)
+  - Resistance increases in a linear fashion along the travel of the key
+* Tactile (i.e. Cherry MX Brown)
+  - More ergonomic and fluid typing experience
   - Tactile feedback, noticeable bump in the middle of travel
-  - Indication of a keypress without needing to bottom out your keys
-* Clicky
+  - Bump is located at the point of actuation, where a key press is registered
+  - Indication of a press without needing to bottom out your keys
+* Clicky (i.e. Cherry MX Blue)
   - Like a tactile switch
   - Distinct “click” sound when the key is activated
 
@@ -128,4 +174,11 @@ Cf. switch comparison in [01]
 [05] Keyboard Type  
 <https://keyboardwhiz.com/keyboards/>
 
+[06] Keyboard Layout Identification Guide  
+<https://keyshorts.com/blogs/blog/44712961-how-to-identify-laptop-keyboard-localization>
 
+[07] ANSI or ISO? Which keyboard layout is more ergonomic?  
+<https://ultimatehackingkeyboard.com/blog/2015/09/09/ansi-or-iso-which-keyboard-layout-is-more-ergonomic> 
+
+[08] Mechanical Keyboard Layouts  
+<https://en.wikipedia.org/wiki/Keyboard_layout#Mechanical_layouts>
