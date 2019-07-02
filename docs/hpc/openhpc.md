@@ -97,8 +97,9 @@ rsync --archive \
       --exclude src \
       --exclude repocache \
       --delay-updates \
-      rsync://build.openhpc.community/OpenHPC/1.3/CentOS_7/ \
-      /var/www/html/openhpc/1.3
+      rsync://build.openhpc.community/OpenHPC/1.3/ \
+      rsync://build.openhpc.community/OpenHPC/1.3:/ \
+      /var/www/html/openhpc/
 ```
 
 # Environment Modules
