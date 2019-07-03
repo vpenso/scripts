@@ -25,7 +25,7 @@ The "feel" of a keyboard varies depending on the following qualities:
 
 * Switch types (force, feedback)
 * Switch mount construction
-* Case construction (sturdiness, angel, stand)
+* Case construction (sturdiness, angel, tilt)
 * Keycap construction (shape, size)
 * Keycap print (readability)
 
@@ -76,13 +76,19 @@ Different **mechanical layouts** [07], [08]:
   - Enter/return key: vertical **wide rectangle**
 * Others: JIS (Japan), KS, ABNT
 
-Latin-script keyboard layouts:
+The **home row keys** are the row on the keyboard the fingers rest on when not
+typing. On Latin-script keyboard layouts following configuration exists:
 
-* **QUERTY**
-  - Most widespread layout
-  - 
-* Dvorak
-* Colemark
+Name     | Home row keys
+---------|--------------
+QUERTY   | asdf jkl;
+Dvorak   | aoeu htns
+Colemark | arst neio
+
+* Thumb rests on the spacebar
+* This finger position typically increases typing speed amd accuracy
+
+
 
 
 ## Switches
@@ -141,6 +147,7 @@ Cf. switch comparison in [01]
 
 # Glossary
 
+* Bottoming out - When the switches are depressed all the way down.
 * Key Matrix - Circuitry setup within the keyboard. A grid 
   through which the processor identifies the location of a 
   keystroke.
@@ -151,11 +158,10 @@ Cf. switch comparison in [01]
     configured by an application/operating system.
 * Key Bounce - Mechanical vibration cased by pressing the key,
   filtered by de-bounce circuit or in software.
-* Bottoming Out - When the switches are depressed all the way down.
 * Keycap - Plastic top cap with the letter printing 
+* O-Rings - Dampen the sound your keycaps make when you bottom out
 * Stem - Mount for the keycap (part of the switch)
 * Switch puller - Small tool to remove keycaps
-* O-Rings - Dampen the sound your keycaps make when you bottom out
 
 # References
 
