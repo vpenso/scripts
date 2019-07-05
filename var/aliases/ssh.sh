@@ -1,7 +1,7 @@
 alias sr='ssh -l root'
 alias rsync='rsync -avzrtp'  # Use archive mode by default
 
-function ssh-tmux() {/usr/bin/ssh -t $@ "tmux attach || tmux new";}
+function ssh-tmux() {/usr/bin/ssh -A -t $@ "tmux attach || tmux new";}
 
 alias ssh-fast-encrypt='ssh -C4c arcfour,blowfish-cbc' # less secure but faster
 alias ssh-snoop='tcpdump -lnn -i any port ssh and tcp-syn' # Spy on the SSH traffic
