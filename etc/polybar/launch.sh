@@ -29,7 +29,7 @@ echo PRIMARY_DISPLAY=$PRIMARY_DISPLAY
 
 # find the Ethernet and Wifi network interface
 export WLAN_INTERFACE=$(findiface wl)
-export ETH_INTERFACE=$(findiface en)
+export ETH_INTERFACE=$(findiface 'e[nt]')
 
 # required for transparency
 compton &
