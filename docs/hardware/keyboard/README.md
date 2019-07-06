@@ -64,7 +64,7 @@ List of keyboard sizes [05]:
 Typically missing keys are available on a  different layer 
 accessed by an `Fn` function key.
 
-### Layouts
+## Layouts
 
 Different **mechanical layouts** [07], [08]:
 
