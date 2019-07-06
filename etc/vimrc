@@ -69,6 +69,8 @@ set pastetoggle=<F3>
 " switch between German and English spelling
 map <F5> :setlocal spell! spelllang=de<CR>
 map <F6> :setlocal spell! spelllang=en<CR>
+" toggle relative line numbers
+map <F7> :set invnumber invrelativenumber<CR>
 
 " To define a mapping which uses the "mapleader" variable, the
 " special string "<Leader>" can be used.  It is replaced with the

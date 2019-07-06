@@ -177,9 +177,10 @@ cheat=$(cat <<EOF
         <C-w>c │ close window
        :TOhtml │ create HTML of current file
              (keys)
-            F3 │ enable paste mode (when in insert mode)
+            F3 │ toggle paste mode (when in insert mode)
             F5 │ toggle German spell checking
             F6 │ toggle English spell checking
+            F7 │ toggle line numbers
 EOF
 )
 
