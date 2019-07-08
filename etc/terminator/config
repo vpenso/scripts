@@ -7,9 +7,12 @@
 [keybindings]
 [profiles]
   [[default]]
+    background_color = "#ffffff"
     cursor_color = "#aaaaaa"
     font = InconsolataGo Nerd Font 13
+    foreground_color = "#000000"
     show_titlebar = False
+    use_system_font = False
 [layouts]
   [[default]]
     [[[child1]]]

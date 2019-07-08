@@ -9,6 +9,7 @@ then
                 compton \
                 encfs \
                 feh \
+		firefox-esr \
                 fonts-inconsolata \
                 fonts-powerline \
                 git-core \
@@ -17,6 +18,7 @@ then
                 key-mon \
                 mpd \
                 mpc \
+                nnn \
                 ncmpc \
                 pandoc \
                 powerline \
@@ -29,6 +31,7 @@ then
                 sshuttle \
                 sxiv \
                 tcpdump \
+                terminator \
                 vim \
                 xclip \
                 zsh
