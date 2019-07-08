@@ -5,9 +5,10 @@ cheat=$(cat <<EOF
             Session
                ┬
          <M^C> │ reload configuration
-         <M^R> │ restart i3
+         <M^R> │ restart i3 (in place)
          <M^9> │ lock screen
          <M^0> │ session menu (<Esc> to exit)
+         <M^E> │ exit i3 (in default)
 
             Launch
                ┬
