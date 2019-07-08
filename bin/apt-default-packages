@@ -22,6 +22,7 @@ then
                 ncmpc \
                 pandoc \
                 powerline \
+                psmisc \
                 python3-pip \
                 rofi \
                 rsync \
