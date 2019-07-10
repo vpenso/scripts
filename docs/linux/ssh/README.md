@@ -111,15 +111,15 @@ ssh-keygen -f ~/.ssh/id_rsa -p
 
 ### Key Types
 
-* RSA key length at least 2048 bits
+* **RSA** key length at least 2048 bits
   - Rely on the practical difficulty of factoring the product of two large prime numbers
   - Greatest portability (works with all OpenSSH versions)
-* ECDSA (since OpenSSH 5.7) key length at least 256 bits
+* **ECDSA** (since OpenSSH 5.7) key length at least 256 bits
   - Rely on elliptic curve discrete logarithm problem
   - Smaller keys, less computation (for the same level of presumed security)
   - Sensitive to bad random number generators
   - Trustworthiness of NIST-produced curves being questioned [cvint]
-* Ed25519 (since OpenSSH 6.5)
+* **Ed25519** (since OpenSSH 6.5)
   - Variant of the ECDSA algorithm
   - Solves the random number generator problem
 * DSA is deprecated and disabled since OpenSSH 7.0
