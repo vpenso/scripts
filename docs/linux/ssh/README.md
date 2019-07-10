@@ -34,7 +34,7 @@ SSH is not a true shell (command interpreter):
   - Covers authentication, encryption, and the integrity of data transmitted over a network
 * **Most used implementations is [OpenSSH](https://www.openssh.com/)**
 
-### Remote Login
+## Remote Login
 
 Establish a **remote terminal session** to a server `<user>@<server>`:
 
@@ -65,7 +65,7 @@ The SSH **known hosts** prevents attacks based on subverting the naming services
 
 Close hanging SSH connections using an **escape sequence `~.`**.
 
-### Copy Files
+## Copy Files
 
 `scp` (secure copy) moves files across SSH connections:
 
@@ -85,7 +85,7 @@ Transfer a signification amount of data by increasing the speed with an alternat
 scp -c blowfish -r jdow@pool.devops.test:/path/to/data/ /local/path/to/data
 ```
 
-### Public-Key Authentication
+## Public-Key Authentication
 
 **SSH key** (asymmetric cryptography):
 
@@ -109,6 +109,24 @@ ssh-keygen -f ~/.ssh/id_rsa -p
 * Users require the passphrase to use/decrypt the private key
 * Handling of passphrases can be automated with an `ssh-agent` 
 
+### Key Types
+
+* RSA key length at least 2048 bits
+  - Rely on the practical difficulty of factoring the product of two large prime numbers
+  - Greatest portability (works with all OpenSSH versions)
+* ECDSA (since OpenSSH 5.7) key length at least 256 bits
+  - Rely on elliptic curve discrete logarithm problem
+  - Smaller keys, less computation (for the same level of presumed security)
+  - Sensitive to bad random number generators
+  - Trustworthiness of NIST-produced curves being questioned [cvint]
+* Ed25519 (since OpenSSH 6.5)
+  - Variant of the ECDSA algorithm
+  - Solves the random number generator problem
+* DSA is deprecated and disabled since OpenSSH 7.0
+
+
+### Distribution
+
 SSH servers grant access based on **authorized keys**
 
 * An SSH server receives a public key from a user and considers the key trustworthy
@@ -130,7 +148,7 @@ cat /tmp/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 ```
 
-### Fingerprints
+## Fingerprints
 
 Used for **identification/verification of the host**:
 
@@ -301,3 +319,9 @@ ssh-tunnel co example.org -x 192.0.2.0/24 -x 198.51.100.0/24 0/0
 [05]: ../../bin/ssh-agent-session
 [06]: ../../bin/ssh-fs
 [15]: ../../bin/ssh-tunnel
+
+# References
+
+[cvint] Libssh curve25519 Introduction  
+<https://git.libssh.org/projects/libssh.git/tree/doc/curve25519-sha256@libssh.org.txt#n4>
+
