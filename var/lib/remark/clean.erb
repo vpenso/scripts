@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css" media="screen">
+
 @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
 @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
@@ -13,6 +20,10 @@ h1, h2, h3 {
   margin-top:.4em;
   font-family: 'Yanone Kaffeesatz';
   font-weight: normal;
+}
+
+h1 {
+  text-align:center;
 }
 
 h3 {
@@ -71,3 +82,18 @@ pre code {
   width:auto;
   white-space: pre-wrap;
 }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+<%= markdown %>
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
+
+

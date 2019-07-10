@@ -1,15 +1,6 @@
-class: center,middle
 
 # SSH (Secure Shell)
-## Working with Remote Computers
-
-~vic -- 2019/01
-
-???
-
-Version 0.1
-
-
+# Working with Remote Computers
 
 ---
 
