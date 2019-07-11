@@ -27,7 +27,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # Lock screen
-bindsym $mod+9 exec --no-startup-id i3lock
+bindsym $mod+9 exec --no-startup-id i3lock-fancy
 # kill focused window
 bindsym $mod+q kill
 # start terminal emulator
