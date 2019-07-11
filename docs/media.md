@@ -9,6 +9,18 @@ File                     | Description
 ## Audio
 
 ```bash
+# Debian
+apt install -y alsa-utils pulseaudio
+# dependencies on Arch...
+pacman -S youtube-dl cdrtools mp3info mp3wrap
+```
+
+
+```
+dmesg | egrep -i "alsa|snd" # kernel messages for sound devices
+# list available kernel modules
+find /lib/modules/$(uname -r)/kernel/sound/
+/proc/asound/cards          # sound devices detected by ASLA
 # verify that sound modules are loaded
 lsmod | grep '^snd' | column -t
 # list audio devices
@@ -16,8 +28,6 @@ aplay -l
 aplay -L | grep :CARD
 # produce noise on a device
 speaker-test -D default:PCH -c 2
-# dependencies on Arch...
-pacman -S youtube-dl cdrtools mp3info mp3wrap
 ```
 
 Create/change MP3 audio files:
