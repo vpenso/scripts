@@ -1,4 +1,5 @@
 alias sr='ssh -l root'
+alias sA='ssh -A'
 alias rsync='rsync -avzrtp'  # Use archive mode by default
 
 function ssh-tmux() {/usr/bin/ssh -A -t $@ "tmux attach || tmux new";}
