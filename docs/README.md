@@ -17,6 +17,7 @@
 * **Fast & productive** by focusing on the content
 * Enables **powerful text processing tools** available on the command-line
 
+[Why using plain text email!](https://useplaintext.email/)
 
 [plx]: https://en.wikipedia.org/wiki/Plain_text
 [hr]: https://en.m.wikipedia.org/wiki/Human-readable_medium
