@@ -1,6 +1,6 @@
-alias s='sxiv -pb'
+alias sx='sxiv -pb'
 
-function st() {
+function sxt() {
         # default to working directory
         sxiv -rtp ${1:-.}
 }
