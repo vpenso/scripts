@@ -110,9 +110,9 @@ endif
 
 hi Visual ctermfg=none ctermbg=230
 " horizontal line at current cursor position
-hi CursorLine ctermbg=255 cterm=none
+hi CursorLine ctermbg=253 cterm=none
 " vertical line at current cursor position
-hi CursorColumn ctermfg=none ctermbg=255
+hi CursorColumn ctermfg=none ctermbg=253
 " text width indicator column
 hi ColorColumn ctermfg=none ctermbg=254
 " line numbering on the left
@@ -120,13 +120,13 @@ hi LineNr ctermfg=235 ctermbg=250
 " line numbering in cursor line
 hi CursorLineNR ctermfg=232 ctermbg=243 cterm=bold
 
-hi SpellBad ctermbg=224
+hi SpellBad     ctermfg=95 ctermbg=188 cterm=bold
 " eol, extends and precedes
 hi NonText      ctermfg=253
 " nbsp, tab and trail
 hi SpecialKey   ctermfg=253 cterm=bold
 
-hi Comment      ctermfg=252
+hi Comment      ctermfg=247 ctermbg=255
 hi Number       ctermfg=166
 hi String       ctermfg=74
 hi Boolean      ctermfg=39
