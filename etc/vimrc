@@ -108,11 +108,12 @@ if exists("syntax on")
   syntax reset
 endif
 
-hi Visual ctermfg=none ctermbg=230
+" visual selection mode
+hi Visual ctermfg=none ctermbg=227
 " horizontal line at current cursor position
-hi CursorLine ctermbg=253 cterm=none
+hi CursorLine ctermbg=230 cterm=none
 " vertical line at current cursor position
-hi CursorColumn ctermfg=none ctermbg=253
+hi CursorColumn ctermfg=none ctermbg=230
 " text width indicator column
 hi ColorColumn ctermfg=none ctermbg=254
 " line numbering on the left
@@ -120,7 +121,7 @@ hi LineNr ctermfg=235 ctermbg=250
 " line numbering in cursor line
 hi CursorLineNR ctermfg=232 ctermbg=243 cterm=bold
 
-hi SpellBad     ctermfg=95 ctermbg=188 cterm=bold
+hi SpellBad     ctermfg=209 cterm=bold
 " eol, extends and precedes
 hi NonText      ctermfg=253
 " nbsp, tab and trail
