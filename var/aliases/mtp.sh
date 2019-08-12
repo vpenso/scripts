@@ -2,6 +2,7 @@ MTPFS_MOUNT_POINT=~/mnt
 
 export MTPFS_MOUNT_POINT
 
+
 if command -v simple-mtpfs |:
 then
         function mtpfs() {
@@ -11,6 +12,7 @@ then
                 fi
                 if [[ $# -eq 1 ]]
                 then
+                        mkdir -p $MTPFS_MOUNT_POINT >/dev/null
                         simple-mtpfs --device $1 $MTPFS_MOUNT_POINT
                 fi
                 if [[ $# -eq 2 ]]
