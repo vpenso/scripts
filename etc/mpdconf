@@ -1,6 +1,7 @@
 bind_to_address         "127.0.0.1"
 port                    "6666"
-music_directory         "/srv/music"
+music_directory         "~/music/"
+auto_update             "yes"
 playlist_directory      "~/.mpd/playlists"
 db_file                 "~/.mpd/mpd.db"
 log_file                "~/.mpd/mpd.log"
