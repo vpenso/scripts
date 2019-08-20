@@ -164,7 +164,9 @@ nodes <subcommand>
   u,   users                       list users of each node
 
 partition <subcommand>
-> s,   state                       paritition states
+  r,   resources                   partition hardware resources
+> s,   state                       partition states
+  t,   times                       partition time limits
 
 <options>
   -b, --begin-time <[0-9]*[hd]>    hours/days to look back in the accounting     
@@ -341,6 +343,14 @@ module Partition
   
   module_function
 
+  def resources
+    Table.new(%w(Partition Groups CPUs S:C:T Memory Nodes CPUS(A/I/O/T))).transform(%q[
+      sinfo -o "%9P %6g %4c %6z %6m %5D %20C"
+        | tail -n+2
+        | tr -s ' '
+    ])
+  end
+
   def state
     Table.new(%w(Partition State NumNodes CPUsAlloc CPUsIdle NodeNames)).transform(%q[
       sinfo -o '%9P %.5a %5D %20C %N' 
@@ -349,6 +359,15 @@ module Partition
         | tr -s ' ' 
         | cut -d' ' -f1-5,8-
     ])
+  end
+
+  def times
+    Table.new(%w(Partition Groups Default Limit Nodes CPUS(A/I/O/T))).transform(%q[
+      sinfo -o "%9P  %6g %11L %10l %5D %20C" 
+        | tail -n+2 
+        | tr -s ' '
+    ])
+    
   end
 
 end
@@ -539,8 +558,12 @@ begin
   when 'p','partition'
     subcommand = ARGV.shift || 'state'
     case subcommand
+    when 'r', 'resources'
+      Partition::resources
     when 's','state'
       Partition::state
+    when 't','times'
+      Partition::times
     end
   when 'n','nodes'
     subcommand = ARGV.shift || 'state'
