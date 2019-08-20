@@ -48,7 +48,7 @@ command -v mpd >&- && command -v mpc >&- && {
         MPD_PORT=6666
         MPD_CONF=$SCRIPTS/etc/mpdconf
         MPD_PLAYLISTS=$HOME/.mpd/playlists
-        MUSIC_DIR=/srv/music
+        MUSIC_DIR=$HOME/music
         
         export MPD_PORT \
                MPD_CONF \
@@ -64,7 +64,7 @@ command -v mpd >&- && command -v mpc >&- && {
                 then
                         [[ -d $MPD_PLAYLISTS ]] || mkdir -p $MPD_PLAYLISTS
                         # start MPD
-                        mpd $MPD_CONF
+                        mpd $MPD_CONF 2>&-
                         # update music index
                         mpc -w update
                         echo mpd started
@@ -102,10 +102,9 @@ command -v mpd >&- && command -v mpc >&- && {
         alias m=mpc-alias
 
         # if the ncurses client is installed
-        if [ -f /usr/sbin/ncmpc ]
-        then
-                alias n=ncmpc -p $MPD_PORT
-        fi
+        command -v ncmpc >&- && {
+                alias n="ncmpc --host 127.0.0.1 --port $MPD_PORT"
+        }
 }
 
 
