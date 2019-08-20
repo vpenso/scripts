@@ -144,6 +144,7 @@ jobs <subcommand>
 > r,   running                     running jobs by user
   rr,  running-by-runtime          running jobs by runtime 
   ru,  running-by-user <user>      running jobs from user
+  wd,  work-dir <job_id>           working directory of job
 
 limits <subcommand>
   a,   by-account <account>        limits for account
@@ -266,6 +267,16 @@ module Jobs
           | sort -k 1
           | uniq -f 2 -c
     ])
+  end
+
+  def wd
+    job = ARGV.shift || raise('Missing job ID')
+    if System::exec("squeue -j #{job} 2>&-").nil?
+      raise("Job #{job} not running")
+    else
+      work_dir = System::exec("scontrol show job #{job} | grep WorkDir").split('=')[-1]
+      puts work_dir
+    end
   end
 
   def failed
@@ -447,7 +458,7 @@ begin
   $logger.formatter = proc do |severity, datetime, progname, message|
     "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
   end
-  $logger.level = Logger::INFO
+  $logger.level = Logger::FATAL
 
   GetoptLong.new(
     ['--begin-time','-b',GetoptLong::REQUIRED_ARGUMENT],
@@ -480,7 +491,7 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--version'
-      $stdout.puts 1.1
+      $stdout.puts 1.2
       exit 0
     end
   end
@@ -510,6 +521,8 @@ begin
       Jobs::running_by_user
     when 'f','failed'
       Jobs::failed
+    when 'wd'
+      Jobs::wd
     else
       raise("Sub-command #{subcommand} not supported") 
     end
