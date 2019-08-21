@@ -22,8 +22,10 @@ command -v mpc >&- && {
         function mpc-fzf() {
                 if command -v fzf >&-
                 then
-                        # C^a to select all filtered entries
+                        mpc -q clear
+                        echo C^a to select all filtered entries
                         mpc add $(mpc listall | fzf -m --bind 'ctrl-a:select-all+accept')
+                        mpc play
                 else
                         echo fzf command missing!
                 fi
