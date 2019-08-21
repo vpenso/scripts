@@ -8,7 +8,12 @@ log_file                "~/.mpd/mpd.log"
 pid_file                "~/.mpd/mpd.pid"
 mixer_type              "software"
 
-audio_output { 
-  type                  "alsa"
-  name                  "My ALSA Device"
+#audio_output { 
+#  type                  "alsa"
+#  name                  "My ALSA Device"
+#}
+
+audio_output {
+        type            "pulse"
+        name            "pulse audio"
 }
