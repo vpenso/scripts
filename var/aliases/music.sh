@@ -45,8 +45,9 @@ u,  update              Update database
 "
 
 command -v mpd >&- && command -v mpc >&- && {
-        MPD_PORT=6666
         MPD_CONF=$SCRIPTS/etc/mpdconf
+        # read the port from the configuration file
+        MPD_PORT=$(grep ^port $MPD_CONF | cut -d'"' -f2)
         MPD_PLAYLISTS=$HOME/.mpd/playlists
         MUSIC_DIR=$HOME/music
         
@@ -55,7 +56,7 @@ command -v mpd >&- && command -v mpc >&- && {
                MPD_PLAYLISTS \
                MUSIC_DIR
 
-        alias mpc="mpc -p $MPD_PORT"
+        alias mpc="mpc --host 127.0.0.1 -p $MPD_PORT"
 
         if [ -d $MUSIC_DIR ]
         then

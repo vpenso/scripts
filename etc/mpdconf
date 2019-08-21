@@ -1,5 +1,5 @@
 bind_to_address         "127.0.0.1"
-port                    "6666"
+port                    "12345"
 music_directory         "~/music/"
 auto_update             "yes"
 playlist_directory      "~/.mpd/playlists"
