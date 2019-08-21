@@ -19,7 +19,21 @@ v,  volume [+-]<num>     Adjust volume between 0-100 (+- for relative numbers)
 
 command -v mpc >&- && {
 
-        alias mpc="mpc --host 127.0.0.1 -p $MPD_PORT"
+        function mpc-fzf() {
+                if command -v fzf >&-
+                then
+                        # C^a to select all filtered entries
+                        mpc add $(mpc listall | fzf -m --bind 'ctrl-a:select-all+accept')
+                else
+                        echo fzf command missing!
+                fi
+        }
+
+        function mpc-playlist() {
+                mpc --format '[%position%] %file%' playlist
+        }
+
+        alias mpc='mpc --host 127.0.0.1 -p $MPD_PORT'
 
         function mpc-alias() {
         
@@ -32,11 +46,13 @@ command -v mpc >&- && {
                         clear|c)        mpc -q clear ;;
                         conf)           tail -n+1 $MPD_CONF ;;
                         del|d)          mpc del $@ ;;
+                        fzf|f)          mpc-fzf ;;
+                        h)              echo -n $MPC_ALIAS_HELP ;;
                         kill|k)         killall -u $USER mpd ;;
                         next|-)         mpc prev ;;
                         list|l)         mpc ls $@ ;;
                         play|p)         mpc play $1 ;;
-                        playlist|pl)    mpc --format '[%position%] %file%' playlist ;;
+                        playlist|pl)    mpc-playlist;;
                         prev|+)         mpc next ;;
                         stop|s)         mpc stop ;;
                         update|u)       mpc update ;;
@@ -45,7 +61,7 @@ command -v mpc >&- && {
                         0)              mpc current ;;
                         1)              mpc repeat ;;
                         @)              mpc crop ;;
-                        *)              echo -n $MPC_ALIAS_HELP ;;
+                        *)              mpc-playlist ;;
                 esac
         
         }
