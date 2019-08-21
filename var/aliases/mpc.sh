@@ -13,6 +13,8 @@ l,  list                List library
 pl, playlist            Show current playlist
 p,  play <num>          Plays playlist
 s,  stop                Stop playing music
+sa                      search in music dir and add to playlist
+sr                      search in music dir and replace playlist
 u,  update              Update database
 v,  volume [+-]<num>     Adjust volume between 0-100 (+- for relative numbers)
 "
@@ -22,10 +24,8 @@ command -v mpc >&- && {
         function mpc-fzf() {
                 if command -v fzf >&-
                 then
-                        mpc -q clear
                         echo C^a to select all filtered entries
                         mpc add $(mpc listall | fzf -m --bind 'ctrl-a:select-all+accept')
-                        mpc play
                 else
                         echo fzf command missing!
                 fi
@@ -48,7 +48,18 @@ command -v mpc >&- && {
                         clear|c)        mpc -q clear ;;
                         conf)           tail -n+1 $MPD_CONF ;;
                         del|d)          mpc del $@ ;;
-                        fzf|f)          mpc-fzf ;;
+                        sa)    
+                                # search songs, and add to playlist
+                                mpc-fzf 
+                                ;;
+                        sr)             
+                                # clear playlist
+                                mpc -q clear
+                                # search songs, and add to playlist
+                                mpc-fzf
+                                # play first song
+                                mpc play
+                                ;;
                         h)              echo -n $MPC_ALIAS_HELP ;;
                         kill|k)         killall -u $USER mpd ;;
                         next|-)         mpc prev ;;
