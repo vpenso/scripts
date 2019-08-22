@@ -2,7 +2,7 @@ configuration {
         location:0;
         yoffset:25;
         lines:15;
-        modi:"run,ssh";
+        modi:"run";
         width:25;
         sidebar-mode:true;
         run-command:"zsh -i -c '{cmd}'";

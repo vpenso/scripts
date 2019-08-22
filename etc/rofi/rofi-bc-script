@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+file=${BC_HISTORY:-~/.bc_history}
+
+touch $file
+
+if [ $# -gt 0 ]
+then
+        form=$@
+        echo "$form" | grep = >/dev/null && {
+                form=$(echo "$form" | cut -d= -f1)
+        }
+        result=$(echo "$form" | bc -l)
+        echo "$form=$result" >> $file
+fi
+
+tac $file
