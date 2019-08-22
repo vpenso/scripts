@@ -25,7 +25,7 @@ command -v mpc >&- && {
                 if command -v fzf >&-
                 then
                         echo C^a to select all filtered entries
-                        mpc add $(mpc listall | fzf -m --bind 'ctrl-a:select-all+accept')
+                        mpc add $(mpc listall | fzf -m --bind 'ctrl-a:select-all+accept' | sort)
                 else
                         echo fzf command missing!
                 fi

@@ -3,6 +3,7 @@
   dbus = False
   focus = mouse
   hide_tabbar = True
+  tab_position = hidden
   window_state = hidden
 [keybindings]
 [layouts]
@@ -17,6 +18,8 @@
 [profiles]
   [[default]]
     background_color = "#ffffff"
+    background_darkness = 0.88
+    background_type = transparent
     cursor_color = "#cc0000"
     cursor_color_fg = False
     font = InconsolataGo Nerd Font 11
