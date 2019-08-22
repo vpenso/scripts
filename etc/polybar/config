@@ -13,18 +13,19 @@
 ;==========================================================
 
 [colors]
-background = #aaffffff
+background = #66ffffff
 background-alt = #66ffffff
-foreground = #000000
-foreground-alt = #555
+foreground = #330000
+foreground-alt = #330000
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
 highlight = #8b0000
-highlight-background = #ccfff5ee
-focus = #000066
-focus-background = #11000066
-urgent = #ff3300
+highlight-background = #99fff5ee
+focus = #993333
+focus-background = #55ffff66
+urgent = #cc0000
+urgent-background = #55cc00000
 hint = #ff8c00
 goot = #008800
 dim = #696969 
@@ -59,11 +60,11 @@ font-2 = siji:pixelsize=10;1
 
 modules-left = bspwm i3
 modules-center = mpd
-modules-right = pulseaudio xkeyboard memory cpu wlan eth battery temperature date
+modules-right = xkeyboard memory cpu wlan eth battery temperature date
 
 tray-position = right
 tray-padding = 2
-tray-background = ${colors.background-alt}
+tray-background = #4400000
 
 ;wm-restack = bspwm
 ;wm-restack = i3
@@ -137,8 +138,8 @@ label-mode-foreground = #000
 label-mode-background = #f5f5f5
 ; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-foreground = ${colors.focus}
-label-focused-background = ${colors.background}
+label-focused-foreground = ${colors.foreground}
+label-focused-background = 
 label-focused-underline = ${colors.focus}
 label-focused-padding = 2
 ; unfocused = Inactive workspace on any monitor
@@ -152,7 +153,7 @@ label-visible-foreground = ${colors.urgent}
 label-visible-padding = 2
 ; urgent = Workspace with urgency hint set
 label-urgent = %name%
-label-urgent-background = ${colors.background}
+label-urgent-background = ${colors.urgent-background}
 label-urgent-foreground = ${colors.urgent}
 label-urgent-padding = 2
 
@@ -196,14 +197,14 @@ type = internal/cpu
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-label = %{F#a9a9a9}CPU%{F-} %percentage-cores%
+label = cores | %percentage-cores%
 
 [module/memory]
 type = internal/memory
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-label = %{F#a9a9a9}RAM%{F-} %mb_total% | %mb_free%
+label = ram | %mb_total% > %mb_free%
 
 [module/wlan]
 type = internal/network
@@ -214,7 +215,7 @@ format-connected-underline = #9f78e1
 label-connected = %ifname% | %essid%
 format-disconnected = <label-disconnected>
 format-disconnected-underline = ${colors.highlight}
-format-disconnected-background = ${colors.highlight-background}
+format-disconnected-background = 
 format-disconnected-padding = 1
 label-disconnected = %ifname% | disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
@@ -231,7 +232,7 @@ ramp-signal-foreground = ${colors.foreground-alt}
 type = internal/network
 interface = ${env:ETH_INTERFACE}
 interval = 10.0
-format-connected-underline = #9acd32
+format-connected-underline = 
 format-connected-prefix = " "
 format-connected-prefix-foreground = ${colors.foreground-alt}
 label-connected = %ifname% | %local_ip%
@@ -251,9 +252,9 @@ label = %date% %time%
 [module/pulseaudio]
 type = internal/pulseaudio
 format-volume = <label-volume>
-label-volume = %{F#a9a9a9} Vol. %{F-} %percentage%%
+label-volume =  # %percentage%%
 label-volume-foreground = ${root.foreground}
-label-muted = %{F#a9a9a9} Vol. %{F-} muted
+label-muted = # muted
 label-muted-underline = ${colors.highlight}
 
 [module/alsa]
@@ -292,11 +293,11 @@ full-at = 98
 
 label-charging = %percentage%% (%time%)
 format-charging = <label-charging>
-format-charging-underline = ${colors.background}
+format-charging-underline = 
 
 label-discharging = %percentage%% (%consumption%W)
 format-discharging = <label-discharging>
-format-discharging-underline = ${colors.urgent}
+format-discharging-underline =
 
 label-full = Full
 format-full = <label-full>
@@ -308,7 +309,7 @@ thermal-zone = 0
 warn-temperature = 60
 
 format = <label>
-format-underline = ${colors.background}
+format-underline = 
 format-warn = <label-warn>
 format-warn-underline = ${colors.highlight}
 
