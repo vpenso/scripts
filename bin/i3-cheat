@@ -13,9 +13,11 @@ cheat=$(cat <<EOF
             Launch
                ┬
      <M^Enter> │ open default terminal emulator
-        <M^F1> │ open termite
+        <M^F1> │ open secondary terminal emulator
         <M^F2> │ open program launcher
-        <M^F3> │ open bookmark launcher
+        <M^F3> │ open bookmark selection
+        <M^F4> │ open bc calculator
+
 
             Windows
                ┬
