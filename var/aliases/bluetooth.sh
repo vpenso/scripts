@@ -13,7 +13,12 @@ command -v bluetoothctl >&- && {
 
 
         function bluetoothctl-aliases() {
+
                 local ex=bluetoothctl
+
+                # make sure the controller is on
+                bluetoothctl power on |:
+
                 local command=$1
                 [[ $# -ne 0 ]] && shift
                 case "$command" in
@@ -27,6 +32,7 @@ command -v bluetoothctl >&- && {
                         s)      $ex scan ${1:-on} ;;
                         *)      echo -n $BLUETOOTHCTL_HELP ;;
                 esac
+
         }
 
         alias bt=bluetoothctl-aliases
