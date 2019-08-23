@@ -9,7 +9,7 @@ reasons:
 The page cache uses **free areas of memory as cache storage**:
 
 * All **regular file I/O happens through the page cache**
-* Data not in sync with the storage are marked as **dirty pages**
+* Data not in sync with the storage marked as **dirty pages**
 
 Dirty pages are periodically synchronized as soon as resources are available
 
@@ -28,9 +28,9 @@ applications:
 free -hw                  # shows page cache in dedicated column
 ```
 
-Force the Linux kernel to synchronize dirty pages with the storage:
+Force the Linux kernel to **synchronize dirty pages** with the storage:
 
-```
+```bash
 sync                      # force write of dirty pages
 # track the progress in writing dirty pages to storage:
 watch -d grep -e Dirty: -e Writeback: /proc/meminfo
