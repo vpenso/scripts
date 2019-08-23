@@ -9,17 +9,20 @@ reasons:
 The page cache uses **free areas of memory as cache storage**:
 
 * All **regular file I/O happens through the page cache**
-* Data not in sync with the storage marked **dirty pages**
+* Data not in sync with the storage are marked as **dirty pages**
 
 Dirty pages are periodically synchronized as soon as resources are available
 
-* Programs write bytes the page cache, which then is as marked dirty page
-* The program dose not block waiting for IO
+* After programs write data to the page cache it is as marked dirty
+* The program dose not block waiting for the write to be finished
 * Until the sync is completed power failure may lead to data loss
 * Write of critical data requires explicit blocking until data is written
-* Programs reading block until the data is available
-* The kernel uses **read ahead** to preload data in anticipation of sequential
-  reads
+* Programs reading data typically block until the is available
+* The kernel uses **read ahead** to preload data in anticipation
+  of sequential reads
+
+The kernel frees the memory used for page cache if it is required for other
+applications:
 
 ```bash
 free -hw                  # shows page cache in dedicated column
