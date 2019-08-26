@@ -7,6 +7,7 @@ then
                 ccrypt \
                 clustershell \
                 compton \
+                curl \
                 encfs \
                 feh \
 		firefox-esr \
@@ -33,7 +34,9 @@ then
                 sxiv \
                 tcpdump \
                 terminator \
+                tmux \
                 vim \
+                wget \
                 xclip \
                 zsh
         fc-cache -f # build font information cache files

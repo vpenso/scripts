@@ -20,9 +20,19 @@ sudo apt install -y \
         libxcb-randr0-dev \
         libxcb-xrm0 \
         libxcb-xrm-dev \
-        libxcb-shape0-dev
+        libxcb-shape0-dev \
+        xinit
+
+cd /tmp
+git clone https://www.github.com/Airblader/i3 i3-gaps
+cd i3-gaps
+autoreconf --force --install
+rm -rf build/
+mkdir -p build && cd build/
+../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
+make
+sudo make install
 
 test -L /usr/bin/i3exit || {
-        echo sudo: Adding link to i3exit?
         sudo ln -sfv $SCRIPTS/bin/i3exit /usr/bin/i3exit
 }
