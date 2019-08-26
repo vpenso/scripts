@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 sudo apt install -y \
         gcc \
@@ -32,7 +33,3 @@ mkdir -p build && cd build/
 ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
 make
 sudo make install
-
-test -L /usr/bin/i3exit || {
-        sudo ln -sfv $SCRIPTS/bin/i3exit /usr/bin/i3exit
-}

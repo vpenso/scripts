@@ -35,6 +35,7 @@ then
                 tcpdump \
                 terminator \
                 tmux \
+                tree \
                 vim \
                 wget \
                 xclip \
