@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
 sudo apt install -y \
-        gcc \
-        make \
         dh-autoreconf \
+        gcc \
+        i3lock-fancy \
         libxcb-keysyms1-dev \
         libpango1.0-dev \
         libxcb-util0-dev \
-        xcb \
         libxcb1-dev \
         libxcb-icccm4-dev \
         libyajl-dev \
@@ -22,6 +21,8 @@ sudo apt install -y \
         libxcb-xrm0 \
         libxcb-xrm-dev \
         libxcb-shape0-dev \
+        make \
+        xcb \
         xinit
 
 cd /tmp
