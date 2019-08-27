@@ -1,13 +1,14 @@
 # i3
 
-File                     | Description
--------------------------|-----------------------
-[bin/i3-install][01]     | Build from source, and install i3
-[bin/i3-cheat][04]       | Show i3 key binding
-[bin/i3-exit][05]        | i3 wrapper script for screen lock and power control
-[docs/linux/wm/i3.md][06]| i3 documentation
-[etc/i3/config][02]      | i3 configuration file
-[var/aliases/i3.sh][03]  | Configure i3 environment
+File                             | Description
+---------------------------------|-----------------------
+[bin/i3-install][01]             | Build from source, and install i3
+[bin/i3-cheat][04]               | Show i3 key binding
+[bin/i3-exit][05]                | i3 wrapper script for screen lock and power control
+[bin/i3-get-window-criteria][07] | Identify application window names/labels in i3
+[docs/linux/wm/i3.md][06]        | i3 documentation
+[etc/i3/config][02]              | i3 configuration file
+[var/aliases/i3.sh][03]          | Configure i3 environment
 
 Install i3 from a minimal installation (no GUI)  of Debian
 
@@ -28,3 +29,4 @@ i3-start
 [04]: ../../bin/i3-cheat
 [05]: ../../bin/i3-exit
 [06]: ../../docs/linux/wm/i3.md
+[07]: ../../bin/i3-get-window-criteria
