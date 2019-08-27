@@ -9,8 +9,8 @@ command -v i3 >&- && {
         
         }
 
-	test -L /usr/bin/i3exit || {
-		sudo ln -sfv $SCRIPTS/bin/i3exit /usr/bin/i3exit
+	test -L /usr/bin/i3-exit || {
+		sudo ln -sfv $SCRIPTS/bin/i3-exit /usr/bin/i3-exit
 	}
 
 }

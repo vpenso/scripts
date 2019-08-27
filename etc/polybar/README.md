@@ -10,7 +10,7 @@ Files                      | Description
 [etc/polybar/config][3]    | Configuration within this repository
 [etc/polybar/launch.sh][4] | Launch script used with i3 window manager
 [bin/polybar-install][5]   | Build from source, and install
-[var/aliases/polybar][6]   | Setup the environment
+[var/aliases/polybar.sh][6]| Setup the environment
 
 Test the configuration:
 
@@ -72,4 +72,4 @@ sudo make install
 [3]: config
 [4]: launch.sh
 [5]: ../../bin/polybar-install
-[6]: ../../var/aliases/polybar
+[6]: ../../var/aliases/polybar.sh

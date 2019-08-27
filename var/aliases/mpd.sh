@@ -6,7 +6,7 @@ command -v mpd >&- && {
         MPD_PORT=$(grep ^port $MPD_CONF | cut -d'"' -f2)
         MPD_PLAYLISTS=$HOME/.mpd/playlists
         MUSIC_DIR=$(grep ^music $MPD_CONF | cut -d'"' -f2)
-        mkdir -p $MPD_PLAYLISTS $MUSIC_DIR |:
+        mkdir -p $MPD_PLAYLISTS |:
         
         export MPD_PORT \
                MPD_CONF \
