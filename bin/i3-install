@@ -22,8 +22,11 @@ sudo apt install -y \
         libxcb-xrm-dev \
         libxcb-shape0-dev \
         make \
+        network-manager-gnome \
         xcb \
         xinit
+
+# network-manager-gnome include nm-applet used for Wifi configuration
 
 cd /tmp
 git clone https://www.github.com/Airblader/i3 i3-gaps
