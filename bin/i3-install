@@ -22,7 +22,6 @@ sudo apt install -y \
         libxcb-xrm-dev \
         libxcb-shape0-dev \
         make \
-        network-manager-gnome \
         xcb \
         xinit
 
