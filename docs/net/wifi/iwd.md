@@ -18,13 +18,46 @@ iwctl station <dev> connect <ssid>   # connect to network
 
 ```bash
 # locate the service executable
-/var/lib/iwd# systemctl cat iwd.service | grep ExecStart
+systemctl cat iwd.service | grep ExecStart
 ExecStart=/usr/libexec/iwd
 # print version information
 /usr/libexec/iwd --version
 # run in foreground with debug mode 
 IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
 ```
+
+## Configuration
+
+```bash
+/var/lib/iwd                         # network configuration files
+```
+
+### WPA2/PSK
+
+The PreSharedKey can be calculated with `wpa_passphrase` (from wpa_supplicant)
+from the SSID and the WIFI passphrase:
+
+```bash
+>>> wpa_passphrase <ssid>
+# reading passphrase from stdin
+************
+network={
+    ssid="<ssid>"
+    #psk="***********"
+    psk=9d1c20628cabdb224a1a420723478f585f4579efd4b206301b8c0d6e5ddc8296
+}
+
+```
+```bash
+cat > /var/lib/iwd/<ssid>.psk <<EOF
+[Security]
+PreSharedKey=9d1c20628cabdb224a1a420723478f585f4579efd4b206301b8c0d6e5ddc8296
+EOF
+```
+
+
+
+
 
 ## References
 
