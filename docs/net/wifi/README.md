@@ -98,22 +98,7 @@ Start the WiFi access client in background and get an IP address from DHCP:
        valid_lft forever preferred_lft forever
 ```
 
-### iwd
 
-`iwd` (iNet wireless daemon) aims to replace WPA supplicant
-
-- No external dependencies, base on ker`nel features
-- Can be combinded with systemd-networkd
-
-```bash
-systemctl enable --now iwd           # start/enable service
-iwctl device list                    # list wireless devices
-iwctl device <dev> show              # show device details
-iwctl station list                   # list state
-iwctl station <dev> scan             # scan for networks
-iwctl station <dev> get-networks     # list networks
-iwctl station <dev> connect <ssid>   # connect to network
-```
 ### rfkill
 
 The rfkill subsystem registers devices capable of transmitting RF (WiFi, Bluetooth, GPS, FM, NFC)
