@@ -2,11 +2,11 @@
 
 `iwd` (iNet wireless daemon) aims to replace WPA supplicant
 
-- No external dependencies, base on kernel features
+- No external dependencies, base on kernel features (D-Bus, cryptographic interface)
+- Designed to deal with multiple clients from the outset
 - Can be combined with systemd-networkd
 
 ```bash
-
 systemctl enable --now iwd           # start/enable service
 iwctl device list                    # list wireless devices
 iwctl device <dev> show              # show device details
@@ -24,6 +24,8 @@ ExecStart=/usr/libexec/iwd
 /usr/libexec/iwd --version
 # run in foreground with debug mode 
 IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
+# Disable periodic scanning of all networks
+echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
 ```
 
 ## Configuration
@@ -66,3 +68,6 @@ https://iwd.wiki.kernel.org/start
 
 [iwdconf] Configuration File Format  
 https://iwd.wiki.kernel.org/networkconfigurationsettings
+
+[iwdsrc] Source Code Repository
+https://git.kernel.org/pub/scm/network/wireless/iwd.git/
