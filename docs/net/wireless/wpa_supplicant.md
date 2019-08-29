@@ -1,6 +1,13 @@
 
 Connect to an encrypted (WEP, WPA, WPA2) wireless network with [wpa_supplicant][wpa]:
 
+```bash
+wpa_cli                            # used to configure wpa_supplicant
+wpa_cli interface ${dev:-wlan0}    # select wireless interface
+wpa_cli scan                       # scan for access points
+wpa_cli scan_results               # list available access points
+```
+
 [wpa]: http://w1.fi/wpa_supplicant/
 
 ```bash
