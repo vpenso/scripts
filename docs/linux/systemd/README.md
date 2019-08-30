@@ -4,7 +4,7 @@
 First process executed in users space (PID 1)
 
 - Initialize user-space, and provides dependency management between **units**
-- Each Unit is describes with a configuration file, the suffix determines the unit type `unit_name.type_extensiona`. cf. `systemd.unit`
+- Each Unit is describes with a configuration file, the suffix determines the unit type `unit_name.type_extension`. cf. `systemd.unit`
 - **Targets** define a group of units (like run levels), may inherit services from another target
 - **Scopes** are groups of processes registered using the runtime APIs (e.g. containers).
 - **Slices** are hierarchies of services/scopes (contain processes) 
