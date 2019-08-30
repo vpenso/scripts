@@ -31,8 +31,8 @@ echo PRIMARY_DISPLAY=$PRIMARY_DISPLAY
 export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface 'e[nt]')
 
-# required for transparency
-compton -b &
+# compton is required for transparency
+compton -b -d :0 &
 polybar top &
 
 echo "Bars launched..."
