@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# https://github.com/polybar/polybar/wiki/Compiling#build-dependencies
+
 sudo apt install -y \
         build-essential \
         git \
@@ -18,11 +20,22 @@ sudo apt install -y \
         xcb-proto \
         libxcb-image0-dev \
         libxcb-ewmh-dev \
-        libxcb-icccm4-dev
+        libxcb-icccm4-dev \
+        libxcb-xkb-dev \
+        libxcb-xrm-dev \
+        libxcb-cursor-dev \
+        libasound2-dev \
+        libpulse-dev \
+        libjsoncpp-dev \
+        libmpdclient-dev \
+        libcurl4-openssl-dev \
+        libnl-genl-3-dev
 
 cd /tmp
-wget https://github.com/jaagr/polybar/releases/download/3.3.1/polybar-3.3.1.tar
-tar -xvf polybar-3.3.1.tar && cd polybar
+
+version=3.4.0
+wget https://github.com/jaagr/polybar/releases/download/$version/polybar-$version.tar
+tar -xvf polybar-$version.tar && cd polybar
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
