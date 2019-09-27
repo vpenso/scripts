@@ -5,6 +5,7 @@
 Settings system locale:
 
 ```bash
+apt install console-data
 /etc/locale.conf                    # system-wide locale settings
 localectl                           # show language configuration
 localectl list-locales              # list vailable keys configuration
