@@ -146,7 +146,7 @@ begin
   end
 
   def open(url)
-    Kernel.exec "#{$options.browser} '#{url}#{$options.append}' &"
+    Kernel.exec "#{$options.browser} '#{url}#{$options.append}' 1>&- 2>&- &"
     exit 0
   end
 
