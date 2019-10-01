@@ -15,6 +15,7 @@ then
 		firefox-esr \
                 fonts-inconsolata \
                 fonts-powerline \
+                fzf \
                 git-core \
                 gromit-mpx \
                 imagemagick \
@@ -26,6 +27,7 @@ then
                 pandoc \
                 powerline \
                 psmisc \
+                pulseaudio \
                 python3-pip \
                 rofi \
                 rsync \
