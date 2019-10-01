@@ -53,7 +53,7 @@ begin
   $options = OpenStruct.new
   $options.bookmark_files = []
   $options.bookmarks_path = [ "#{ENV['HOME']}/.bookmarks" ]
-  $options.browser = ''
+  $options.browser = 'firefox'
   $options.debug = false
   $options.keys = false
   $options.open = false
@@ -66,6 +66,8 @@ begin
     "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
   end
   $logger.level = Logger::WARN
+
+  $options.browser = ENV['BROWSER'] if ENV.include?('BROWSER')
 
   GetoptLong.new(
     ['--append','-a',GetoptLong::REQUIRED_ARGUMENT],
@@ -104,16 +106,9 @@ begin
     when '--open'
       $options.open = true
     when '--version'
-      $stdout.puts 0.2
+      $stdout.puts 0.3
       exit 0
     end
-  end
-
-  # the option takes precedents
-  if ENV.include?('BROWSER') && $options.browser.empty?
-    $options.browser = ENV['BROWSER'] unless ENV['BROWSER'].empty?
-  else
-    $options.browser = 'firefox' # by default
   end
 
   if ENV.include?('BOOKMARKS_PATH')
