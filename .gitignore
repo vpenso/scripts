@@ -3,4 +3,5 @@ etc/nnn/plugins
 *.html
 .ipynb_checkpoints/
 aliases/unset.sh
-var/bookmarks/*-scripts
+var/bookmarks/*
+!var/bookmarks/*.bm
