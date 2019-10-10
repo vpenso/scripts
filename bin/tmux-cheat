@@ -28,20 +28,22 @@ echo \
     y,Enter        │ copy selection
     <C-a> ]        │ paste selection
 
-             Plugin manager
+              Pain control
                    ┬
-    <C-a> I        │ install plugins in ~/.tmux/plugins/
-    <C-a> U        │ update plugins
-    <C-a> <A-u>    │ uninstall plugins
-
-           Pain control plugin
-                   ┬
+    p              │ kill pane
     <C-a> {hjkl}   │ select pane left|below|above|right
     <C-a> {HJKL}   │ resize pane left|down|up|right 
     <C-a> |        │ split current pane horizontally
     <C-a> -        │ split current pane vertically
     <C-a> \        │ split current pane full width horizontally
     <C-a> _        │ split current pane full width vertically
+
+             Plugin manager
+                   ┬
+    <C-a> I        │ install plugins in ~/.tmux/plugins/
+    <C-a> U        │ update plugins
+    <C-a> <A-u>    │ uninstall plugins
+
 
              Copycat plugin
                    ┬
