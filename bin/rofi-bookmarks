@@ -3,4 +3,4 @@
 # ugly shit hack cause...
 wd="$( cd "$(dirname "$0")" ; pwd -P )"
 select=$($wd/bookmarks list -k | rofi -dmenu -p 'bookmarks' -theme white)
-$wd/bookmarks --browser firefox search -o $select
+$wd/bookmarks search -o $select
