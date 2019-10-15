@@ -22,6 +22,7 @@ then
                 key-mon \
                 mpd \
                 mpc \
+                mupdf \
                 nnn \
                 ncmpc \
                 pandoc \
