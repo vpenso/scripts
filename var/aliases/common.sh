@@ -54,15 +54,6 @@ alias prun="watch -n1 ps r -AL -o stat,pid,user,psr,pcpu,pmem,args"
 # include cgroup
 alias psc='ps xawf -eo pid,user,cgroup,args'
 
-##
-# Vim text editor 
-#
-
-export EDITOR=vim
-alias v=vim
-alias vim-cheat='vim-cheat | less'
-
-
 # export working directory to path
 exwd() { export PATH=$PATH:$PWD ; }
 
