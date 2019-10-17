@@ -5,10 +5,10 @@ cheat=$(cat <<EOF
             Motions
                ┬
  [count]{hjkl} │ left, down, up, right (default one char)
-      [count]w │ word forward (start of next word)
-      [count]b │ word backward (start of current/previous word)
-      [count]e │ word forward (end of current/next word)
-     [count]ge │ word backward (end of previous word)
+   [count]{wW} │ WORD/word forward (start of next word)
+   [count]{bB} │ WORD/word backward (start of current/previous word)
+   [count]{eE} │ WORD/word forward (end of current/next word)
+     [count]ge │ WORD backward (end of previous word)
              0 │ first char in current line
              ^ │ first non-blank char in current line
              $ │ last char in current line
@@ -16,19 +16,21 @@ cheat=$(cat <<EOF
       [count]+ │ first non-blank char of lines downward
       [count]- │ first non-blank char of lines upward
       [count]G │ first non-blank of line (default last line)
+        1G, gg │ got to start of file, aka first line
       [count]( │ sentences backward
       [count]) │ sentences forward
       [count]{ │ paragraphs forward
       [count]} │ paragraphs backward
      [count]gk │ display line upwards
      [count]gj │ display line downwards
-         <C-f> │ scroll down
-         <C-d> │ scroll down 1/2 page
          <C-b> │ scroll up
+         <C-f> │ scroll down
          <C-u> │ scroll up 1/2 page
+         <C-d> │ scroll down 1/2 page
             zz │ center cursor line
             zt │ cursor line to the top
             zb │ cursor line to the bottom
+             % │ go to corresponding (,{,[
 
             Search
                ┬
