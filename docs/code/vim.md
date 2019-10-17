@@ -5,14 +5,20 @@ File                       | Description
 [var/aliases/vim.sh][02]   | Vim environment configuration
 
 
-Vertical motions within a line (cursor marks by arrows):
+Positioning of a cursor in a line (motions), switch to insert mode:
 
 ```
-0  ^    B       b    H l    ew   E W      $
-|  |    |       |    |↓|    ||   | |      |
-   word example-word  Example-word example.
-                      ↑
+0  ^    B       b  ge  H l    ew   E W      $     motions
+|  |    |       |  |   |↓|    ||   | |      |
+   word example-word    Example-word example.
+   |                    ↑|                   |
+   I                    ia                   A    insert mode
 ```
+
+Combine motions with insert mode, i.e. `gea` append at the end of the previous
+word.
+
+
 
 
 [01]: ../../bin/vim-cheat
