@@ -5,12 +5,12 @@ File                       | Description
 [var/aliases/vim.sh][02]   | Vim environment configuration
 
 
-Vertical motions within a line:
+Vertical motions within a line (cursor marks by arrows):
 
 ```
 0  ^    B       b    H l    ew   E W      $
-|  |    |       |    | |    ||   | |      |
-   word example-word  example-word example.
+|  |    |       |    |↓|    ||   | |      |
+   word example-word  Example-word example.
                       ↑
 ```
 
