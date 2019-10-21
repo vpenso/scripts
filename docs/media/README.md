@@ -1,10 +1,8 @@
 File                     | Description
 -------------------------|-------------------------------------
-[cd2mp3][cd2mp3]         | Extract audio tracks from a CD and convert it into a single MP3
-[yt2mp3][yt2mp3]         | Convert a Youtube video into an MP3 file
+[cd2mp3][bin/cd2mp3]     | Extract audio tracks from a CD and convert it into a single MP3
 
 [cd2mp3]: ../bin/cd2mp3
-[yt2mp3]: ../var/aliases/youtube.sh
 
 ## Audio
 

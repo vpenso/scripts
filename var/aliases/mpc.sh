@@ -60,7 +60,7 @@ command -v mpc >&- && {
                                 # play first song
                                 mpc play
                                 ;;
-                        h)              echo -n $MPC_ALIAS_HELP ;;
+                        help|h)         echo -n $MPC_ALIAS_HELP ;;
                         kill|k)         killall -u $USER mpd ;;
                         next|-)         mpc prev ;;
                         list|l)         mpc ls $@ ;;
