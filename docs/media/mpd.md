@@ -45,7 +45,7 @@ Sub-commands `m sa|sr` us [`fzf`][m3] to search in the music library.
 
 [01]: ../../etc/mpdconf
 [02]: ../../var/aliases/mpd.sh
-[02]: ../../var/aliases/mpc.sh
+[03]: ../../var/aliases/mpc.sh
 
 [m1]: https://man.cx/mpc
 [m2]: https://man.cx/mpd

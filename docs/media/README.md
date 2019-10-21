@@ -1,8 +1,8 @@
 File                     | Description
 -------------------------|-------------------------------------
-[cd2mp3][bin/cd2mp3]     | Extract audio tracks from a CD and convert it into a single MP3
+[/bincd2mp3][f1]         | Extract audio tracks from a CD and convert it into a single MP3
 
-[cd2mp3]: ../bin/cd2mp3
+[f1]: ../bin/cd2mp3
 
 ## Audio
 
