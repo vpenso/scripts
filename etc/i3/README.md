@@ -13,7 +13,6 @@ File                             | Description
 [bin/i3-cheat][04]               | Show i3 key binding
 [bin/i3-exit][05]                | i3 wrapper script for screen lock and power control
 [bin/i3-get-window-criteria][07] | Identify application window names/labels in i3
-[docs/linux/wm/i3.md][06]        | i3 documentation
 [etc/i3/config][02]              | i3 configuration file
 [var/aliases/i3.sh][03]          | Configure i3 environment
 
@@ -43,16 +42,16 @@ apt install arc-theme moka-icon-theme
 
 ## References
 
-[i3wm] i3 Tiling Window Manager
+[i3wm] i3 Tiling Window Manager  
 https://i3wm.org/
 
-[i3usr] i3 User Guide
+[i3usr] i3 User Guide  
 https://i3wm.org/docs/userguide.html
 
-[i3gaps] i3 Fork with Window Gaps
+[i3gaps] i3 Fork with Window Gaps  
 https://github.com/Airblader/i3
 
-[sway] i3 compatible implementation on Wayland
+[sway] i3 compatible implementation on Wayland  
 https://swaywm.org
 
 [01]: ../../bin/i3-install
