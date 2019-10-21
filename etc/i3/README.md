@@ -23,6 +23,17 @@ polybar-install
 i3-start
 ```
 
+Select a decoration theme:
+
+```bash
+apt install -y lxappearance gtk-chtheme qt4-qtconfig
+# choose a theme in...
+lxappearance
+gtk-chtheme
+# install favorit theme (note that Arc has a Firefox theme as well)
+apt install arc-theme moka-icon-theme
+```
+
 [01]: ../../bin/i3-install
 [02]: config
 [03]: ../../var/aliases/i3.sh
