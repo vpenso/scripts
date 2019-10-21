@@ -1,5 +1,12 @@
 # i3
 
+Design principles of i3:
+
+* Minimalism - "Just a" window manager, no integration with applications
+* Tiling - Efficient non-overlapping positioning of application windows
+* Keyboard Workflow - Complete functionality mapped to (customizable) shortcuts
+* Integration - Easy integration with launchers (i.e. Rofi) status bars (i.e. Polybar)
+
 File                             | Description
 ---------------------------------|-----------------------
 [bin/i3-install][01]             | Build from source, and install i3
@@ -33,6 +40,20 @@ gtk-chtheme
 # install favorit theme (note that Arc has a Firefox theme as well)
 apt install arc-theme moka-icon-theme
 ```
+
+## References
+
+[i3wm] i3 Tiling Window Manager
+https://i3wm.org/
+
+[i3usr] i3 User Guide
+https://i3wm.org/docs/userguide.html
+
+[i3gaps] i3 Fork with Window Gaps
+https://github.com/Airblader/i3
+
+[sway] i3 compatible implementation on Wayland
+https://swaywm.org
 
 [01]: ../../bin/i3-install
 [02]: config
