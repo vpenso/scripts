@@ -1,11 +1,5 @@
 # make Firefox the default browser
-
-# use the Chromium browser if installed
-command -v chromium >&- && {
-        export BROWSER=chromium
-} || {
-        export BROWSER=firefox
-}
+export BROWSER=firefox
 
 # Allow multiple instances of Firefox
 ff() {

@@ -1,11 +1,22 @@
 
+#
+# Depending on the Linux distribution...
+#
+command -v systemctl >&- && {
+        if systemctl is-enabled --quiet mpd 2>&-
+        then
+                echo Stop/disable mpd service
+                sudo systemctl disable --now mpd.service
+        fi
+}
+
 command -v mpd >&- && {
 
         MPD_CONF=$SCRIPTS/etc/mpdconf
         # read the port from the configuration file
         MPD_PORT=$(grep ^port $MPD_CONF | cut -d'"' -f2)
         MPD_PLAYLISTS=$HOME/.mpd/playlists
-        MUSIC_DIR=$(grep ^music $MPD_CONF | cut -d'"' -f2)
+        MUSIC_DIR=$HOME/music
         
         export MPD_PORT \
                MPD_CONF \
