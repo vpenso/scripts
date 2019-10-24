@@ -22,6 +22,23 @@ Install latest version:
 >>> sudo ln -s /opt/firefox/firefox /usr/lib/firefox-esr/firefox-esr
 ```
 
+Install Latest version from Debian unstable
+
+```bash
+# configure the unstable package repo.
+cat > /etc/apt/sources.list.d/unstable.list <<EOF
+deb http://http.debian.net/debian unstable main
+EOF
+# set lowest priority for unstable packages
+cat > /etc/apt/preferences.d/unstable <<EOF
+Package: *
+Pin: release o=Debian,a=unstable
+Pin-Priority: 10
+EOF
+# install firefox
+apt update && apt install -y -t unstable firefox
+```
+
 Plugins I'm using:
 
 - [VimFx](https://github.com/akhodakivskiy/VimFx)
