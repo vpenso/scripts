@@ -47,6 +47,12 @@ yum list available [<regex>]      # list all packages in all enabled repositorie
 yum provides <path>               # find which package a specific file belongs to
 ```
 
+Recover from errors:
+
+```bash
+rpm --rebuilddb                   # Error: rpmdb open failed
+```
+
 ### Versions
 
 ```bash
