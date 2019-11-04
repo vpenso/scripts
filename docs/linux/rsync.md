@@ -14,15 +14,53 @@ rsync $source $host:$destination          # copy to a remote node
 rsync $host:source $destination           # copy from a remote node
 ```
 
+### Dry Run
+
 Use option `-n` to **show changes without modifying** the destination:
 
 ```bash
--n, --dry-run     # perform a trial run with no changes made
---del             # an alias for --delete-during
---delete-during   # receiver deletes during the transfer
+-n, --dry-run            # perform a trial run with no changes made
+-i, −−itemize−changes    # output a change-summary for all updates 
 ```
 
-**Remove extraneous files** from the destintation with option `--del`.
+Output format for itemize changes:
+
+```
+YXcstpoguax  path/to/file
+|||||||||||
+`----------- the type of update being done::
+ ||||||||||   <: file is being transferred to the remote host (sent).
+ ||||||||||   >: file is being transferred to the local host (received).
+ ||||||||||   c: local change/creation for the item, such as:
+ ||||||||||      - the creation of a directory
+ ||||||||||      - the changing of a symlink,
+ ||||||||||      - etc.
+ ||||||||||   h: the item is a hard link to another item (requires --hard-links).
+ ||||||||||   .: the item is not being updated (though it might have attributes that are being modified).
+ ||||||||||   *: means that the rest of the itemized-output area contains a message (e.g. "deleting").
+ ||||||||||
+ `---------- the file type:
+  |||||||||   f for a file,
+  |||||||||   d for a directory,
+  |||||||||   L for a symlink,
+  |||||||||   D for a device,
+  |||||||||   S for a special file (e.g. named sockets and fifos).
+  |||||||||
+  `--------- c: different checksum (for regular files)
+   ||||||||     changed value (for symlink, device, and special file)
+   `-------- s: Size is different
+    `------- t: Modification time is different
+     `------ p: Permission are different
+      `----- o: Owner is different
+       `---- g: Group is different
+        `--- u: The u slot is reserved for future use.
+         `-- a: The ACL information changed
+```
+
+### Transfer Modes
+
+
+
 
 Option `-a` **archive mode** equals `-rlptgoD` (not ACLs, hard links or extended attributes such as capabilities):
 
@@ -46,5 +84,13 @@ Option `-hP` human readable progress/speed indicator:
 --progress              # show progress during transfer
 --partial               # keep partially transferred files, enables to resume interrupted file transfer
 ```
+
+**Remove extraneous files** from the destination with option `--del`.
+
+```bash
+--del             # an alias for --delete-during
+--delete-during   # receiver deletes during the transfer
+```
+
 
 [rsync]: https://rsync.samba.org/
