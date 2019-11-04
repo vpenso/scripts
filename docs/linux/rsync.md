@@ -57,10 +57,28 @@ YXcstpoguax  path/to/file
          `-- a: The ACL information changed
 ```
 
-### Transfer Modes
+### Compare Files
 
+>  "quick check" algorithm (by default) that looks for files that have changed
+in size or in last−modified time.
 
+Modifies rsync’s "quick check" algorithm:
 
+```bash
+−−ignore−existing       # skip updating files that exist on receiver 
+--size-only             # skip files that match in size, even if the timestamps differ
+-I, --ignore-times      # checksum every file, even if the timestamps and file sizes match
+```
+
+Use **128−bit checksum** for each file that has a matching size...lot of disk I/O 
+reading all the data..
+
+```
+−c, −−checksum          # checksum instead of "quick check" 
+−−checksum−choice=auto  # overrides the checksum algoriths, "md4", "md5", and "none"
+```
+
+### Transfer
 
 Option `-a` **archive mode** equals `-rlptgoD` (not ACLs, hard links or extended attributes such as capabilities):
 
@@ -76,7 +94,7 @@ Option `-a` **archive mode** equals `-rlptgoD` (not ACLs, hard links or extended
 --specials        # preserve special files
 ```
 
-Option `-hP` human readable progress/speed indicator:
+Option `-hP` **human readable progress**/speed indicator:
 
 ```bash
 -h, --human-readable    # output numbers in a human-readable format
