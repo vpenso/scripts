@@ -20,7 +20,7 @@ Use option `-n` to **show changes without modifying** the destination:
 
 ```bash
 -n, --dry-run            # perform a trial run with no changes made
--i, −−itemize−changes    # output a change-summary for all updates 
+-i, --itemize-changes    # output a change-summary for all updates 
 ```
 
 Output format for itemize changes:
@@ -65,7 +65,7 @@ in size or in last−modified time.
 Modifies rsync’s "quick check" algorithm:
 
 ```bash
-−−ignore−existing       # skip updating files that exist on receiver 
+--ignore-existing       # skip updating files that exist on receiver 
 --size-only             # skip files that match in size, even if the timestamps differ
 -I, --ignore-times      # checksum every file, even if the timestamps and file sizes match
 ```
@@ -74,8 +74,8 @@ Use **128−bit checksum** for each file that has a matching size...lot of disk 
 reading all the data..
 
 ```
-−c, −−checksum          # checksum instead of "quick check" 
-−−checksum−choice=auto  # overrides the checksum algoriths, "md4", "md5", and "none"
+-c, --checksum          # checksum instead of "quick check" 
+--checksum-choice=auto  # overrides the checksum algoriths, "md4", "md5", and "none"
 ```
 
 ### Transfer
