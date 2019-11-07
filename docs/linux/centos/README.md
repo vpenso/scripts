@@ -21,9 +21,9 @@ Support EOL (end of live) according to the CentOS FAQ [5]:
 
 Major release | EOL
 --------------|----------------------
-CentOS 6      | November 30, 2020
-CentOS 7      | June 30, 2024
-CentOS 8      | Cf. [CentOS 8 Rough Status Page](https://wiki.centos.org/About/Building_8)
+CentOS 6      | 2020/11
+CentOS 7      | 2024/06
+CentOS 8      | 2029/05
 
 **Upgrade between major releases not supported nor recommended** by CentOS [6].
 
