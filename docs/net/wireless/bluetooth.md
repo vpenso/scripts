@@ -38,13 +38,11 @@ If no agent is registered paring will be attempted without user interaction
 
 ## Scan
 
+
+
 ```bash
 bluetoothctl scan on
-# stop as soon as the required device is reported
-bluetoothctl scan off
 ```
-
-
 
 ### References 
 
