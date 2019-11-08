@@ -1,11 +1,24 @@
 [global_config]
-  borderless = True
   dbus = False
   focus = mouse
-  hide_tabbar = True
-  tab_position = hidden
   window_state = hidden
+  borderless = True
+  tab_position = hidden
+  hide_tabbar = True
+  scroll_tabbar = True
+  homogeneous_tabbar = False
 [keybindings]
+[profiles]
+  [[default]]
+    background_color = "#ffffff"
+    background_darkness = 0.88
+    background_type = transparent
+    cursor_color = "#cc0000"
+    cursor_color_fg = False
+    font = InconsolataGo Nerd Font 12
+    foreground_color = "#000000"
+    show_titlebar = False
+    use_system_font = False
 [layouts]
   [[default]]
     [[[child1]]]
@@ -15,14 +28,3 @@
       parent = ""
       type = Window
 [plugins]
-[profiles]
-  [[default]]
-    background_color = "#ffffff"
-    background_darkness = 0.88
-    background_type = transparent
-    cursor_color = "#cc0000"
-    cursor_color_fg = False
-    font = InconsolataGo Nerd Font 11
-    foreground_color = "#000000"
-    show_titlebar = False
-    use_system_font = False

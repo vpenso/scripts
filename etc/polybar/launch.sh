@@ -32,7 +32,10 @@ export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface 'e[nt]')
 
 # compton is required for transparency
+killall -q compton
 compton -b -d :0 &
+
+
 polybar top &
 
 echo "Bars launched..."
