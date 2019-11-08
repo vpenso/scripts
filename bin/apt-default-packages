@@ -13,10 +13,8 @@ then
                 encfs \
                 feh \
 		firefox-esr \
-                fonts-inconsolata \
-                fonts-powerline \
                 fzf \
-                git-core \
+                git \
                 gromit-mpx \
                 imagemagick \
                 key-mon \
