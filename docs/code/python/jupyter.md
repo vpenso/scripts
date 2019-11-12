@@ -31,8 +31,6 @@ sudo python3 -m pip install bash_kernel
 python3 -m bash_kernel.install
 ```
 
-
-
 ## Extensions
 
 > JupyterLab extensions are npm packages (the standard package format in 
