@@ -2,11 +2,13 @@
 
 Files                     | Description
 --------------------------|-------------------------
-[var/aliases/rofi.sh][1]  | Add Rofi configuration to the environment
+[etc/rofi/config.rasi][3] | Rofi configuration file
 [etc/rofi/white.rasi][2]  | Rofi theme (primarily white colors)
+[var/aliases/rofi.sh][1]  | Add the Rofi configuration to the environment
 
 [1]: ../../var/aliases/rofi.sh
 [2]: white.rasi
+[3]: config.rasi
 
 This directory is linked to the default configuration path expected by Rofi:
 
