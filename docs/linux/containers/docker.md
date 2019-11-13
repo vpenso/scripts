@@ -1,9 +1,6 @@
 # Docker
 
-> Docker is a platform for developers and sysadmins to build, share, and run 
-> applications with containers...Fundamentally, a container is nothing but a 
-> running process, with some added encapsulation features applied to it in 
-> order to keep it isolated from the host and from other containers.
+> Docker is a platform for developers and sysadmins to build, share, and run applications with containers...Fundamentally, a container is nothing but a running process, with some added encapsulation features applied to it in order to keep it isolated from the host and from other containers.
 
 ## Install
 
@@ -95,8 +92,13 @@ docker run -i -t debian /bin/bash
 
 ### References
 
-[dec] Docker Engine - Community  
+[dec] Docker Community Engine  
 https://docs.docker.com/install/
 
 [dno] Docker Networking Overview  
 https://docs.docker.com/network/
+
+[dfr] Dockerfile Reference  
+https://docs.docker.com/engine/reference/builder/
+
+
