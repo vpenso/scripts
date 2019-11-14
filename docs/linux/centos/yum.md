@@ -118,13 +118,13 @@ The number of altered packages can be followed by a code:
 
 Value |Description
 ------|-------------
-<     | The rpmdb database was changed outside Yum before the transaction ending.
->     | The rpmdb database was changed outside Yum after the transaction ended.
-*     | The transaction failed to finish
-#     | Finished successfully, but yum returned a non-zero exit code.
-E     | Finished successfully, but an error or a warning was displayed.
-P     | Finished successfully, but problems already existed in the rpmdb database.
-s     | Finished successfully, but the –skip-broken command-line option was used and certain packages were skipped.
+`<`   | The rpmdb database was changed outside Yum before the transaction ending.
+`>`   | The rpmdb database was changed outside Yum after the transaction ended.
+`*`   | The transaction failed to finish
+`#`   | Finished successfully, but yum returned a non-zero exit code.
+`E`   | Finished successfully, but an error or a warning was displayed.
+`P`   | Finished successfully, but problems already existed in the rpmdb database.
+`s`   | Finished successfully, but the –skip-broken command-line option was used and certain packages were skipped.
 
 
 ## Configuration
