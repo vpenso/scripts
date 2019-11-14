@@ -96,6 +96,7 @@ yum changelog all <package>
 ```bash
 /var/lib/yum/history/                     # history DB
 yum history                               # list of twenty most recent transaction
+yum history | grep '\*\*'                 # search for aborted transactions
 yum history info <id>                     # examine a particular transaction
 yum history undo <id>                     # revert slected transaction
 yum history stats                         # overall statistics about the currently used history DB
