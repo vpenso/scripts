@@ -94,13 +94,18 @@ yum changelog all <package>
 **Transaction history**:
 
 ```bash
-/var/lib/yum/history/                # history DB
-yum history                          # list of twenty most recent transaction
-yum history info <id>                # examine a particular transaction
-yum history undo <id>                # revert slected transaction
-yum history stats                    # overall statistics about the currently used history DB
+/var/lib/yum/history/                     # history DB
+yum history                               # list of twenty most recent transaction
+yum history info <id>                     # examine a particular transaction
+yum history undo <id>                     # revert slected transaction
+yum history stats                         # overall statistics about the currently used history DB
 yum history sync                  
-yum history package-list <package>   # Trace history of a package
+yum history package-list <package>        # Trace history of a package
+yum history redo force-reinstall <id>     # force reinstall of the failed yum transaction
+```
+```bash
+yum-complete-transaction                  # completes unfinished yum transactions which occur due to error, failure
+yum-complete-transaction --cleanup-only   # do not complete the transaction just clean up
 ```
 
 Possible action executed in the transaction:
@@ -120,7 +125,7 @@ Value |Description
 ------|-------------
 `<`   | The rpmdb database was changed outside Yum before the transaction ending.
 `>`   | The rpmdb database was changed outside Yum after the transaction ended.
-`*`   | The transaction failed to finish
+`*`   | The transaction aborted before completion.
 `#`   | Finished successfully, but yum returned a non-zero exit code.
 `E`   | Finished successfully, but an error or a warning was displayed.
 `P`   | Finished successfully, but problems already existed in the rpmdb database.
