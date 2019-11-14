@@ -103,6 +103,30 @@ yum history sync
 yum history package-list <package>   # Trace history of a package
 ```
 
+Possible action executed in the transaction:
+
+Value | Action	      | Description
+------|---------------|--------------------
+I     |	Install	      | Package(s) installed.
+U     |	Update	      | Package(s) updated to a newer version.
+E     |	Erase	      | Package(s) removed.
+D     |	Downgrade     | Package(s) downgraded to an older version.
+O     |	Obsoleting    | Package(s) marked as obsolete.
+R     |	Reinstall     |Package(s) reinstalled.
+
+The number of altered packages can be followed by a code:
+
+Value |Description
+------|-------------
+<     | The rpmdb database was changed outside Yum before the transaction ending.
+>     | The rpmdb database was changed outside Yum after the transaction ended.
+*     | The transaction failed to finish
+#     | Finished successfully, but yum returned a non-zero exit code.
+E     | Finished successfully, but an error or a warning was displayed.
+P     | Finished successfully, but problems already existed in the rpmdb database.
+s     | Finished successfully, but the –skip-broken command-line option was used and certain packages were skipped.
+
+
 ## Configuration
 
 Files & Directories:
