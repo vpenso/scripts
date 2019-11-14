@@ -8,6 +8,12 @@ Packages use following name specification:
     name-[epoch:]version-release
     name-[epoch:]version-release.arch
 
+### Usage
+
+```bash
+rpm -e --nodeps $package           # remove a package without its dependencies
+```
+
 ## References
 
 [rpg] RPM Packaging Guide  
