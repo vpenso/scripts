@@ -1,17 +1,53 @@
-# RPM Packages
-
-Packages use following name specification:
-
-    name
-    name.arch
-    name-[epoch:]version
-    name-[epoch:]version-release
-    name-[epoch:]version-release.arch
-
 # Yum
 
 Yum is the Red Hat package manager 
 
+## Configuration
+
+Files & Directories:
+
+```bash
+/etc/yum.conf                       # local global configuration file
+/etc/yum.repos.d/*.repo             # configure individual repositories
+/var/log/yum.log                    # log file
+/var/cache/yum/                     # local package cache
+```
+
+Metadata & Cache:
+
+```bash
+yum makecache                     # update metadata for the currently enabled repositories
+yum clean metadata                # delete all package repository metadata
+yum clean all                     # clean up all the repository metadata & caches
+```
+
+Inspection:
+
+```bash
+yum repolist all                        # list package repositories
+yum repolist enabled                    # list enabled repos only
+yum repo-pkgs <repo> list               # list all packages in a repository
+yum-config-manager                      # display the current values of global yum options
+yum-config-manager | grep '\[.*\]'      # list only the sections
+yum-config-manager --add-repo <url>     # add a repository to /etc/yum.repos.d/
+yum-config-manager --enable <repo>      # enable a repository
+yum-config-manager --disable <repo>     # disable a repository
+yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
+                                        # show URLs to the repositories 
+```
+
+Site local repository configuration file:
+
+```bash
+>>> cat /etc/yum.repos.d/site-local.repo
+[site-local]
+name=site-local
+baseurl=http://lxrepo01.devops.test/repo
+enabled=1
+gpgcheck=0
+```
+
+## Usage
 
 Search & Information
 
@@ -82,7 +118,7 @@ Exclude packages from updates in `/etc/yum.conf`:
 exclude=<foo>* <bar>*
 ```
 
-### History
+## History
 
 Show the **changelog** of a package:
 
@@ -132,101 +168,4 @@ Value |Description
 `P`   | Finished successfully, but problems already existed in the rpmdb database.
 `s`   | Finished successfully, but the –skip-broken command-line option was used and certain packages were skipped.
 
-
-## Configuration
-
-Files & Directories:
-
-```bash
-/etc/yum.conf                       # local global configuration file
-/etc/yum.repos.d/*.repo             # configure individual repositories
-/var/log/yum.log                    # log file
-/var/cache/yum/                     # local package cache
-```
-
-Metadata & Cache:
-
-```bash
-yum makecache                     # update metadata for the currently enabled repositories
-yum clean metadata                # delete all package repository metadata
-yum clean all                     # clean up all the repository metadata & caches
-```
-
-Inspection:
-
-```bash
-yum repolist all                        # list package repositories
-yum repolist enabled                    # list enabled repos only
-yum repo-pkgs <repo> list               # list all packages in a repository
-yum-config-manager                      # display the current values of global yum options
-yum-config-manager | grep '\[.*\]'      # list only the sections
-yum-config-manager --add-repo <url>     # add a repository to /etc/yum.repos.d/
-yum-config-manager --enable <repo>      # enable a repository
-yum-config-manager --disable <repo>     # disable a repository
-yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
-                                        # show URLs to the repositories 
-```
-
-Site local repository configuration file:
-
-```bash
->>> cat /etc/yum.repos.d/site-local.repo
-[site-local]
-name=site-local
-baseurl=http://lxrepo01.devops.test/repo
-enabled=1
-gpgcheck=0
-```
-
-## Yum-Cron
-
-Keep repository metadata up to date, and check for, download, and apply updates
-
-Enable the service:
-
-```bash
->>> yum install -y yum-cron      # install the package
-# start/enable the service
->>> systemctl start yum-cron.service && systemctl enable yum-cron.service
-# configuration files
->>> find /etc/yum/* -name '*cron*'
-/etc/yum/yum-cron.conf
-/etc/yum/yum-cron-hourly.conf
-# cronjobs executing yum-cron
->>> find /etc/cron* -name '*yum*'
-/etc/cron.daily/0yum-daily.cron
-/etc/cron.hourly/0yum-hourly.cron
-```
-
-Configure `download_updates` and `apply_updates` to **enable the package updates**:
-
-* CentOS does not support `yum --security update` therefore the `update_cmd = default` is required
-* Install new **GPG keys** by packages automatically with `assumeyes = True`
-
-```bash
->>> grep -e ^update_cmd -e ^download -e ^apply /etc/yum/*cron*.conf
-/etc/yum/yum-cron.conf:update_cmd = default
-/etc/yum/yum-cron.conf:download_updates = yes
-/etc/yum/yum-cron.conf:apply_updates = no
-/etc/yum/yum-cron-hourly.conf:update_cmd = default
-/etc/yum/yum-cron-hourly.conf:download_updates = yes
-/etc/yum/yum-cron-hourly.conf:apply_updates = yes
->>> grep ^assume /etc/yum/*cron*
-/etc/yum/yum-cron-hourly.conf:assumeyes = True
-```
-
-
-Trouble shooting:
-
-```bash
-# check if the cronjobs are executed...
->>> grep yum /var/log/cron
-# execute yum-cron with a configuration file...
->>> /usr/sbin/yum-cron /etc/yum/yum-cron-hourly.conf
-```
-
-# References
-
-RPM Packaging Guide  
-https://rpm-packaging-guide.github.io/
 
