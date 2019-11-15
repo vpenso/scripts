@@ -97,15 +97,30 @@ exclude=<foo>* <bar>*
 ```bash
 /var/lib/yum/history/                     # history DB
 yum history                               # list of twenty most recent transaction
+# show the executed command instead of the user
 yum --setopt=history_list_view=commands history list
 yum history | grep '\*\*'                 # search for aborted transactions
 yum history info <id>                     # examine a particular transaction
 yum history undo <id>                     # revert slected transaction
 yum history stats                         # overall statistics about the currently used history DB
-yum history sync                  
 yum history package-list <package>        # Trace history of a package
 yum history redo force-reinstall <id>     # force reinstall of the failed yum transaction
 ```
+
+```bash
+# get the date or the last transaction
+yum history list all | sed -n '3p' | tr -s ' ' | cut -d '|' -f3 | cut -d' ' -f2
+```
+
+If a package has been installed/erased directly using the `rpm` command 
+instead of `yum`, then following warning will be printed:
+
+```
+Warning: RPMDB altered outside of yum.
+# iterate through the installed RPMs and synchronize the rpm & yumdb databases
+yum history sync                  
+```
+
 ```bash
 yum-complete-transaction                  # completes unfinished yum transactions which occur due to error, failure
 yum-complete-transaction --cleanup-only   # do not complete the transaction just clean up
