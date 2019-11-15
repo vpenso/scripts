@@ -97,6 +97,7 @@ exclude=<foo>* <bar>*
 ```bash
 /var/lib/yum/history/                     # history DB
 yum history                               # list of twenty most recent transaction
+yum --setopt=history_list_view=commands history list
 yum history | grep '\*\*'                 # search for aborted transactions
 yum history info <id>                     # examine a particular transaction
 yum history undo <id>                     # revert slected transaction
