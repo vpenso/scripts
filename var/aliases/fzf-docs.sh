@@ -4,7 +4,8 @@
 # Search all Markdown file in $SCRIPTS/docs and display with a pager
 #
 d() {
-        file=$(fd --type f --color always '.md' $SCRIPTS/docs | fzf --ansi)
+        file=$(fd --type f --color always '.md' $SCRIPTS/docs |\
+                        fzf --ansi --exact --query ${1:-''})
         command -v bat >&- && {
                 bat --style=plain $file
                 return
@@ -16,5 +17,7 @@ d() {
 # Search all Markdown file in $SCRIPTS/docs and open with the Vim editor
 #
 dv() {
-        vim $(fd --type f --color always '.md' $SCRIPTS/docs | fzf --ansi)
+        file=$(fd --type f --color always '.md' $SCRIPTS/docs |\
+                        fzf --ansi --exact --query ${1:-''})
+        vim $file
 }
