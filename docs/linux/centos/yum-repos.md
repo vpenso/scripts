@@ -1,4 +1,51 @@
-# Repository Hosting
+# Yum Repositories
+
+## Configuration
+
+Files & Directories:
+
+```bash
+/etc/yum.conf                       # local global configuration file
+/etc/yum.repos.d/*.repo             # configure individual repositories
+/var/log/yum.log                    # log file
+/var/cache/yum/                     # local package cache
+```
+
+Metadata & Cache:
+
+```bash
+yum makecache                     # update metadata for the currently enabled repositories
+yum clean metadata                # delete all package repository metadata
+yum clean all                     # clean up all the repository metadata & caches
+```
+
+Inspection:
+
+```bash
+yum repolist all                        # list package repositories
+yum repolist enabled                    # list enabled repos only
+yum repo-pkgs <repo> list               # list all packages in a repository
+yum-config-manager                      # display the current values of global yum options
+yum-config-manager | grep '\[.*\]'      # list only the sections
+yum-config-manager --add-repo <url>     # add a repository to /etc/yum.repos.d/
+yum-config-manager --enable <repo>      # enable a repository
+yum-config-manager --disable <repo>     # disable a repository
+yum-config-manager | grep -e '\[.*\]' -e ^baseurl -e '^mirrorlist '
+                                        # show URLs to the repositories 
+```
+
+Site local repository configuration file:
+
+```bash
+>>> cat /etc/yum.repos.d/site-local.repo
+[site-local]
+name=site-local
+baseurl=http://lxrepo01.devops.test/repo
+enabled=1
+gpgcheck=0
+```
+
+## Hosting
 
 Simple **HTTP server** setup:
 
@@ -15,7 +62,7 @@ SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
 
-## Mirror
+### Mirror
 
 Utilities to install:
 
@@ -138,7 +185,7 @@ systemctl list-timers rsync*
 ```
 
 
-# Custom Repository
+## Custom Repository
 
 Create a local repository to host RPM packages:
 
