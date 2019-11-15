@@ -11,6 +11,7 @@ then
                 curl \
                 dnsutils \
                 encfs \
+                fd-find \
                 feh \
 		firefox-esr \
                 fzf \
@@ -23,10 +24,8 @@ then
                 mupdf \
                 nnn \
                 ncmpc \
-                pandoc \
                 powerline \
                 psmisc \
-                pulseaudio \
                 python3-pip \
                 rofi \
                 rsync \
