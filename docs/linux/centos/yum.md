@@ -1,23 +1,31 @@
 # Yum
 
-
-## Usage
-
-Search & Information
+## Queries
 
 ```bash
-yum search <package>              # search all the available packages to match a name
 yum list                          # list all available packages
-yum list <package>                # search for the specific package with name
-yum list kernel                   # list installed/available kernel packages
-yum list installed                # list all installed packages
-yum --disablerepo='*' list available --enablerepo=<repo>
+yum list $package                 # search package by name
+yum list kernel                   # installed/available kernel packages
+yum list installed                # all installed packages
+yum --disablerepo='*' list available --enablerepo=$name
                                   # list package provided by a given repo
-yum info <package>                # information of a package
-repoquery -l <package>            # list files in a package
+```
+```
+yum search $package               # search all the available packages to match a name
+yum provides $glob                # find which package includes a file i.e. "*bin/bash"
+yum deplist $package              # package dependencies
+yum info $package                 # package details
+repoquery -l $package             # files in a package
 ```
 
-Install & Update:
+Show the **changelog** of a package:
+
+```bash
+yum install yum-plugin-changelog
+yum changelog all <package>
+```
+
+## Install & Update
 
 ```bash
 yum -y install <package>          # install package by name (assume yes)
@@ -39,7 +47,7 @@ yum list available [<regex>]      # list all packages in all enabled repositorie
 yum provides <path>               # find which package a specific file belongs to
 ```
 
-### Versions
+## Versions
 
 ```bash
 yum --showduplicates list <package>     # show all versions of a package
@@ -68,16 +76,7 @@ Exclude packages from updates in `/etc/yum.conf`:
 exclude=<foo>* <bar>*
 ```
 
-## History
-
-Show the **changelog** of a package:
-
-```bash
-yum install yum-plugin-changelog
-yum changelog all <package>
-```
-
-**Transaction history**:
+## Transaction History
 
 ```bash
 /var/lib/yum/history/                     # history DB
