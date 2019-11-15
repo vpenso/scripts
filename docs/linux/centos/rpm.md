@@ -12,6 +12,7 @@ Packages use following name specification:
 
 ```bash
 rpm -e --nodeps $package           # remove a package without its dependencies
+rpm --rebuilddb                    # Error: rpmdb open failed
 ```
 
 ## References

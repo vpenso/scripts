@@ -55,6 +55,8 @@ Search & Information
 yum search <package>              # search all the available packages to match a name
 yum list                          # list all available packages
 yum list <package>                # search for the specific package with name
+yum list kernel                   # list installed/available kernel packages
+yum list installed                # list all installed packages
 yum --disablerepo='*' list available --enablerepo=<repo>
                                   # list package provided by a given repo
 yum info <package>                # information of a package
@@ -81,12 +83,6 @@ yum groupremove <group>           # delete a group package
 yum list installed                # list installed packages
 yum list available [<regex>]      # list all packages in all enabled repositories available to install
 yum provides <path>               # find which package a specific file belongs to
-```
-
-Recover from errors:
-
-```bash
-rpm --rebuilddb                   # Error: rpmdb open failed
 ```
 
 ### Versions

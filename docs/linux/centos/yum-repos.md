@@ -1,27 +1,21 @@
+# Repository Hosting
+
 Simple **HTTP server** setup:
 
 ```bash
 yum -y install httpd
 rm /etc/httpd/conf.d/welcome.conf
 systemctl enable --now httpd
-```
-
-Grant access to the HTTP port, or disable the firewall 
-
-```bash
+# grant access to the HTTP port, or disable the firewall 
 firewall-cmd --permanent --add-service=http && firewall-cmd --reload
 systemctl stop firewalld && systemctl disable firewalld
-```
-
-Disable SELinux
-
-```bash
+# disable SELinux
 >>> grep ^SELINUX= /etc/selinux/config
 SELINUX=disabled
 >>> setenforce 0 && sestatus
 ```
 
-# Yum Repository
+## Mirror
 
 Utilities to install:
 
@@ -85,7 +79,7 @@ WantedBy=multi-user.target
 EOF
 ``` 
 
-# Full Mirror Sync
+### Full Mirror Sync
 
 Full mirror (of a file-system) including ISO images and network install:
 
