@@ -2,6 +2,8 @@
 
 ## Queries
 
+### Package Lists
+
 ```bash
 yum list                          # list all available packages
 yum list $package                 # search package by name
@@ -10,6 +12,20 @@ yum list installed                # all installed packages
 yum --disablerepo='*' list available --enablerepo=$name
                                   # list package provided by a given repo
 ```
+
+Compare the list of installed packages on two nodes:
+
+```bash
+function yum-installed-diff() {
+    cmd="yum list installed | tail -n +2 | xargs -n3 | cut -d' ' -f1,2"
+    diff --side-by-side --suppress-common-lines \
+        <(ssh root@$1 -C $cmd) <(ssh root@$2 -C $cmd)
+}
+```
+
+
+### Individual Packages
+
 ```
 yum search $package               # search all the available packages to match a name
 yum provides $glob                # find which package includes a file i.e. "*bin/bash"
