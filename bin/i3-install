@@ -22,6 +22,7 @@ sudo apt install -y \
         libxcb-xrm-dev \
         libxcb-shape0-dev \
         make \
+        policykit-1 \
         xcb \
         xinit
 
