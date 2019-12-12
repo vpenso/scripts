@@ -1,0 +1,80 @@
+[user]
+	name = Victor Penso
+	email = vic.penso@gmail.com
+[push]
+	default = current
+[gc]
+	auto = 1
+[core]
+	editor = vim
+	quotepath = off
+	excludesfile = /home/vpenso/.gitignore_global
+[alias]
+	aliases = !git config -l | grep alias | cut -c 7-
+	r = remote -v
+	ri = repos init
+	rs = repos status
+	rls = ls-remote
+	rlst = ls-remote --tags
+	pl = pull --ff-only
+	plr = pull --rebase
+	plt = pull --tags
+	s = status
+	a = add
+	as = apply --stat
+	ac = apply --check
+	ams = am --signoff
+	di = diff
+	dc = diff --cached
+	co = checkout
+	ci = commit
+	ca = commit -a
+	ce = commit --allow-empty
+	b = branch
+	ba = branch -a
+	bd = branch -D
+	bc = checkout -b
+	m = merge
+	ms = merge --squash
+	rb = rebase
+	rbi = rebase --interactive
+	pu = push
+	l = log --pretty=format:\"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset\"
+	c = log --pretty=format:\"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)\" --decorate --numstat
+	g = log --graph --all --color --numstat --decorate --pretty=format:\"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)\"
+	last = log -1 --stat
+	ls = ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
+	patches = git log -p --no-merges
+	tags = tag -n1 -l
+	amend = commit --amend
+	undo = reset --hard
+	uncommit = reset --soft HEAD^
+	unstage = reset HEAD --
+	unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
+	what = whatchanged
+	who = shortlog -s --
+	ls-ignored = ls-files --exclude-standard --ignored --others
+[color]
+	branch = auto
+	interactive = auto
+	diff = auto
+	status = auto
+	ui = auto
+[color "branch"]
+	current = yellow dim
+	local = green dim
+	remote = blue dim
+[color "diff"]
+	meta = yellow dim
+	frag = blue dim
+	old = red
+	new = green
+[color "status"]
+	added = green dim
+	changed = yellow dim
+	untracked = red dim
+[i18n]
+	logoutputencoding = utf8
+	commitencoding = utf8
+[apply]
+	whitespace = nowarn
