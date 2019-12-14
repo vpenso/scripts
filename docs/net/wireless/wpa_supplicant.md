@@ -10,27 +10,30 @@ wpa_cli scan_results               # list available access points
 
 [wpa]: http://w1.fi/wpa_supplicant/
 
-```bash
-# default configuration file
-/etc/wpa_supplicant/wpa_supplicant.conf
-# example config file
-/usr/share/doc/wpa_supplicant/wpa_supplicant.conf
-# generate config for AP connection (add it to the config file)
-wpa_passphrase "$ssid"
-```
-
-Simple example configuration
+## configuration
 
 ```bash
-# AP specific configuration file (evnetually called like the SSID)
->>> file=/etc/wpa_supplicant/wavenet.conf
->>> cat $file
-ctrl_interface=/var/run/wpa_supplicant
-network={
-        ssid="..--WAVENET--.."
-        psk=3dc0853c7be5c2d7...........
-}
+/etc/wpa_supplicant/wpa_supplicant.conf             # default configuration file
+/usr/share/doc/wpa_supplicant/wpa_supplicant.conf   # example config file
+# configure the authentication with an AP
+wpa_passphrase "$ssid" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null
+# enter the password on the prompt
 ```
+
+Configure the country code:
+
+```bash
+>>> grep country /etc/wpa_supplicant/wpa_supplicant.conf
+country=DE
+```
+
+Reconfigure after a configuration change:
+
+```bash
+sudo wpa_cli -i ${dev:-wlan0} reconfigure
+```
+
+## Usage
 
 Start the WiFi access client in background and get an IP address from DHCP:
 

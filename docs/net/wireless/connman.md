@@ -1,11 +1,16 @@
+```bash
+sudo apt install -y connman
+```
 
+## Usage
 
 ```bash
 /etc/connman/main.conf                # configuration file
+systemctl ... connman                 # service managment
 /var/lib/connman/                     # profile settings
 connmanctl enable wifi                # power Wi-Fi on
-connmanctl scan wifi                  # scan for WLAN networks
-connmanctl disable wifi
+           disable wifi
+           scan wifi                  # scan for WLAN networks
 ```
 
 Establish your first connection with an interactive session:
