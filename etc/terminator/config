@@ -2,7 +2,6 @@
   dbus = False
   focus = mouse
   window_state = hidden
-  borderless = True
   tab_position = hidden
   hide_tabbar = True
   scroll_tabbar = True

@@ -1,16 +1,17 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-default_border pixel 1
+default_border pixel 3
 #new_float normal
-hide_edge_borders smart # Hide borders
+hide_edge_borders none # Hide borders
 # do not move over the edge of the container
 focus_wrapping no
 # control focus only by using your keyboard
 focus_follows_mouse no
 
-client.focused          #990000 #ffffff #000000 #2e9ef4 #1e90ff
-client.focused_inactive #333333 #ffffff #000000 #292d2e #a9a9a9
-client.unfocused        #333333 #ffffff #000000 #292d2e #a9a9a9
+# class                 title brd.   backgr.   text      indicator  border
+client.focused          #900000      #ffffff   #000000   #2e9ef4    #DAA520
+client.focused_inactive #333333      #ffffff   #000000   #292d2e    #a9a9a9
+client.unfocused        #333333      #ffffff   #000000   #292d2e    #a9a9a9
 
 # start the status bar
 exec_always --no-startup-id ~/.config/polybar/launch.sh
