@@ -1,6 +1,6 @@
-alias sx='sxiv -pb'
+alias sxiv='sxiv -pb'
 
-function sxt() {
+function sxiv-thumbnail() {
         # default to working directory
         sxiv -rtp ${1:-.}
 }
