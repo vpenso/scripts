@@ -124,30 +124,7 @@ Common         | ° ✓ ✔ ✗ ✘ ⚠
 Cf. [List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)  
 Cf. [Nerd Fonts](https://nerdfonts.com)
 
----
-
-## Pandoc
-
-Use [Pandoc][3] to generate HTML pages from Markdown with `pandoc-html-article`. Include a table of content and section numbering with `pandoc-html-book`. Both Shell aliases use Pandoc templates to generate HTML pages including a [style sheet][5] describing document presentation: 
-
-→ [var/lib/pandoc/html-article.template](../var/lib/pandoc/html-article.template)  
-→ [var/lib/pandoc/html-book.template](../var/lib/pandoc/html-book.template)  
-→ [var/lib/pandoc/light.css](../var/lib/pandoc/light.css)  
-→ [var/aliases/pandoc.sh](../var/aliases/pandoc.sh)
-
-For example to generate an HTML page from a document in this directory:
 
 
-    sudo apt install -y pandoc
-    source ../source_me.sh
-    pandoc-html-book README.md > README.html
-
-1. Install the `pandoc` package on Debian (cf. [Installing Pandoc][4]).
-2. Load the `pandoc-html-*` aliases into your shell environment with → [source_me.sh][10].
-3. Generate an HTML page from a Markdown file.
-
-
-[3]: https://de.wikipedia.org/wiki/Pandoc 
-[4]: http://pandoc.org/installing.html
 [5]: https://en.wikipedia.org/wiki/Cascading_Style_Sheets
 [10]: ../source_me.sh

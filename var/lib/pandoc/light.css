@@ -1,28 +1,29 @@
-<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
-<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Inconsolata">
-<style type="text/css">
+html 
+    {
+    margin: 0 auto;
+    max-width: 900px;
+    }
 
-html {
-  margin:    0 auto;
-  max-width: 900px;
-}
+body 
+    {
+    padding: 2em; 
+    color: rgb(56, 58, 66); 
+    overflow: auto; 
+    font-family: 'Open Sans', Helvetica, Arial, freesans, sans-serif; 
+    line-height: 1.45;
+    }
 
-body {
-  padding: 2em; 
-  color: rgb(56, 58, 66); 
-  overflow: auto; 
-  font-family: 'Open Sans', Helvetica, Arial, freesans, sans-serif; 
-}
+@media all 
+    {
+    /* ensures that the page-break is never seen visually */
+    .page-break { display: none; }
+    }
 
-@media all {
-  /* ensures that the page-break is never seen visually */
-  .page-break { display: none; }
-}
-
-@media print {
-  /* ensures that the page break is seen by the printer */
-  .page-break { display: block; page-break-before: always; }
-}
+@media print 
+    {
+    /* ensures that the page break is seen by the printer */
+    .page-break { display: block; page-break-before: always; }
+    }
 
 h1 { font-size: 2em;   font-weight: 600; border-bottom: 1px solid lightgray }
 h2 { font-size: 1.6em; font-weight: 600; border-bottom: 1px solid lightgray }
@@ -32,9 +33,6 @@ h5 { font-size: 1.1em; font-weight: 600; }
 h6 { font-size: 1em;   font-weight: 600; }
 
 
-b, strong {
-  font-size: 0.9em;
-}
 
 li { list-style: disc; }
 li li { list-style: circle; }
@@ -69,27 +67,54 @@ img {
 */
 
 
-a:focus {
-  outline: thin dotted;
-}
+a:focus 
+    {
+    outline: thin dotted;
+    }
 
-a:active, a:hover {
-  outline: 0;
-}
-a {
-  color: #0000FF;
-  text-decoration: none;
-}
-a:hover,
-a:focus {
-  color: #2a6496;
-  text-decoration: underline;
-}
-a:focus {
-  outline: thin dotted #333;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
+a:active, a:hover 
+    {
+    outline: 0;
+    }
+
+a 
+    {
+    color: #0000FF;
+    text-decoration: none;
+    }
+
+a:hover, a:focus 
+    {
+    color: #2a6496;
+    text-decoration: underline;
+    }
+
+a:focus 
+    {
+    outline: thin dotted #333;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+    }
+
+@media print
+    {
+    a   {
+        /* In print, a colored link is useless, so un-style it. */
+        color: black;
+        background: transparent;
+        }
+
+    a[href^="http://"]:after, a[href^="https://"]:after
+        {
+        /* However, links that go somewhere else, might be useful to the reader,
+           so for http and https links, print the URL after what was the link
+           text in parens
+        */
+        content: " (" attr(href) ") ";
+        font-size: 90%;
+        }
+    }
+
 
 a code {
   color: #428bca;
@@ -257,40 +282,41 @@ table tbody + tbody {
 }
 
 
-/*
-  Table of content
-
+/* Pandoc table of contents DIV when using the --toc option.
+   NOTE: this doesn't support Pandoc's --id-prefix option for #TOC and #header. 
+   Probably would need to use div[id$='TOC'] and div[id$='header'] as selectors.
 */
 
-#table-of-content { 
-  margin-bottom:2em; 
-  line-height:1em; 
-  padding:0.5em;
-  background-color: whitesmoke;
-}
-#table-of-content ul { 
-  padding:0; 
-  margin:0;
-}
-#table-of-content li { 
-  list-style-type: none; 
-  padding:0;
-  margin: 0; 
-}
+div#TOC, nav#TOC
+    {
+    background: #F5F5F5;
+    padding: 0.3em 1em 0.3em 1em;
+    margin-bottom: 2em;
+    }
 
-#table-of-content li li { 
-  padding-left:1em; 
-  margin: 0; 
-}
-#table-of-content a { 
-  text-decoration:none; 
-} 
-#table-of-content a:hover { 
-  text-decoration:underline; 
-}
+div#TOC ul, nav#TOC ul
+    {
+    padding-left: 0;
+    }
 
+div#TOC ul li, nav#TOC ul li 
+    { 
+    list-style-type: none; 
+    padding: 0;
+    margin: 0; 
+    }
 
+div#TOC ul li li, nav#TOC ul li li
+    {
+    padding-left: 1em; 
+    margin: 0; 
+    }
 
-
-
-</style>
+@media print
+    {
+    div#TOC, nav#TOC
+        {
+        /* Don't display TOC in print */
+        display: none;
+        }
+    }

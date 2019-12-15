@@ -1,24 +1,16 @@
 export PANDOC_CSS=light
+export PANDOC_OPTS=
 
-function pandoc-html-article() {
-  pandoc \
-    --standalone \
-    --include-in-header=$SCRIPTS/var/lib/pandoc/${PANDOC_CSS}.css \
-    --highlight-style pygments \
-    --template  $SCRIPTS/var/lib/pandoc/html-article.template \
-    --read=markdown_github+yaml_metadata_block \
-    "$@"
+function md2html() {
+        local file=${1:?Specify markdown input file}
+        local ofile=${1%.*}.html
+        echo Writing $ofile
+        pandoc --standalone \
+               --self-contained \
+               --highlight pygments \
+               --css $SCRIPTS/var/lib/pandoc/$PANDOC_CSS.css \
+               --read=markdown_github+yaml_metadata_block \
+               --output $ofile \
+               $PANDOC_OPTS \
+               $file
 }
-
-function pandoc-html-book() {
-  pandoc \
-    --standalone \
-    --toc \
-    --include-in-header=$SCRIPTS/var/lib/pandoc/${PANDOC_CSS}.css \
-    --highlight-style pygments \
-    --template  $SCRIPTS/var/lib/pandoc/html-book.template \
-    --read=markdown_github+yaml_metadata_block \
-    --number-sections \
-    "$@"
-}
-
