@@ -1,4 +1,3 @@
-# Yum Repositories
 
 ## Configuration
 
@@ -184,8 +183,43 @@ systemctl enable --now rsync-centos-mirror.timer
 systemctl list-timers rsync*
 ```
 
+# Partial Mirror
 
-## Custom Repository
+```bash
+# create a list of packages to include
+packages=$(
+        rpm -qa --qf '\t%{NAME}.%{ARCH}\n' \
+                | head -n10 \
+                | tr -d '\t' \
+                | tr '\n' ' ' \
+                | sort \
+)
+# write a configuration file
+cat > reposync.conf <<EOF
+[main]
+gpgcheck=1
+reposdir=/dev/null
+
+[base]
+name = base
+baseurl = http://mirror.centos.org/centos-7/7/os/x86_64/
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+includepkgs=$packages
+EOF
+mkdir packages
+reposync --config=reposync.conf \
+         --downloadcomps \
+         --newest-only \
+         --gpgcheck \
+         --arch=x86_64 \
+         --repoid=base \
+         --download_path=packages/
+```
+
+
+# Custom Repository
 
 Create a local repository to host RPM packages:
 

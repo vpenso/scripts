@@ -110,5 +110,25 @@ Option `-hP` **human readable progress**/speed indicator:
 --delete-during   # receiver deletes during the transfer
 ```
 
+### Include & Exclude
+
+```
+/dir/   means exclude the root folder /dir
+/dir/*  means get the root folder /dir but not the contents
+dir/    means exclude any folder anywhere where the name contains dir/
+  Examples excluded: /dir/, /usr/share/mydir/, /var/spool/dir/
+/dir    means exclude any folder anywhere where the name contains /dir
+  Examples excluded: /dir/, /usr/share/directory/, /var/spool/dir/
+/var/spool/lpd//cf means skip files that start with cf within any folder within /var/spool/lpd
+
+include, +
+exclude, -
+
+'*' matches any non-empty path component (it stops at slashes).
+'**' to match anything, including slashes.
+'?' matches any character except a slash (/).
+'[' introduces a character class, such as [a-z] or [[:alpha:]].
+in a wildcard pattern, a backslash can be  used  to  escape  a  wildcard character, but it is matched literally when no wildcards are present.
+```
 
 [rsync]: https://rsync.samba.org/
