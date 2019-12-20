@@ -1,7 +1,8 @@
 ---
 title: NixOS Introduction
 author: Victor Penso
-create: 2019/12/20
+created: 2019/12/20
+updated: -
 ---
 
 ## NixOS Introduction
@@ -80,11 +81,11 @@ users.users.devops = {
 };
 ```
 
-
-Install the system based using the configuration file above.
+**Install NixOS** with `nixos-install` suing the configuration file above:
 
 ```bash
 nixos-install    # prompts for the root password
+# after the installation is finished
 reboot
 ```
 
