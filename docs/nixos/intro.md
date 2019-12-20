@@ -25,8 +25,8 @@ Abstract from NixOS: A Purely Functional Linux Distribution [nixpfl]:
 
 ### Installation
 
-Following example uses Virtual Machine Tools [vmtool] to install NixOS into a
-virtual machine. You should make yourself familiar with this tools chain to
+Following example uses Virtual Machine Tools [vmtool] to **install NixOS into a
+virtual machine**. You should make yourself familiar with this tools chain to
 follow the installation described below. Alternatively select an appropriate
 method of installation from the NixOS Manual [nixman], and continue to the next
 section.
@@ -43,25 +43,26 @@ virt-install --ram 2048 --os-type linux --virt-type kvm --network bridge=nbr0 \
              --name $os --cdrom ${os}.iso
 ```
 
-Once the virtual machine instance has boot create file-system partition for `/`
-(root) to install NixOS:
+Once the virtual machine instance has booted create partition for `/` (root):
 
 ```bash
 sudo su  # work as root
-# prepare the partiton for the root filesystem
+# prepare a partiton
 parted /dev/vda -- mklabel msdos
 parted /dev/vda -- mkpart primary 1MiB 100%
+# initialize the file system
 mkfs.ext4 -L nixos /dev/vda1
+# mount the file system for installation
 mount /dev/disk/by-label/nixos /mnt
 ```
 
-Generate a NixOS configuration template:
+**Generate a NixOS configuration template** with ` nixos-generate-config`:
 
 ```bash
 nixos-generate-config --root /mnt    # path to the root partition
 ```
 
-**Adjust the configuration in `/mnt/etc/nixos/configuration.nix`**:
+**Adjust the configuration** in `/mnt/etc/nixos/configuration.nix` [nixopt]:
 
 ```
 # specify on which disk the GRUB boot loader is to be installed
@@ -79,7 +80,6 @@ users.users.devops = {
 };
 ```
 
-The configuration syntax is described in [nixman] appendix A.
 
 Install the system based using the configuration file above.
 
@@ -90,8 +90,8 @@ reboot
 
 ## Reference
 
-[vmtool] Virtual Machine Tools (vm-tools)  
-https://github.com/vpenso/vm-tools
+[nixdwn] NixOS CD/DVD Installer Images  
+https://nixos.org/nixos/download.html
 
 [nixman] NixOS Manual, Chapter 2. Installing NixOS  
 https://nixos.org/nixos/manual/index.html#sec-installation
@@ -99,8 +99,8 @@ https://nixos.org/nixos/manual/index.html#sec-installation
 [nixopt] NixOS Manual, Appendix A. Configuration Options  
 https://nixos.org/nixos/manual/options.html
 
-[nixdwn] NixOS CD/DVD Installer Images  
-https://nixos.org/nixos/download.html
-
 [nixpfl] NixOS: A Purely Functional Linux Distribution  
 https://nixos.org/~eelco/pubs/nixos-jfp-final.pdf
+
+[vmtool] Virtual Machine Tools (vm-tools)  
+https://github.com/vpenso/vm-tools
