@@ -117,9 +117,9 @@ hi CursorColumn ctermfg=none ctermbg=230
 " text width indicator column
 hi ColorColumn ctermfg=none ctermbg=254
 " line numbering on the left
-hi LineNr ctermfg=235 ctermbg=250
+hi LineNr ctermfg=250 ctermbg=254
 " line numbering in cursor line
-hi CursorLineNR ctermfg=232 ctermbg=243 cterm=bold
+hi CursorLineNR ctermfg=232 ctermbg=252 cterm=bold
 
 hi SpellBad     ctermfg=209 cterm=bold
 " eol, extends and precedes
@@ -188,19 +188,19 @@ hi rubyRegexpCharClass            ctermfg=214
 hi rubyRegexpQuantifier           ctermfg=220
 
 hi markdownH1                     ctermfg=33 cterm=bold
-hi markdownH2                     ctermfg=33
-hi markdownH3                     ctermfg=33
+hi markdownH2                     ctermfg=33 cterm=bold
+hi markdownH3                     ctermfg=33 cterm=bold
 hi markdownItalic                 ctermfg=248 
-hi markdownBold                   ctermfg=248 cterm=bold
+hi markdownBold                   cterm=bold
 hi markdownListMarker             ctermfg=160 cterm=bold
 hi markdownHeadingDelimiter       ctermfg=33
 hi markdownLinkText               ctermfg=167
 hi markdownLinkDelimiter          ctermfg=178
 hi markdownLinkTextDelimiter      ctermfg=178
 hi markdownUrl                    ctermfg=240
-hi markdownCode                   ctermfg=24
+hi markdownCode                   ctermfg=241
 hi markdownCodeBlock              ctermfg=24
-hi markdownCodeDelimiter          ctermfg=74 cterm=bold
+hi markdownCodeDelimiter          ctermfg=180 cterm=bold
 hi markdownLineBreak              ctermbg=153
 hi markdownId                     ctermfg=244
 hi markdownIdDeclaration          ctermfg=202
