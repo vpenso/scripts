@@ -17,6 +17,7 @@
     font = InconsolataGo Nerd Font 12
     foreground_color = "#000000"
     show_titlebar = False
+    scrollbar_position = hidden
     use_system_font = False
 [layouts]
   [[default]]
