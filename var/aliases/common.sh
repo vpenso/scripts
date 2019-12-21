@@ -11,7 +11,6 @@ alias x=exit
 alias _=" sudo"
 alias _!=" sudo !!"
 alias __=noglob
-alias man="MANWIDTH=80 MANPAGER=less man"
 # List all directories in path
 alias path='echo -e ${PATH//:/\\n}'
 # Show CPU info
