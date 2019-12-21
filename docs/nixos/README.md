@@ -5,9 +5,9 @@ created: 2019/12/20
 updated: -
 ---
 
-## NixOS Introduction
+# NixOS Introduction
 
-Abstract from NixOS: A Purely Functional Linux Distribution [nixpfl]:
+Abstract from "NixOS: A Purely Functional Linux Distribution" [nixpfl]:
 
 > Existing package and system configuration management tools suffer from an
 > imperative model, where system administration actions such as package upgrades

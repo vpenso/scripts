@@ -25,32 +25,38 @@ body
     .page-break { display: block; page-break-before: always; }
     }
 
-h1 { font-size: 2em;   font-weight: 600; border-bottom: 1px solid lightgray }
-h2 { font-size: 1.6em; font-weight: 600; border-bottom: 1px solid lightgray }
-h3 { font-size: 1.4em; font-weight: 500; }
-h4 { font-size: 1.2em; font-weight: 600; }
-h5 { font-size: 1.1em; font-weight: 600; }
-h6 { font-size: 1em;   font-weight: 600; }
+h1 
+    { 
+    font-size: 2.2em;
+    font-weight: bold; 
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    }
 
+h2  
+    { 
+    font-size: 2em;
+    font-weight: bold; 
+    border-bottom: 1px solid lightgray;
+    }
 
+h3  
+    { 
+    font-size: 1.8em; 
+    font-weight: bold; 
+    }
+
+blockquote 
+    {
+        color: dimgray;
+    }
 
 li { list-style: disc; }
 li li { list-style: circle; }
 
 li p { margin:0; padding:0; }
 
-blockquote {
-  border-left: 1px solid #eeeeee;
-}
 
-blockquote p {
-  font-weight: 300;
-  line-height: 1.25;
-}
-
-blockquote strong {
-  font-weight: 600;
-}
 
 img {
   display:block;
@@ -65,7 +71,6 @@ img {
   Links
 
 */
-
 
 a:focus 
     {
@@ -123,70 +128,58 @@ a code {
   padding:0;
 }
 
-
-
-
-
 /*
  Code snippets and blocks
-
 */
 
-code, tt, kbd {
-  font-family: Inconsolata, Consolas, "Liberation Mono", Courier, monospace;
-  padding: 0.2em;
-  margin: 0;
-  border-radius: 3px; 
-  white-space: nowrap;
+code, tt, kbd 
+    {
+    font-family: Inconsolata, Consolas, "Liberation Mono", Courier, monospace;
+    padding: 0.3em;
+    margin: 0;
+    border-radius: 3px; 
+    white-space: nowrap;
+    background:#f8f8f8;
+    }
+
+td code 
+    {
+    background:none;
+    }
+
+pre 
+    {
+    display: block;
+    padding: 9.5px;
+    line-height: 1;
+    color: #333333;
+    background:#f8f8f8;
+    border-radius: 3px;
+    overflow:auto;
+    width:auto;
+    white-space: pre-wrap;
+    }
+
+pre code 
+    {
+    font-size: 1em;
+    color: inherit;
+    white-space: pre;
+    background-color: transparent;
+    border: 0;
+    padding:0;
 }
 
+table.sourceCode 
+    {
+    margin: .5em 0 .5em 0;
+    padding: 0; 
+    border-radius: 3px;
+    background-color: #f8f8f8;
+    line-height: 1.45em; 
+    width:100%;
+    }
 
-kbd {
-  border-radius: 3px;
-  background:whitesmoke;
-  color:darkblue;
-  font-weight:bold;
-}
-
-code {
-  border-radius: 3px;
-  background:whitesmoke;
-}
-
-td code {
-  background:none;
-}
-
-
-pre {
-  display: block;
-  padding: 9.5px;
-  line-height: 1;
-  color: #333333;
-  background:whitesmoke;
-  border-radius: 3px;
-  overflow:auto;
-  width:auto;
-  white-space: pre-wrap;
-}
-
-pre code {
-  font-size: 1em;
-  color: inherit;
-  white-space: pre;
-  background-color: transparent;
-  border: 0;
-  padding:0;
-}
-
-table.sourceCode {
-  margin: .5em 0 .5em 0;
-  padding: 0; 
-  border-radius: 3px;
-  background-color: #f4f4f4;
-  line-height: 100%; 
-  width:100%;
-}
 table.sourceCode pre {
   background: none;
   border: none;
