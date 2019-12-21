@@ -24,13 +24,36 @@ Abstract from "NixOS: A Purely Functional Linux Distribution" [nixpfl]:
 > non-trivial Linux distribution that uses the Nix package manager to build the
 > entire system configuration from a modular, purely functional specification
 
-### Installation
+Most people will be used to imperative programming languages (like C or Java)
+where a sequence of statements changes the state of the program. A simple
+overwrite of a variable loses a previously stored value. Loops are stateful 
+computations that iterate over variables and mutate their values within each 
+step, an inherently stateful approach. 
+
+Functional programming is done with expressions or declarations instead of
+statements. It treats computation as the evaluation of "pure" functions
+**avoiding state and mutable data**. The output of a function depends only on
+its input arguments, and will always produce the same output for a given input.
+In contrast to the imperative model where a function output not only depends on
+the input arguments, but the global program state. Pure functions are
+compostable: That is, **self-contained** and stateless (not depending on
+external state).
+
+NixOS is an operating system based on the Linux Kernel build with a package
+management system implemented in the **Nix expression language**. This language
+uses  "pure" functions - expressions - to describe each software package. An
+expression includes a **derivation** that describes the package build and its
+dependencies. The evaluation of derivations builds packages in a
+**deterministic reproducible** way and writes the resulting contents in to Nix
+store.  The **Nix store** is an immutable content-addressable directory. Entries
+use a hash as name derived from all inputs to a derivation. Hence each package
+build for a given software version is uniquely identified.
+
+## Installation
 
 Following example uses Virtual Machine Tools [vmtool] to **install NixOS into a
-virtual machine**. You should make yourself familiar with this tools chain to
-follow the installation described below. Alternatively select an appropriate
-method of installation from the NixOS Manual [nixman], and continue to the next
-section.
+virtual machine**.  Alternatively select an appropriate method of installation
+from the NixOS Manual [nixman], and continue to the next section.
 
 ```bash
 os=nixos
@@ -102,6 +125,9 @@ https://nixos.org/nixos/manual/options.html
 
 [nixpfl] NixOS: A Purely Functional Linux Distribution  
 https://nixos.org/~eelco/pubs/nixos-jfp-final.pdf
+
+[nixdep] A Deep Dive into NixOS: From Configuration To Boot  
+https://jin.crypt.sg/files/nixos-deep-dive.pdf
 
 [vmtool] Virtual Machine Tools (vm-tools)  
 https://github.com/vpenso/vm-tools

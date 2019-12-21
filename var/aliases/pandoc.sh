@@ -4,7 +4,6 @@ export PANDOC_OPTS=
 function md2html() {
         local file=${1:?Specify markdown input file}
         local ofile=${1%.*}.html
-        echo Writing $ofile
         pandoc --standalone \
                --self-contained \
                --highlight pygments \
@@ -13,4 +12,5 @@ function md2html() {
                --output $ofile \
                $PANDOC_OPTS \
                $file
+        echo $ofile
 }
