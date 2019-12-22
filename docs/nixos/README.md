@@ -49,7 +49,10 @@ store.  The **Nix store** is an immutable content-addressable directory. Entries
 use a hash as name derived from all inputs to a derivation. Hence each package
 build for a given software version is uniquely identified.
 
-## Installation
+_Before we dive deeper into the technical details of NixOS and Nix Packages lets
+install a virtual machine to enable investigation on a practical example._
+
+### Installation
 
 Following example uses Virtual Machine Tools [vmtool] to **install NixOS into a
 virtual machine**.  Alternatively select an appropriate method of installation
@@ -88,7 +91,7 @@ nixos-generate-config --root /mnt    # path to the root partition
 
 **Adjust the configuration** in `/mnt/etc/nixos/configuration.nix` [nixopt]:
 
-```
+```bash
 # specify on which disk the GRUB boot loader is to be installed
 boot.loader.grub.device = "/dev/vda";
 # enable login via OpenSSH
@@ -111,6 +114,49 @@ nixos-install    # prompts for the root password
 # after the installation is finished
 reboot
 ```
+
+## Architecture
+
+Nearly all Linux distributions overwrite old versions of software packages
+with each subsequent update. This includes both static and dynamic dependencies.
+Packages are installed into a common Unix style directory hierarchy by
+copying package artifacts over multiple directories like `/etc/`, `/bin`,
+`/var/` or `/lib` among others. Generally keeping multiple (old) versions of a
+single package is not intended, but is sometimes realised using workarounds.
+In order to avoid dependency management issues due to changes in new software,
+distributions typically make huge incremental steps updating all packages at
+once (accompanied by major testing efforts and release management). Some
+distributions follow a so called "rolling release" approach where packages get
+continuously updated following the upstream software developers as close as
+possible. These distributions sometimes suffer from unintended "side effects"
+due to the difficulties in keeping all dependencies managed without breaking.
+
+Following is a list of properties common to most Linux distributions:
+
+1. Updates overwrite packages (only on version at a time).
+2. Updates are destructive (imperative model) including non-obvious cascading 
+   side effects.
+3. Rollback to previous package versions is difficult (sometimes impossible).
+4. Updates are non-atomic, and can break the system if interrupted.
+
+All the above limitations basically make it **very hard to maintain a
+deterministic state of the entire system**. NixOS addresses the issues described
+above by not following the common imperative (stateful) model of software
+package management.
+
+
+Following is a list of Nix packages and NixOS properties:
+
+1. **Multiple versions** of a package (including all dependencies) can be
+   installed.
+2. **Multiple variations** (in build dependencies) of the same package version
+   can be installed.
+3. Packages will never be overwritten, hence **atomic updates** and **rollback**
+   are supported.
+
+
+
+
 
 ## Reference
 
