@@ -181,11 +181,13 @@ Regional redirection for Debian mirrors:
 → [official firefox backports](http://mozilla.debian.net/)
 
 ```bash
-echo 'deb http://ftp.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/backports.list
-                                                    # configure the backports repository
-apt update && apt install -t stretch-backports <package>
-                                                    # installe a package from backports
-dpkg -l  |awk '/^ii/ && $3 ~ /bpo[6-9]/ {print $2}' # list packages installed from backports
+# configure the backports repository
+echo 'deb http://ftp.debian.org/debian buster-backports main' \
+        > /etc/apt/sources.list.d/backports.list
+# installe a package from backports
+apt update && apt install -t buster-backports <package>
+# list packages installed from backports
+dpkg -l  |awk '/^ii/ && $3 ~ /bpo10/ {print $2}'
 ```
 
 Create a backport package:
