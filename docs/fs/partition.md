@@ -32,9 +32,10 @@ hdparm -r0|1 <device>                      # toggle write protection
 ```bash
 dd if=/dev/zero bs=512 count=1 of=<device>     # wipe the bootsector of a devices
 parted -l                                      # list devices/partitons
-parted <device> print free                     # show free strorage on device
-parted <device> mkpart primary <start> <end>   # create primary partiton
-parted <device> rm <number>                    # delete partition
+parted $device print free                     # show free strorage on device
+# create single partiton using the entire device
+parted -a optimal $device mkpart primary 0% 100%
+parted $device rm $number                      # delete partition
 /proc/partitions
 file -s <device>                               # read partition info from device
 ```
