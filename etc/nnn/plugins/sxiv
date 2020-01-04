@@ -1,3 +1,7 @@
 #!/usr/bin/env sh
 
-sxiv -rtp * >/dev/null 2>&1 &
+if [ -f "$1" ]; then
+        sxiv -q "$1" "$PWD"
+elif [ -d "$1" ] || [ -h "$1" ]; then
+        sxiv -qt "$1"
+fi

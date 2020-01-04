@@ -1,4 +1,5 @@
 etc/nnn/plugins
+etc/nnn/.history
 *.nfs*
 *.html
 .ipynb_checkpoints/

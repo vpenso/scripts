@@ -1,6 +1,16 @@
 
 <https://github.com/jarun/nnn>
 
+Install
+
+```bash
+# install dependencies
+sudo apt install -y pkg-config libncursesw5-dev libreadline-dev
+# get the latest versions
+git clone https://github.com/jarun/nnn.git && cd nnn
+sudo make strip install
+```
+
 Install plugins:
 
 <https://github.com/jarun/nnn/tree/master/plugins>
