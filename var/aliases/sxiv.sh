@@ -1,6 +1,23 @@
-alias sxiv='sxiv -pb'
 
-function sxiv-thumbnail() {
-        # default to working directory
-        sxiv -rtp ${1:-.}
+command -v sxiv >&- && {
+
+        function sx() {
+                if [ -d "${@: -1}" ] || [ -h "${@: -1}" ]
+                # if it is a directory
+                then
+                        # recursive search
+                        # open with thumbnail mode
+                        # enable private mode
+                        sxiv -rtp "$@"
+                # it it is a single image
+                else
+                        # no info bar on the bottom
+                        # enable private mode
+                        sxiv -pb "$@"
+                fi
+        }
+
+} || {
+
+        echo please install sxiv 
 }
