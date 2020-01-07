@@ -16,6 +16,8 @@ File                             | Description
 [etc/i3/config][02]              | i3 configuration file
 [var/aliases/i3.sh][03]          | Configure i3 environment
 
+### Installation
+
 Install i3 from a minimal installation (no GUI)  of Debian
 
 ```bash
@@ -28,6 +30,28 @@ polybar-install
 # launch i3
 i3-start
 ```
+
+Global configuration (for all user accounts):
+
+```bash
+# backup original configuration
+sudo mv /etc/i3/config /etc/i3/config.orig
+# deploy configuration from this repository
+sudo cp $SCRIPTS/etc/i3/config /etc/i3
+sudo mkdir /etc/polybar
+sudo cp $SCRIPTS/etc/polybar/{config,launch.sh} /etc/polybar
+# adjsut the path to the Polybar executable
+>>> diff /etc/i3/config $SCRIPTS/etc/i3/config
+17c17
+< exec_always --no-startup-id /etc/polybar/launch.sh
+---
+> exec_always --no-startup-id ~/.config/polybar/launch.sh
+# add small hepler function to start i3
+echo 'i3-start() { startx /usr/bin/i3 -c /etc/i3/config }' \
+        | sudo tee -a /etc/zsh/zshrc
+```
+
+### GTK & Qt Configuration
 
 Select a decoration theme:
 

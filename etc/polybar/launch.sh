@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-
 # Terminate already running bar instances
 killall -q polybar
+killall -q compton
 
 # Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
@@ -32,10 +32,14 @@ export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface 'e[nt]')
 
 # compton is required for transparency
-killall -q compton
 compton -b -d :0 &
 
+# find an configuration file
+config=
+# global configuration
+test -f /etc/polybar/config && config=/etc/polybar/config
+# user configuration
+test -f ~/.config/polybar/config && config=~/.config/polybar/config
 
-polybar top &
-
-echo "Bars launched..."
+echo "Polybar launch with $config"
+polybar -c $config top &
