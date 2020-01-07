@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Terminate already running bar instances
-killall -q polybar
-killall -q compton
+killall --quiet --user $USER polybar
+killall --quiet --user $USER compton
 
 # Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
@@ -32,7 +32,7 @@ export WLAN_INTERFACE=$(findiface wl)
 export ETH_INTERFACE=$(findiface 'e[nt]')
 
 # compton is required for transparency
-compton -b -d :0 &
+compton -b &
 
 # find an configuration file
 config=
