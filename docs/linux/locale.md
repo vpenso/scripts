@@ -14,7 +14,7 @@ locale -a                           # list of all locales supported
 * Appropriate default paper size
 * Correct formatting of monetary, time, and date values
 
-[X Keyboard Extension][xkb] (XKB) handels keyboard settings and layouts in X11
+X Keyboard Extension (XKB) handels keyboard settings and layouts in X11
 
 Configuration Files:
 
@@ -25,15 +25,22 @@ Configuration Files:
 /etc/vconsole.conf
 # keymap files (usually corresponds to one keyboard)
 find /usr/share/kbd/keymaps/ -type f
-# list of keyboard models known to XKB
-/usr/share/X11/xkb/rules/base.lst
 ```
 
-`setxkbmap` **non-permanent changes**:
+`loadkeys` loads or modifies the keyboard driver's translation tables
+
+```
+# set german keyboard for current console
+loadkeys de
+```
+
+## X11
+
+Non-permanent Changes:
 
 ```bash
-# set a keymap just for current session.
-loadkeys <keymap>
+# list of keyboard models known to XKB
+/usr/share/X11/xkb/rules/base.lst
 # get current keyboard layout
 setxkbmap -query | grep layout
 # set the keyboard layout, i.e. to `de` (german)
@@ -42,7 +49,9 @@ setxkbmap de
 setxkbmap -layout us,de -option grp:alt_shift_toggle
 ```
 
-`localectl` is a Systemd tool to...
+## Systemd 
+
+`localectl`...
 
 > query and change the system locale and keyboard layout settings...modify files
 > such as `/etc/locale.conf` and `/etc/vconsole.conf`.
@@ -64,5 +73,15 @@ Configure two keyboard layouts, the keyboard model and options:
 ```bash
 localectl --no-convert set-x11-keymap us,de pc104,dvorak grp:alt_shift_toggle
 ```
+
+# References
+
+
+[xkb] The XKB Configuration Guide  
+https://www.x.org/releases/current/doc/xorg-docs/input/XKB-Config.html
+
+
 [xkb]: https://www.x.org/wiki/XKB/
+
+
 
