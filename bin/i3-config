@@ -1,0 +1,24 @@
+#!/bin/sh
+
+SCRIPTS=${SCRIPTS:-projects/scripts}
+
+echo Writing i3 configuration to /etc/i3
+# deploy configuration from this repository
+sudo cp -v $SCRIPTS/etc/i3/config /etc/i3/config
+
+echo Writing Polybar configuration to /etc/polybar
+# global Polybar configuration
+test -d /etc/polybar || sudo mkdir /etc/polybar
+sudo cp -v $SCRIPTS/etc/polybar/config \
+           $SCRIPTS/etc/polybar/launch.sh \
+           /etc/polybar
+# adjust the path to the Polybar executable in the i3 configuration
+sudo sed -i 's|~/.config/polybar|/etc/polybar|g' /etc/i3/config
+
+echo Copy i3 tools to /usr/bin
+for file in i3-cheat i3-exit i3-start
+do 
+        sudo cp -v $SCRIPTS/bin/$file /usr/bin/$file
+done
+
+exit 0
