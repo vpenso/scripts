@@ -9,7 +9,8 @@ Design principles of i3:
 
 File                             | Description
 ---------------------------------|-----------------------
-[bin/i3-install][01]             | Build from source, and install i3
+[bin/i3-build][01]               | Build from source, and install i3
+[bin/i3-config][08]              | Write i3 configuration to /etc
 [bin/i3-cheat][04]               | Show i3 key binding
 [bin/i3-exit][05]                | i3 wrapper script for screen lock and power control
 [bin/i3-get-window-criteria][07] | Identify application window names/labels in i3
@@ -24,9 +25,11 @@ Install i3 from a minimal installation (no GUI) of Debian
 apt install -y git sudo wget curl
 # configure sudo for your user account
 # install the window manager
-i3-install
+i3-build
 # install the status bar cf. etc/polybar
 polybar-install
+# write i3 & Polybar configuration to /etc
+i3-config
 ```
 
 ## Usage
@@ -34,7 +37,6 @@ polybar-install
 Start i3 after user login on a console:
 
 ```bash
-# cf. var/aliases/i3.sh
 i3-start
 ```
 
@@ -80,10 +82,11 @@ https://github.com/Airblader/i3
 [sway] i3 compatible implementation on Wayland  
 https://swaywm.org
 
-[01]: ../../bin/i3-install
+[01]: ../../bin/i3-build
 [02]: config
 [03]: ../../var/aliases/i3.sh
 [04]: ../../bin/i3-cheat
 [05]: ../../bin/i3-exit
 [06]: ../../docs/linux/wm/i3.md
 [07]: ../../bin/i3-get-window-criteria
+[08]: ../../bin/i3-config
