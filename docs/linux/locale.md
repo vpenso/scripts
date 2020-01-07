@@ -14,7 +14,6 @@ locale -a                           # list of all locales supported
 * Appropriate default paper size
 * Correct formatting of monetary, time, and date values
 
-X Keyboard Extension (XKB) handels keyboard settings and layouts in X11
 
 Configuration Files:
 
@@ -36,7 +35,9 @@ loadkeys de
 
 ## X11
 
-Non-permanent Changes:
+X Keyboard Extension (XKB) handels keyboard settings and layouts in X11
+
+`setxkbmap` for non-permanent changes:
 
 ```bash
 # list of keyboard models known to XKB
@@ -47,41 +48,34 @@ setxkbmap -query | grep layout
 setxkbmap de
 # toggle keyboard layout with ALT+SHIFT
 setxkbmap -layout us,de -option grp:alt_shift_toggle
+# list available toggle keys
+grep "grp:.*toggle" /usr/share/X11/xkb/rules/base.lst
 ```
 
 ## Systemd 
 
-`localectl`...
-
-> query and change the system locale and keyboard layout settings...modify files
-> such as `/etc/locale.conf` and `/etc/vconsole.conf`.
+`localectl` queries and changes the system locale and keyboard layout
+settings...modify files such as `/etc/locale.conf` and `/etc/vconsole.conf`.
 
 ```bash
 localectl                           # show language configuration
 localectl list-locales              # list vailable keys configuration
 localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"
 localectl list-keymaps              # list all available keyboard layouts
-localectl set-keymap <keymap>       # persistent configuration
+localectl set-keymap us,de          # persistent configuration
 # get messages from the service log
 journalctl -u systemd-localed
 ```
 
-Configure two keyboard layouts, the keyboard model and options:
-
-* `--no-convert` keymap is also converted to the closest matching console keymap.
+Instead of manually editing X configuration files:
 
 ```bash
 localectl --no-convert set-x11-keymap us,de pc104,dvorak grp:alt_shift_toggle
+# writes /etc/X11/xorg.conf.d/00-keyboard.conf
 ```
 
 # References
 
-
 [xkb] The XKB Configuration Guide  
 https://www.x.org/releases/current/doc/xorg-docs/input/XKB-Config.html
-
-
-[xkb]: https://www.x.org/wiki/XKB/
-
-
 
