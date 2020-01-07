@@ -44,7 +44,7 @@ test -f ~/.config/polybar/config && config=~/.config/polybar/config
 echo "Polybar launch with $config"
 polybar -c $config top &
 
-# if feh is installed
 command -v feh >&- && {
+        # set wallpaper if available
         test -f /etc/wallpaper && feh --bg-scale /etc/wallpaper
 }
