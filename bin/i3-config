@@ -19,6 +19,7 @@ echo Copy i3 tools to /usr/bin
 for file in i3-cheat i3-exit i3-start
 do 
         sudo cp -v $SCRIPTS/bin/$file /usr/bin/$file
+        sudo chmod -v a+x /usr/bin/$file
 done
 
 exit 0
