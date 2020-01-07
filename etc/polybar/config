@@ -58,8 +58,8 @@ font-0 = fixed:pixelsize=10;1
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = siji:pixelsize=10;1
 
-modules-left = bspwm i3
-modules-center = mpd
+modules-left = i3
+;modules-center = mpd
 modules-right = xkeyboard memory cpu wlan eth battery temperature date
 
 tray-position = right
@@ -161,12 +161,6 @@ label-urgent-padding = 2
 type = internal/mpd
 format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
 
-icon-prev = 
-icon-stop = 
-icon-play = 
-icon-pause = 
-icon-next = 
-
 label-song-maxlen = 25
 label-song-ellipsis = true
 
@@ -195,14 +189,14 @@ card = intel_backlight
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = " "
+format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
 label = cores | %percentage-cores%
 
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = " "
+format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
 label = ram | %mb_total% > %mb_free%
 
@@ -233,7 +227,7 @@ type = internal/network
 interface = ${env:ETH_INTERFACE}
 interval = 10.0
 format-connected-underline = 
-format-connected-prefix = " "
+format-connected-prefix =
 format-connected-prefix-foreground = ${colors.foreground-alt}
 label-connected = %ifname% | %local_ip%
 format-disconnected = <label-disconnected>
