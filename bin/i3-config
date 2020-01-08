@@ -1,25 +1,47 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-SCRIPTS=${SCRIPTS:-projects/scripts}
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
 
-echo Writing i3 configuration to /etc/i3
-# deploy configuration from this repository
-sudo cp -v $SCRIPTS/etc/i3/config /etc/i3/config
-
-echo Writing Polybar configuration to /etc/polybar
-# global Polybar configuration
+echo Polybar configuration to /etc/polybar
 test -d /etc/polybar || sudo mkdir /etc/polybar
-sudo cp -v $SCRIPTS/etc/polybar/config \
-           $SCRIPTS/etc/polybar/launch.sh \
-           /etc/polybar
+for file in \
+        config \
+        launch.sh
+do
+        # global Polybar configuration
+        src=$SCRIPTS/etc/polybar/$file
+        dst=/etc/polybar/$file
+        if ! diff $src $dst  &>/dev/null
+        then
+                sudo cp -v $src $dst
+        fi
+
+done 
+
+# deploy configuration from this repository
+src=$SCRIPTS/etc/i3/config
+dst=/etc/i3/config
+echo "i3 configuration in $dst"
+# diff is not possible at this point
+sudo cp -v $src $dst
+        
 # adjust the path to the Polybar executable in the i3 configuration
 sudo sed -i 's|~/.config/polybar|/etc/polybar|g' /etc/i3/config
 
-echo Copy i3 tools to /usr/bin
-for file in i3-cheat i3-exit i3-start
+echo Copy i3 tools to /usr/local/bin
+for cmd in \
+        i3-cheat \
+        i3-exit \
+        i3-start
 do 
-        sudo cp -v $SCRIPTS/bin/$file /usr/bin/$file
-        sudo chmod -v a+x /usr/bin/$file
+        src=$SCRIPTS/bin/$cmd
+        dst=/usr/local/bin/$cmd
+        if ! diff $src $dst  &>/dev/null
+        then
+                sudo cp -v $src $dst
+        fi
+
+        sudo chmod a+x /usr/bin/$cmd
 done
 
 exit 0

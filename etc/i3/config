@@ -37,7 +37,7 @@ bindsym $mod+F1 exec terminator
 # start program launcher
 bindsym $mod+F2 exec --no-startup-id rofi -show run -theme white
 # start bookmark menu
-bindsym $mod+F3 exec ~/projects/scripts/bin/rofi-bookmarks
+bindsym $mod+F3 exec /usr/local/bin/rofi-bookmarks
 # start roif bc
 bindsym $mod+F4 exec --no-startup-id rofi -show bc -theme white -modi bc:~/.config/rofi/rofi-bc-script
 # split orientation

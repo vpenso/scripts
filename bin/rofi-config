@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
-# make sure the user has installed Rofi
-command -v rofi &>/dev/null || {
-        echo 'rofi command not in $PATH'
-        exit 1
-}
+# make sure the user has installed dependencies
+for cmd in \
+        bc \
+        rofi
+do
+        command -v $cmd &>/dev/null || {
+                echo "$cmd command not in PATH"
+                exit 1
+        }
+done
 
 SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
 
@@ -35,3 +40,5 @@ do
         diff $src $dst &>/dev/null || \
                 sudo cp -v $src $dst
 done
+
+exit 0
