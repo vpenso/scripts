@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+#
+# Copyright 2020 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [args] src dst
+
+Copy source file if differs from the destination path.
+
+positional arguments
+  src            source file to copy
+  dst            path to the destination
+
+optional arguments
+  -d           Enable debugging output
+  -h, --help   show this help message and exit
+  -s, --sudo   use Sudo for copy
+"
+
+# enable line numbers for debug output
+if [ "$_DEBUG" = "true" ] ; then
+        export PS4='(${BASH_SOURCE}:${LINENO}):${FUNCNAME[0]}-[${SHLVL},${BASH_SUBSHELL},$?] '
+fi
+
+function _debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+sudo=1
+# Parse the command line options
+ARGS=$(getopt -o dhs -l "debug,help,sudo,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        -s|--sudo)
+                sudo=0
+                shift
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
+done
+
+src=${1:?missing source path}
+dst=${2:?missing destination path}
+
+test -f $src || _error "$src missing, or not a file"
+
+if ! diff $src $dst  &>/dev/null
+then
+        if [ "$sudo" -eq "0" ]
+        then
+                sudo cp -v $src $dst
+        else
+                cp -v $src $dst
+        fi
+else
+        echo $dst uptodate
+fi
+
+exit 0
+
+
