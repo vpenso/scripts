@@ -1,37 +1,35 @@
 #!/usr/bin/env bash
 
-SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
-
-diffcp() {
-        local src=${1:?missing source path}
-        local dst=${2:?missing destination path}
-        if ! diff $src $dst  &>/dev/null
-        then
-                echo -n 'copy   '
-                sudo cp -v $src $dst | tr -d "'"
-        else
-                echo nodiff $dst
-        fi
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
 }
 
-test -d /etc/polybar || sudo mkdir /etc/polybar
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
+for cmd in \
+        diffcp \
+        sudo
+do 
+        command -v $cmd &>/dev/null || _error "$cmd program missing"
+done
+
 for file in \
         config \
         launch.sh
 do
-        diffcp $SCRIPTS/etc/polybar/$file /etc/polybar/$file
-
+        diffcp -rs $SCRIPTS/etc/polybar/$file /etc/polybar/$file
 done 
 
 # deploy configuration from this repository
-diffcp $SCRIPTS/etc/i3/config /etc/i3/config
+diffcp -rs $SCRIPTS/etc/i3/config /etc/i3/config
 
 for cmd in \
         i3-cheat \
         i3-exit \
         i3-start
 do 
-        diffcp $SCRIPTS/bin/$cmd /usr/local/bin/$cmd
+        diffcp -rs $SCRIPTS/bin/$cmd /usr/local/bin/$cmd
         sudo chmod a+x /usr/local/bin/$cmd
 done
 
