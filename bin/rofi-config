@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# make sure the user has installed Rofi
+command -v rofi &>/dev/null || {
+        echo 'rofi command not in $PATH'
+        exit 1
+}
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
+# create the configuration directory if missing
+test -d ~/.config/rofi || mkdir -vp ~/.config/rofi
+
+# install the Rofi configuration from this repository
+# into the user home-directory
+for file in \
+        config.rasi \
+        rofi-bc-script \
+        white.rasi
+do
+        src=$SCRIPTS/etc/rofi/$file
+        dst=~/.config/rofi/$file
+        diff $src $dst &>/dev/null || \
+                cp -v $src $dst
+done
+# TODO: eventually this can be done globally in /etc in future
+
+# install dependency programs in user local
+for file in \
+        bookmarks \
+        rofi-bookmarks
+do
+        src=$SCRIPTS/bin/$file
+        dst=/usr/local/bin/$file
+        diff $src $dst &>/dev/null || \
+                sudo cp -v $src $dst
+done

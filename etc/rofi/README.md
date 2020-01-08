@@ -2,20 +2,13 @@
 
 Files                     | Description
 --------------------------|-------------------------
+[bin/rofi-config][1]      | Install Rofi configuration
 [etc/rofi/config.rasi][3] | Rofi configuration file
 [etc/rofi/white.rasi][2]  | Rofi theme (primarily white colors)
-[var/aliases/rofi.sh][1]  | Add the Rofi configuration to the environment
 
-[1]: ../../var/aliases/rofi.sh
+[1]: ../../bin/rofi-config
 [2]: white.rasi
 [3]: config.rasi
-
-This directory is linked to the default configuration path expected by Rofi:
-
-```bash
->>> ls -l ~/.config/rofi | cut -d' ' -f 10-
-/home/vpenso/.config/rofi -> /home/vpenso/projects/scripts/etc/rofi/
-```
 
 Rofi is started by hot keys in the i3 configuration [etc/i3/config](../i3/config):
 
