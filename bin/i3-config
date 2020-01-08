@@ -7,9 +7,10 @@ diffcp() {
         local dst=${2:?missing destination path}
         if ! diff $src $dst  &>/dev/null
         then
-                sudo cp -v $src $dst
+                echo -n 'copy   '
+                sudo cp -v $src $dst | tr -d "'"
         else
-                echo $dst uptodate
+                echo nodiff $dst
         fi
 }
 
@@ -31,7 +32,7 @@ for cmd in \
         i3-start
 do 
         diffcp $SCRIPTS/bin/$cmd /usr/local/bin/$cmd
-        sudo chmod a+x /usr/bin/$cmd
+        sudo chmod a+x /usr/local/bin/$cmd
 done
 
 exit 0
