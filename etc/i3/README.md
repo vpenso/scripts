@@ -24,10 +24,8 @@ Install i3 from a minimal installation (no GUI) of Debian
 ```bash
 apt install -y git sudo wget curl
 # configure sudo for your user account
-# install the window manager
+# install the window manager, install Polybar cf. etc/polybar/README.md
 i3-build
-# install the status bar cf. etc/polybar
-polybar-install
 # write i3 & Polybar configuration to /etc
 i3-config
 ```
@@ -38,23 +36,6 @@ Start i3 after user login on a console:
 
 ```bash
 i3-start
-```
-
-Global configuration (for all user accounts):
-
-```bash
-# backup original configuration
-sudo mv /etc/i3/config /etc/i3/config.orig
-# deploy configuration from this repository
-sudo cp $SCRIPTS/etc/i3/config /etc/i3
-# add small hepler function to start i3
-echo 'i3-start() { startx /usr/bin/i3 -c /etc/i3/config }' \
-        | sudo tee -a /etc/zsh/zshrc
-# global Polybar configuration
-sudo mkdir /etc/polybar
-sudo cp $SCRIPTS/etc/polybar/{config,launch.sh} /etc/polybar
-# adjust the path to the Polybar executable in the i3 configuration
-sudo sed -i 's|~/.config/polybar|/etc/polybar|g' /etc/i3/config
 ```
 
 Select a decoration theme:

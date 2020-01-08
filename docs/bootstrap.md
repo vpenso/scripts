@@ -26,12 +26,13 @@ git clone http://github.com/$USER/scripts.git ~/projects/scripts
 sudo usermod -s /bin/zsh $USER      # relogin
 # initialize my user environment
 source ~/projects/scripts/source_ms.sh # relogin
-# install the window manager
-i3-install
-# install status bar
-polybar-install
+# install the i3 window manager, inluding the Polybar status bar
+i3-build
+i3-config
 # install additional fonts
 font-install-nerdfonts
+# install the menu switcher
+rofi-config
 ```
 
 

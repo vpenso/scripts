@@ -9,7 +9,7 @@ Files                      | Description
 ---------------------------|---------------------------
 [etc/polybar/config][3]    | Configuration within this repository
 [etc/polybar/launch.sh][4] | Launch script used with i3 window manager
-[bin/polybar-install][5]   | Build from source, and install
+[bin/polybar-build][5]     | Build from source, and install
 [var/aliases/polybar.sh][6]| Setup the environment
 
 Test the configuration:
@@ -28,12 +28,11 @@ Read the documentation in the [Polybar Wiki][2].
 
 ## Build
 
-
 Get the latest release version:
 
 <https://github.com/polybar/polybar/releases>
 
-Run [`polybar-install`][5] to download, build and install Polybar.
+Run [`polybar-build`][5] to download, build and install Polybar.
 
 i3 should be installed before building comtpon to enable support:
 
@@ -43,13 +42,10 @@ i3 should be installed before building comtpon to enable support:
 Features: +alsa +curl +i3 +mpd +network(libnl) +pulseaudio +xkeyboard
 ```
 
-
-
-
 [0]: https://polybar.github.io/
 [1]: https://github.com/jaagr/polybar
 [2]: https://github.com/jaagr/polybar/wiki
 [3]: config
 [4]: launch.sh
-[5]: ../../bin/polybar-install
+[5]: ../../bin/polybar-build
 [6]: ../../var/aliases/polybar.sh
