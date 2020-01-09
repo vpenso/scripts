@@ -49,10 +49,9 @@ then
 fi
 ```
 
-The `~/.zshrc.d/` directory is used to enable drop-in configuration of Zsh. Add
-more files with shell aliases, functions, and environment variables.
+The `~/.zshrc.d/` directory is used to enable drop-in configuration of Zsh. 
 
-Add the Zsh configuration from this repository [etc/zshrc.d/](etc/zshrc.d) into
+Copies custom Zsh configuration files from [etc/zshrc.d/](etc/zshrc.d) into
 the `~/zshrc.d` directory.
 
 ```
