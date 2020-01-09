@@ -86,10 +86,3 @@ then
 	fi
 	unset config
 fi
-
-# add repository to an existing Zsh configuration
-# link to the user specific Zsh configuration
-ln -sf $SCRIPTS/etc/zshrc ~/.zshrc
-# Load generic shell configuration with Zsh
-mkdir ~/.zshrc.d 2>/dev/null
-ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/00_scripts
