@@ -30,8 +30,9 @@ execution = "$EDITOR {directory}/{subpath}"
 # Example:
 #  execution = "less {file}"
 [[verbs]]
-name = "view"
 invocation = "view"
+key = "F3"
+shortcut = "v"
 execution = "$PAGER {file}"
 
 #####################
