@@ -1,0 +1,80 @@
+
+# This configuration file lets you define new commands
+# or change the shortcut or triggering keys of built-in verbs.
+# You can change the colors of broot too.
+#
+# Configuration documentation is available at https://dystroy.org/broot
+#
+
+#####################
+# user defined verbs:
+
+# If $EDITOR isn't set on your computer, you should either set it
+#  or just replace it with your editor of choice in the 'execution'
+#  pattern.
+# Example:
+#  execution = "/usr/bin/nvim {file}"
+[[verbs]]
+invocation = "edit"
+key = "F2"
+shortcut = "e"
+execution = "$EDITOR {file}"
+
+[[verbs]]
+invocation = "create {subpath}"
+execution = "$EDITOR {directory}/{subpath}"
+
+# If $PAGER isn't set on your computer, you should either set it
+#  or just replace it with your viewer of choice in the 'execution'
+#  pattern.
+# Example:
+#  execution = "less {file}"
+[[verbs]]
+name = "view"
+invocation = "view"
+execution = "$PAGER {file}"
+
+#####################
+# Skin
+
+# If you want to change the colors of broot,
+# uncomment the following bloc and start messing
+# with the various values
+# Note that some of those colors might not correcly
+# render on terminals with low capabilities
+#
+# [skin]
+[skin]
+default = "gray(2) gray(23)"
+tree = "gray(17) none"
+file = "gray(1) none"
+directory = "ansi(20) none bold"
+exe = "ansi(178) none"
+link = "Magenta none"
+pruning = "gray(5) none Italic"
+permissions = "gray(4) none "
+selected_line = "none gray(20)"
+char_match = "ansi(28) none"
+file_error = "Red none"
+flag_label = "gray(16) none"
+flag_value = "ansi(202) none bold"
+input = "ansi(0) none"
+status_error = "ansi(196) gray(22)"
+status_job = "ansi(220) gray(18)"
+status_normal = "gray(2) gray(22)"
+status_italic = "ansi(202) gray(22)"
+status_bold = "ansi(202) gray(22) bold"
+status_code = "ansi(17) gray(22)"
+status_ellipsis = "gray(1) white"
+scrollbar_track = "gray(20) none"
+scrollbar_thumb = "ansi(238) none"
+help_paragraph = "gray(2) none"
+help_bold = "ansi(202) none bold"
+help_italic = "ansi(202) none italic"
+help_code = "gray(5) gray(22)"
+help_headers = "ansi(202) none"
+
+# You may find other skins on
+#  https://dystroy.org/broot/documentation/configuration/#colors
+# for example a skin suitable for white backgrounds
+

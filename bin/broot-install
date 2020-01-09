@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# 
+# Cf.:   https://dystroy.org/broot/
+#        https://github.com/Canop/broot/releases
+
+for cmd in \
+        chmod \
+        diffcp \
+        sudo \
+        wget
+do
+        command -v $cmd &>/dev/null || _error "$cmd program missing"
+done
+
+url=https://github.com/Canop/broot/releases/download/v0.11.2/broot
+exe=/usr/local/bin/broot
+test -f $exe || sudo wget $url -O $exe
+test -x $exe || sudo chmod a+x $exe
+echo $exe installed
+
+diffcp -r $SCRIPTS/etc/broot/conf.toml ~/.config/broot/conf.toml
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
