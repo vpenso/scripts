@@ -16,7 +16,7 @@ source source_me.sh
 * Prepends `$SCRIPTS/bin` to the `$PATH` environment variable
 * Sources all scripts in `var/aliases/*.sh`
 
-### Shells
+### Zsh
 
 Deploy the custom Zsh configuration in this repository with
 [zsh-config](bin/zsh-config):
@@ -26,9 +26,34 @@ Deploy the custom Zsh configuration in this repository with
 zsh-config
 ```
 
-* POSIX compatibility by loading `/etc/profile` in `/etc/zsh/zprofile`
-* Write a minimal `~/.zshrc` to source scripts in `~/.zshrc.d`
-* Copies Zsh customization from [etc/zshrc.d/](etc/zshrc.d) to `~/zshrc.d`
+The above script will do following modifications to your system.
+
+Make Zsh a **POSIX compliant shell** by loading `/etc/profile` (requires Sudo):
+
+```bash
+# cf. /etc/zsh/zprofile
+emulate sh -c 'source /etc/profile'
+```
+
+This will load files from `/etc/profile.d/` also.
+
+Writes a minimal `~/.zshrc` to **source files from `~/.zshrc.d`**:
+
+```bash
+if ! [ -z "$(ls -A ~/.zshrc.d)" ]
+then
+	for file in `\ls ~/.zshrc.d/*`
+	do
+  		source $file
+	done
+fi
+```
+
+The `~/.zshrc.d/` directory is used to enable drop-in configuration of Zsh. Add
+more files with shell aliases, functions, and environment variables.
+
+Add the Zsh configuration from this repository [etc/zshrc.d/](etc/zshrc.d) into
+the `~/zshrc.d` directory.
 
 ```
 # permanently load this repository into the environment
