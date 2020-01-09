@@ -1,16 +1,37 @@
 ## Description
 
-Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell environment.
-
 * [bin/](bin/) – Scripts for various purposes...
 * [docs/](docs/) – Notes about IT technologies... 
 * [etc/](etc/) – Configuration files...
 
+Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell 
+environment:
+
 ```bash
+# load environment into this shell instance
 source source_me.sh
-# install custom Zsh configuration
+```
+
+* Set an environment variable `$SCRIPTS` with the absolute path to this directory
+* Prepends `$SCRIPTS/bin` to the `$PATH` environment variable
+* Sources all scripts in `var/aliases/*.sh`
+
+### Shells
+
+Deploy the custom Zsh configuration in this repository with
+[zsh-config](bin/zsh-config):
+
+```bash
+# customize Zsh configuration
 zsh-config
-# add this repository to the environment
+```
+
+* POSIX compatibility by loading `/etc/profile` in `/etc/zsh/zprofile`
+* Write a minimal `~/.zshrc` to source scripts in `~/.zshrc.d`
+* Copies Zsh customization from [etc/zshrc.d/](etc/zshrc.d) to `~/zshrc.d`
+
+```
+# permanently load this repository into the environment
 ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/scripts
 ```
 
