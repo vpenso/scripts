@@ -9,3 +9,18 @@ then
         echo -e "\n# POSIX sh-compatibility\n$config" |\
                 sudo tee -a $profile
 fi
+
+test -d ~/.zshrc.d || mkdir ~/.zshrc.d
+
+zshrc=$(mktemp)
+cat > $zshrc <<'EOF'
+# if the directory is not empty
+if ! [ -z "$(ls -A ~/.zshrc.d)" ]
+then
+	for file in `\ls ~/.zshrc.d/*`
+	do 
+  		source $file
+	done
+fi
+EOF
+echo $zshrc

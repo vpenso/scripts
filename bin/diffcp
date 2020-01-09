@@ -60,13 +60,18 @@ do
         command -v $cmd &>/dev/null || _error "$cmd program missing"
 done
 
-sudo=
+backup=
 recursive=false
+sudo=
 # Parse the command line options
-ARGS=$(getopt -o dhrs -l "debug,help,recursive,sudo,version" -- "$@")
+ARGS=$(getopt -o bdhrs -l "backup,debug,help,recursive,sudo,version" -- "$@")
 eval set -- "$ARGS"
 while true; do
         case "$1" in
+        -b|--backup)
+                backup=true
+                shift
+                ;;
         -d|--debug)
                 _DEBUG=true
                 shift
@@ -123,6 +128,12 @@ test -d $dir || {
         # create it if requested by user option
         $recursive || _error "$dir missing"
         $sudo mkdir -p $dir
+}
+
+# if the user requests a backup of the original destination file
+$backup && {
+        # if the destination file exits
+        test -f $dst && $sudo cp $dst ${dst}.$(date +%Y%m%dT%H%M)
 }
 
 $sudo cp $src $dst
