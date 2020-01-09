@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Write a global Zsh configuration to make it POSIX shell compatible
+#
+profile=/etc/zsh/zprofile # used for executing commands at start for all users
+config="emulate sh -c 'source /etc/profile'"
+if ! grep -q -F "$config" $profile
+then
+        echo -e "\n# POSIX sh-compatibility\n$config" |\
+                sudo tee -a $profile
+fi

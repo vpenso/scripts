@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-VERSION=0.1
+VERSION=0.2
 
 # Filename of this script
 SCRIPT=${0##*/}
@@ -35,6 +34,12 @@ optional arguments
   -h, --help        show this help message and exit
   -r, --recursive   create the parent directory if missing
   -s, --sudo        use Sudo to write the destination path"
+
+function _debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
 
 function _error() {
         echo 1>&2 "Error: $@"
@@ -58,10 +63,14 @@ done
 sudo=
 recursive=false
 # Parse the command line options
-ARGS=$(getopt -o hrs -l "help,recursive,sudo,version" -- "$@")
+ARGS=$(getopt -o dhrs -l "debug,help,recursive,sudo,version" -- "$@")
 eval set -- "$ARGS"
 while true; do
         case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
         -h|--help)
                 echo "$HELP"
                 exit 0
@@ -103,7 +112,7 @@ case "$?" in
         2)      op=create ;;
         1)      op=update ;;
         0)      # nothing to do....
-                echo "$dst unchanged"
+                _debug "$dst unchanged"
                 exit 0
                 ;;
 esac
