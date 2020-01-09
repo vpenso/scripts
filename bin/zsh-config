@@ -23,4 +23,13 @@ then
 	done
 fi
 EOF
-echo $zshrc
+
+diffcp -b $zshrc ~/.zshrc
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
+# deploy the basic Zsh configuration
+for file in $SCRIPTS/etc/zshrc.d/*.sh
+do
+        diffcp -r $file ~/.zshrc.d/$(basename $file)
+done
