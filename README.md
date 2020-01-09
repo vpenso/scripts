@@ -6,9 +6,17 @@ Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell environ
 * [docs/](docs/) – Notes about IT technologies... 
 * [etc/](etc/) – Configuration files...
 
+```bash
+source source_me.sh
+# install custom Zsh configuration
+zsh-config
+# add this repository to the environment
+ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/scripts
+```
+
 ## License
 
-Copyright 2012-2019 Victor Penso
+Copyright 2012-2020 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public

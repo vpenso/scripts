@@ -63,26 +63,3 @@ do
 	_debug source $file
   	source $file
 done
-
-## Add Repository to Shell Environment ## 
-
-# append repository to an existing bash configuration
-if [ -f ~/.bashrc ]
-then
-	config="source $SCRIPTS/source_me.sh"
-	grep -q -F "$config" ~/.bashrc
-	if ! [ $? -eq 0 ]
-	then
-		echo -e "# Load generic shell configuration\n$config" >> ~/.bashrc
-		echo $config added to ~/.bashrc
-	fi
-	
-	config="source $SCRIPTS/etc/bashrc"
-	grep -q -F "$config" ~/.bashrc
-	if ! [ $? -eq 0 ]
-	then
-		echo -e "# Load bash specific user configuration\n$config" >> ~/.bashrc
-		echo $config added to ~/.bashrc
-	fi
-	unset config
-fi
