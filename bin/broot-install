@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# 
-# Cf.:   https://dystroy.org/broot/
-#        https://github.com/Canop/broot/releases
 
 for cmd in \
         chmod \
@@ -12,12 +9,16 @@ do
         command -v $cmd &>/dev/null || _error "$cmd program missing"
 done
 
+# Download the pre-compiles binary from GitHub
+# https://github.com/Canop/broot/releases
 url=https://github.com/Canop/broot/releases/download/v0.11.2/broot
 exe=/usr/local/bin/broot
 test -f $exe || sudo wget $url -O $exe
 test -x $exe || sudo chmod a+x $exe
 echo $exe installed
 
+# deploy the configuration from this repository
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
 diffcp -r $SCRIPTS/etc/broot/conf.toml ~/.config/broot/conf.toml
 
-SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+broot -V
