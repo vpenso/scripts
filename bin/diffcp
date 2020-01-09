@@ -31,6 +31,8 @@ positional arguments
   DEST              path to the destination
 
 optional arguments
+  -b, --backup      backup destination file
+  -d, --debug       enable debug output
   -h, --help        show this help message and exit
   -r, --recursive   create the parent directory if missing
   -s, --sudo        use Sudo to write the destination path"
