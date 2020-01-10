@@ -10,7 +10,6 @@ Files                      | Description
 [etc/polybar/config][3]    | Configuration within this repository
 [etc/polybar/launch.sh][4] | Launch script used with i3 window manager
 [bin/polybar-build][5]     | Build from source, and install
-[var/aliases/polybar.sh][6]| Setup the environment
 
 Test the configuration:
 
@@ -25,6 +24,12 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh
 ```
 
 Read the documentation in the [Polybar Wiki][2].
+
+```
+# use the configuration in this repository
+test -L ~/.config/polybar || \
+        ln -s $SCRIPTS/etc/polybar ~/.config/polybar
+```
 
 ## Build
 
@@ -48,4 +53,3 @@ Features: +alsa +curl +i3 +mpd +network(libnl) +pulseaudio +xkeyboard
 [3]: config
 [4]: launch.sh
 [5]: ../../bin/polybar-build
-[6]: ../../var/aliases/polybar.sh
