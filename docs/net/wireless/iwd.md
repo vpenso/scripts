@@ -29,6 +29,21 @@ echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
 echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
 ```
 
+## Build
+
+Build from source
+
+```bash
+sudo apt install libtool libreadline-dev libdbus-glib-1-dev
+got clone https://kernel.googlesource.com/pub/scm/libs/ell/ell.git
+# It is not required to build or install Embedded Linux library
+git clone git://git.kernel.org/pub/scm/network/wireless/iwd.git && cd iwd
+./bootstrap
+./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --disable-systemd-service
+make
+sudo make install
+```
+
 ## Configuration
 
 ```bash
