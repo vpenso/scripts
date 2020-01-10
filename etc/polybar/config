@@ -60,7 +60,7 @@ font-2 = siji:pixelsize=10;1
 
 modules-left = user i3
 ;modules-center = mpd
-modules-right = xkeyboard memory cpu wlan eth battery temperature date
+modules-right = memory cpu wlan eth battery temperature xkeyboard date
 
 tray-position = right
 tray-padding = 2
