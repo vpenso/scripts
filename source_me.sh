@@ -55,7 +55,7 @@ unset __source
 
 ## Load Scripts, Configuration and Aliases ##
 
-export PATH=$SCRIPTS/bin:$PATH
+export PATH=$PATH:$SCRIPTS/bin
 PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
 
 for file in `\ls $SCRIPTS/var/aliases/*.sh`

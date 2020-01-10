@@ -12,15 +12,16 @@ Commonly used terminal multiplexers are [tmux][tx] and GNU [screen][sc].
 
 File                                  | Description
 --------------------------------------|----------------------------------
-[etc/tmux.conf](tmux.conf)            | Custom configuration file
+[etc/tmux.conf][tc]                   | Custom configuration file
 [bin/tmux-config](../bin/tmux-config) | Deploy the configuration
-[bin/tmux-cheat](../bin/tmux-cheat)   | Custom key binding cheat sheet 
+[bin/tmux-cheat][tt]                  | Custom key binding cheat sheet 
 
 The [tmux][tx] terminal multiplexer, cf.:
 
 * [The Tao of tmux][tb] provides a comprehensive introduction
 * The [tmux man-page][tm] describes configuration & operation
 
+Important configuration files, and commands:
 
 ```bash
 /etc/tmux.conf                  # system configuration file
@@ -30,22 +31,23 @@ tmux list-sessions              # list running sessions
 tmux attach-session             # attach to running sessions
 ```
 
-Shell aliases:
+### Configuration
+
+Use the `tmux-config` command to install the configuration from this repository.
+
+1. Install [Tmux Plugin Manager][tp] to `~/.tmux/plugins/tpm`.
+2. Copy [etc/tmux.conf][tc] to `~/.tmux.conf`
+3. Copy [bin/tmux-cheat][tt] to `/usr/local/bin/tmux-cheat`
+4. Define shell aliases in `/etc/profile.d/tmux.conf`
 
 ```bash
-# cf. var/aliases/common.sh
 alias t=tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
 alias tc=tmux-cheat
 ```
 
-### Configuration
-
-`tmux-config` deploys the custom configuration from this repository:
-
-* Install the [Tmux Plugin Manager][tp] in `~/.tmux/plugins/tpm`
-* Write the user configuration to `~/.tmux.conf`
+### Usage
 
 The **prefix key** (default Ctrl-b) is used to send commands to tmux, 
 and is customized in the configuration file, e.g.:
@@ -68,6 +70,8 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-open'
 ```
 
+[tc]: tmux.conf
+[tt]: ../bin/tmux-cheat
 [tp]: https://en.m.wikipedia.org/wiki/Terminal_multiplexer
 [tx]: https://github.com/tmux/tmux
 [sc]: http://www.gnu.org/software/screen/

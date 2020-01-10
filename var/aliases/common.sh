@@ -4,12 +4,6 @@ alias a=alias
 alias g=git
 alias q=exit
 
-alias t=tmux
-alias tl="tmux list-sessions"
-alias ta="tmux attach-session"
-alias tc=tmux-cheat
-
-
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
 

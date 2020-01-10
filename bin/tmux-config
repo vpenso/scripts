@@ -22,6 +22,18 @@ test -d ~/.tmux/plugins/tpm || {
                 ~/.tmux/plugins/tpm
 }
 
-
-# link the configuration within this repository to the home-directory
+# install files from this repository
 diffcp -b $SCRIPTS/etc/tmux.conf ~/.tmux.conf
+diffcp -s $SCRIPTS/bin/tmux-cheat /usr/local/bin/tmux-cheat
+
+aliases=$(mktemp)
+cat > $aliases <<EOF
+alias t=tmux
+alias tl="tmux list-sessions"
+alias ta="tmux attach-session"
+alias tc=tmux-cheat
+EOF
+
+diffcp -bs $aliases /etc/profile.d/tmux.sh
+sudo chmod a+r /etc/profile.d/tmux.sh
+
