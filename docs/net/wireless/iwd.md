@@ -55,13 +55,12 @@ sudo make install
 EnableNetworkConfiguration=true
 ```
 
+Known network configuration store to (`iwd` monitors the directory for changes):
 
 ```bash
 /var/lib/iwd                         # network configuration files
+man iwd.network                      # documenation to the network configuration
 ```
-
-
-
 
 ### WPA2/PSK
 
@@ -87,9 +86,6 @@ EOF
 ```
 
 
-
-
-
 ## References
 
 [iwdwiki] Wiki Documentation  
@@ -98,5 +94,5 @@ https://iwd.wiki.kernel.org/start
 [iwdconf] Configuration File Format  
 https://iwd.wiki.kernel.org/networkconfigurationsettings
 
-[iwdsrc] Source Code Repository
+[iwdsrc] Source Code Repository  
 https://git.kernel.org/pub/scm/network/wireless/iwd.git/
