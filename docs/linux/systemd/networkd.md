@@ -64,8 +64,7 @@ Domains=           # a list of the domains used for DNS host name resolution
 **Wired and wireless adapters on the same machine**
 
 ```bash
->>> tail -n+2 /etc/systemd/network/*.network
-==> /etc/systemd/network/20-wired.network <==
+cat <<EOF | sudo tee /etc/systemd/network/20-wired.network
 Name=en*
 
 [Network]
@@ -73,8 +72,8 @@ DHCP=ipv4
 
 [DHCP]
 RouteMetric=10
-
-==> /etc/systemd/network/25-wireless.network <==
+EOF 
+cat <<EOF | sudo tee /etc/systemd/network/25-wireless.network
 Name=wl*
 
 [Network]
@@ -82,6 +81,7 @@ DHCP=ipv4
 
 [DHCP]
 RouteMetric=20
+EOF
 ```
 
 Note that the wireless interface needs to be connected by another service 
