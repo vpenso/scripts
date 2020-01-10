@@ -44,6 +44,8 @@ Configuration files `*.sh` within this directory will be copied to the
 `~/zshrc.d`.
 
 ```bash
+# clean up before, to install from scratch
+rm -rf ~/.zsh* ~./antigen
 # permanently load this repository into the environment
 ln -sf $SCRIPTS/source_me.sh ~/.zshrc.d/scripts
 ```
