@@ -9,6 +9,12 @@ File                           | Description
 [bin/rofi-bookmarks][02]       | Use `rofi` to select a bookmark
 [var/aliases/bookmarks.sh][03] | Configure the environment
 
+```bash
+# link to the bookmarks within this repository
+test -L ~/.bookmarks || \
+        ln -s $SCRIPTS/var/bookmarks ~/.bookmarks
+```
+
 
 [01]: ../../bin/bookmarks
 [02]: ../../bin/rofi-bookmarks

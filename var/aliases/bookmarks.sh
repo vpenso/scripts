@@ -1,6 +1,4 @@
-# link to the bookmarks within this repository
-test -L ~/.bookmarks || \
-        ln -s $SCRIPTS/var/bookmarks ~/.bookmarks
+export BOOKMARKS_PATH=$BOOKMARKS_PATH:$SCRIPTS/var/bookmarks
 
 # open a bookmark in the default web-browser
 alias bm=bookmarks
