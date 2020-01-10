@@ -61,6 +61,32 @@ DNS=               # is a DNS server address (multiples possibel)
 Domains=           # a list of the domains used for DNS host name resolution
 ```
 
+**Wired and wireless adapters on the same machine**
+
+```bash
+>>> tail -n+2 /etc/systemd/network/*.network
+==> /etc/systemd/network/20-wired.network <==
+Name=en*
+
+[Network]
+DHCP=ipv4
+
+[DHCP]
+RouteMetric=10
+
+==> /etc/systemd/network/25-wireless.network <==
+Name=wl*
+
+[Network]
+DHCP=ipv4
+
+[DHCP]
+RouteMetric=20
+```
+
+Note that the wireless interface needs to be connected by another service 
+like `iwd`.
+
 `systemd-resolved` service is required if DNS entries are specified in `.network` files
 
 ## Service
