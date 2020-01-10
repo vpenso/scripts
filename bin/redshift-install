@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
 # if executed on ArchLinux
 command -v pacman >&- && {
         # install if missing
@@ -7,16 +14,20 @@ command -v pacman >&- && {
                 sudo pacman --sync redshift
         }
 }
-
+# if executed on Debian
 command -v apt >&- && {
         dpkg -l redshift &>/dev/null || {
                 sudo apt install -y redshift
         }
 }
 
-# link to the configuration within this repository
-test -L ~/.config/redshift || {
-        ln --symbolic \
-           --verbose \
-           $SCRIPTS/etc/redshift ~/.config
-}
+for cmd in \
+        diffcp \
+        redshift
+do
+        command -v $cmd &>/dev/null || _error "$cmd program missing"
+done
+
+# install files from this repository
+diffcp -r $SCRIPTS/etc/redshift/redshift.conf ~/.config/redshift/redshift.conf
+diffcp -s $SCRIPTS/var/libexec/redshift.sh /etc/profile.d/redshift.sh
