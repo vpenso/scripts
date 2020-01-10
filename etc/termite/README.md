@@ -1,15 +1,19 @@
 ### Termite
 
-> A keyboard-centric VTE-based terminal, aimed at use within a window manager 
+[Termite][tm] is..
+
+> a keyboard-centric VTE-based terminal, aimed at use within a window manager 
 > with tiling and/or tabbing support.
 
 File                        | Description
 ----------------------------|----------------------------
-[etc/termite/config][4]     | Configuration within this repository
-[var/aliases/termite.sh][5] | Shell environment configuration
+[etc/termite/config][tc]     | Configuration within this repository
 
 User configuration expected in `~/.config/termite/config`
 
-[1]: https://github.com/thestinger/termite/
-[4]: config
-[5]: ../../var/aliases/termite.sh
+```bash
+diffcp -br $SCRIPTS/etc/termite ~/.config/termite/config
+```
+
+[tm]: https://github.com/thestinger/termite/
+[tc]: config
