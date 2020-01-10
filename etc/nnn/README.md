@@ -24,6 +24,11 @@ chmod +x getplugs && ./getplugs
 
 ### Configuration
 
+```bash
+test -L ~/.config/nnn ||
+        ln -sv $SCRIPTS/etc/nnn ~/.config/nnn
+```
+
 [var/aliases/nnn.sh](../../var/aliases/nnn.sh)
 
 ```bash
