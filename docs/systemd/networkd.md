@@ -1,5 +1,3 @@
-# systemd-networkd
-
 Systemd service that manages network configurations:
 
 * Detects and configures network devices as they appear
@@ -8,6 +6,28 @@ Systemd service that manages network configurations:
 ls -l {/etc,/run,/lib}/systemd/network/*.network # network configuration 
 networkctl list                                  # list network connections
 networkctl status                                # show IP addresses for interfaces
+```
+
+Persistently enable the service:
+
+```bash
+# eventually prevent NetworkManager [1] from controlling the network interface:
+systemctl disable --now NetworkManager
+systemctl mask NetworkManager
+# enable systemd-networkd
+systemctl enable --now systemd-networkd
+```
+
+Debugging:
+
+```bash
+# execute with debugging in foreground
+SYSTEMD_LOG_LEVEL=debug /lib/systemd/systemd-networkd   
+# Permanent by drop-in configuration
+mkdir /etc/systemd/system/systemd-networkd.service.d/
+echo -e "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug" \
+        > /etc/systemd/system/systemd-networkd.service.d/10-debug.conf 
+systemctl daemon-reload && systemctl restart systemd-networkd
 ```
 
 ## Configuration
@@ -61,7 +81,7 @@ DNS=               # is a DNS server address (multiples possibel)
 Domains=           # a list of the domains used for DNS host name resolution
 ```
 
-**Wired and wireless adapters on the same machine**
+## Wired and Wireless Adapters in Parallel
 
 ```bash
 cat <<EOF | sudo tee /etc/systemd/network/20-wired.network
@@ -88,29 +108,6 @@ Note that the wireless interface needs to be connected by another service
 like `iwd`.
 
 `systemd-resolved` service is required if DNS entries are specified in `.network` files
-
-## Service
-
-Persistently enable the service:
-
-```bash
-# eventually prevent NetworkManager [1] from controlling the network interface:
-systemctl disable --now NetworkManager
-systemctl mask NetworkManager
-# enable systemd-networkd
-systemctl enable --now systemd-networkd
-```
-
-Debugging:
-
-```bash
-SYSTEMD_LOG_LEVEL=debug /lib/systemd/systemd-networkd   # execute with debugging in foreground
-# Permanent by drop-in configuration
-mkdir /etc/systemd/system/systemd-networkd.service.d/
-echo -e "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug" > /etc/systemd/system/systemd-networkd.service.d/10-debug.conf 
-systemctl daemon-reload && systemctl restart systemd-networkd
-```
-
 
 ## Reference
 
