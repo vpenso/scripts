@@ -20,6 +20,7 @@
     foreground_color = "#000000"
     show_titlebar = False
     scrollbar_position = hidden
+    login_shell = True
     use_system_font = False
 [layouts]
   [[default]]
