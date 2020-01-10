@@ -1,11 +1,15 @@
+alias _=" sudo"
+alias 0=clear
 alias a=alias
 alias g=git
-alias 0=clear
-alias x=exit
+alias q=exit
+
+alias t=tmux
+alias tl="tmux list-sessions"
+alias ta="tmux attach-session"
+alias tc=tmux-cheat
 
 
-
-alias _=" sudo"
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
 

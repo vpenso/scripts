@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
+for cmd in \
+        diffcp \
+        git
+do 
+        command -v $cmd &>/dev/null || _error "$cmd program missing"
+done
+
+
+# install the tmux plugin manager if missing
+test -d ~/.tmux/plugins/tpm || {
+        git clone -q \
+                https://github.com/tmux-plugins/tpm \
+                ~/.tmux/plugins/tpm
+}
+
+
+# link the configuration within this repository to the home-directory
+diffcp -b $SCRIPTS/etc/tmux.conf ~/.tmux.conf
