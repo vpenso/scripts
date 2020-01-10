@@ -39,8 +39,9 @@ fi
 ```
 
 The `~/.zshrc.d/` can be used to drop-in additional Zsh specific customization.
-`zsh-config` copies files from `~$SCRIPTS/etc/zshrc.d/` into the `~/zshrc.d`
-directory.
+
+Configuration files `*.sh` within this directory will be copied to the
+`~/zshrc.d`.
 
 ```bash
 # permanently load this repository into the environment
