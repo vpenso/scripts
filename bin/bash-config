@@ -1,6 +1,6 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 #
-# Copyright 2012-2019 Victor Penso
+# Copyright 2012-2020 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,23 +16,38 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# append repository to an existing bash configuration
-if [ -f ~/.bashrc ]
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
+for cmd in \
+        diffcp
+do
+        command -v $cmd &>/dev/null || _error "$cmd program missing"
+done
+
+
+test -d ~/.bashrc.d || mkdir ~/.bashrc.d
+
+bashrc=$(mktemp)
+cat > $bashrc <<'EOF'
+# if the directory is not empty
+if ! [ -z "$(ls -A ~/.bashrc.d)" ]
 then
-	config="source $SCRIPTS/source_me.sh"
-	grep -q -F "$config" ~/.bashrc
-	if ! [ $? -eq 0 ]
-	then
-		echo -e "# Load generic shell configuration\n$config" >> ~/.bashrc
-		echo $config added to ~/.bashrc
-	fi
-	
-	config="source $SCRIPTS/etc/bashrc"
-	grep -q -F "$config" ~/.bashrc
-	if ! [ $? -eq 0 ]
-	then
-		echo -e "# Load bash specific user configuration\n$config" >> ~/.bashrc
-		echo $config added to ~/.bashrc
-	fi
-	unset config
+	for file in `\ls ~/.bashrc.d/*`
+	do
+  		source $file
+	done
 fi
+EOF
+
+diffcp -b $bashrc ~/.bashrc
+
+# deploy the basic Zsh configuration
+for file in $SCRIPTS/etc/bashrc.d/*.sh
+do
+        diffcp -r $file ~/.bashrc.d/$(basename $file)
+done

@@ -1,7 +1,3 @@
-export HISTSIZE=100000                       # set history size
-export SAVEHIST=$HISTSIZE                    # save history after logout
-export HISTCONTROL=ignoreboth                # [BASH] ignore entries with leading white space and dupes.
-
 # simple default shell prompt
 export PS1="\n\e[32m\u\e[0m@\e[34m\h\e[0m:\e[31m\w\e[0m \n>>> "
 # \e[<num>m     ASCI escape ANSI code
