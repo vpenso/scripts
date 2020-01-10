@@ -26,13 +26,27 @@ ExecStart=/usr/libexec/iwd
 IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
 # Disable periodic scanning of all networks
 echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
+echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
 ```
 
 ## Configuration
 
 ```bash
+/etc/iwd/main.conf                   # configuration file
+```
+```bash
+[General]
+# assign IP address(es) and set up routes using a built-in DHCP client
+EnableNetworkConfiguration=true
+```
+
+
+```bash
 /var/lib/iwd                         # network configuration files
 ```
+
+
+
 
 ### WPA2/PSK
 
