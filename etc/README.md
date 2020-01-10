@@ -14,32 +14,30 @@ diffcp $SCRIPTS/etc/gitignore_global ~/.gitignore_global
 
 ## Tmux
 
-Shell aliases:
-
-```bash
->>> grep tmux $SCRIPTS/var/aliases/common.sh
-alias t=tmux
-alias tl="tmux list-sessions"
-alias ta="tmux attach-session"
-alias tc=tmux-cheat
-```
-
-Deploy my custom Tmux configuration:
-
 File                                  | Description
 --------------------------------------|----------------------------------
 [etc/tmux.conf](tmux.conf)            | Custom configuration file
 [bin/tmux-config](../bin/tmux-config) | Deploy the configuration
 [bin/tmux-cheat](../bin/tmux-cheat)   | Custom key binding cheat sheet 
 
-`tmux-config` will make following modifications:
+Shell aliases:
+
+```bash
+# cf. var/aliases/common.sh
+alias t=tmux
+alias tl="tmux list-sessions"
+alias ta="tmux attach-session"
+alias tc=tmux-cheat
+```
+
+`tmux-config` deploys the custom configuration from this repository:
 
 * Install the [Tmux Plugin Manager][tpm] in `~/.tmux/plugins/tpm`
 * Write the user configuration to `~/.tmux.conf`
 
-This configuration uses CTRL-a `<C-a>` as default leader prefix.
+This configuration uses **CTRL-a `<C-a>` as default leader** prefix.
 
-Start Tmux and install following plugins with `<C-a> I`: 
+Install plugins with `<C-a> I`: 
 
 ```bash
 # plugins to install...
@@ -51,4 +49,4 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-open'
 ```
 
-[tpm] https://github.com/tmux-plugins/tpm
+[tpm]: https://github.com/tmux-plugins/tpm
