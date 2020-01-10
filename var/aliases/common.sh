@@ -1,14 +1,17 @@
+alias a=alias
+alias g=git
+alias 0=clear
+alias x=exit
 
+
+
+alias _=" sudo"
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
 
 # get the permissions on a file in octal form
 alias octperm="stat -c '%A %a %n'"
 
-alias a=alias
-alias 0=clear
-alias x=exit
-alias _=" sudo"
 alias _!=" sudo !!"
 alias __=noglob
 # List all directories in path
