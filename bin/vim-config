@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#
+# Copyright 2020 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+
+for cmd in \
+        curl \
+        diffcp
+do
+        command -v $cmd &>/dev/null || _error "$cmd program missing"
+done
+
+# install vim-plug plugin manager
+#
+# https://github.com/junegunn/vim-plug
+[[ -d ~/.vim/autoload ]] || mkdir -vp ~/.vim/autoload
+[[ -f ~/.vim/autoload/plug.vim ]] || \
+        curl -fLo ~/.vim/autoload/plug.vim \
+                https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# run PlugInstall! and PlugUpdate!
+
+diffcp -b $SCRIPTS/etc/vimrc ~/.vimrc
+
+aliases=$(mktemp)
+cat > $aliases <<EOF
+export EDITOR=vim
+alias v=vim
+alias v0='vim --clean'
+alias vc=vim-cheat
+EOF
+
+if test -d ~/.zshrc.d
+then
+        diffcp $aliases ~/.zshrc.d/vim
+elif test -d ~/.bashrc.d
+then
+        diffcp $aliases ~/.bashrc.d/vim
+else
+        echo Could not write shell configuration to ~/.{bash,zsh}rc.d
+        echo $aliases
+fi
