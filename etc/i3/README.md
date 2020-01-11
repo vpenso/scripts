@@ -6,6 +6,7 @@ Design principles of i3:
 * Tiling - Efficient non-overlapping positioning of application windows
 * Keyboard Workflow - Complete functionality mapped to (customizable) shortcuts
 * Integration - Easy integration with launchers (i.e. Rofi) status bars (i.e. Polybar)
+* Optional floating windows support
 
 File                             | Description
 ---------------------------------|-----------------------
@@ -51,13 +52,13 @@ apt install arc-theme moka-icon-theme
 
 ## References
 
-[i3wm] i3 Tiling Window Manager  
+[i3twm] i3 Tiling Window Manager  
 https://i3wm.org/
 
 [i3usr] i3 User Guide  
 https://i3wm.org/docs/userguide.html
 
-[i3gaps] i3 Fork with Window Gaps  
+[i3gap] i3 Fork with Window Gaps  
 https://github.com/Airblader/i3
 
 [sway] i3 compatible implementation on Wayland  

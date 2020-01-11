@@ -9,9 +9,9 @@ focus_wrapping no
 focus_follows_mouse no
 
 # class                 title brd.   backgr.   text      indicator  border
-client.focused          #900000      #ffffff   #000000   #2e9ef4    #191970
-client.focused_inactive #333333      #ffffff   #000000   #292d2e    #a9a9a9
-client.unfocused        #333333      #ffffff   #000000   #292d2e    #6495ed
+client.focused          #900000      #ffffff   #000000   #2e9ef4    #ff7f50
+client.focused_inactive #333333      #ffffff   #000000   #292d2e    #333333
+client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333
 
 # start the status bar
 exec_always --no-startup-id /etc/polybar/launch.sh
