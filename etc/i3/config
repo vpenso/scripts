@@ -71,10 +71,11 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # switch to workspace
-bindsym $mod+1 workspace 1: local
-bindsym $mod+2 workspace 2: remote
-bindsym $mod+3 workspace 3: docs
-bindsym $mod+4 workspace 4: scratch
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
 
 #
 # Scratchpad
