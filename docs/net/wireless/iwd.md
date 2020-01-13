@@ -20,8 +20,6 @@ iwctl station <dev> connect <ssid>   # connect to network
 # locate the service executable
 systemctl cat iwd.service | grep ExecStart
 ExecStart=/usr/libexec/iwd
-# print version information
-/usr/libexec/iwd --version
 # run in foreground with debug mode 
 IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
 # Disable periodic scanning of all networks
@@ -31,17 +29,29 @@ echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
 
 ## Build
 
-Build from source
+Depending on the Linux distribution, update `iwd` to a recent version:
 
 ```bash
-sudo apt install libtool libreadline-dev libdbus-glib-1-dev
-got clone https://kernel.googlesource.com/pub/scm/libs/ell/ell.git
+# print version information
+/usr/libexec/iwd --version
+```
+
+Build `iwd` from source code [iwdsrc], and install it:
+
+```bash
+tmp=$(mktemp -d) && cd $tmp
+# dependencies on Debian
+sudo apt install -y libtool libreadline-dev libdbus-glib-1-dev
+# download the required source code
+git clone https://kernel.googlesource.com/pub/scm/libs/ell/ell.git
 # It is not required to build or install Embedded Linux library
 git clone git://git.kernel.org/pub/scm/network/wireless/iwd.git && cd iwd
+# configure, build, and install
 ./bootstrap
 ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --disable-systemd-service
 make
 sudo make install
+rm -rf $tmp
 ```
 
 ## Configuration
