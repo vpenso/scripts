@@ -6,27 +6,6 @@
 - Designed to deal with multiple clients from the outset
 - Can be combined with systemd-networkd
 
-```bash
-systemctl enable --now iwd           # start/enable service
-iwctl device list                    # list wireless devices
-iwctl device <dev> show              # show device details
-iwctl station list                   # list state
-iwctl station <dev> scan             # scan for networks
-iwctl station <dev> get-networks     # list networks
-iwctl station <dev> connect <ssid>   # connect to network
-```
-
-```bash
-# locate the service executable
-systemctl cat iwd.service | grep ExecStart
-ExecStart=/usr/libexec/iwd
-# run in foreground with debug mode 
-IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
-# Disable periodic scanning of all networks
-echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
-echo -e '[Scan]\ndisable_periodic_scan=true' >> /etc/iwd/main.conf
-```
-
 ## Build
 
 Depending on the Linux distribution, update `iwd` to a recent version:
@@ -56,23 +35,44 @@ rm -rf $tmp
 
 ## Configuration
 
+Wnable the service to manage Wifi connections automatically:
+
 ```bash
-/etc/iwd/main.conf                   # configuration file
+sudo systemctl enable --now iwd           
 ```
+
+In case you want to debug connection problems, start `iwd` in foreground:
+
+```bash
+# locate the service executable
+systemctl cat iwd.service | grep ExecStart
+ExecStart=/usr/libexec/iwd
+# run in foreground with debug mode 
+sudo IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
+```
+
+The general service configuration file is store to `/etc/iwd/main.conf`, and may
+include:
+
 ```bash
 [General]
 # assign IP address(es) and set up routes using a built-in DHCP client
 EnableNetworkConfiguration=true
 ```
 
-Known network configuration store to (`iwd` monitors the directory for changes):
+### Access Point configuration
+
+Access point connection configuration is store:
+
+* `iwd` monitors the directory for changes.
+* Cf. manual page `iwd.network`
 
 ```bash
-/var/lib/iwd                         # network configuration files
-man iwd.network                      # documenation to the network configuration
+/var/lib/iwd/*.{open,psk,8021x}      # network configuration files
 ```
 
-### WPA2/PSK
+
+### WPA2
 
 The PreSharedKey can be calculated with `wpa_passphrase` (from wpa_supplicant)
 from the SSID and the WIFI passphrase:
@@ -95,6 +95,16 @@ PreSharedKey=9d1c20628cabdb224a1a420723478f585f4579efd4b206301b8c0d6e5ddc8296
 EOF
 ```
 
+## Usage
+
+```bash
+iwctl device list                    # list wireless devices
+iwctl device <dev> show              # show device details
+iwctl station list                   # list state
+iwctl station <dev> scan             # scan for networks
+iwctl station <dev> get-networks     # list networks
+iwctl station <dev> connect <ssid>   # connect to network
+```
 
 ## References
 
@@ -106,3 +116,6 @@ https://iwd.wiki.kernel.org/networkconfigurationsettings
 
 [iwdsrc] Source Code Repository  
 https://git.kernel.org/pub/scm/network/wireless/iwd.git/
+
+[archdoc] Documentation in the ArchLinux Wiki  
+https://wiki.archlinux.org/index.php/Iwd
