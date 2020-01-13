@@ -1,12 +1,10 @@
-# iNet Wireless Daemon
-
 `iwd` (iNet wireless daemon) aims to replace WPA supplicant
 
 - No external dependencies, base on kernel features (D-Bus, cryptographic interface)
 - Designed to deal with multiple clients from the outset
 - Can be combined with systemd-networkd
 
-## Build
+# Build
 
 Depending on the Linux distribution, update `iwd` to a recent version:
 
@@ -27,13 +25,15 @@ git clone https://kernel.googlesource.com/pub/scm/libs/ell/ell.git
 git clone git://git.kernel.org/pub/scm/network/wireless/iwd.git && cd iwd
 # configure, build, and install
 ./bootstrap
-./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --disable-systemd-service
+./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc
 make
 sudo make install
 rm -rf $tmp
+# load the systemd configuration
+sudo systemctl daemon-reload
 ```
 
-## Configuration
+# Configuration
 
 Wnable the service to manage Wifi connections automatically:
 
@@ -60,7 +60,7 @@ include:
 EnableNetworkConfiguration=true
 ```
 
-### Access Point configuration
+## Access Point configuration
 
 Access point connection configuration is store:
 
@@ -70,7 +70,6 @@ Access point connection configuration is store:
 ```bash
 /var/lib/iwd/*.{open,psk,8021x}      # network configuration files
 ```
-
 
 ### WPA2
 
@@ -95,7 +94,42 @@ PreSharedKey=9d1c20628cabdb224a1a420723478f585f4579efd4b206301b8c0d6e5ddc8296
 EOF
 ```
 
-## Usage
+### Eduroam
+
+**This is currently not working!**
+
+Connect to [eduroam](https://www.eduroam.org/) using `iwd`
+
+```bash
+ca=https://www.pki.dfn.de/fileadmin/PKI/zertifikate/T-TeleSec_GlobalRoot_Class_2.crt
+sudo wget -q $ca -O /var/lib/iwd/eduroam.cer
+openssl x509 -inform DER \
+             -in /var/lib/iwd/eduroam.cer \
+             -out /var/lib/iwd/eduroam.crt
+```
+
+Create a configuration to access Eduroam
+
+```bash
+domain=devops.test
+user=devops
+password=12345678
+cat << EOF | sudo tee /var/lib/iwd/eduroam.8021x
+[Settings]
+AutoConnect=true
+
+[Security]
+EAP-Method=PEAP
+EAP-Identity=anonymous@${domain}
+EAP-PEAP-CACert=/var/lib/iwd/eduroam.crt
+EAP-PEAP-ServerDomainMask=radius.${domain}
+EAP-PEAP-Phase2-Method=MSCHAPV2
+EAP-PEAP-Phase2-Identity=${user}@${domain}
+EAP-PEAP-Phase2-Password=${password}
+EOF
+```
+
+# Usage
 
 ```bash
 iwctl device list                    # list wireless devices
