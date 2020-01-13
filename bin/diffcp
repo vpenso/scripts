@@ -62,7 +62,7 @@ do
         command -v $cmd &>/dev/null || _error "$cmd program missing"
 done
 
-backup=
+backup=false
 recursive=false
 sudo=
 # Parse the command line options
@@ -131,6 +131,8 @@ test -d $dir || {
         $recursive || _error "$dir missing"
         $sudo mkdir -p $dir
 }
+
+echo $backup
 
 # if the user requests a backup of the original destination file
 $backup && {
