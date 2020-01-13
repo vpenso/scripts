@@ -35,21 +35,40 @@ loadkeys de
 
 ## X11
 
-X Keyboard Extension (XKB) handels keyboard settings and layouts in X11
-
-`setxkbmap` for non-permanent changes:
+X Keyboard Extension (XKB) handles keyboard settings and layouts in X11
 
 ```bash
 # list of keyboard models known to XKB
 /usr/share/X11/xkb/rules/base.lst
+# list available toggle keys
+grep "grp:.*toggle" /usr/share/X11/xkb/rules/base.lst
+```
+
+`setxkbmap` for **non-permanent** changes:
+
+```bash
 # get current keyboard layout
 setxkbmap -query | grep layout
 # set the keyboard layout, i.e. to `de` (german)
 setxkbmap de
 # toggle keyboard layout with ALT+SHIFT
 setxkbmap -layout us,de -option grp:alt_shift_toggle
-# list available toggle keys
-grep "grp:.*toggle" /usr/share/X11/xkb/rules/base.lst
+```
+
+Add a **permanent** keyboard configuration: 
+
+```bash
+sudo mkdir -p /etc/X11/xorg.conf.d
+cat << EOF | sudo tee /etc/X11/xorg.conf.d/00-keyboard.conf
+Section "InputClass"
+    Identifier "keyboard-all"
+    Driver "evdev"
+    Option "XkbLayout" "us,de"
+    Option "XkbModel" "pc104"
+    Option "XkbOptions" "grp:alt_shift_toggle"
+    MatchIsKeyboard "on"
+EndSection
+EOF
 ```
 
 ## Systemd 
