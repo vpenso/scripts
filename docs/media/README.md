@@ -38,22 +38,23 @@ Full audio and MIDI functionality for Linux
 * Optional OSS emulation mode for `/dev/sound`, `/dev/dsp`, etc
 * Device files in `/dev/snd/` (use alsa-lib instead)
 
-
 ```bash
-cat /proc/asound/version              # ALSA version
 # kernel messages for sound devices
 sudo dmesg | egrep -i "alsa|snd"  
 # verify that sound modules are loaded
 lsmod | grep '^snd' | column -t
+```
+
+`/proc/asound` kernel interface
+
+```bash
+/proc/asound/version              # ALSA version
+/proc/asound/cards                # list of registered cards
 # PCM device-related information and status
 tail -n+2 /proc/asound/card[0-9]/pcm*/info
 ```
 ```bash
-# List all sound cards
->>> cat /proc/asound/cards
- 0 [PCH            ]: HDA-Intel - HDA Intel PCH
-                      HDA Intel PCH at 0xe1348000 irq 131
-# list audio devices
+# list of registered ALSA devices
 >>> cat /proc/asound/devices
   2: [ 0- 0]: digital audio playback
   3: [ 0- 0]: digital audio capture
@@ -72,8 +73,21 @@ tail -n+2 /proc/asound/card[0-9]/pcm*/info
   `--------- minor number
 ```
 
+### Configuration
+
+ALSA library configuration:
+
+```
+/usr/share/alsa/alsa.conf
+/etc/asound.conf
+~/.asoundrc
+```
+
+Save settings (volume states) for device:
+
 ```bash
-alsactl restore
+alsactl store      # store alsamixer confguration
+alsactl restore    # restores the saved alsamixer state
 ```
 
 ### Usage
@@ -88,5 +102,13 @@ aplay -l
 aplay -L | grep :CARD
 # produce noise on a device
 speaker-test -D default:PCH -c 2
+```
+
+Keyboard volume control:
+
+```bash
+amixer set Master 5%+      # increase volume
+amixer set Master 5%-      # decrease volume
+amixer set Master toggle   # toggle mute
 ```
 
