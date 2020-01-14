@@ -16,3 +16,12 @@ sudo pip install --upgrade youtube_dl
 ```bash
 yt2mp3 $url                     # download a file from Youtube and convert to MP3
 ```
+
+Create/change MP3 audio files:
+
+```bash
+cdda2mp3 dev=/dev/sr0                  # copy music tracks from CD in given drive
+mp3wrap output.mp3 *.mp3               # concatenate MP3 files
+# set ID3 description
+mp3info -t $title -a $artist -n $track $file.mp3
+```

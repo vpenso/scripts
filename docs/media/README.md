@@ -1,38 +1,92 @@
 
-## Audio
+# Sound System
 
-Create/change MP3 audio files:
+* PCM (Pulse-Code-Modulation)
+  - Digital audio encoding
+  - Represents amplitude of a signal at uniform intervals
+* MIDI (Musical Instrument Digital Interface)
+  - Control electronic musical instruments
 
-```bash
-cdda2mp3 dev=/dev/sr0                  # copy music tracks from CD in given drive
-mp3wrap output.mp3 *.mp3               # concatenate MP3 files
-# set ID3 description
-mp3info -t $title -a $artist -n $track $file.mp3
+## OSS (Open Sound System)
+ 
+Old sound card support system up to Linux 2.4
+
+* Still used for old sound cards not ported to ALSA, marked as deprecated
+* Designed for standard devices system calls `read()`, `write()`, etc.
+* Write to `/dev/dsp` for playback
+* Reading from `/dev/dsp` to capture (recorde)
+
+```
+/dev/dsp        # D/A and A/D converter device, generate/read audio
+/dev/mixer      # mainly for controlling volume
+/dev/audio      # Sun compatible digital audio
+/dev/sequencer  # audio sequencer (MIDI)
 ```
 
-## Video
+Limitations:
+
+* No support for software mixing (limited to a single application)
+* Play/record at the same time not possible
+* No hardware MIDI support
+
+## ALSA (Advanced Linux Sound Architecture) 
+
+Full audio and MIDI functionality for Linux
+
+* Kernel sound card drivers since Linux 2.6 (1998)
+* User space driven library for application developers
+* Optional OSS emulation mode for `/dev/sound`, `/dev/dsp`, etc
+* Device files in `/dev/snd/` (use alsa-lib instead)
+
 
 ```bash
-# dependencies on Debian
-apt install vlc libdvd-pkg dvdbackup handbrake          
-# dependencies on Arch...
-pacman -S vlc libdvdcss dvdbackup handbrake
+cat /proc/asound/version              # ALSA version
+# kernel messages for sound devices
+sudo dmesg | egrep -i "alsa|snd"  
+# verify that sound modules are loaded
+lsmod | grep '^snd' | column -t
+# PCM device-related information and status
+tail -n+2 /proc/asound/card[0-9]/pcm*/info
 ```
-
-
-### Youtube-dl
-
-Select video quality
+```bash
+# List all sound cards
+>>> cat /proc/asound/cards
+ 0 [PCH            ]: HDA-Intel - HDA Intel PCH
+                      HDA Intel PCH at 0xe1348000 irq 131
+# list audio devices
+>>> cat /proc/asound/devices
+  2: [ 0- 0]: digital audio playback
+  3: [ 0- 0]: digital audio capture
+  4: [ 0- 3]: digital audio playback
+  5: [ 0- 7]: digital audio playback
+  6: [ 0- 8]: digital audio playback
+  7: [ 0- 9]: digital audio playback
+  8: [ 0-10]: digital audio playback
+  9: [ 0- 0]: hardware dependent
+ 10: [ 0- 2]: hardware dependent
+ 11: [ 0]   : control
+ 33:        : timer
+  |    |  |
+  |    |  `- device number
+  |    `---- card number
+  `--------- minor number
+```
 
 ```bash
-# list available formats
-youtube-dl -F $url
-# download with a specified format
-youtube-dl -f $video[+$audio]
-# both should be numerical values
+alsactl restore
 ```
 
+### Usage
 
+Users have permission to play audio and change mixer levels:
 
-
+```bash
+amixer                            # configure audio settings
+alsamixer                         # ..using a TUI
+# list audio devices
+aplay -l
+aplay -L | grep :CARD
+# produce noise on a device
+speaker-test -D default:PCH -c 2
+```
 
