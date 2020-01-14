@@ -3,9 +3,9 @@
 Write detailed notes to collect knowledge and understanding:
 
 * Think of **writing equals learning**...
+* **Work through confusion** structuring details and technical jargon
 * **Learn with intention** growing a personal knowledge base
-* **Worke through confusion** structuring details and technical jargon
-* **Acquire important foundational knowledge** writing a coherent document
+* Collect **distilled knowledge** extracted from your sources
 * Permanent, easily **recoverable store of personalized knowledge**
 
 Allows you to create slides, and articles with less effort.
