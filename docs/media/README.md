@@ -39,11 +39,14 @@ Full audio and MIDI functionality for Linux
 * Device files in `/dev/snd/` (use alsa-lib instead)
 
 ```bash
+sudo apt install -y alsa-utils
 # kernel messages for sound devices
 sudo dmesg | egrep -i "alsa|snd"  
 # verify that sound modules are loaded
 lsmod | grep '^snd' | column -t
 ```
+
+### Configuration
 
 `/proc/asound` kernel interface
 
@@ -73,7 +76,6 @@ tail -n+2 /proc/asound/card[0-9]/pcm*/info
   `--------- minor number
 ```
 
-### Configuration
 
 ALSA library configuration:
 
