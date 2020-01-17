@@ -4,7 +4,6 @@ hwinfo --disk
 fdisk -l
 smartctl -a /dev/sda
 /proc/partitions
-/proc/filesystems                         # list of supported file-systems
 parted -l | grep '^Disk /dev'
 lspci | egrep "RAID|SATA"
 dmesg | grep ata[0-9] | tr -s ' ' | cut -d' ' -f3- | sort
@@ -30,28 +29,32 @@ hdparm -r0|1 <device>                      # toggle write protection
 ### Partitions
 
 ```bash
+/proc/partitions
+file -s <device>                               # read partition info from device
 dd if=/dev/zero bs=512 count=1 of=<device>     # wipe the bootsector of a devices
+```
+
+```bash
 parted -l                                      # list devices/partitons
+parted $device mklabel msdos                   # Master Boot Record/MS-DOS partition table
+parted $deviec mklabel gpt                     # GUID Partition Table
 parted $device print free                     # show free strorage on device
 # create single partiton using the entire device
 parted -a optimal $device mkpart primary 0% 100%
 parted $device rm $number                      # delete partition
-/proc/partitions
-file -s <device>                               # read partition info from device
 ```
 
-### File-Systems
+Multi user support with ACLs:
 
 ```bash
-mkfs.<type> <partition>                   # init fs on partition
-mount -o umask=000 <device> <mnt-point>   # mount a USB stick readable for all
-/proc/self/mountinfo                      # mount information
-findmnt                                   # show tree all file systems
-findmnt -l                                # list all file systems
-findmnt -D                                # output like df
-findmnt -s                                # from /etc/fstab
-findmnt -S /dev/<device>                  # by source device
-findmnt -T <path>                         # by mount point
-findmnt -t <type>,...                     # by type, e.g. nfs
+mnt=/mnt                      # mount point within the root files-ystem
+part=/dev/sdc1                # for example, change this to your needs!
+mkfs.ext4 $part               # create a file-system with ACL support
+tune2fs -o acl $part          # enable ACLs
+mount $part $mnt              # mount the partition
+chown $user: $mnt
+chmod 777 $mnt
+setfacl -m d:u::rwx,d:g::rwx,d:o::rwx $mnt
+umount $mnt
 ```
 
