@@ -1,6 +1,6 @@
 
 ```bash
-sudo apt install -y colordiff
+sudo apt install -y colordiff python-pip
 pip install diff-highlight
 ```
 
