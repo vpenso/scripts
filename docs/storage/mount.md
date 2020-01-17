@@ -1,4 +1,4 @@
-List mounted file systems
+List file systems mounted on the system:
 
 ```bash
 findmnt                                   # show tree all file systems
@@ -10,8 +10,12 @@ findmnt -T <path>                         # by mount point
 findmnt -t <type>,...                     # by type, e.g. nfs
 ```
 
-Mount a file-system:
+Mount a partition from a storage device:
 
 ```bash
 sudo mount $partition $mntpoint    # mount filesystem located on a device partition
+```
+
+```bash
+sudo apt install -y pmount
 ```

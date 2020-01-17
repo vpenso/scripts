@@ -43,18 +43,3 @@ parted $device print free                     # show free strorage on device
 parted -a optimal $device mkpart primary 0% 100%
 parted $device rm $number                      # delete partition
 ```
-
-Multi user support with ACLs:
-
-```bash
-mnt=/mnt                      # mount point within the root files-ystem
-part=/dev/sdc1                # for example, change this to your needs!
-mkfs.ext4 $part               # create a file-system with ACL support
-tune2fs -o acl $part          # enable ACLs
-mount $part $mnt              # mount the partition
-chown $user: $mnt
-chmod 777 $mnt
-setfacl -m d:u::rwx,d:g::rwx,d:o::rwx $mnt
-umount $mnt
-```
-
