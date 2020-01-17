@@ -16,6 +16,14 @@ Mount a partition from a storage device:
 sudo mount $partition $mntpoint    # mount filesystem located on a device partition
 ```
 
+## Removable Devices
+
+Mount a hot-plug devices like a USB drive as normal user:
+
 ```bash
 sudo apt install -y pmount
+pmount ${device:-/dev/sdb1} ${label:-storage}
+pumount $device
 ```
+
+The device partition is mounted below `/media/$label`
