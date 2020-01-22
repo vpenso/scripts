@@ -1,25 +1,11 @@
+
+
+
 SD Card (Secure Digital Card)
 
 * **Non-volatile memory** for consumer hand-held and portable electronics
-* Developed as with compatible to Multi Media Card (MMC)
+* Based on MMC (Multi Media Cars), adding more features
 * SD Specifications is controlled by the [SD Card Association](https://www.sdcard.org/)
-
-Flash memory is **unreliable**:
-
-* Data stored as probabilistic approximations
-* Workaround: computational error correction (ECC)
-
-Contain an internal controller:
-
-* Handle all internal flash memory operations
-* Presents illusion of ‘standard’ block device
-* Wear leveling translation (~100k erase cycles limits life time)
-* Error correction (single/multi bit errors)
-* Bad-block management (remap failing blocks)
-* Block size translation
-* Write RAM buffer (tends to scale with price/size)
-
-
 
 ## Hardware
 
@@ -83,24 +69,3 @@ Lexar 300x             | <45       | <45        | 16,32,65
 [sdi]: https://www.sandisk.com/home/memory-cards
 [tosh]: https://www.toshiba-memory.com/product-category/micro-sd-cards
 
-## File-system
-
-Almost always pre-formatted, typically FAT32 of exFAT (on SDXC cards)
-
-* Controller optimises for FAT fs
-* First partition starts on an erase boundary (segment-aligned)
-
-Supported in Linux though the mmc subsystem
-
-* Code located in `drivers/mmc` and headers in `include/linux/mmc/`
-
-## References
-
-[sdchk] SD Card Hacking  
-https://bunniefoo.com/bunnie/sdcard-30c3-pub.pdf
-
-[flsbn] Flashbench  
-https://github.com/bradfa/flashbench
-
-[olcfd] Optimizing Linux with cheap flash drives  
-https://lwn.net/Articles/428584/
