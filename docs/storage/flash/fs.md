@@ -1,4 +1,4 @@
-## Flash File-System
+# Flash File-System
 
 SD cards almost always pre-formatted, typically FAT32 of exFAT (on SDXC cards)
 
@@ -19,3 +19,16 @@ Supported in Linux though the mmc subsystem
 * Code located in `drivers/mmc` and headers in `include/linux/mmc/`
 * Block device `/dev/mmc*`
 
+
+```bash
+# delete a DOS/MBR boot sector
+dd if=/dev/zero bs=512 count=1 of=/dev/mmcblk0
+# write a new boot sector
+parted /dev/mmcblk0 mklabel msdos
+# create a new partition
+parted -a optimal /dev/mmcblk0 mkpart primary 0% 100%
+# write a FAT32 file-system
+mkfs.fat -F 32 /dev/mmcblk0p1
+# mount the device
+pmount /dev/mmcblk0p1 flash && ls /media/flash
+```
