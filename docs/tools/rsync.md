@@ -14,6 +14,10 @@ rsync $source $host:$destination          # copy to a remote node
 rsync $host:source $destination           # copy from a remote node
 ```
 
+Special treatment to **source directories with a trailing slash `/`**, which
+copies the contents of the source directory to the destination (with no
+intervening sub-directory).
+
 ### Dry Run
 
 Use option `-n` to **show changes without modifying** the destination:
