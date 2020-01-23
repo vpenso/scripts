@@ -177,9 +177,3 @@ ssh-keygen -r `hostname`
 * Visual fingerprint, **identicons** (generated icons, to recognize or distinguish textual information)
 
 The script ↴ [ssh-known-hosts][04] adds, removes or updates a host fingerprint in `~/.ssh/known_hosts`
-
-# References
-
-[cvint] Libssh curve25519 Introduction  
-<https://git.libssh.org/projects/libssh.git/tree/doc/curve25519-sha256@libssh.org.txt#n4>
-
