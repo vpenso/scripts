@@ -14,9 +14,36 @@ Sign a user key:
 ssh-keygen -q -t rsa -b 2048 -N '' -f id_rsa
 # create id_rsa & id_rsa.pub
 # sign the user public key
-ssh-keygen -s user_ca -V +2w -n devops -I 'SSH key for user devops' id_rsa.pub
+ssh-keygen -U -s user_ca -V +2w -n devops -I 'SSH key for user devops' id_rsa.pub
 # creates id_rsa-cert.pub
 ```
+
+Available options:
+
+* `-U` enables `ssh-agent` host support
+* `-s $sign_key` CA user signing key 
+* `-V $interval` validation interval (aka certificate life-time)
+* `-I $key_id` "key identifier" that is logged by the server when the
+  certificate is used for authentication
+
+**Principles** are defined with option `-n`:
+
+* By default, generated certificates are valid for all users or hosts.
+* Generate a certificate for a specified set of principals
+
+```bash
+# allows user and root login
+ssk-keygen ... -n root,devops ...
+```
+
+Additional limitations on the validity and use of user certificates may be
+specified through **certificate options** with `-O`:
+
+* Disable features of the SSH session
+* Limit user to a particular source addresses
+* Force the use of a specific command
+
+## Server Configuration
 
 Configure `sshd` to accept user keys signed by a SSH certificate authority:
 
@@ -34,6 +61,8 @@ ssh root@lxdev01 -C '
     $(which sshd) -d
 '
 ```
+
+## Usage
 
 Connect with an private key identity, ssh will also try to load certificate
 information from the filename obtained by appending `-cert.pub` to identity
