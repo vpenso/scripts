@@ -10,7 +10,7 @@ ssh-keygen -f user_ca
 _Make sure to keep these keys save, since to enable access to all nodes trusting
 the CA._
 
-## Server Configuration
+### Server Configuration
 
 Configure `sshd` to accept user certificates signed by an CA certificate:
 
@@ -29,17 +29,19 @@ ssh root@lxdev01 -C '
 '
 ```
 
-## Sign User Keys
+### Sign User Keys
 
 Generate **user certificates** to grand access priviliges:
 
 ```bash
-# create a user key (no password for testing)
+## create a user key (no password for testing)
 ssh-keygen -q -t rsa -b 2048 -N '' -f id_rsa
 # create id_rsa & id_rsa.pub
-# sign the user public key
+## sign the user public key
 ssh-keygen -U -s user_ca -V +2w -n devops -I 'SSH key for user devops' id_rsa.pub
 # creates id_rsa-cert.pub
+## inspect the user certificate
+ssh-keygen -L -f id_rsa-cert.pub
 ```
 
 Available options:
@@ -67,8 +69,14 @@ specified through **certificate options** with `-O`:
 * Limit user to a particular source addresses
 * Force the use of a specific command
 
+```bash
+# Restrict the source addresses from which the certificate is considered valid.
+ssh-keygen ... -O source-address=10.1.1.1/24 ...   # CIDR format
+# forces execution of command instead of any shell or command specified
+ssh-keygen ... -O force-command=/usr/bin/journalctl ...
+```
 
-## Using a User-Certificate
+### Using User-Certificates
 
 Connect with an private key identity, ssh will also try to load certificate
 information from the filename obtained by appending `-cert.pub` to identity
