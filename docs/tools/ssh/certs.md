@@ -54,6 +54,8 @@ Sign a **user key**:
 
 ```bash
 ssh-keygen -n user -s devops.ca -V +2w -I devops-user-${USER} ~/.ssh/id_rsa.pub
+# view enabled extensions, principals, and metadata of the signed key
+ssh-keygen -Lf ~/.ssh/id_rsa-cert.pub
 ```
 
 ## Host Certificates
@@ -86,5 +88,22 @@ Configure `sshd` to accept user keys signed by a SSH certificate authority:
 cat <<EOF | sudo tee -a /etc/ssh/sshd_config
 TrustedUserCAKeys ${cert:-/etc/ssh/$(hostname -d).pub}
 EOF
+```
+
+Connect with an private key identity, ssh will also try to load certificate
+information from the filename obtained by appending `-cert.pub` to identity
+filenames:
+
+```bash
+# disable other authentication methods for testing
+ssh -o PubkeyAuthentication=no \
+    -o PasswordAuthentication=no \
+    -i ${file:-~/.ssh/id_rsa} 
+```
+
+
+```
+key_cert_check_authority: invalid
+Certificate invalid: name is not a listed principal
 ```
 
