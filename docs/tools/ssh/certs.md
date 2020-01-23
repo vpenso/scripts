@@ -95,12 +95,25 @@ information from the filename obtained by appending `-cert.pub` to identity
 filenames:
 
 ```bash
-# disable other authentication methods for testing
-ssh -o PubkeyAuthentication=no \
-    -o PasswordAuthentication=no \
-    -i ${file:-~/.ssh/id_rsa} 
+# for debugging
+cat > ssh_config <<EOF
+PasswordAuthentication=no
+StrictHostKeyChecking=no
+UserKnownHostsFile=/dev/null
+EOF
+ssh -F ssh_config -v -i id_rsa devops@lxdev01
 ```
 
+Debugging will show if the certificate is loaded:
+
+```bash
+debug1: Will attempt key: id_rsa RSA
+SHA256:Jer+lm4EOP2oy2m+TTPu0Q6Id4TxklM2kNYP1CzroXI explicit                    
+debug1: Will attempt key: id_rsa RSA-CERT
+SHA256:Jer+lm4EOP2oy2m+TTPu0Q6Id4TxklM2kNYP1CzroXI explicit
+```
+
+In case of a configuration problem following error message is emitted by `sshd`:
 
 ```
 key_cert_check_authority: invalid
