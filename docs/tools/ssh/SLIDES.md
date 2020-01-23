@@ -45,13 +45,13 @@ jdow@node1: exit↵
 
 User connection defaults in`~/.ssh/config`:
 
-~~~
+```
 ### Default user for devops.test
 Host *.devops.test
   User vpenso
   CheckHostIP no
   ForwardX11 yes
-~~~
+```
 
 cf. man-page [`ssh_config`](http://manpages.debian.org/ssh_config) for reference 
 
@@ -65,21 +65,21 @@ cf. man-page [`ssh_config`](http://manpages.debian.org/ssh_config) for reference
 --------|-------------
  `-r`   | Recursively copy entire directories
 
-~~~
+```
 scp [[user@]host1:]file1 … [[user@]host2:]file2
-~~~
+```
 
 Example with an absolute path:
 
-~~~
+```
 scp /path/to/file vpenso@pool.devops.test:/path/to
-~~~
+```
 
 **Relative paths** start from the home-directory `~`
 
-~~~
+```
 scp -r vpenso@pool.devops.test:path/to/file ~/path/to
-~~~
+```
 
 ---
 
@@ -93,22 +93,22 @@ scp -r vpenso@pool.devops.test:path/to/file ~/path/to
 
 [`ssh-keygen`](http://manpages.debian.org/ssh-keygen) generates **public/private key pairs** 
 
-~~~
+```
 ssh-keygen -q -f ~/.ssh/id_rsa -t rsa
-~~~
+```
 
 
 Change password of private-key
 
-~~~
+```
 ssh-keygen -f ~/.ssh/id_rsa -p
-~~~
+```
 
 [`ssh-copy-id`](http://manpages.debian.org/ssh-copy-id) **deploys** public-keys to `~/.ssh/authorized_keys`
 
-~~~
+```
 ssh-copy-id vpenso@pool.devops.test
-~~~
+```
 
 
 
@@ -118,7 +118,7 @@ ssh-copy-id vpenso@pool.devops.test
 
 [`ssh-agent`](http://manpages.debian.org/ssh-agent) stores private-keys for **password-less login** 
 
-~~~
+```
 » eval $(ssh-agent)
 Agent pid 2157
 » ssh-add ~/.ssh/id_rsa 
@@ -127,7 +127,7 @@ Identity added: /home/vpenso/.ssh/id_rsa (/home/vpenso/.ssh/id_rsa)
 » ssh-add -l 
 2048 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:ce .ssh/id_rsa (RSA)
 4096 2b:c5:77:23:c1:34:ab:23:79:e6:34:71:7a:65:70:cd project/id_rsa (RSA)
-~~~
+```
 
 [`ssh-add`](http://manpages.debian.org/ssh-add) loads a private-key into the agent
 
@@ -137,9 +137,9 @@ Identity added: /home/vpenso/.ssh/id_rsa (/home/vpenso/.ssh/id_rsa)
 
 Forwarding exposes the private-key to the **trustworthy** remote computer!
 
-~~~
+```
 »  ssh -A -t vpenso@pool.devops.test ssh lxdev01
-~~~
+```
 
 
 ---
@@ -154,24 +154,24 @@ Use a single `ssh-agent` session in multiple shells:
 
 Start an agent and store the connection information ↴ [`ssh-agent-session`](https://raw.githubusercontent.com/vpenso/scripts/master/bin/ssh-agent-session)
 
-~~~
+```
 » source ssh-agent-session
 ssh-agent started, session in /home/vpenso/.ssh/agent-session
-~~~
+```
 
 
 Use an already running agent:
 
-~~~
+```
 » source ssh-agent-session
 ssh-agent running with process ID 19264
-~~~
+```
 
 Source this script within the your profile, e.g.:
 
-~~~
+```
 » echo "source ~/bin/ssh-agent-session"  >> ~/.zshrc
-~~~
+```
 
 ---
 
@@ -181,16 +181,16 @@ Source this script within the your profile, e.g.:
 
 Route network traffic over an SSH connection into GSI:
 
-~~~
+```
 » sshuttle --dns --remote vpenso@pool.devops.test --daemon \
            --pidfile=/tmp/sshuttle.pid 0/0
 […]
 » kill $(cat /tmp/sshuttle.pid)
-~~~
+```
 
 The script ↴ [`ssh-tunnel`](https://raw.githubusercontent.com/vpenso/scripts/master/bin/ssh-tunnel) wraps these commands 
 
-~~~
+```
 » ssh-tunnel connect vpenso@pool.devops.test
 [local sudo] Password: 
 vpenso@gsi.de's password: 
@@ -201,7 +201,7 @@ Sshuttle running with PID 15083.
 » ssh-tunnel disconnect
 » ssh-tunnel status
 Sshuttle not connected.
-~~~
+```
 
 ---
 

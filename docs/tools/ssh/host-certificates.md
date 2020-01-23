@@ -1,9 +1,3 @@
-SSH Certificate Authority:
-
-* Alleviates the need to distribute SSH public keys
-* Signs user keys with capabilities and expiration date
-* Signs host keys for a domain
-
 ## Creating a Root Certificate
 
 _Does not use the more common X.509 certificates used in SSL_
