@@ -63,6 +63,23 @@ ssh-keygen -h -s devops-host_ca-Gb3t8s \
 scp -F ssh_config ssh_host_rsa_key-cert.pub root@lxdev01:/etc/ssh
 ```
 
+Inspect the host certificate:
+
+```
+>>> ssh-keygen -L -f ssh_host_rsa_key-cert.pub
+ssh_host_rsa_key-cert.pub:
+        Type: ssh-rsa-cert-v01@openssh.com host certificate
+        Public key: RSA-CERT SHA256:iVBchuhVcTKvUA4XZb5ldnP2FMgiDKcqaIsWCq9ChIQ
+        Signing CA: RSA SHA256:zTEUXG8CJ0j9l7s8wt1couYyHD+u8gFjpawbsNmxoFk
+        Key ID: "lxdev01.devops.test host certificate"
+        Serial: 0
+        Valid: from 2020-01-23T11:26:51 to 2021-01-22T11:26:51
+        Principals:
+                lxdev01.devops.test
+        Critical Options: (none)
+        Extensions: (none)
+```
+
 ## Host Certificates
 
 Add a host certificate to the `sshd` server configuration:
