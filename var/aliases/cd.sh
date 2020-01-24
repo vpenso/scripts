@@ -6,6 +6,11 @@ alias ...='cd ../..'
 alias sd="cd $SCRIPTS"
 
 # create a new directory and enter it
-function mkd() {
+cdmk() {
         mkdir -p "$@" && cd "$_";
+}
+
+# change directory in a newly created unique directory in /tmp
+cdtmp() {
+        cd $(mktemp -d)
 }

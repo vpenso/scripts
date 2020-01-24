@@ -1,26 +1,44 @@
 # OpenSSH Host Certificates
 
-Hosts send a signed SSH certificate to clients to **verify the host's identity**. 
-This is an alternative to the use of public key authentication for hosts.
+Host certificates can be used as alternative to host public key authentication.
+
+Hosts send signed SSH certificate to clients in order to enable the
+**verification of the host's identity**. 
 
 * The host certificate is signed by a trusted Certificate Authority (CA)
-* The host certificate Includes host name and expiration date
-* Client checks if a trusted CA (listed in `known_hosts`) has signed the
+* The host certificate includes host name (principle) and expiration date
+* Clients check if a trusted CA (listed in `known_hosts`) has signed the
   host certificate (using the CA public key)
-* Client does not store public key for every host connection, only trusted
-  certificate authorities
+* Clients don't store public keys for every host connection. Only the public
+  keys of trusted certificate authorities.
 * Either a signature check failed or if the CA is not trusted emits a warning 
 
-Creating a Root Certificate
+Generate a CA **public key to sign host keys** with `ssh-keygen`:
+
+* Option `-f` defines the name of the private key file (the public key gets
+  `.pub` appended) 
+* Option `-C` provides a comment to identify the CA key
 
 ```bash
-ssh-keygen -b 4096 -t rsa -f devops.ca -C "CA key for devops"
-# writes certificate to $PWD
+ssh-keygen -f devops-host_ca-$(mktemp -u XXXXXX) -C "Host signing key for DevOps"
 ```
 
-Keep the signing key safe (in the example above a file called `devops.ca`).
+Best practice is to have multiple sets of CA keys with different expiration
+dates. This allows to revoke a key if required, while maintaining access to the
+infrastructure. Generally it is useful to follow a naming convention like:
 
-Separate user and host certificate authorities.
+```bash
+<organisation>-<key_type>-<unique_id>
+# the example above, would create a public and private key like
+devops-host_ca-Gb3t8s
+devops-host_ca-Gb3t8s.pub
+
+```
+
+
+
+
+Keep the signing key safe (in the example above a file called `devops.ca`).
 
 ### Signing
 
