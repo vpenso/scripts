@@ -61,11 +61,13 @@ ssh-keygen -h -s devops-host_ca-Gb3t8s \
     ssh_host_rsa_key.pub
 # upload the host certificate to the node
 scp -F ssh_config ssh_host_rsa_key-cert.pub root@lxdev01:/etc/ssh
+# delete the host key and certificate
+shred ssh_host_*
 ```
 
 Inspect the host certificate:
 
-```
+```bash
 >>> ssh-keygen -L -f ssh_host_rsa_key-cert.pub
 ssh_host_rsa_key-cert.pub:
         Type: ssh-rsa-cert-v01@openssh.com host certificate
@@ -80,15 +82,24 @@ ssh_host_rsa_key-cert.pub:
         Extensions: (none)
 ```
 
-## Host Certificates
+## Host Configuration
 
-Add a host certificate to the `sshd` server configuration:
+**Enable a host certificate** in the `sshd` server configuration:
 
 ```bash
-cat <<EOF | sudo tee -a /etc/ssh/sshd_config
-HostCertificate /etc/ssh/ssh_host_rsa_key-cert.pub
-EOF
+ssh -F ssh_config root@lxdev01 -C '
+        echo "HostCertificate /etc/ssh/ssh_host_rsa_key-cert.pub" \
+                >> /etc/ssh/sshd_config
+        sudo systemctl restart sshd
+'
+# restart sshd to enable the configuration change
 ```
+
+`HostCertificate` specifies a file containing a public host certificate. 
+The certificate's public key must match a private host key already specified 
+by `HostKey`.
+
+## Client Configuration
 
 The client use the certificate to verify the node integrity with the CA public
 key. Therefore add the CA public key to `~/.ssh/known_hosts`:
