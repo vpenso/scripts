@@ -15,9 +15,9 @@ Hosts send signed SSH certificate to clients in order to enable the
 
 Generate a CA **public key to sign host keys** with `ssh-keygen`:
 
-* Option `-f` defines the name of the private key file (the public key gets
-  `.pub` appended) 
-* Option `-C` provides a comment to identify the CA key
+* Option `-f` defines the name of the (output) private key file (the public key
+  gets `.pub` appended) 
+* Option `-C` provides a comment to identify the CA key-pair
 
 ```bash
 ssh-keygen -f devops-host_ca-$(mktemp -u XXXXXX) -C "Host signing key for DevOps"
@@ -35,25 +35,32 @@ devops-host_ca-Gb3t8s.pub
 
 ```
 
+## Host Key Signing
 
+Use the CA key-pair to sign the host public key using the `ssh-keygen` command:
 
-
-Keep the signing key safe (in the example above a file called `devops.ca`).
-
-### Signing
-
-Sign the RSA public **host key** on `localhost`:
+* Option `-h` creates a host certificate instead of a user certificate
+* Option `-s` specifies a path to a **CA private key file**
+* Option `-V` specifies a **validity interval** when signing a certificate
+* Option `-n` specifies one or more **principals** (host names)
+* Option `-I` specifies an identification string used in log output
 
 ```bash
-fqdn=$(hostname -f)
-ssh-keygen -h -s devops.ca -V -1d:forever -n $fqdn -I $fqdn.key \
-        /etc/ssh/ssh_host_rsa_key.pub
-# -h   sign host key
-# -s   signing key
-# -n   host name
-# -V   validity interval
-# -I   identifier for the signed key
-# creates /etc/ssh/ssh_host_rsa_key-cert.pub
+# SSH client connection configuration
+cat > ssh_config <<EOF
+StrictHostKeyChecking=no
+UserKnownHostsFile=/dev/null
+EOF
+# download the public host key from a node
+scp -F ssh_config root@lxdev01:/etc/ssh/ssh_host_rsa_key.pub .
+# sign the host key with the CA signing key
+ssh-keygen -h -s devops-host_ca-Gb3t8s \
+           -V -1d:+52w \
+           -n lxdev01.devops.test \
+           -I 'lxdev01.devops.test host certificate' \
+    ssh_host_rsa_key.pub
+# upload the host certificate to the node
+scp -F ssh_config ssh_host_rsa_key-cert.pub root@lxdev01:/etc/ssh
 ```
 
 ## Host Certificates
