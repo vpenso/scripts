@@ -1,6 +1,17 @@
-## Creating a Root Certificate
+# OpenSSH Host Certificates
 
-_Does not use the more common X.509 certificates used in SSL_
+Hosts send a signed SSH certificate to clients to **verify the host's identity**. 
+This is an alternative to the use of public key authentication for hosts.
+
+* The host certificate is signed by a trusted Certificate Authority (CA)
+* The host certificate Includes host name and expiration date
+* Client checks if a trusted CA (listed in `known_hosts`) has signed the
+  host certificate (using the CA public key)
+* Client does not store public key for every host connection, only trusted
+  certificate authorities
+* Either a signature check failed or if the CA is not trusted emits a warning 
+
+Creating a Root Certificate
 
 ```bash
 ssh-keygen -b 4096 -t rsa -f devops.ca -C "CA key for devops"
@@ -10,23 +21,6 @@ ssh-keygen -b 4096 -t rsa -f devops.ca -C "CA key for devops"
 Keep the signing key safe (in the example above a file called `devops.ca`).
 
 Separate user and host certificate authorities.
-
-### Validity Interval
-
-The validity interval is specified like `<start_time>:<end_time>`
-
-* Start time `always` (no specified start time)
-* End time `forever` (never expire)
-* Date format is `YYYYMMDD`, time format `YYYYMMDDHHMM[SS]`
-* Relative time starting with `+` or `-`, suffix `w` (week) `d` (day) `m`
-  (minute)
-
-```bash
-+1w1d           # valid from node to 1 week and 1 day
--4w:+4w         # valid from four weeks ago to four weeks from now
--1d:20201231    # valid from yesterday to midnight December 31st 2020
--1m:forever     # valid from one minute ago and never expiring
-```
 
 ### Signing
 

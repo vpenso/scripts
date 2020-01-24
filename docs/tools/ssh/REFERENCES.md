@@ -6,7 +6,7 @@ https://github.com/Netflix/bless
 [bppam] Best Practices for Privileged Access Management on Elastic Infrastructure  
 https://gravitational.com/gravitational/guides/pam-best-practices.pdf
 
-[cashr] Cashier SSH Certificate Authority
+[cashr] Cashier SSH Certificate Authority  
 https://github.com/nsheridan/cashier
 
 [cvint] LibSSH Curve25519 Introduction  
