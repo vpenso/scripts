@@ -13,7 +13,7 @@ Hosts send signed SSH certificate to clients in order to enable the
   keys of trusted certificate authorities.
 * Either a signature check failed or if the CA is not trusted emits a warning 
 
-Generate a CA **public key to sign host keys** with `ssh-keygen`:
+**Generate a CA public key-pair** to sign host keys with `ssh-keygen`:
 
 * Option `-f` defines the name of the (output) private key file (the public key
   gets `.pub` appended) 
@@ -37,7 +37,8 @@ devops-host_ca-Gb3t8s.pub
 
 ## Host Key Signing
 
-Use the CA key-pair to sign the host public key using the `ssh-keygen` command:
+Use the CA key-pair to **sign the host public key** using the `ssh-keygen`
+command:
 
 * Option `-h` creates a host certificate instead of a user certificate
 * Option `-s` specifies a path to a **CA private key file**
@@ -64,6 +65,9 @@ scp -F ssh_config ssh_host_rsa_key-cert.pub root@lxdev01:/etc/ssh
 # delete the host key and certificate
 shred ssh_host_*
 ```
+
+_The example above is just for illustration purpose, and not the recommended way
+of distributing host certificates_
 
 Inspect the host certificate:
 
