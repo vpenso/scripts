@@ -1,16 +1,14 @@
-html 
-    {
-    margin: 0 auto;
-    max-width: 900px;
-    }
+html {
+        margin: 0 auto;
+        max-width: 900px;
+}
 
-body 
-    {
-    padding: 2em; 
-    color: rgb(56, 58, 66); 
-    overflow: auto; 
-    font:16px/1.6 monospace,monospace
-    }
+body {
+        padding: 2em; 
+        color: rgb(56, 58, 66); 
+        overflow: auto; 
+        font:16px/1.6 monospace,monospace
+}
 
 @media all 
     {
@@ -25,48 +23,66 @@ body
     }
 
 h1,h2,h3 {
-    font-size:inherit;
-    margin:3ch 0 2ch
+        margin:3ch 0 2ch;
+}
+
+h1 {
+        font-size: 24px;       
+        border-bottom: 4px double lightgray;
+}
+
+h2 {
+        font-size: 20px;       
+        border-bottom: 1px solid lightgray;
+}
+
+h3 {
+        font-size: 20px;
 }
 
 h1::before {
-    content:"# "
+        content:"# "
 }
 
 h2::before {
-    content:"## "
+        content:"## "
 }
     
 h3::before {
-    content:"### "
+        content:"### "
 }
 
 h1::before, 
 h2::before, 
 h3::before {
-    color:red
+        color:red
 }
 
 ul {
-    padding:0;
-    list-style:none
+        padding:0;
+        list-style: none outside none;
 }
 
-ul > li::before,
-blockquote::before {
-    float:left;
-    width:1ch;
-    margin-right:1ch;
-    content:"-"
+ul > li::before {
+        margin-right:1ch;
+        content:"-";
+        color:red;
 }
 
-blockquote::befor e{
-    content:">"
+blockquote::before{
+        content:">";
+        color:red;
 }
 
 blockquote { 
-    background:#FFC
-} 
+        margin:0 0 0 0;
+        background:none;
+        color:darkgray;
+}
+
+blockquote p {
+        display: inline;
+}
 
 li > ul { 
     margin:0 0 1ch 2ch
@@ -82,26 +98,25 @@ pre > code {
 
 code{
     border-radius:2px;
-    background:#eee;
+    background:lemonchiffon;
     padding:0 4px
 }
 
 a{ 
-    text-decoration:none
+        text-decoration:none
 }
 
 a:hover{
-    border-bottom:1px solid
+        border-bottom:1px solid
 }
 
-
 img {
-  display:block;
-  margin: 0 auto;
-  width: 100%;
-  height: auto;
-  border-radius:5px;
-  border:1px solid lightgray;
+        display:block;
+        margin: 0 auto;
+        width: 100%;
+        height: auto;
+        border-radius:5px;
+        border:1px solid lightgray;
 }
 
 hr {
@@ -126,16 +141,6 @@ hr {
         font-size: 90%;
         }
     }
-
-
-a code {
-  color: #428bca;
-  background: none;
-  font-size:.8em;
-  padding:0;
-}
-
-
 
 /*   
  Table style

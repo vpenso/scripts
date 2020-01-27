@@ -1,4 +1,4 @@
-export PANDOC_CSS=light
+export PANDOC_CSS=markdown
 export PANDOC_OPTS=
 
 function md2html() {
