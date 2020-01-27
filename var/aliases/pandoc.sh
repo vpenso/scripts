@@ -8,7 +8,6 @@ function md2html() {
                --self-contained \
                --highlight pygments \
                --css $SCRIPTS/var/lib/pandoc/$PANDOC_CSS.css \
-               --read=markdown_github+yaml_metadata_block \
                --output $ofile \
                $PANDOC_OPTS \
                $file
