@@ -1,0 +1,223 @@
+html 
+    {
+    margin: 0 auto;
+    max-width: 900px;
+    }
+
+body 
+    {
+    padding: 2em; 
+    color: rgb(56, 58, 66); 
+    overflow: auto; 
+    font:16px/1.6 monospace,monospace
+    }
+
+@media all 
+    {
+    /* ensures that the page-break is never seen visually */
+    .page-break { display: none; }
+    }
+
+@media print 
+    {
+    /* ensures that the page break is seen by the printer */
+    .page-break { display: block; page-break-before: always; }
+    }
+
+h1,h2,h3 {
+    font-size:inherit;
+    margin:3ch 0 2ch
+}
+
+h1::before {
+    content:"# "
+}
+
+h2::before {
+    content:"## "
+}
+    
+h3::before {
+    content:"### "
+}
+
+h1::before, 
+h2::before, 
+h3::before {
+    color:red
+}
+
+ul {
+    padding:0;
+    list-style:none
+}
+
+ul > li::before,
+blockquote::before {
+    float:left;
+    width:1ch;
+    margin-right:1ch;
+    content:"-"
+}
+
+blockquote::befor e{
+    content:">"
+}
+
+blockquote { 
+    background:#FFC
+} 
+
+li > ul { 
+    margin:0 0 1ch 2ch
+} 
+
+pre > code { 
+    display:block;
+    padding:1ch 0 1ch 1ch;
+    background:none;
+    border: 1px solid whitesmoke;
+    overflow-x:auto
+}
+
+code{
+    border-radius:2px;
+    background:#eee;
+    padding:0 4px
+}
+
+a{ 
+    text-decoration:none
+}
+
+a:hover{
+    border-bottom:1px solid
+}
+
+
+img {
+  display:block;
+  margin: 0 auto;
+  width: 100%;
+  height: auto;
+  border-radius:5px;
+  border:1px solid lightgray;
+}
+
+hr {
+        border-top: 1px solid whitesmoke;
+}
+
+@media print
+    {
+    a   {
+        /* In print, a colored link is useless, so un-style it. */
+        color: black;
+        background: transparent;
+        }
+
+    a[href^="http://"]:after, a[href^="https://"]:after
+        {
+        /* However, links that go somewhere else, might be useful to the reader,
+           so for http and https links, print the URL after what was the link
+           text in parens
+        */
+        content: " (" attr(href) ") ";
+        font-size: 90%;
+        }
+    }
+
+
+a code {
+  color: #428bca;
+  background: none;
+  font-size:.8em;
+  padding:0;
+}
+
+
+
+/*   
+ Table style
+
+*/ 
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+
+table thead > tr > th,
+table tbody > tr > th,
+table tfoot > tr > th,
+table thead > tr > td,
+table tbody > tr > td,
+table tfoot > tr > td {
+  padding: 6px;
+  line-height: 1.428571429;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+table thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  text-align: left;
+}
+
+table caption + thead tr:first-child th,
+table colgroup + thead tr:first-child th,
+table thead:first-child tr:first-child th,
+table caption + thead tr:first-child td,
+table colgroup + thead tr:first-child td,
+table thead:first-child tr:first-child td {
+  border-top: 0;
+}
+
+table tbody + tbody {
+  border-top: 2px solid black;
+}
+
+
+/* Pandoc table of contents DIV when using the --toc option.
+   NOTE: this doesn't support Pandoc's --id-prefix option for #TOC and #header. 
+   Probably would need to use div[id$='TOC'] and div[id$='header'] as selectors.
+*/
+
+div#TOC, nav#TOC
+    {
+    background: #F5F5F5;
+    padding: 0.3em 1em 0.3em 1em;
+    margin-bottom: 2em;
+    }
+
+div#TOC ul, nav#TOC ul
+    {
+    padding-left: 0;
+    }
+
+div#TOC ul li, nav#TOC ul li 
+    { 
+    list-style-type: none; 
+    padding: 0;
+    margin: 0; 
+    }
+
+div#TOC ul li li, nav#TOC ul li li
+    {
+    padding-left: 1em; 
+    margin: 0; 
+    }
+
+@media print
+    {
+    div#TOC, nav#TOC
+        {
+        /* Don't display TOC in print */
+        display: none;
+        }
+    }

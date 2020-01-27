@@ -57,13 +57,11 @@ scp -F ssh_config root@lxdev01:/etc/ssh/ssh_host_rsa_key.pub .
 # sign the host key with the CA signing key
 ssh-keygen -h -s devops-host_ca-Gb3t8s \
            -V -1d:+52w \
-           -n lxdev01.devops.test \
+           -n lxdev01,lxdev01.devops.test \
            -I 'lxdev01.devops.test host certificate' \
     ssh_host_rsa_key.pub
 # upload the host certificate to the node
 scp -F ssh_config ssh_host_rsa_key-cert.pub root@lxdev01:/etc/ssh
-# delete the host key and certificate
-shred ssh_host_*
 ```
 
 _The example above is just for illustration purpose, and not the recommended way
@@ -106,11 +104,31 @@ by `HostKey`.
 ## Client Configuration
 
 The client use the certificate to verify the node integrity with the CA public
-key. Therefore add the CA public key to `~/.ssh/known_hosts`:
+key. Therefore **add the CA public key to known hosts file**:
 
 ```bash
-cat <<EOF | tee -a ~/.ssh/known_hosts
-@cert-authority *.devops.test $(cat devops.ca.pub)
+cat <<EOF | tee ssh_config
+UserKnownHostsFile=ssh_known_hosts
 EOF
+cat <<EOF | tee -a ssh_known_hosts
+@cert-authority * $(cat devops-host_ca-Gb3t8s.pub)
+EOF
+# connect using the known hosts file
+ssh -vvv -F ssh_config root@lxdev01
 ```
+
+The marker `@cert-authority` indicate that the line contains a certification 
+authority (CA) key.
+
+```bash
+Server host certificate: ... serial 0 ID "lxdev01.devops.test host certificate" ...
+Server host certificate hostname: lxdev01.devops.test
+hostkeys_foreach: reading file "ssh_known_hosts"
+record_hostkey: found ca key type RSA in file ssh_known_hosts:1
+load_hostkeys: loaded 1 keys from lxdev01
+Host 'lxdev01' is known and matches the RSA-CERT host certificate.
+Found CA key in ssh_known_hosts:1
+Certificate invalid: name is not a listed principal
+```
+
 
