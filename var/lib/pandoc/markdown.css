@@ -75,7 +75,7 @@ blockquote::before{
 }
 
 blockquote { 
-        margin:0 0 0 0;
+        margin:1.5ch;
         background:none;
         color:gray;
 }
@@ -194,30 +194,30 @@ table tbody + tbody {
    Probably would need to use div[id$='TOC'] and div[id$='header'] as selectors.
 */
 
-div#TOC, nav#TOC
-    {
-    background: #F5F5F5;
-    padding: 0.3em 1em 0.3em 1em;
-    margin-bottom: 2em;
-    }
+div#TOC, 
+nav#TOC {
+        background: whitesmoke;
+        padding: 0.3em 1em 0.3em 1em;
+        margin-bottom: 2em;
+}
 
-div#TOC ul, nav#TOC ul
-    {
-    padding-left: 0;
-    }
+div#TOC ul,
+nav#TOC ul {
+        padding-left: 0;
+}
 
-div#TOC ul li, nav#TOC ul li 
-    { 
-    list-style-type: none; 
-    padding: 0;
-    margin: 0; 
-    }
+div#TOC ul li, 
+nav#TOC ul li { 
+        list-style-type: none; 
+        padding: 0;
+        margin: 0; 
+}
 
-div#TOC ul li li, nav#TOC ul li li
-    {
-    padding-left: 1em; 
-    margin: 0; 
-    }
+div#TOC ul li li, 
+nav#TOC ul li li {
+        padding-left: 1em; 
+        margin: 0; 
+}
 
 @media print
     {
