@@ -32,10 +32,23 @@ SSH is not a true shell (command interpreter):
   - Covers authentication, encryption, and the integrity of data transmitted over a network
 * **Most used implementations is [OpenSSH](https://www.openssh.com/)**
 
-Client Authentication
+## Client Authentication
 
-* Password Authentication
+Different SSH authentication methods:
+
+* Legacy password authentication
+* Keyboard-interactive authentication
+  - Modern implementation of password authentication
+  - Supports challenge-response, and one-time passwords
+  - Supports LDAP, and local credential databases (e.g., password files)
 * Host-Based Authentication
-* Kerberos Authentication
+  - Clients use host key to verify the server’s identity
+  - The client side host warrants for the users identity
+* Kerberos Authentication (GSSAPI)
+  - Single sign-on within a Windows domain or Kerberos realm
+  - User accounts/credentials stored in a centralized directory
+  - Single point for managing user accounts (including disabling)
 * Public Key Authentication
 * Certificate Authentication
+
+

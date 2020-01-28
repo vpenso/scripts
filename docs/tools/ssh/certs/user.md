@@ -10,7 +10,7 @@ ssh-keygen -f user_ca
 _Make sure to keep these keys save, since to enable access to all nodes trusting
 the CA._
 
-### Server Configuration
+## Server Configuration
 
 Configure `sshd` to accept user certificates signed by an CA certificate:
 
@@ -29,7 +29,7 @@ ssh root@lxdev01 -C '
 '
 ```
 
-### Sign User Keys
+## Sign User Keys
 
 Generate **user certificates** to grand access priviliges:
 
@@ -76,7 +76,7 @@ ssh-keygen ... -O source-address=10.1.1.1/24 ...   # CIDR format
 ssh-keygen ... -O force-command=/usr/bin/journalctl ...
 ```
 
-### Using User-Certificates
+## Using User-Certificates
 
 Connect with an private key identity, ssh will also try to load certificate
 information from the filename obtained by appending `-cert.pub` to identity

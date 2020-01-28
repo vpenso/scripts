@@ -1,13 +1,18 @@
-## SSH Certificates
+## OpenSSH Certificates
 
-_Does not use the more common X.509 certificates used in SSL_
+> SSH certificates allow one SSH key to sign another SSH key, resulting in 
+> an “SSH certificate”.
 
-OpenSSH certificates are an extension build using public keys.
+OpenSSH certificates are an extension build using public keys:
 
-The Certificate Authority (CA) is a special trusted party holding own
+* Introduced in OpenSSH 5.4 (released 2010-03-08)
+* Does not use PEM, X.509 ASN.1 (as in SSL)
+
+The OpenSSH Certificate Authority (CA) is a special trusted party holding own
 public-private key-pairs. 
 
 * Alleviates the need to distribute SSH public keys
+* An OpenSSH CA is a regular private key
 * Not used for authentication, only to sign SSH certificates
 * Signs user keys with capabilities and expiration date
 * Signs host keys for a domain
