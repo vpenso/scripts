@@ -1,6 +1,6 @@
 
 # SSH (Secure Shell)
-# Working with Remote Computers
+### Working with Remote Computers
 
 ---
 
@@ -15,10 +15,10 @@
 Establish a **remote terminal session** to a server:
 
 * Make sure **fingerprint is trustworthy** before accepting
-* Accept the remote node fingerprint (at first login) ⇨ list of **known hosts**
+* Accept the remote node fingerprint (at first login)
 * Use `exit` to **logout** from the remote node and end the SSH session
 
-```
+```bash
 » ssh jdow@pool.devops.test↵
 The authenticity of host 'pool.devops.test' (10.10.10.10)' can't be established
 RSA key fingerprint is 96:15:0e:e7:70:09:60:9a:c4:f6:89:05:be:ed:be:c6.
@@ -43,9 +43,9 @@ jdow@node1: exit↵
  `CheckHostIP` | Login pools share a common name with multiple IPs
  `ForwardX11`  | Enable support for graphic applications
 
-User connection defaults in`~/.ssh/config`:
+User connection defaults in `~/.ssh/config`:
 
-```
+```bash
 ### Default user for devops.test
 Host *.devops.test
   User vpenso
@@ -65,19 +65,19 @@ cf. man-page [`ssh_config`](http://manpages.debian.org/ssh_config) for reference
 --------|-------------
  `-r`   | Recursively copy entire directories
 
-```
+```bash
 scp [[user@]host1:]file1 … [[user@]host2:]file2
 ```
 
 Example with an absolute path:
 
-```
+```bash
 scp /path/to/file vpenso@pool.devops.test:/path/to
 ```
 
 **Relative paths** start from the home-directory `~`
 
-```
+```bash
 scp -r vpenso@pool.devops.test:path/to/file ~/path/to
 ```
 
@@ -93,20 +93,20 @@ scp -r vpenso@pool.devops.test:path/to/file ~/path/to
 
 [`ssh-keygen`](http://manpages.debian.org/ssh-keygen) generates **public/private key pairs** 
 
-```
+```bash
 ssh-keygen -q -f ~/.ssh/id_rsa -t rsa
 ```
 
 
 Change password of private-key
 
-```
+```bash
 ssh-keygen -f ~/.ssh/id_rsa -p
 ```
 
 [`ssh-copy-id`](http://manpages.debian.org/ssh-copy-id) **deploys** public-keys to `~/.ssh/authorized_keys`
 
-```
+```bash
 ssh-copy-id vpenso@pool.devops.test
 ```
 
@@ -118,7 +118,7 @@ ssh-copy-id vpenso@pool.devops.test
 
 [`ssh-agent`](http://manpages.debian.org/ssh-agent) stores private-keys for **password-less login** 
 
-```
+```bash
 » eval $(ssh-agent)
 Agent pid 2157
 » ssh-add ~/.ssh/id_rsa 
@@ -137,7 +137,7 @@ Identity added: /home/vpenso/.ssh/id_rsa (/home/vpenso/.ssh/id_rsa)
 
 Forwarding exposes the private-key to the **trustworthy** remote computer!
 
-```
+```bash
 »  ssh -A -t vpenso@pool.devops.test ssh lxdev01
 ```
 
@@ -154,7 +154,7 @@ Use a single `ssh-agent` session in multiple shells:
 
 Start an agent and store the connection information ↴ [`ssh-agent-session`](https://raw.githubusercontent.com/vpenso/scripts/master/bin/ssh-agent-session)
 
-```
+```bash
 » source ssh-agent-session
 ssh-agent started, session in /home/vpenso/.ssh/agent-session
 ```
@@ -162,14 +162,14 @@ ssh-agent started, session in /home/vpenso/.ssh/agent-session
 
 Use an already running agent:
 
-```
+```bash
 » source ssh-agent-session
 ssh-agent running with process ID 19264
 ```
 
 Source this script within the your profile, e.g.:
 
-```
+```bash
 » echo "source ~/bin/ssh-agent-session"  >> ~/.zshrc
 ```
 
@@ -181,7 +181,7 @@ Source this script within the your profile, e.g.:
 
 Route network traffic over an SSH connection into GSI:
 
-```
+```bash
 » sshuttle --dns --remote vpenso@pool.devops.test --daemon \
            --pidfile=/tmp/sshuttle.pid 0/0
 […]
@@ -190,7 +190,7 @@ Route network traffic over an SSH connection into GSI:
 
 The script ↴ [`ssh-tunnel`](https://raw.githubusercontent.com/vpenso/scripts/master/bin/ssh-tunnel) wraps these commands 
 
-```
+```bash
 » ssh-tunnel connect vpenso@pool.devops.test
 [local sudo] Password: 
 vpenso@gsi.de's password: 
@@ -210,7 +210,7 @@ Sshuttle not connected.
 
 Mounts a **remote directory** onto your local computer with [`sshfs`](http://manpages.debian.org/sshfs) 
 
-```
+```bash
 » sshfs -C -o reconnect,auto_cache,follow_symlinks \
         vpenso@pool.devops.test:/WWW/vpenso ~/www 
 […]
@@ -221,7 +221,7 @@ Release the mount with [`fusermount`](http://manpages.debian.org/sshfs)
 
 The script ↴ [`ssh-fs`](https://raw.githubusercontent.com/vpenso/scripts/master/bin/ssh-fs) wraps these commands
 
-```
+```bash
 # mount remote directories
 » ssh-fs mount example.org:docs ~/docs
 » ssh-fs mount jdoe@example.org:/data /data
