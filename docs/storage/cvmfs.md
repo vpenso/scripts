@@ -1,5 +1,42 @@
+# CernVM-FS
 
-[CernVM-FS](https://cvmfs.readthedocs.io/en/2.4/index.html)
+> The [CernVM-File System][cf] (CernVM-FS) provides a scalable, reliable and
+> low-maintenance software distribution service.
+
+* Read-only file system to deliver scientific software to client nodes
+* Uses standard HTTP protocol, enabling a variety of web caches
+* Files and directories are hosted on **standard web servers**
+* Ensures data authenticity/integrity over untrusted connections
+* Optimized for small files that are frequently opened/read as a whole
+
+Clients mount a virtual file system to `/cvmfs`
+
+* POSIX read-only file system in user space (FUSE module)
+* Loads data on demand as soon as directories/files accessed
+
+Create/update a CernVM-FS repository on a **Release Manager Machine**:
+
+* Mounts a CernVM-FS repository in read/write mode
+* Software updates installed to a writable scratch area
+* Changed in scratch merged into the CernVM-FS repository
+* Merge/publish are atomic operations controlled by the user
+
+## Installation
+
+Client/server [binary packages][bp] available for following Platforms:
+
+* Ubuntu {12,16,16,18}.04
+* Debian 8,9,10 
+* RHEL 6,7,8
+* Fedora 29,30
+* SLES 11,12 
+
+Package repositories with [YUM][yr] and [APT][ap]
+
+[cf]: https://cvmfs.readthedocs.io/en/2.4/index.html
+[bp]: https://cernvm.cern.ch/portal/filesystem/downloads
+[yr]: https://cvmrepo.web.cern.ch/cvmrepo/yum/
+[ap]: https://cvmrepo.web.cern.ch/cvmrepo/apt/
 
 Make the CVMFS packages available on **CentOS**:
 
