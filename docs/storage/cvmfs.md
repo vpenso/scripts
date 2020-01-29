@@ -146,13 +146,13 @@ cvmfs_server mkfs $repo
 
 **Create backups of signing key files in /etc/cvmfs/keys**
 
-Repositories uses two sets of keys in `/etc/cvmfs/keys/$repo.*`:
+Repositories uses two sets of keys:
 
-Key                         | Description
-----------------------------|-----------------------------
-`${repo}.key`               | Repository key
-`${repo}.pub`               | Distributed to clients, verifies authenticity
-`${repo}.master.key`        | Signs the repository key
+```bash
+/etc/cvmfs/keys/$repo.key          # Repository key
+/etc/cvmfs/keys/$repo.pub          # Distributed to clients, verifies authenticity
+/etc/cvmfs/keys/$repo.master.ke    # Signs the repository key
+```
 
 * Signatures are only good for 30 days by default
 * Run `cvmfs_server resign` again before they expire
@@ -162,25 +162,25 @@ Key                         | Description
 
 ### Configuration 
 
-Path                                           | Description
------------------------------------------------|-------------------------
-`/etc/cvmfs/repositories.d/$repo/server.conf`  | Server configuration file
-`/etc/cvmfs/repositories.d/$repo/client.conf`  | Client configuration file
-`/srv/cvmfs/$repo`                             | Repository storage location
-`/srv/cvmfs/$repo/.cvmfspublished`             | Manifest file of the repository
-`/srv/cvmfs/$repo/.cvmfswhitelist`             | Trusted repository certificates
-`/srv/cvmfs/$repo/data`                        | Content Addressable Storage (CAS)
+```bash
+/etc/cvmfs/repositories.d/$repo/server.conf  # Server configuration file
+/etc/cvmfs/repositories.d/$repo/client.conf  # Client configuration file
+/srv/cvmfs/$repo                             # Repository storage location
+/srv/cvmfs/$repo/.cvmfspublished             # Manifest file of the repository
+/srv/cvmfs/$repo/.cvmfswhitelist             # Trusted repository certificates
+/srv/cvmfs/$repo/data                        # Content Addressable Storage (CAS)
+```
 
 →  [Repository Configuration Directory](https://cvmfs.readthedocs.io/en/2.4/apx-serverinfra.html#repository-configuration-directory)  
 
 Internal state of the repository:
 
-Path                                  | Description
---------------------------------------|-------------------------
-`/var/spool/cvmfs/$repo`              | Server spool area
-`/var/spool/cvmfs/$repo/cache`        | Client cache
-`/var/spool/cvmfs/$repo/rdonly`       | Client mount point
-`/var/spool/cvmfs/$repo/scratch`      | Writable union file system
+```bash
+/var/spool/cvmfs/$repo              # Server spool area
+/var/spool/cvmfs/$repo/cache        # Client cache
+/var/spool/cvmfs/$repo/rdonly       # Client mount point
+/var/spool/cvmfs/$repo/scratch      # Writable union file system
+```
 
 →  [Server Spool Area of a Repository](https://cvmfs.readthedocs.io/en/2.4/apx-serverinfra.html#server-spool-area-of-a-repository-stratum0)
 
