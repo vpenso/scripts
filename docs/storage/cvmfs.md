@@ -134,8 +134,8 @@ Use the `cvmfs_server` command create a new repository:
 ```bash
 repo=${repo:-bits.devops.test}
 cvmfs_server mkfs $repo
+cvmfs_server info
 ```
-
 
 * Mounts the repository under `/cvmfs/$repo` (read/write access)
 * Repository **names resembles a DNS scheme** (by convention)
