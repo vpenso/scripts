@@ -69,6 +69,10 @@ ul > li::before {
         color:red;
 }
 
+ul ul {
+        margin-left:2ch;
+}
+
 blockquote::before{
         content:">";
         color:red;
