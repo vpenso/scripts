@@ -7,6 +7,38 @@ grep -i -e ^revision -e ^hardware /proc/cpuinfo
 cat /proc/device-tree/model     
 ```
 
+Installation OS images:
+
+* [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
+  - user/password pi/raspberry
+* [Fedora](https://fedoraproject.org/wiki/Architectures/ARM/Raspberry_Pi)
+
+```bash
+# Raspbian
+unzip -p $archive | sudo dd status=progress bs=4M of=/dev/sdb conv=fsync
+# Fedora
+xzcat $image | sudo dd status=progress bs=4M of=/dev/sdb conv=fsync
+```
+
+### Monitor Resolution
+
+```
+tvservice -s         # current resolution
+tvservice -m DMT     # list monitor resolution
+```
+
+Configure HDMI in `/boot/config.txt`
+
+```
+# enable DMT mode
+hdmi_group=2
+# audio over HDMI
+hdmi_drive=2
+# always start HDMI
+hdmi_force_hotplug=1
+# resolution 1920x1080/60Hz (1080p)
+hdmi_mode=82
+
 ### GPIO
 
 General purpose input-output (GPIO) connector:
@@ -48,29 +80,3 @@ pip3 install adafruit-blinka
 
 GPIOZero [gzero] uses only Broadcom (BCM) pin numbering (opposed to physical (BOARD) numbering)
 
-## References
-
-
-[adabli] Adafruit-Blinka, CircuitPython APIs for CPython on Linux and MicroPython  
-https://pypi.org/project/Adafruit-Blinka
-
-[bcmp] Broadcom BCM2835 ARM Peripherals  
-https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2835/BCM2835-ARM-Peripherals.pdf
-
-[cirpy] CircuitPython on Linux and Raspberry Pi  
-https://learn.adafruit.com/circuitpython-on-raspberrypi-linux
-
-[gzero] GPIOZero interface to GPIO devices with Raspberry Pi  
-https://gpiozero.readthedocs.io/en/stable/
-
-[pinout] GPIO Pinout guide for the Raspberry Pi  
-https://pinout.xyz/
-
-[raspi] Raspberry Pi Hardware Documentation  
-https://www.raspberrypi.org/documentation/hardware/raspberrypi/
-
-[rpiio] RPi GPIO Code Samples  
-https://elinux.org/RPi_GPIO_Code_Samples
-
-[wirpi] Wiring Pi C GPIO Interface library for the Raspberry Pi  
-http://wiringpi.com/
