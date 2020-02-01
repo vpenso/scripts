@@ -9,6 +9,7 @@ BlueZ [bluez] is the official Linux Bluetooth stack.
 systemctl enable --now bluetooth             # start bluethoothd
 journalctl -u bluetooth                      # bluethoothd logs
 bluetoothctl                                 # command line interface
+sudo dmesg | grep Bluetooth                  # check kernel messages
 ```
 
 Turn the physical Bluetooth device on/off with `rfkill`:
