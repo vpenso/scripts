@@ -1,24 +1,31 @@
-# Digital I/O with PWM
+# PWM - Pulse-Width Modulation
 
-### Setup
+Generates **analogue signals** (voltage levels) from a digital device
 
-The RGB LED has four leads, one for each color (positive), and a common ground (negative). Each LED color lead requires a protection resistor **R[1,2,3]** (e.g. 220Ω).
+* Still a digital signal with a defined time period between on and off (high/low)
+* Generates a **square wave** instead of a constant voltage
+* If the frequency is sufficiently high the output can be adjusted anywhere between 0-100%
+* The **duty Cycle** describes the time in percent (proportion) the output/signal is high over a constant time interval
 
-![schematic.png](schematic.png)
+Disadvantage: _Power/energy delivered is not continuous_
 
-**Connections**
+* If a high frequency is not sufficient use additional passive electronic filters
+* Filters smooth the pulse to recover an analog waveform
 
-* **Red** lead → Arduino **D3** (digital output, with PWM)
-* **Blue** lead → Arduino **D5** (digital output, with PWM)
-* **Green** lead → Arduino **D6** (digital output, with PWM)
-* Common ground → Arduino **GND** (0V)
+Common applications:
 
-![beradboard.jpg](breadboard.jpg)
+* Control dimming of RGB LEDs
+* Control the direction/angel of a servo motor
+* Control the speed of a fan
+* Voltage regulators (usually filtered with an inductor & capacitor)
+* May be used to encode a message into a pulsing signal to transmit information
 
-### Code
+## Arduino Analog Write
 
-**[main.ino](main.ino)** implements:
+`D[3,5,6,9,10,11]` pins with PWN support (marked with `~`):
 
-1. An `rgbColor()` function with arguments for each RGB color. It sends output to **D[3,5,6]** with [analogWrite()](https://www.arduino.cc/en/Reference/AnalogWrite)
-2. Call this function from the main `loop()` to mix red, green, blue, yellow, purple, and aquamarine colors.
-3. Write for-loops to iterate over all possible RGB colors.
+- Duty-cycle pulse stream at approx. @490Hz frequency
+- Limited to 8bit resolution, values from `0` up to `255`
+
+[analogWrite(pin,dutyCycle)](https://www.arduino.cc/en/Reference/analogWrite)
+
