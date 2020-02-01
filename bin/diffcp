@@ -132,8 +132,6 @@ test -d $dir || {
         $sudo mkdir -p $dir
 }
 
-echo $backup
-
 # if the user requests a backup of the original destination file
 $backup && {
         # if the destination file exits
