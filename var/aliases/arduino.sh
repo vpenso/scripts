@@ -2,8 +2,10 @@
 export PATH=$ARDUINO_HOME/hardware/tools/avr/bin:$PATH
 export ARDUINO_FQBN=arduino:avr:uno
 
-echo ARDUINO_HOME=$ARDUINO_HOME
-echo ARDUINO_FQBN=$ARDUINO_FQBN
+test "$_DEBUG" = true && {
+        echo ARDUINO_HOME=$ARDUINO_HOME
+        echo ARDUINO_FQBN=$ARDUINO_FQBN
+}
 
 function arduino-upload() {
   $ARDUINO_HOME/arduino \

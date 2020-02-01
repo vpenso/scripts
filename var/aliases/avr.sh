@@ -4,9 +4,11 @@ export AVR_BAUDRATE=115200
 export AVR_MONITOR_LOG=/tmp/monitor.log
 export AVR_DUDECONF=$ARDUINO_HOME/hardware/tools/avr/etc/avrdude.conf
 
-echo AVR_MONITOR_LOG=$AVR_MONITOR_LOG
-echo AVR_DEVICE=$AVR_DEVICE
-echo AVR_BAUDRATE=$AVR_BAUDRATE
+test "$_DEBUG" = true && {
+        echo AVR_MONITOR_LOG=$AVR_MONITOR_LOG
+        echo AVR_DEVICE=$AVR_DEVICE
+        echo AVR_BAUDRATE=$AVR_BAUDRATE
+}
 
 function avr-upload() {
   local source=$1
