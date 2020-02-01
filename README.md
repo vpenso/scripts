@@ -17,8 +17,13 @@ Path                               | Description
 `bin/`                             | Scripts for various purposes
 `docs/`                            | Notes on technologies
 `etc/`                             | Configuration files
-`src`                              | Source code
-`var/`                             | Shell aliases, bookmarks, etc.
+`src/`                             | Source code examples...
+`src/arduino`                      | Everything for **Arduino** (MCU)
+`src/raspberry_pi`                 | **Raspberry Pi** (SBC) coding...
+`var/`                             | Stuff not fitting above
+`var/aliases`                      | Helpful shell aliases
+`var/bookmarks`                    | Collection of personal bookmarks
+`var/circuits`                     | Some **electronics** toy projects
 
 
 ## License
