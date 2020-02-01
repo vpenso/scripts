@@ -1,9 +1,3 @@
-## Description
-
-* [bin/](bin/) – Scripts for various purposes...
-* [docs/](docs/) – Notes about IT technologies... 
-* [etc/](etc/) – Configuration files...
-
 Use [source_me.sh](source_me.sh) to add aliases and scripts to the shell 
 environment:
 
@@ -15,6 +9,17 @@ source source_me.sh
 * Set an environment variable `$SCRIPTS` with the absolute path to this directory
 * Prepends `$SCRIPTS/bin` to the `$PATH` environment variable
 * Sources all scripts in `var/aliases/*.sh`
+
+## Structure
+
+Path                               | Description
+-----------------------------------|-----------------------------------
+`bin/`                             | Scripts for various purposes
+`docs/`                            | Notes on technologies
+`etc/`                             | Configuration files
+`src`                              | Source code
+`var/`                             | Shell aliases, bookmarks, etc.
+
 
 ## License
 
