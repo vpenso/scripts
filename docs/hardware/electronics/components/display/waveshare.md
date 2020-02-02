@@ -37,10 +37,10 @@ https://www.waveshare.com/w/upload/a/a7/SSD1351-Revision_1.5.pdf
 [wexcg] Waveshare Example Code, Github  
 https://github.com/waveshare/1.5inch-RGB-OLED-Module
 
-[wwaec] Waveshare Wiki Arduino Example Code   
+[wwaec] Waveshare Wiki Arduino Example Code  
 https://www.waveshare.com/wiki/File:1.5inch_OLED_Moudle.7z
 
-[dbwod] Using OLED Displays with Arduino, DroneBot Workshop
+[dbwod] Using OLED Displays with Arduino, DroneBot Workshop  
 https://dronebotworkshop.com/oled-arduino
 
 [escoe] ESP32 SSD1351 1.5" Color OLED Example Code  
