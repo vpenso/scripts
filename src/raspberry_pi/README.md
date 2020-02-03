@@ -12,6 +12,7 @@ Installation OS images:
 * [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
   - user/password pi/raspberry
 * [Fedora](https://fedoraproject.org/wiki/Architectures/ARM/Raspberry_Pi)
+* Debian [Raspberry Pi Images](https://wiki.debian.org/RaspberryPiImages)
 
 ```bash
 # Raspbian
