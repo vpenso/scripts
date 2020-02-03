@@ -6,10 +6,47 @@ IEEE **802.11** wireless computer networking standards
 * The standard is updated by means of amendments
   - Denoted by 802.11 followed by a non-capitalized letter, e.g. IEEE 802.11a
   - Cf. [list of amendments](https://en.wikipedia.org/wiki/IEEE_802.11#Standards_and_amendments)
-* Widely used in the **2.4Ghz** and **5Ghz** radio frequencies
-  - ISM bands: 2.400–2.500 GHz, and 4.915–5.825 GHz spectrum
-  - Each spectrum is sub-divided into **channels** with a center frequency and bandwidth
-  - Cf. [list of channels](https://en.wikipedia.org/wiki/List_of_WLAN_channels)
+
+## Physical Layer
+
+Widely used in the **2.4Ghz** and **5Ghz** radio frequencies
+
+- Industrial Scientific Medical (ISM) band (license free)
+- ISM bands: 2.400–2.500 GHz, and 4.915–5.825 GHz spectrum
+- Each spectrum is sub-divided into **channels** with a center frequency and bandwidth
+- Cf. [list of channels](https://en.wikipedia.org/wiki/List_of_WLAN_channels)
+
+Spread spectrum technology:
+
+- DSSS (Direct Sequency Spread Spectrum)
+- OFDM (Orthogonal Frequecy-Division Multiplexing)
+
+**802.11b/g** networks operate in the 2.4 GHz band:
+
+- 14 channels, bandwidth approximately 20 to 22 MHz
+- Crowded frequency: Bluetooth, microwaves, telephones, garage door openers...
+
+**802.11a** networks operate in the 5 GHz band
+
+- 13 channels, bandwidth approximately 20 MHz operating
+- less crowded 
+
+## Operation Modes
+
+Wireless devices called **stations** (STAs)
+
+- Wirelessly connected STAs (at least two) form a basic service set (BSS)
+- Controlled by a single **coordination function** (CF)
+
+**Ad-hoc** mode (without an AP)
+
+- Direct communication between two stations (peer-to-peer model)
+- Isolated, no connection to other WiFi networks
+
+Infrastructure mode using a wireless **Access Point** (AP)
+
+- STA with additional coordination functions
+- Wireless devices must associate to an AP for network access
 
 ## Wireless Security 
 
