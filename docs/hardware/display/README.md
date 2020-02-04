@@ -28,9 +28,7 @@ Electronic visual display (informally screen) technologies:
 Displays emitting light called **active** displays. Displays modulating
 available light (reflection/transmission) called **passive** display.
 
-## Flat Panel Displays
-
-### LCD (Liquid Crystal Display)
+## LCD (Liquid Crystal Display)
 
 * Works by **adjusting the amount of light blocked**
 * Array of liquid crystal segments (containing organic molecules)
@@ -51,9 +49,48 @@ available light (reflection/transmission) called **passive** display.
 
 I.e. a 320x240 RGB display is formed by 960 columns and 240 rows 
 
-### OLED (Organic Light Emitting Diode)
+## OLED (Organic Light Emitting Diode)
 
-Emits light rather the blocking it like LCDs
+Use organic materials that **emit light when electricity is applied**
+
+* ...rather then blocking light like LCDs
+* Series of organic thin films between two conductors
+* Emissive displays that do not require backlight, or color filters
+
+Improvements over LCDs:
+
+* Ultra-thin form factor
+* Lower power consumption
+* Better durability (broader temperature range)
+* Faster refresh rates
+* Improved image quality
+* Better contrast
+* Higher brightness
+* Wider viewing angle
+* Wider color range
+* Can be...
+  - Transparent
+  - Flexible
+  - Foldable
+  - Rollable
+  - Sretchable
+
+### Driving Method:
+
+**PMOLED** (passive matrix OLED)
+
+- Control each row in the display sequentially (one at a time)
+- No (active) storage capacitor
+- Limits in size & resolution by max. input voltage (typical <3")
+- Cheap fabrication compared to AMOLED
+- Lower lifetime
+
+**AMOLED** (active matrix OLED)
+
+- Use (active-matrix) TFT array with storage capacitor 
+- Less power then PMOLEDs
+- Faster refresh rate
+- Supports larger high-resolution displays
 
 ## Addressing Scheme
 
