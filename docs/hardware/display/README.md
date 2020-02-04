@@ -19,11 +19,10 @@ Electronic visual display (informally screen) technologies:
 * **LCD** (liquid crystal display)
   - **TFT** (thin-film transistor) LCD 
   - LCD with LED backlit
-* LED (light-emitting diode)
-  - **OLED** (organic light-emitting diode display)
-  - AMOLED (active-matrix organic light-emitting diode)
+* **OLED** (organic light-emitting diode display)
 * Plasma (plasma display panel)
 * QLED (quantum dot LED)
 
-Displays emitting light called **active** displays. Displays modulating
-available light (reflection/transmission) called **passive** display.
+Displays emitting light called **active**. 
+
+Displays modulating available light (reflection/transmission) called **passive**.
