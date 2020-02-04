@@ -10,6 +10,24 @@ Physiological aspect of the human eye:
 
 # Displays
 
+Display device is an output device to present information.
+
+Electronic visual display (informally screen) technologies:
+
+* **CRT** (cathode ray tube) 
+* Segment display
+* **LCD** (liquid crystal display)
+  - **TFT** (thin-film transistor) LCD 
+  - LCD with LED backlit
+* LED (light-emitting diode)
+  - **OLED** (organic light-emitting diode display)
+  - AMOLED (active-matrix organic light-emitting diode)
+* Plasma (plasma display panel)
+* QLED (quantum dot LED)
+
+Displays emitting light called **active** displays. Displays modulating
+available light (reflection/transmission) called **passive** display.
+
 Graphical displays of two types:
 
 * **Vector** displays
@@ -23,7 +41,7 @@ Graphical displays of two types:
 
 ## Flat Panel Displays
 
-**LCD** (Liquid Crystal Display)
+### LCD (Liquid Crystal Display)
 
 * Works by **adjusting the amount of light blocked**
 * Array of liquid crystal segments (containing organic molecules)
@@ -36,10 +54,6 @@ Graphical displays of two types:
   - Pixel hold electrical state
   - Pixel more rapidly switched (faster response time (25ms))
 
-**OLED** organic (Light Emitting Diode)
-
-* Emits light rather the blocking it like LCS
-
 **Color filters** allow the generation of colors (RGB) at a segment:
 
 - Three segments required to generate a real world color
@@ -47,3 +61,7 @@ Graphical displays of two types:
 - These segments for a group, **RGB pixel**
 
 I.e. a 320x240 RGB display is formed by 960 columns and 240 rows 
+
+### OLED (Organic Light Emitting Diode)
+
+Emits light rather the blocking it like LCDs
