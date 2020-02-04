@@ -19,7 +19,7 @@ https://www.freetronics.com.au/pages/oled128-quickstart-guide-raspberry-pi
 
 ## Drivers & Libraries
 
-[solic] Solomon Systech, OLED Display Driver ICs
+[solic] Solomon Systech, OLED Display Driver ICs  
 http://www.solomon-systech.com/en/product/advanced-display/oled-display-driver-ic/
 
 [u8g2l] U8g2 monochrome graphics library for embedded devices  
