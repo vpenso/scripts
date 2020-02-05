@@ -9,8 +9,6 @@
     or combination of keystrokes.
   - The character map in stored in the keyboard ROM. Typically
     configured by an application/operating system.
-* Key Bounce - Mechanical vibration cased by pressing the key,
-  filtered by de-bounce circuit or in software.
 * Keycap - Plastic top cap with the letter printing 
 * O-Rings - Dampen the sound your keycaps make when you bottom out
 * Stem - Mount for the keycap (part of the switch)
