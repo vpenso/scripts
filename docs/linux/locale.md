@@ -26,6 +26,8 @@ Configuration Files:
 find /usr/share/kbd/keymaps/ -type f
 # interactively enter a key and see what keysym it is configure
 xev | grep keysym
+# in a console (not X window terminal)
+showkey --scancodes
 ```
 
 `loadkeys` loads or modifies the keyboard driver's translation tables
