@@ -6,7 +6,7 @@ dc <dev>          connect to device
 dd <dev>          disconnect from device
 dp                paired devices
 dr <dev>          remove device
-s                 scan for devices
+s  [sec]          scan for devices
 "
 
 command -v bluetoothctl >&- && {
@@ -32,7 +32,7 @@ command -v bluetoothctl >&- && {
                         s)      
                                 {   
 				    printf 'scan on\n\n'
-				    sleep 2
+				    sleep ${1:-10}
 				    printf 'devices\n\n'
 				    printf 'quit\n\n'
 				} | bluetoothctl

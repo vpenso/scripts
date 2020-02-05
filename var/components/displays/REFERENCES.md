@@ -64,23 +64,3 @@ https://github.com/twchad/Adafruit_Python_SSD1351
 
 [aal1351] Adafruit Arduino Library, SSD1351  
 https://github.com/adafruit/Adafruit-SSD1351-library
-
-
-## Displays
-
-### Waveshare 1.5" 128x128 OLED RGB 256k
-
-[w15or] Waveshare 1.5" OLED 128x128 RGB OLED  
-https://www.waveshare.com/1.5inch-rgb-oled-module.htm
-
-[ww15o] Waveshare Wiki 1.5" RGB OLED Module  
-https://www.waveshare.com/wiki/1.5inch_RGB_OLED_Module
-
-[w15um] Waveshare 1.5" RGB OLED User Manual  
-https://www.waveshare.com/w/upload/5/5b/1.5inch_RGB_OLED_Module_User_Manual_EN.pdf
-
-[wexcg] Waveshare Example Code, Github  
-https://github.com/waveshare/1.5inch-RGB-OLED-Module
-
-[wwaec] Waveshare Wiki Arduino Example Code  
-https://www.waveshare.com/wiki/File:1.5inch_OLED_Moudle.7z
