@@ -23,22 +23,7 @@ The keyboards sends the scancode to the keyboard driver running the host:
 * A keyboard layout maps a keycode to a symbol or **keysym**
 * Symbol mapping depends on what **modifier keys** are hold
 
-```bash
-# list input devices
-cat /proc/bus/input/devices | grep -P '^[NH]: ' | paste - -
-# monitor keystrokes
-evtest                      # select from the list of devices
-evtest /dev/input/event$n   # select a specific device
-# monitor keystrokes in a virtual console
-showkey --keycodes
-# monitor keystrokes in X
-xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
-# or
-xbindkeys --defaults > ~/.xbindkeysrc
-xbindkeys --multikey
-```
-
-Mapping scancodes to keycodes is universal (not application specific).
+Mapping scancodes to keycodes is universal (not application specific)
 
 ## Connection Types
 

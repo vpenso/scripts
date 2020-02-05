@@ -1,3 +1,18 @@
+```bash
+# list input devices
+cat /proc/bus/input/devices | grep -P '^[NH]: ' | paste - -
+# monitor keystrokes
+evtest                      # select from the list of devices
+evtest /dev/input/event$n   # select a specific device
+# monitor keystrokes in a virtual console
+showkey --keycodes
+# monitor keystrokes in X
+xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+# or
+xbindkeys --defaults > ~/.xbindkeysrc
+xbindkeys --multikey
+```
+
 ## Keys Types
 
 Most computer keyboards containe following keys:
