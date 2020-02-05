@@ -13,15 +13,15 @@ cheat=$(cat <<EOF
             Launch
                ┬
      <M^Enter> │ open default terminal emulator
-        <M^F1> │ open secondary terminal emulator
-        <M^F2> │ open program launcher
-        <M^F3> │ open bookmark selection
-        <M^F4> │ open bc calculator
+       Alt_L+1 │ open secondary terminal emulator
+       Alt_L+2 │ open program launcher
+       Alt_L+3 │ open bookmark selection
+       Alt_L+4 │ open bc calculator
 
 
             Windows
                ┬
-         <M^-> │ tile vertial for next window
+         <M^-> │ tile vertical for next window
          <M^|> │ tile horizontal for next window
     <M^{hjkl}> │ left, down, up, right window focus
     <M^{HJKL}> │ move focused window left, down, up right

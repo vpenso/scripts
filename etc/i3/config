@@ -1,4 +1,5 @@
 # vim: filetype=i3config
+
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 default_border pixel 3
@@ -33,14 +34,14 @@ bindsym $mod+9 exec --no-startup-id i3lock-fancy
 # kill focused window
 bindsym $mod+q kill
 # start terminal emulator
-bindsym $mod+Return exec terminal # keep the default
-bindsym $mod+F1 exec terminator
+bindsym $mod+Return exec terminator
+bindsym mod1+1 exec terminator
 # start program launcher
-bindsym $mod+F2 exec --no-startup-id rofi -show run -theme white
+bindsym mod1+2 exec --no-startup-id rofi -show run -theme white
 # start bookmark menu
-bindsym $mod+F3 exec /usr/local/bin/rofi-bookmarks
-# start roif bc
-bindsym $mod+F4 exec --no-startup-id rofi -show bc -theme white -modi bc:~/.config/rofi/rofi-bc-script
+bindsym mod1+3 exec /usr/local/bin/rofi-bookmarks
+# start rofi bc
+bindsym mod1+4 exec --no-startup-id rofi -show bc -theme white -modi bc:~/.config/rofi/rofi-bc-script
 # split orientation
 bindsym $mod+Shift+bar split h;exec notify-send 'tile horizontally'
 bindsym $mod+minus split v;exec notify-send 'tile vertically'

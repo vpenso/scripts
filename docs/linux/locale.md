@@ -24,6 +24,8 @@ Configuration Files:
 /etc/vconsole.conf
 # keymap files (usually corresponds to one keyboard)
 find /usr/share/kbd/keymaps/ -type f
+# interactively enter a key and see what keysym it is configure
+xev | grep keysym
 ```
 
 `loadkeys` loads or modifies the keyboard driver's translation tables
