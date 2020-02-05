@@ -69,6 +69,10 @@ ls -l /dev/i2c*              # check for the I2C device
 ls -l /dev/spidev*           # check for the SPI device
 ```
 
+SPI pinout:
+
+<https://pinout.xyz/pinout/spi>
+
 Enable a second SPI port with `dtoverlay=spi1-3cs` in `/boot/config.txt` (reboot required)
 
 ## Python
