@@ -1,5 +1,6 @@
 " Specify a directory for plugins
 call plug#begin('~/.vim/plugged')
+
 " list plugins to install
 Plug 'powerline/powerline'
 " https://github.com/vim-airline/vim-airline
@@ -7,6 +8,10 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " https://github.com/ryanoasis/vim-devicons
 Plug 'ryanoasis/vim-devicons'
+" i3 configuration syntax highlighting
+"   https://github.com/mboughaba/i3config.vim
+Plug 'mboughaba/i3config.vim'
+
 " run :PlugInstall
 " Initialize plugin system
 call plug#end()
@@ -56,6 +61,10 @@ set colorcolumn=+1 " highlight column after 'textwidth'
 set nobackup
 set nowritebackup
 set noswapfile
+
+" enable modeline magic
+set modeline
+set modelines=5
 
 " disable the arrow keys
 noremap <Up> <nop>

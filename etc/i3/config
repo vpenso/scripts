@@ -1,3 +1,4 @@
+# vim: filetype=i3config
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 default_border pixel 3
