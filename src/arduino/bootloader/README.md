@@ -37,6 +37,8 @@ List of connections:
 | UNO **5V**      | NANO **VIN**       |
 | UNO **GND**     | NANO **GND**       |
 
+Instead of 5V & GND, it is possible to power the target board via USB.
+
 ![Setup](setup.jpg)
 
 ## Procedure
@@ -47,6 +49,6 @@ Use the Arduino IDE:
   - Select File ➤ Examples ➤ Arduino ISP
   - Verify & Upload
 * Burn the bootloader to the Arduino Nano
-  - Select Tools ➤ Board ➤ Arduino Nano w/Atmega 328
-  - Select Tools ➤ Programmer ➤ Arduino as ISP
+  - Select Tools ➤ Board ➤ Arduino Nano w/Atmega 328p
+  - Select Tools ➤ Programmer ➤ Arduino **as** ISP
   - Select Tools ➤ Burn Bootloader
