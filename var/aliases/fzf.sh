@@ -38,3 +38,26 @@ echo "
           !str$ │ invert-suffix-exact-match
 "
 }
+
+##
+# Search all Markdown file in $SCRIPTS/docs and display with a pager
+#
+s() {
+        file=$(fd --type f '.*' $SCRIPTS | sort | \
+                        fzf --ansi --exact --query ${1:-''})
+        command -v bat >&- && {
+                bat --style=header,grid $file
+                return
+        }
+        cat $file
+}
+
+##
+# Search all Markdown file in $SCRIPTS/docs and open with the Vim editor
+#
+se() {
+        file=$(fd --type f '.*' $SCRIPTS |\
+                        fzf --ansi --exact --query ${1:-''})
+        ${EDITOR:-vim} $file
+}
+

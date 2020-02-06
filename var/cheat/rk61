@@ -2,20 +2,20 @@ Keyboard standby after 3 minutes, wake-up by pressing any key
 
 Multifunction keys (gray text):
 
-Fn + <key>               Secondary function
-Fn + Ctrl_L              Toggle secondary function (except arrows)
-Fn + Return              Toggle arrow key function
-Fn + Lock                Toggle Win key lock control
+    Fn + <key>               Secondary function
+    Fn + Ctrl_L              Toggle secondary function (except arrows)
+    Fn + Return              Toggle arrow key function
+    Fn + Lock                Toggle Win key lock control
 
 Backlight control:
 
-Fn + \                   Switch backlight mode
-Fn + [,]                 Backlight brightness control (turn off/on)
-Fn + ;,'                 Backlight speed control
+    Fn + \                   Switch backlight mode
+    Fn + [,]                 Backlight brightness control (turn off/on)
+    Fn + ;,'                 Backlight speed control
 
 Bottom switch "on" to enable Bluetooth mode:
 
-Fn + Q,W,E               Connect with paired BT device
+    Fn + Q,W,E               Connect with paired BT device
 
 Pairing:
 
@@ -25,5 +25,5 @@ Pairing:
 
 Platform mode:
 
-Fn + a                   Switch to windows system mode
-Fn + s                   Switch to Mac System Mode
+    Fn + a                   Switch to windows system mode
+    Fn + s                   Switch to Mac System Mode
