@@ -1,7 +1,3 @@
-#!/bin/bash
-
-echo \
-"                   ┬
     <C-a> ?        │ show key binding
     <C-a> r        │ reload ~/.tmux.conf
     <C-a> c        │ new window
@@ -11,13 +7,13 @@ echo \
     <C-a> a        │ send prefix key to program in pane 
     <C-a> x        │ hide status bar
 
-               Sessions
-                   ┬
+Sessions
+
     <C-a> d        │ detach from session (run tmux attach)
     <C-a> $        │ rename session
 
-          Copy & paste (Vi style)
-                   ┬
+Copy & paste (Vi style)
+
     <C-a> [        │ copy mode
     q, <Esc>       │ exit copy mode
     <C-a> /        │ copy mode, start search
@@ -28,8 +24,8 @@ echo \
     y,Enter        │ copy selection
     <C-a> ]        │ paste selection
 
-              Pain control
-                   ┬
+Pain control
+
     p              │ kill pane
     <C-a> {hjkl}   │ select pane left|below|above|right
     <C-a> {HJKL}   │ resize pane left|down|up|right 
@@ -61,4 +57,3 @@ echo \
     y              │ copy mode selection to clipboard
     <C-a> y        │ copy text from CLI to clipboard
     <C-a> Y        │ copy working directory to the clipboard
-"
