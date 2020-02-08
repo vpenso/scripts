@@ -1,11 +1,15 @@
 
 dhcpcd daemon, and optionally WPA supplicant
 
-## Configureation
+```bash
+# run debug mode, foreground
+dhcpcd -Bd -f /etc/dhcpcd.conf
+```
+
+## Configuration
 
 ```bash
 /etc/dhcpcd.conf
-/usr/share/dhcpcd/hooks
 ```
 
 Prevent the configuration of an interface:
