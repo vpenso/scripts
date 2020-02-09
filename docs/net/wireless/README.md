@@ -12,24 +12,49 @@ IEEE **802.11** wireless computer networking standards
 Widely used in the **2.4Ghz** and **5Ghz** radio frequencies
 
 - Industrial Scientific Medical (ISM) band (license free)
-- ISM bands: 2.400–2.500 GHz, and 4.915–5.825 GHz spectrum
 - Each spectrum is sub-divided into **channels** with a center frequency and bandwidth
-- Cf. [list of channels](https://en.wikipedia.org/wiki/List_of_WLAN_channels)
+- These wavelengths work best for line-of-sight
 
 Spread spectrum technology:
 
 - DSSS (Direct Sequency Spread Spectrum)
 - OFDM (Orthogonal Frequecy-Division Multiplexing)
 
-**802.11b/g** networks operate in the 2.4 GHz band:
+IEEE 802.11 Standards and Frequency Band
 
+```bash
+802.11a	   5GHz
+802.11b	   2.4GHz
+802.11g	   2.4GHz
+802.11n	   2.4 & 5 GHz
+802.11ac   below 6GHz
+```
+
+### 2.4GHz Frequency Band
+
+**802.11b/g/n** networks operate in the 2.4 GHz band:
+
+- ISM band: 2.400–2.500 GHz
 - 14 channels, bandwidth approximately 20 to 22 MHz
 - Crowded frequency: Bluetooth, microwaves, telephones, garage door openers...
 
-**802.11a** networks operate in the 5 GHz band
+Not all channels usable for WiFi in all countries:
 
-- 13 channels, bandwidth approximately 20 MHz operating
+<https://en.wikipedia.org/wiki/List_of_WLAN_channels#2.4_GHz_(802.11b/g/n/ax)>
+
+Channel overlapping between two adjacent WiFi AP devices cause frequency
+interference. Maximum three **non-overlapping channel** can be found in 2.4 GHz
+band.
+
+### 5GHz Frequency Band
+
+**802.11a/n/ac** networks operate in the 5 GHz band
+
+- ISM band: 4.915–5.825 GHz spectrum
+- Channel width: 802.11n 40MHz, 802.11ac 80MHz
 - less crowded 
+
+23 non-overlapping channels but all channels are not usable for all countries
 
 ## Operation Modes
 
