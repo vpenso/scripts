@@ -8,11 +8,13 @@
 > is non-destructive: installing a new version does not break existing
 > installations, so many configurations can coexist on the same system.
 
-<https://spack.io>  
-<https://spack.readthedocs.io>  
-<https://github.com/spack/spack>  
+→  [Spack - Web-Site](https://spack.io)  
+→  [Spack - Documentation](https://spack.readthedocs.io)  
+→  [Spack - Source Code](https://github.com/spack/spack), GitHub
 
 * Install software either from source or from a binary cache
+* Mirror all source code dependencies (tarballs) on a local file-system
+* Use Spack to build container images with Docker
 
 ## Installation
 
@@ -27,16 +29,20 @@ git clone https://github.com/spack/spack.git
 export SPACK_ROOT=$PWD/spack
 # add spack tp PATH, load command-line completion (bash/zsh)
 source $SPACK_ROOT/share/spack/setup-env.sh
-# install core spack utilities
-spack bootstrap
 ```
 
-Make sure a host compilers 
+Make sure a host compiler is available:
 
 ```bash
 spack compilers                       # see which compilers spack has found
 spack compiler find [$path]           # search for compilers(, in a specified path)
 spack config edit compilers           # manual configuration
+```
+
+Install core Spack utilities:
+
+```bash
+spack bootstrap
 ```
 
 ## Configuration
@@ -78,7 +84,7 @@ spack gc                              # remove build time dependencies
 
 Optional **version specifier**:
 
-<https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies>
+→ [Specs & Dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)
 
 * Package name identifier (`$name` above)
 * `@` Optional version specifier (@1.2:1.4)
@@ -94,10 +100,43 @@ Optional **version specifier**:
   os=CNL10`)
 * `^` Dependency specs (`^callpath@1.1`)
 
-## Modules
+Adding packages to the user environment
 
 ```bash
+spack load $name                      # add paackage to environment
+spack unload $name                    # remove package from environment
+```
+
+## Environments
+
+> An environment is a virtualized spack instance that you can use for a specific
+> purpose.
+
+→ [Spack Tutorial - Environments](https://spack-tutorial.readthedocs.io/en/latest/tutorial_environments.html)
+
+```bash
+spack env create $name                    # create a new environment
+spack env list                            # available environments
+spack env status                          # show current environment
+spack env activate $name                  # activate environment
+spack env deactivate                      # leave environment
+```
+
+
+
+## Modules
+
+→ [Spack Tutorial - Module Files](https://spack-tutorial.readthedocs.io/en/latest/tutorial_modules.html)
+
+```bash
+# add support for hierarchical and non-hierarchical module file layouts
 spack install lmod
+# generate the environment load file
+source $(spack location -i lmod)/lmod/lmod/init/bash
+# load environment modules
+source $SPACK_ROOT/share/spack/setup-env.sh
+# list available modules
+module avail
 ```
 
 
