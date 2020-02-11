@@ -37,6 +37,8 @@ Make sure a host compiler is available:
 spack compilers                       # see which compilers spack has found
 spack compiler find [$path]           # search for compilers(, in a specified path)
 spack config edit compilers           # manual configuration
+spack arch                            # host architecture
+spack arch --known-targets            # supported architectures
 ```
 
 Install core Spack utilities:
@@ -72,7 +74,7 @@ spack find -lf                        # show hash, and compiler
 spack find -ldf                       # include dependencies
 ```
 
-Install and uninstall:
+Install and uninstall [packages](https://spack.readthedocs.io/en/latest/package_list.html):
 
 ```bash
 spack install $name                   # install package (prefered versions)
@@ -82,23 +84,20 @@ spack uninstall --dependents ...      # ..including every packages that depend o
 spack gc                              # remove build time dependencies
 ```
 
-Optional **version specifier**:
+Optional **version specifier** →  [Specs & Dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)
 
-→ [Specs & Dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)
+```bash
+spack install mpileaks                             # unconstrained
+spack install mpileaks@3.3                         # @ custom version
+spack install mpileaks@3.3 %gcc@4.7.3              #  % custom compiler
+spack install mpileaks@3.3 %gcc@4.7.3 +threads     # +/- build option
+spack install mpileaks@3.3 cppflags="-O3 –g3"      # set compiler flags
+spack install mpileaks@3.3 target=skylake          # set target microarchitecture
+spack install mpileaks@3.3 ^mpich@3.2 %gcc@4.9.3   # ^ dependency information
+```
 
-* Package name identifier (`$name` above)
-* `@` Optional version specifier (@1.2:1.4)
-* `%` Optional compiler specifier, with an optional compiler version (`gcc` or
-  `gcc@4.7.3`)
-* `+` or `-` or `~` Optional variant specifiers (+debug, -qt, or ~qt) for
-  boolean variants
-* `name=<value>` Optional variant specifiers that are not restricted to boolean
-  variants
-* `name=<value>` Optional compiler flag specifiers. Valid flag names are
-  `cflags`, `cxxflags`, `fflags`, `cppflags`, `ldflags`, and `ldlibs`.
-* `target=<value> os=<value>` Optional architecture specifier (`target=haswell
-  os=CNL10`)
-* `^` Dependency specs (`^callpath@1.1`)
+* Each expression is a spec for a particular configuration
+* Spec syntax is recursive
 
 Adding packages to the user environment
 
@@ -122,8 +121,6 @@ spack env activate $name                  # activate environment
 spack env deactivate                      # leave environment
 ```
 
-
-
 ## Modules
 
 → [Spack Tutorial - Module Files](https://spack-tutorial.readthedocs.io/en/latest/tutorial_modules.html)
@@ -143,11 +140,20 @@ module avail
 # References
 
 
-[01] Spack – A Package Manager for HPC, Todd Gamblin, Stanford HPC Conference 2019  
+[01] Spack – A Package Manager for HPC, Gamblin, Stanford HPC Conference 2019  
 <https://insidehpc.com/2019/03/spack-a-package-manager-for-hpc/>
 
-[02] Spack and the U.S. Exascale Computing Project, Todd Gamblin, HPCKP'19  
+[02] Spack and the U.S. Exascale Computing Project, Gamblin, HPCKP'19  
 <https://www.youtube.com/watch?v=DRuyPDdNr0M>
 
-[03] Spack's new Concretizer, Tood Gamblin, FOSDEM 20  
+[03] Spack's new Concretizer, Gamblin, FOSDEM 2020  
 <https://fosdem.org/2020/schedule/event/dependency_solving_not_just_sat/>
+
+[04] The Spack Package Manager: Bringing Order to HPC Software Chaos, Gamblin  
+<https://tgamblin.github.io/pubs/spack-sc15.pdf>
+
+[05] SPACK: The Daily Job of a User (and a Packager), Culpo, 2017  
+<https://www.youtube.com/watch?v=2exsn9OHsMY>
+
+[06] Binary packaging for HPC with Spack, Gamblin, FOSDEM 2018  
+<https://archive.fosdem.org/2018/schedule/event/llnl_spack/>
