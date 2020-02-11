@@ -1,7 +1,6 @@
 notes() {
         local notes=$SCRIPTS/var/notes.txt
-        date >> $notes
-        echo >> $notes
+        echo -e "## $(date)\n" >> $notes
         if [[ $# -ne 0 ]]
         then
                 echo "$@" >> $notes
