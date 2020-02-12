@@ -23,8 +23,14 @@ Run completely decoupled from the default system `sshd` configuration:
 ```bash
 cd $(mktemp -d)
 ssh-keygen -t rsa -N '' -f ssh_host_rsa_key
-touch sshd_config
-$(which sshd) -d -h ssh_host_rsa_key -p 2222 -f sshd_config
+cat > sshd_config <<EOF
+UsePrivilegeSeparation no
+HostKey $PWD/ssh_host_rsa_key
+Port 2022
+LogLevel DEBUG3
+PidFile $PWD/sshd.pid
+EOF
+$(which sshd) -f sshd_config -dD
 ```
 
 ## Configuration
