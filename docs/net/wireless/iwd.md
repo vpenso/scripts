@@ -35,6 +35,10 @@ sudo systemctl daemon-reload
 
 ## Usage
 
+Make sure to configure following prerequisites:
+
+1. Bring up the interfaces with `systemd-networkd`
+2. Configure DNS resolution with `systemd-resolved`
 
 Minimal configuration to assign IP address(es) and set up routes using a
 built-in DHCP client:

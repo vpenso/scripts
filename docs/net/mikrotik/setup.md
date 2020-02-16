@@ -7,6 +7,15 @@
 
 This will force the load of the backup boot loader!
 
+Depending on your setup scenario, make sure adjust the **routing metric** to
+prioritise an interface with an outbound connection:
+
+```bash
+>>> grep -i metric /etc/systemd/network/*
+/etc/systemd/network/20-wired.network:RouteMetric=10
+/etc/systemd/network/25-wireless.network:RouteMetric=20
+```
+
 Connect your node to the device Ethernet **port 2** (the first port "Internet"
 is in a different mode):
 
@@ -15,3 +24,5 @@ is in a different mode):
 ssh admin@192.168.88.1
 # no password will be required at first login
 ```
+
+
