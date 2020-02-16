@@ -85,6 +85,6 @@ command -v mpc >&- && {
 
 # if the ncurses client is installed
 command -v ncmpc >&- && {
-	alias n="ncmpc --host 127.0.0.1 --port $MPD_PORT"
+	alias ncmpc="ncmpc --host 127.0.0.1 --port $MPD_PORT"
 }
 
