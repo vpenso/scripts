@@ -25,4 +25,17 @@ ssh admin@192.168.88.1
 # no password will be required at first login
 ```
 
+Lock down the device:
 
+```bash
+/user set admin password=1234567
+# disable all service, except SSH
+/ip service disable [find name!=ssh]
+/tool mac-server set allowed-interface-list=none
+/tool mac-server mac-winbox set allowed-interface-list=none
+/tool mac-server ping set enabled=no
+/tool bandwidth-server set enabled=no
+/tool romon set enabled=no
+# disable unused interfaces
+/interface disable ether1,ether3,wlan1
+```
