@@ -8,7 +8,7 @@ command -v sxiv >&- && {
                         # recursive search
                         # open with thumbnail mode
                         # enable private mode
-                        sxiv -rtp "$@"
+                        sxiv -rbtp "$@"
                 # it it is a single image
                 else
                         # no info bar on the bottom
