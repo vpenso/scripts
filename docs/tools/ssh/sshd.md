@@ -40,17 +40,3 @@ PidFile $PWD/sshd.pid
 EOF
 $(which sshd) -f sshd_config -dD
 ```
-
-## ForceCommand
-
-> Forces the execution of the command specified by ForceCommand, ignoring any
-> command supplied by the client and `~/.ssh/rc` if present. The command is
-> invoked by using the user's login shell with the -c option. This applies to
-> shell, command, or subsystem execution. It is most useful inside a Match
-> block. The command originally supplied by the client is available in the
-> `SSH_ORIGINAL_COMMAND` environment variable. Specifying a command of
-> internal-sftp will force the use of an in-process SFTP server that requires no
-> support files when used with ChrootDirectory. The default is none.
-
-
-
