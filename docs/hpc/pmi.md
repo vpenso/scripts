@@ -28,20 +28,28 @@ PMI provides a common **abstraction to HPC process managers**
 
 Process Management Interface - Exascale (PMIx):
 
-* Defines standard APIs (not the implementation) [pstd2]
+* Defines standard APIs (not the implementation) [pxstd]
 * Open Source reference implementation of the standard [ompix]
 * Fully supports both of the existing PMI-1 and PMI-2 APIs
+* Auto-negotiation messaging protocol from v2.1.x onwards
 
 ## References
 
-[brgcb] PMIx: Bridging the Container Boundary  
-<https://pmix.org/wp-content/uploads/2019/04/PMIxSUG2019.pdf>
+[brgcb] PMIx: Bridging the Container Boundary (2019)  
+<https://pmix.org/wp-content/uploads/2019/04/PMIxSUG2019.pdf>  
+<https://www.youtube.com/watch?v=9u4xmXpQU_U>
+
+[ebsmc] Evaluation and Benchmarking of Singularity MPI Containers (2019/20)  
+<https://www.canopie-hpc.org/wp-content/uploads/2019/12/prace_azab.pdf>
+
+[ormch] On-node Resource Manager for Containerized HPC Workloads (2019/12)  
+<https://www.canopie-hpc.org/wp-content/uploads/2019/12/PMIx-Canopie-HPC-2019.pdf>
 
 [opmix] OpenPMIx Implementation of the PMIx Standard  
 <https://github.com/openpmix/openpmix/releases>
 
-[pstd2] PMIx Standard 2.2  
-<https://pmix.org/wp-content/uploads/2019/02/pmix-standard-2.2.pdf>
+[pstd2] PMIx Standard  
+<https://pmix.org/pmix-standard/>
 
 [spmid] A Scalable PMIx Database  
 <https://eurompi2018.bsc.es/sites/default/files/uploaded/dstore_empi2018.pdf>
