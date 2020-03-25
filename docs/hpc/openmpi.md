@@ -1,24 +1,24 @@
 # Open MPI (OMPI)
 
-Three types of **frameworks**:
+* **MCA** (Modular Component Architecture)
+  - Framework manage a single components type (multiple versions) at run-time
+  - Components implement a framework interface loaded as plugin at run-time
+  - Modules is a run-time instance of a component
+* **MCA parameters** customize the run-time configuration with simple key-value pairs
 
-* **OMPI** (Open MPI layer) the **MPI API** and supporting logic
-* **ORTE** (Open MPI Run-Time Environment) interfaces the back-end **run-time** system
-* **OPAL** (Open Portability Access Layer) utility code for the
-  **platform**/operating system
-
-Frameworks group MCA parameters by function:
-
-* `mca` specify paths or functions for MCA parameters
-* `mpi` specify MPI behavior at runtime
-* `orte` specify debugging functions and components for ORTE
-* `opal` specify stack trace information
+Find a comprehensive list of MCA frameworks in the README  
+<https://github.com/open-mpi/ompi/blob/master/README>
 
 ```bash
 ompi_info --param all all                 # list all frameworks, MCA paramters
 ompi_info --param $framework all          # ^for a specific framework
 ompi_info --param $framework $component   # ^specific component
+ompi_info --param $framework $component   # ^specific component
+ompi_info --param $framework $component --level 9 
 ```
+
+Open MPI FAQ: General run-time tuning  
+<https://www.open-mpi.org/faq/?category=tuning>
 
 Change the behavior of code at run-time in following precedence:
 
@@ -26,7 +26,8 @@ Change the behavior of code at run-time in following precedence:
 2. Environment variables `export OMPI_MCA_<name>=<value>`
 3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
 
-Cf. [Open MPI FAQ: General run-time tuning](https://www.open-mpi.org/faq/?category=tuning)
+
+
 
 ## Install
 
