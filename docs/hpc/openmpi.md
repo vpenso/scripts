@@ -1,10 +1,32 @@
 # Open MPI (OMPI)
 
-Main code sections:
+Three types of **frameworks**:
 
-* **OMPI** (Open MPI layer) the MPI API and supporting logic
-* **ORTE** (Open MPI Run-Time Environment) interfaces the back-end run-time system
-* **OPAL** (Open Portability Access Layer) utility code for the operating system
+* **OMPI** (Open MPI layer) the **MPI API** and supporting logic
+* **ORTE** (Open MPI Run-Time Environment) interfaces the back-end **run-time** system
+* **OPAL** (Open Portability Access Layer) utility code for the
+  **platform**/operating system
+
+Frameworks group MCA parameters by function:
+
+* `mca` specify paths or functions for MCA parameters
+* `mpi` specify MPI behavior at runtime
+* `orte` specify debugging functions and components for ORTE
+* `opal` specify stack trace information
+
+```bash
+ompi_info --param all all                 # list all frameworks, MCA paramters
+ompi_info --param $framework all          # ^for a specific framework
+ompi_info --param $framework $component   # ^specific component
+```
+
+Change the behavior of code at run-time in following precedence:
+
+1. Command line arguments `mpirun -mca <name> <value>`
+2. Environment variables `export OMPI_MCA_<name>=<value>`
+3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
+
+Cf. [Open MPI FAQ: General run-time tuning](https://www.open-mpi.org/faq/?category=tuning)
 
 ## Install
 
@@ -140,28 +162,3 @@ Compile the using `mpicc` an execute it locally with `mpirun`:
 >>> mpirun -np 4 hello_world              # run with 4 processes
 ```
 
-### MCA Parameters
-
-Change the behavior of code at run-time in following precedence:
-
-1. Command line arguments `mpirun -mca <name> <value>`
-2. Environment variables `export OMPI_MCA_<name>=<value>`
-3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
-4. Default value
-
-Use `ompi_info` to investigate the OMPI installation
-
-```bash
-ompi_info --param btl all       # show the BTL (Byte Transfer Layer) supported        
-```
-
-Cf. [Open MPI FAQ: General run-time tuning](https://www.open-mpi.org/faq/?category=tuning)
-
-Configure the port range used by MPI:
-
-```bash
->>> grep ports /etc/openmpi-mca-params.conf
-oob_tcp_dynamic_ipv4_ports=35000-45000
-ompi_info --param oob tcp --level 9 | grep dynamic
-             MCA oob tcp: parameter "oob_tcp_dynamic_ipv4_ports" (current value: "35000-45000",...
-```
