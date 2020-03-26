@@ -26,7 +26,29 @@ Change the behavior of code at run-time in following precedence:
 2. Environment variables `export OMPI_MCA_<name>=<value>`
 3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
 
+ORTE back-end run-time environment component frameworks:
 
+- `ess` RTE environment-specific services
+- `plm` process lifecycle management
+- `ras` resource allocation system
+- `schizo` OpenRTE personality framework
+
+```bash
+# RSH/SSH
+ompi_info --param plm rsh                                                
+                 MCA plm: rsh (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+# PBS/Torque
+ompi_info --param all all | grep tm    
+                 MCA ess: tm (MCA v2.1.0, API v3.0.0, Component v3.1.4)
+                 MCA plm: tm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+                 MCA ras: tm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+# SLURM
+ompi_info --param all all | grep slurm                                  
+                 MCA ess: slurm (MCA v2.1.0, API v3.0.0, Component v3.1.4)
+                 MCA plm: slurm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+                 MCA ras: slurm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+              MCA schizo: slurm (MCA v2.1.0, API v1.0.0, Component v3.1.4)
+```
 
 
 ## Install
