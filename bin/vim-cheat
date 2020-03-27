@@ -169,7 +169,9 @@ cheat=$(cat <<EOF
              % │ create new empty file
              d │ create new directory
      (map leader is comma , )
-            ,e │ edit configuration file
+            ,d │ toggle german spelling
+            ,e │ toggle english spelling
+            ,n │ toggle line numbers
            ,sv │ reload configuration file
             ,l │ toggle invisible characters
             ,/ │ clear search highlighting

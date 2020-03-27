@@ -72,17 +72,9 @@ noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
 
-" Switch to paste mode, disabling all kinds of smartness
-" and enable just pasting a whole buffer of test.
-set pastetoggle=<F3>
-" switch between German and English spelling
-map <F5> :setlocal spell! spelllang=de<CR>
-map <F6> :setlocal spell! spelllang=en<CR>
-" toggle relative line numbers
-map <F7> :set invnumber invrelativenumber<CR>
 
 " To define a mapping which uses the "mapleader" variable, the
-" special string "<Leader>" can be used.  It is replaced with the
+" special string "<leader>" can be used.  It is replaced with the
 " string value of "mapleader". If "mapleader" is not set or empty,
 " a backslash ('\') is used instead as default.
 let mapleader = ','
@@ -94,9 +86,20 @@ nmap <leader>l :set list!<CR>
 " Use the symbols from Unicode for tab-stops and end-of-line
 set listchars=tab:▸␣,eol:¬,space:·,nbsp:␣,trail:•,precedes:«,extends:»
 
-
 " Clearing highlighted searches
 nmap <silent> <leader>/ :nohlsearch<CR>
+
+" Switch to paste mode, disabling all kinds of smartness
+" and enable just pasting a whole buffer of test.
+set pastetoggle=<F3>
+" switch between German and English spelling
+map <F5> :setlocal spell! spelllang=de<CR>
+nnoremap <leader>d :setlocal spell! spelllang=de<CR>
+map <F6> :setlocal spell! spelllang=en<CR>
+nnoremap <leader>e :setlocal spell! spelllang=en<CR>
+" toggle relative line numbers
+map <F7> :set invnumber invrelativenumber<CR>
+nnoremap <leader>n :set invnumber invrelativenumber<CR>
 
 " enable relative line numbers
 set rnu
