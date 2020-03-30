@@ -12,7 +12,9 @@ Plug 'ryanoasis/vim-devicons'
 "   https://github.com/mboughaba/i3config.vim
 Plug 'mboughaba/i3config.vim'
 
-" run :PlugInstall
+" Commands
+"    :PlugInstall      Install plugins
+"    :PlugClean        Remove unlisted plugins 
 " Initialize plugin system
 call plug#end()
 " select a custom theme
