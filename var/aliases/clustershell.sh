@@ -1,5 +1,3 @@
-alias nodeset='noglob nodeset'
-
 # quick export NODES environment variable
 function NODES() {
 	if [ $# -lt 1 ]
@@ -19,6 +17,7 @@ alias rush='clush -l root -w $NODES'
 
 if [[ $SHELL == *zsh ]]
 then
+        alias nodeset='noglob nodeset'
         alias NODES='noglob NODES'
 	# pipe into the NODES environment variable
 	alias -g NE='| exp NODES'
