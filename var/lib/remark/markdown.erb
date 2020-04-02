@@ -24,6 +24,7 @@
         font-size: 24px;
 }
 
+
 .remark-code,
 .hljs-default .hljs {
             font-size:16px;
@@ -32,9 +33,11 @@
 }
 
 .remark-inline-code {
+            font-size:17px;
             border-radius:2px;
             background:lemonchiffon;
-            padding:0 4px;
+            padding:1.8px;
+            color:darkslategray;
 }
 
 a{
@@ -68,6 +71,19 @@ small {
   display: inline-block;
   font-size: 14px;
   line-height: 1em;
+}
+blockquote p::before {
+  content:"> ";
+  color:red;
+}
+
+blockquote {
+  margin:0;
+  padding-right:2px;
+  padding-left:2px;
+  font-size:20px;
+  font-style:italic;
+  color:gray;
 }
 
 ul {
