@@ -19,7 +19,7 @@
 	pl = pull --ff-only
 	plr = pull --rebase
 	plt = pull --tags
-	s = status
+	s = status -sb
 	a = add
 	as = apply --stat
 	ac = apply --check
