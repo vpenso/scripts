@@ -13,8 +13,8 @@ Register   | Description
 _          | black hole register (content discarded, not store to viminfo)
 0          | last yank from y/Y
 1 to 9     | historical record of delete/change from d/D/c/C
--          | small delete register
-\.          | last insert text register
+\-          | small delete register
+.          | last insert text register
 a to z     | named registers for users
 %          | file name register
 :          | command register (most recently executed)
