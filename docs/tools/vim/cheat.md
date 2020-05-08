@@ -1,5 +1,11 @@
+# Editor
 
-## Undo, Redo, Copy and Paste
+```
+,l               toggle invisible characters
+gx               open URL under cursor in web browser
+```
+
+Undo, Redo, Copy and Paste
 
 ```
 u                undo last edit
@@ -9,15 +15,12 @@ y,Y              copy selection/line
 p,P              paste after/below of before/above the cursor
 ```
 
-## Text
-
 Spelling 
 
 ```
 ,n               toggle line numbers
 ,d               toggle german spelling
 ,e               toggle english spelling
-,l               toggle invisible characters
 z=               list alternatives if word is incorrect
 zG               add the word to the spelling file
 :digraphs        list digraph characters

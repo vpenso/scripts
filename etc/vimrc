@@ -22,19 +22,21 @@ Plug 'garbas/vim-snipmate'
 " Supertab insert mode completions with Tab
 "  https://github.com/ervandew/supertab
 Plug 'ervandew/supertab'
-
 " Buffergator is a plugin for listing, navigating between, and selecting
 " buffers to edit
 " Cf. https://github.com/jeetsukumaran/vim-buffergator 
 Plug 'jeetsukumaran/vim-buffergator'
+" Git command wrapper cf. https://github.com/tpope/vim-fugitive
+Plug 'tpope/vim-fugitive'
+" Shows git diff markers in the sign column
+"  https://github.com/airblade/vim-gitgutter/
+Plug 'airblade/vim-gitgutter/'
 
 " Commands
 "    :PlugInstall      Install plugins
 "    :PlugClean        Remove unlisted plugins 
 " Initialize plugin system
 call plug#end()
-" select a custom theme
-let g:airline_theme='minimalist'
 
 filetype on         " enable file type detection
 filetype indent on  " file type specific indenting
@@ -129,6 +131,13 @@ au InsertEnter * :set nu
 au InsertLeave * :set rnu
 au FocusLost * :set nu
 au FocusGained * :set rnu
+                        \
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" PLUGIN CONFIGURATION
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" select a custom theme
+let g:airline_theme='minimalist'
 
 " Configure the vim-markdown plugin, cf https://github.com/tpope/vim-markdown
 "
@@ -136,10 +145,12 @@ au FocusGained * :set rnu
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
 let g:markdown_minlines = 100
 
+" Configure the vim-gitgutter plugin, cf. https://github.com/airblade/vim-gitgutter/
+let g:gitgutter_terminal_reports_focus=0
+set updatetime=100
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
 " SYNTAX HIGLIGHTING
-"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
