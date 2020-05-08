@@ -1,10 +1,11 @@
 # Editor
 
 ```
-,e               edit ~/.vimrc
+,c               edit ~/.vimrc
 ,s               source ~/.vimrc
 ,l               toggle invisible characters
 gx               open URL under cursor in web browser
+K                open man page for command under cursor
 ```
 
 Undo, Redo, Copy and Paste
@@ -111,32 +112,6 @@ O                 begin a new line above the cursor and insert text
 R                 replace mode (chars you type replace existing chars)
 <Esc>,<C^[>       end insert or replace mode
 ```
-
-
-## Delete
-
-```
-D                delete until end of line
-[count]x         delete chars under and after cursor
-[count]X         delete chars before cursor
-[count]dd        delete lines
-[count]J         join lines (delete line break)
-d[count]w        delete words
-d[count]b        delete words backward
-dt{char}         delete forward until {char}
-dT{char}         delete backward until {char} 
-```
-
-Delete before entering insert mode:
-
-```
-C                delete until end of line, and insert text
-r{char}          replace char under cursor with {char}
-[count]s         delete chars and insert text
-[count]S         delete lines and insert text
-c[count]w        delete words and insert text
-```
-
 
 
 ## Folding

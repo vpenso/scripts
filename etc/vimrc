@@ -13,6 +13,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'mboughaba/i3config.vim'
 " Auto-close inserts matching close pairs
 Plug 'Townk/vim-autoclose'
+
 " SnipMate inserts text snippets
 "  cf. https://github.com/garbas/vim-snipmate
 Plug 'MarcWeber/vim-addon-mw-utils'
@@ -22,10 +23,12 @@ Plug 'garbas/vim-snipmate'
 " Supertab insert mode completions with Tab
 "  https://github.com/ervandew/supertab
 Plug 'ervandew/supertab'
+
 " Buffergator is a plugin for listing, navigating between, and selecting
 " buffers to edit
 " Cf. https://github.com/jeetsukumaran/vim-buffergator 
 Plug 'jeetsukumaran/vim-buffergator'
+
 " Git command wrapper cf. https://github.com/tpope/vim-fugitive
 Plug 'tpope/vim-fugitive'
 " Shows git diff markers in the sign column
@@ -101,7 +104,7 @@ let mapleader = ','
 
 " make it easy to edit the Vim configuration file
 nmap <leader>s :source $HOME/.vimrc
-nmap <leader>e :e $HOME/.vimrc
+nmap <leader>c :e $HOME/.vimrc
 
 " highlight invisible characters
 "set list
@@ -125,7 +128,13 @@ nnoremap <leader>e :setlocal spell! spelllang=en<CR>
 map <F7> :set invnumber invrelativenumber<CR>
 nnoremap <leader>n :set invnumber invrelativenumber<CR>
 
+" disable recording
+map q <Nop>
+" disable ex mode
+nnoremap Q <nop>
 
+" Reset registers
+command! Wipe for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
 " enable relative line numbers
 set rnu
