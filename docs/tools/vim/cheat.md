@@ -1,6 +1,8 @@
 # Editor
 
 ```
+,e               edit ~/.vimrc
+,s               source ~/.vimrc
 ,l               toggle invisible characters
 gx               open URL under cursor in web browser
 ```

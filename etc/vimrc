@@ -99,6 +99,10 @@ noremap <Right> <nop>
 " a backslash ('\') is used instead as default.
 let mapleader = ','
 
+" make it easy to edit the Vim configuration file
+nmap <leader>s :source $HOME/.vimrc
+nmap <leader>e :e $HOME/.vimrc
+
 " highlight invisible characters
 "set list
 " shortcut to rapidly toggle `set list`
@@ -120,6 +124,8 @@ nnoremap <leader>e :setlocal spell! spelllang=en<CR>
 " toggle relative line numbers
 map <F7> :set invnumber invrelativenumber<CR>
 nnoremap <leader>n :set invnumber invrelativenumber<CR>
+
+
 
 " enable relative line numbers
 set rnu
