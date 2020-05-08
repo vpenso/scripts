@@ -11,6 +11,22 @@ Plug 'ryanoasis/vim-devicons'
 " i3 configuration syntax highlighting
 "   https://github.com/mboughaba/i3config.vim
 Plug 'mboughaba/i3config.vim'
+" Auto-close inserts matching close pairs
+Plug 'Townk/vim-autoclose'
+" SnipMate inserts text snippets
+"  cf. https://github.com/garbas/vim-snipmate
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
+Plug 'honza/vim-snippets'
+Plug 'garbas/vim-snipmate'
+" Supertab insert mode completions with Tab
+"  https://github.com/ervandew/supertab
+Plug 'ervandew/supertab'
+
+" Buffergator is a plugin for listing, navigating between, and selecting
+" buffers to edit
+" Cf. https://github.com/jeetsukumaran/vim-buffergator 
+Plug 'jeetsukumaran/vim-buffergator'
 
 " Commands
 "    :PlugInstall      Install plugins
@@ -113,6 +129,18 @@ au InsertEnter * :set nu
 au InsertLeave * :set rnu
 au FocusLost * :set nu
 au FocusGained * :set rnu
+
+" Configure the vim-markdown plugin, cf https://github.com/tpope/vim-markdown
+"
+" enable fenced code block syntax highlighting in your markdown documents
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
+let g:markdown_minlines = 100
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" SYNTAX HIGLIGHTING
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 set t_Co=256
