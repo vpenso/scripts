@@ -30,6 +30,6 @@ ffcast-screenrecord-region() {
                 -codec:v libx264 \
                 -b:v 20000k \
                 -vf crop="iw-mod(iw\\,2):ih-mod(ih\\,2)" \
-                $ofile 1>
+                $ofile 1> /dev/null
         echo $ofile
 }
