@@ -106,3 +106,27 @@
 
 <https://en.sharkoon.com/>
 
+# NZXT
+
+[NZXT][nz0], [NCXT Amazon Shop][nz2]
+
+H210 Mini-ITX
+
+- Review: [Gamers Nexus][nz8]
+- Prize: [Amazon €90][nz7] (black)
+
+H500/**H510**/H510i mid-tower ATX
+
+- Review: [Paul's HArdware][nz3], [The Provoked Prawn][nz4], Gamers Nexus [H500][nz6] [H510 Elite][nz5], 
+- Prize: H510 [Amazon €80][nz1] (black)
+
+
+[nz0]: https://www.nzxt.com
+[nz1]: https://www.amazon.de/CA-H510B-B1-NZXT-Gaming-PC-Case/dp/B07SD9R4VY
+[nz2]: https://www.amazon.de/stores/page/C69A56E4-0188-4C42-AEDF-23FF0E3A6D20
+[nz3]: https://www.youtube.com/watch?v=RiivOZE9h68
+[nz4]: https://www.youtube.com/watch?v=NpDwrQzBdmY
+[nz5]: https://www.youtube.com/watch?v=sTWYifGSUXs
+[nz6]: https://www.youtube.com/watch?v=7HK5Aulw7YI
+[nz7]: https://www.amazon.de/NZXT-H510-ATX-Mid-Tower-Geh%C3%A4use-Glass-Seitenfenster-Stahlkonstruktion/dp/B07SGWCYD6
+[nz8]:https://www.youtube.com/watch?v=7cBFkGlrAEU
