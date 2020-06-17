@@ -1,4 +1,31 @@
+# Motherboard
 
+Main circuit board to connect different build components of a computer.
+
+* Also known as mainboard, system board, abbreviated to MB
+* System Clock (CMOS Battery)
+* Front Panel, connectors for external devices (i.e. USB, HDMI, Audio)
+* **BIOS** (Basic Input/Output System)
+  - Performs hardware check after power on
+  - Configurable with a system settings menu (boot devices, power settings, etc.)
+* **Chipset**
+  - Determines which components are compatible 
+  - Dictates future expansion options
+  - Enables overclocking of CPUs, RAM
+  - Single-chip on modern systems directly connected to the CPU 
+  - Intel Platform Controller Hub (PCH), Direct Media Interface (DIM)
+  - AMD Fusion Controller Hub (FCH), Unified Media Interface (UMI)
+* SATA storage controller
+
+Standardised connectors for components:
+
+* CPU Socket
+* Memory Slots
+* Expansion Slots
+* Storage Connectors (SATA ports, M.2)
+* I/O Interfaces
+* Power Connection (input/output)
+* Fan, RGB Connection
 
 Following a couple of introduction material on Youtube:
 
@@ -9,36 +36,35 @@ Following a couple of introduction material on Youtube:
 * [Which Motherboard Should You Buy?][mb5]
 * [How to Choose a Motherboard: 3 Levels of Skill][mb6]
 
-Modular design to connect basic components:
+Manufacturers:
 
-* CPU Socket
-* Memory Slots
-* Expansion Slots
-* Storage Connection
-* Chipset
-* I/O Interfaces
-* Power Connection (input/output)
-* Front Panel Connection
-* BIOS (Firmware)
-* System Clock (CMOS Battery)
-* Fan, RGB Connection
+* [ASUS][mf1]
+* [Gigabyte][mf2]
+* [ASRock][mf3]
+* MSI
+* Intel
+* EVGA
+* Acer
+* Sapphire Technology
+* XFX
 
-Form factors (size of the motherboard):
+## Form Factor
+
+Size of the motherboard:
 
 * **ATX**, 305x244mm
   - Full/Mid tower cases
   - Most common, de facto standard
   - Up to 7 expansion slots
   - Up to 8 memory slots
-* Micro-ATX 244x244mm
+* **Micro-ATX** 244x244mm
   - Less expensive
   - Max. 4 expansion slots
   - 2-4 memory slots
-* Mini-ITX 170x170mm
+* **Mini-ITX** 170x170mm
   - Even less expensive
   - 1 expansion slot
   - Up to 2 memory slots
-
 
 ## CPU Socket & Chipset
 
@@ -124,11 +150,6 @@ Year  | Version | Speed (per lane)
 2017  | **4.0** | 1.97GB/s
 
 
-## Storage Connection
-
-* SATA
-* M.2
-
 ## I/O Interfaces
 
 Connectivity varies widely on motherboards, and have a huge impact on prices.
@@ -154,3 +175,7 @@ Located on the rear (or back) I/O panel, and on the motherboard surface
 [mb4]: https://www.youtube.com/watch?v=Tbeh1eRDmsk
 [mb5]: https://www.youtube.com/watch?v=0xZc7YryJ0U
 [mb6]: https://www.youtube.com/watch?v=lP-pinlU-Ko
+
+[mf1]: https://www.asus.com/Motherboards
+[mf2]: https://www.gigabyte.com/Motherboard
+[mf3]: https://www.asrock.com/mb/index.asp
