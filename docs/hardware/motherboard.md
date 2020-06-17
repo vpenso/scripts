@@ -15,17 +15,10 @@ Main circuit board to connect different build components of a computer.
   - Single-chip on modern systems directly connected to the CPU 
   - Intel Platform Controller Hub (PCH), Direct Media Interface (DIM)
   - AMD Fusion Controller Hub (FCH), Unified Media Interface (UMI)
+* **VRM** (Voltage Regulator Module)
+  - Senses the CPU voltage requirements
 * SATA storage controller
 
-Standardised connectors for components:
-
-* CPU Socket
-* Memory Slots
-* Expansion Slots
-* Storage Connectors (SATA ports, M.2)
-* I/O Interfaces
-* Power Connection (input/output)
-* Fan, RGB Connection
 
 Following a couple of introduction material on Youtube:
 
@@ -35,6 +28,7 @@ Following a couple of introduction material on Youtube:
 * [PC Motherboard Sizes as Fast As Possible][mb4]
 * [Which Motherboard Should You Buy?][mb5]
 * [How to Choose a Motherboard: 3 Levels of Skill][mb6]
+* [Motherboard Connectors - All you Need to Know as Fast As Possible][mb7]
 
 Manufacturers:
 
@@ -65,6 +59,35 @@ Size of the motherboard:
   - Even less expensive
   - 1 expansion slot
   - Up to 2 memory slots
+
+## Connectors
+
+Main power connection
+
+* **ATX 24** pin 12V (ATX v2.2 standard)
+  - Connects the board to the PCU (Power Supply Unit)
+  - Molex 39-01-2240, often called a Molex Mini-fit Jr.
+  - ATX 20+4 for backwards compatability
+* **ATX/EPS** 8 pin 12V (EPS12V)
+  - Powers the processor voltage regulator
+  - Dedicated CPU power supply
+  - Molex 39-28-1083
+  - Not to confuse with 8 pin PCIe connectors
+* **P4** 4 pin ATX 12V 
+  - Additional power connector on older boards
+  - Molex 39-28-1043
+
+* CPU Socket
+* Memory Slots
+* Expansion Slots
+* Storage Connectors (SATA ports, M.2)
+* I/O Interfaces (on board)
+* Front panel connectors
+  - USB 2 8 pin
+  - USB 3
+  - Audio connector
+* 3/4 pin fan connectors (4 pin is backwards compatible to accommodate 3 pins)
+* RGB Connection
 
 ## CPU Socket & Chipset
 
@@ -175,6 +198,7 @@ Located on the rear (or back) I/O panel, and on the motherboard surface
 [mb4]: https://www.youtube.com/watch?v=Tbeh1eRDmsk
 [mb5]: https://www.youtube.com/watch?v=0xZc7YryJ0U
 [mb6]: https://www.youtube.com/watch?v=lP-pinlU-Ko
+[mb7]: https://www.youtube.com/watch?v=csqnK_CwKrQ
 
 [mf1]: https://www.asus.com/Motherboards
 [mf2]: https://www.gigabyte.com/Motherboard
