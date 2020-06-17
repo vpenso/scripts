@@ -30,52 +30,7 @@ Following a couple of introduction material on Youtube:
 * [How to Choose a Motherboard: 3 Levels of Skill][mb6]
 * [Motherboard Connectors - All you Need to Know as Fast As Possible][mb7]
 
-Manufacturers:
-
-* [ASUS][mf1]
-* [Gigabyte][mf2]
-* [ASRock][mf3]
-* MSI
-* Intel
-* EVGA
-* Acer
-* Sapphire Technology
-* XFX
-
-## Form Factor
-
-Size of the motherboard:
-
-* **ATX**, 305x244mm
-  - Full/Mid tower cases
-  - Most common, de facto standard
-  - Up to 7 expansion slots
-  - Up to 8 memory slots
-* **Micro-ATX** 244x244mm
-  - Less expensive
-  - Max. 4 expansion slots
-  - 2-4 memory slots
-* **Mini-ITX** 170x170mm
-  - Even less expensive
-  - 1 expansion slot
-  - Up to 2 memory slots
-
-## Connectors
-
-Main power connection
-
-* **ATX 24** pin 12V (ATX v2.2 standard)
-  - Connects the board to the PCU (Power Supply Unit)
-  - Molex 39-01-2240, often called a Molex Mini-fit Jr.
-  - ATX 20+4 for backwards compatability
-* **ATX/EPS** 8 pin 12V (EPS12V)
-  - Powers the processor voltage regulator
-  - Dedicated CPU power supply
-  - Molex 39-28-1083
-  - Not to confuse with 8 pin PCIe connectors
-* **P4** 4 pin ATX 12V 
-  - Additional power connector on older boards
-  - Molex 39-28-1043
+Connectors
 
 * CPU Socket
 * Memory Slots
@@ -89,7 +44,61 @@ Main power connection
 * 3/4 pin fan connectors (4 pin is backwards compatible to accommodate 3 pins)
 * RGB Connection
 
-## CPU Socket & Chipset
+### Manufacturers
+
+* [ASUS][mf1]
+* [Gigabyte][mf2]
+* [ASRock][mf3]
+* MSI
+* Intel
+* EVGA
+* Acer
+* Sapphire Technology
+* XFX
+
+### Form Factor
+
+Size of the motherboard:
+
+* **ATX**
+  - 305x244mm
+  - Full/Mid tower cases
+  - Most common, de facto standard
+  - Up to 7 expansion slots
+  - Up to 8 memory slots
+* **Micro-ATX**, UATX
+  - 244x244mm
+  - Less expensive
+  - Max. 4 expansion slots
+  - 2-4 memory slots
+* **Mini-ITX** 
+  - 170x170mm
+  - Even less expensive
+  - 1 expansion slot
+  - Up to 2 memory slots
+
+### Power Connectors
+
+**ATX 24** pin 12V (ATX v2.2 standard)
+
+- Connects the board to the PCU (Power Supply Unit)
+- Molex 39-01-2240, often called a Molex Mini-fit Jr.
+- ATX 20+4 for backwards compatability
+
+**ATX/EPS** 8 pin 12V (EPS12V)
+- Powers the processor voltage regulator
+- Dedicated CPU power supply
+- Molex 39-28-1083
+- Not to confuse with 8 pin PCIe connectors
+
+**P4** 4 pin ATX 12V
+
+- Additional power connector (older boards)
+- Molex 39-28-1043
+- 8 pin connectors are backward compatible and are two 4-pin connectors
+  connected to each other that can be separated.
+
+### CPU Socket & Chipset
 
 **Motherboards need to match/support the CPU!**
 
@@ -102,6 +111,9 @@ Selection of chipset is relevant to overclocking and customization.
 List of current sockets with corresponding chipset and CPU compatibility:
 
 ### AMD
+
+* [AMD Chipset Differences: B550 Specs Explained vs. X570, B450, & Zen 3
+Support][cs4] (2020)
 
 CPU generations
 
@@ -126,21 +138,15 @@ Chipset classes, X & B support overclocking
 
 Following a couple of introduction material on Youtube:
 
-* [AMD Chipset Differences: B550 Specs Explained vs. X570, B450, & Zen 3
-Support][cs4] (2020)
-
-### Intel
-
-Socket LGA 1151
+Intel Socket **LGA 1151**
 
 - Chipset 100 or 200-series for 6th/7th Gen CPUs (6700k,7700k)
 - Chipset 300-series for 8th & 9th Gen CPUs (8700k,9900k)
 
-Socket LGA 1200
+Intel Socket **LGA 1200**
 
 - Chipset 400-series for 10th Gen CPUs (10900k)
-
-List of [Intel Desktop Chipsets][cs2]
+- List of [Intel Desktop Chipsets][cs2]
 
 ## Expansion Slots
 
