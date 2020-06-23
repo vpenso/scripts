@@ -53,7 +53,7 @@
 * Carbine SPEC-DELTA RGB
   - [Amazon €70][cs10]
 * Carbide 275R
-  - [Amazon €85][cs4] (tempered glass)
+  - [Amazon €85][cs4] (tempered glass), [Amazon €80][cs12] (white)
   - [Hardware Canucks][cs6], [Gamers Nexus][cs7]
 * iCUE 220T RGB
   - [Amazon €100][cs3]
@@ -72,6 +72,7 @@
 [cs8]: https://www.amazon.de/Corsair-Carbide-Gaming-PC-Geh%C3%A4use-schwarz/dp/B01M3Y5FJ2
 [cs9]: https://www.youtube.com/watch?v=_YEl2HE5F_k
 [cs10]: https://www.amazon.de/Corsair-Spec-Delta-Mid-Tower-Geh%C3%A4usee-geh%C3%A4rtetem/dp/B07KGSJRC3
+[cs11]: https://www.amazon.de/Corsair-Airflow-Mid-Tower-Tempered-Versatile/dp/B079JV8ZB9
 
 # Antec
 
