@@ -209,7 +209,7 @@ module Accounts
     end
     account = ARGV.shift || raise('Specify the account to associate the user to')
     # if no default is specified
-    defaultaccount = ARGV.shift || 'None'
+    defaultaccount = ARGV.shift || 'none'
     # create the account
     puts System::exec("sacctmgr --immediate create user name=#{name} account=#{account} defaultaccount=#{defaultaccount}")
   end
