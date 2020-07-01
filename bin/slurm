@@ -133,11 +133,20 @@ HELP = <<EOF
 #{exec_name} [<options>] [<command>] [<subcommand>] [<args>] 
 
 <command>
+  a, accounts                      accounts configuration
   h, help                          show this help information
 > j, jobs                          state of jobs 
   l, limits                        association limits
   n, nodes                         state of execution nodes
   p, partition                     state of the partitions
+
+accounts <subcommand>
+
+  cu, create-user <user> <account,[account]> [<defaultaccount>]
+
+       Assoicates a Linux user to a Slurm account. The list of accounts
+       can be a comma separated list. The default account if not 
+       specified is 'none'.
 
 jobs <subcommand>
   c,   completed-by-users          jobs completed by users
@@ -152,8 +161,8 @@ jobs <subcommand>
   wd,  work-dir <job_id>           working directory of job
 
 limits <subcommand>
-  a,   by-account <account>        limits for a specific account
-> g,   group                       group limits for all accounts
+> a,   accounts                    limits for all accounts
+  A,   by-account <account>        limits for a specific account
   u,   by-user <user>              limits for a specific user
 
 nodes <subcommand>
@@ -182,6 +191,30 @@ partition <subcommand>
   -v, --version                    print program version
 EOF
 
+module Accounts 
+
+  module_function
+
+  def create_user
+    name = ARGV.shift || raise('Specify a Linux user name!')
+    # check if the user exists
+    unless System::exec("id #{name} 2>/dev/null")
+            raise("#{name} is not a valid Linux user name!")
+    end
+    # check if the user is already in the system
+    unless System::exec("sacctmgr -n show user where name=#{name}").empty?
+      $stdout.puts "The user #{name} exists already with following associations"
+      $stdout.puts System::exec("sacctmgr show user withassoc where name=#{name} format=User,Account,DefaultAccount")
+      exit 1
+    end
+    account = ARGV.shift || raise('Specify the account to associate the user to')
+    # if no default is specified
+    defaultaccount = ARGV.shift || 'None'
+    # create the account
+    puts System::exec("sacctmgr --immediate create user name=#{name} account=#{account} defaultaccount=#{defaultaccount}")
+  end
+
+end
 
 module Jobs
 
@@ -322,13 +355,14 @@ module Limits
     QOS
   )
 
-  def group
+  def accounts
     format = %w(
-    User Account
+    Account User
     GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+      MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
     )
     Table.new(format).transform(%Q<
-      sacctmgr -snp show user format=#{format.join(',')}
+      sacctmgr -snp show account format=#{format.join(',')}
     >,'|')
 
   end
@@ -342,7 +376,7 @@ module Limits
       QOS
     )
     Table.new(format).transform(%Q<
-      sacctmgr -nP show associations where account=#{name} format=#{format.join(',')}
+      sacctmgr -np show associations where account=#{name} format=#{format.join(',')}
     >,'|')
   end
 
@@ -534,6 +568,12 @@ begin
 
   command = ARGV.shift || 'jobs'
   case command
+  when 'a','accounts'
+    subcommand = ARGV.shift || raise('fail')
+    case subcommand
+    when 'cu','create-user'
+      Accounts::create_user
+    end
   when 'h','help'
     $stdout.puts HELP
   when 'j','jobs'
@@ -563,12 +603,12 @@ begin
       raise("Sub-command #{subcommand} not supported") 
     end
   when 'l','limits'
-    subcommand = ARGV.shift || 'group'
+    subcommand = ARGV.shift || 'accounts'
     case subcommand
-    when 'a','by-account'
+    when 'a','accounts'
+      Limits::accounts
+    when 'A','by-account'
       Limits::by_account
-    when 'g','group'
-      Limits::group
     when 'u','by-user'
       Limits::by_user
     else
