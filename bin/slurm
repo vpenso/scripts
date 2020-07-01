@@ -62,7 +62,12 @@ class Table
 
   def transform(command, delim = ' ')
     System::exec(command).split("\n").each do |line|
-      @rows << line.split(delim)
+      # maintain empty fields
+      fields = line.split(delim,-1)
+      # replace empty fields with a dash
+      fields.collect! { |value| value.empty? ? '-' : value }
+      $logger.debug(line + ' == ' + fields.inspect)
+      @rows << fields
     end
     print()
   end
@@ -147,8 +152,9 @@ jobs <subcommand>
   wd,  work-dir <job_id>           working directory of job
 
 limits <subcommand>
-  a,   by-account <account>        limits for account
-  u,   by-user <user>              limits for user
+  a,   by-account <account>        limits for a specific account
+> g,   group                       group limits for all accounts
+  u,   by-user <user>              limits for a specific user
 
 nodes <subcommand>
   a,   allocated                   nodes executing jobs
@@ -315,6 +321,17 @@ module Limits
     MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
     QOS
   )
+
+  def group
+    format = %w(
+    User Account
+    GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+    )
+    Table.new(format).transform(%Q<
+      sacctmgr -snp show user format=#{format.join(',')}
+    >,'|')
+
+  end
 
   def by_account
     name = ARGV.shift || raise('Specify an account name to show limits for')
@@ -510,7 +527,7 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--version'
-      $stdout.puts 1.2
+      $stdout.puts 1.3
       exit 0
     end
   end
@@ -546,10 +563,12 @@ begin
       raise("Sub-command #{subcommand} not supported") 
     end
   when 'l','limits'
-    subcommand = ARGV.shift || 'state'
+    subcommand = ARGV.shift || 'group'
     case subcommand
     when 'a','by-account'
       Limits::by_account
+    when 'g','group'
+      Limits::group
     when 'u','by-user'
       Limits::by_user
     else
