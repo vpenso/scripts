@@ -5,17 +5,7 @@ CentOS (Community Enterprise Operating System):
 * Built from publicly available open-source source code provided by Red Hat
 * Aims to be **functionally compatible with Red Hat Enterprise Linux**
 
-Expected delays after upstream publishes updates, and new releases:
-
-Update        | Time
---------------|--------
-Package       | <72 hours
-Point release | 4-8 weeks
-Major release | month
-
 Cf. [Wikipedia, CentOS Releases](https://en.wikipedia.org/wiki/CentOS#CentOS_releases)
-
-Git repositories for all RPM packages are available on the CentOS Git server [3].
 
 Support EOL (end of live) according to the CentOS FAQ [5]:
 
@@ -26,6 +16,28 @@ CentOS 7      | 2024/06
 CentOS 8      | 2029/05
 
 **Upgrade between major releases not supported nor recommended** by CentOS [6].
+
+Git repositories for all RPM packages are available on the CentOS Git server [3].
+
+List of CentOS related package repositories:
+
+Name                  | Description
+----------------------|------------------------
+EPEL                  | https://fedoraproject.org/wiki/EPEL
+ELRepo                | http://elrepo.org
+Software Collections  | https://www.softwarecollections.org
+RPM Fusion            | https://rpmfusion.org
+OpenHPC               | https://github.com/openhpc/ohpc
+
+## CentOS 7
+
+Expected delays after upstream publishes updates, and new releases:
+
+Update        | Time
+--------------|--------
+Package       | <72 hours
+Point release | 4-8 weeks
+Major release | month
 
 Version conventions [7]:
 
@@ -40,31 +52,41 @@ for the active branch [5], i.e.:
 
 <http://mirror.centos.org/centos/7/>
 
-**CentOS Stream** is a **rolling-release** Linux distribution:
-
-* Midstream between the upstream development in Fedora Linux..
-* ..downstream development for Red Hat Enterprise Linux (RHEL)
-
-Released alongside the traditional CentOS Linux 8, which is a downstream rebuild
-of the current RHEL release.
-
-## Repositories
-
-Name      | Description
+Repo      | Description
 ----------|------------------------
 base      | Packages that form CentOS (minor) point releases
 updates   | Security, bugfix or enhancement updates, issued between the regular update sets for point releases
 addons    | Packages not provided by upstream, used to build the CentOS distribution
 
-List of CentOS related package repositories:
 
-Name                  | Description
-----------------------|------------------------
-EPEL                  | https://fedoraproject.org/wiki/EPEL
-ELRepo                | http://elrepo.org
-Software Collections  | https://www.softwarecollections.org
-RPM Fusion            | https://rpmfusion.org
-OpenHPC               | https://github.com/openhpc/ohpc
+## CentOS 8
+
+**CentOS Stream** is a **rolling-release** Linux distribution:
+
+* Midstream between the upstream development in Fedora Linux..
+* ..downstream development for Red Hat Enterprise Linux (RHEL)
+
+Released alongside the traditional **CentOS Linux 8**, which is a downstream
+rebuild of the current RHEL 8 release.
+
+RHEL 8 content is distributed through the two main repositories:
+
+Repository | Description
+-----------|------------------------
+BaseOS     | Core RPM packages that provide OS functionality
+AppStream  | User space RPM packages and RPM modules
+
+Both BaseOS and AppStream content sets are required for a basic installation.
+
+AppStream (Application Stream) allows to install **multiple versions of a user
+space component**.
+
+* Each AppStream component has a given life cycle
+* Packaged as RPM modules or individual RPM packages
+
+**Modules are collections of packages** representing a logical unit.
+
+
 
 # References
 
