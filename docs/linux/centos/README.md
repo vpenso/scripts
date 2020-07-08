@@ -40,6 +40,14 @@ for the active branch [5], i.e.:
 
 <http://mirror.centos.org/centos/7/>
 
+**CentOS Stream** is a **rolling-release** Linux distribution:
+
+* Midstream between the upstream development in Fedora Linux..
+* ..downstream development for Red Hat Enterprise Linux (RHEL)
+
+Released alongside the traditional CentOS Linux 8, which is a downstream rebuild
+of the current RHEL release.
+
 ## Repositories
 
 Name      | Description
@@ -151,3 +159,7 @@ Following scripts are bases on the security [errata XML file][cefsxml] published
 
 [11] CentOS Project, Youtube  
 <https://www.youtube.com/user/TheCentOSProject>
+
+[12] CentOS Stream  
+<https://wiki.centos.org/Manuals/ReleaseNotes/CentOSStream>  
+<https://wiki.centos.org/FAQ/CentOSStream>
