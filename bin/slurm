@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2015-2016 Victor Penso
+# Copyright 2015-2020 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -143,10 +143,10 @@ HELP = <<EOF
 accounts <subcommand>
 
   cu, create-user <user> <account,[account]> [<defaultaccount>]
-
        Assoicates a Linux user to a Slurm account. The list of accounts
        can be a comma separated list. The default account if not 
        specified is 'none'.
+  s, shares                        fair-share state of all accounts
 
 jobs <subcommand>
   c,   completed-by-users          jobs completed by users
@@ -212,6 +212,26 @@ module Accounts
     defaultaccount = ARGV.shift || 'none'
     # create the account
     puts System::exec("sacctmgr --immediate create user name=#{name} account=#{account} defaultaccount=#{defaultaccount}")
+  end
+
+  def shares
+    format = %w(
+      Account
+      User
+      RawShares
+      NormShares
+      RawUsage
+      NormUsage
+      EffectvUsage
+      FairShare
+    )
+    Table.new(format).transform("
+      sshare 
+        --noheader
+        --parsable
+        --all 
+        --format=#{format.join(',')}
+    ",'|')
   end
 
 end
@@ -561,7 +581,7 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--version'
-      $stdout.puts 1.3
+      $stdout.puts 1.32
       exit 0
     end
   end
@@ -573,6 +593,8 @@ begin
     case subcommand
     when 'cu','create-user'
       Accounts::create_user
+    when 's','shares'
+      Accounts::shares
     end
   when 'h','help'
     $stdout.puts HELP
