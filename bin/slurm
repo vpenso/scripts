@@ -149,6 +149,7 @@ accounts <subcommand>
   s, shares                        fair-share state of all accounts
 
 jobs <subcommand>
+  b,   by-id <job_id>              details for a specific job
   c,   completed-by-users          jobs completed by users
   ce,  completed-by-endtime        jobs completed in the last 6 hours
   f,   failed                      jobs finished with a failure
@@ -350,6 +351,31 @@ module Jobs
         | sort -k 1
         | uniq -f 1 -c
     ])
+  end
+
+  ##
+  # 
+  def by_id()
+    jobid = ARGV.shift || raise("Specify a SLURM job ID!")
+    format = %w(
+      jobid
+      user
+      state
+      submit
+      start
+      end
+      exitcode
+      jobname
+      comment
+      nodelist
+    )
+    Table.new(format).transform("
+      sacct
+        --noheader
+        --parsable
+        --format #{format.join(',')}
+        --jobs #{jobid}
+    ",'|')
   end
 
   def begin_time(value = $options.begin_time)
@@ -581,7 +607,7 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--version'
-      $stdout.puts 1.32
+      $stdout.puts 1.33
       exit 0
     end
   end
@@ -601,6 +627,8 @@ begin
   when 'j','jobs'
     subcommand = ARGV.shift || 'running'
     case subcommand
+    when 'b','by-id'
+      Jobs::by_id
     when 'c','completed-by-users'
       Jobs::completed_by_users
     when 'ce','completed-by-endtime'
