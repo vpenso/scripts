@@ -364,6 +364,8 @@ module Jobs
       submit
       start
       end
+      cputime
+      timelimit
       exitcode
       jobname
       comment
