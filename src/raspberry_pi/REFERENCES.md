@@ -12,6 +12,9 @@ https://learn.adafruit.com/circuitpython-on-raspberrypi-linux
 [gzero] GPIOZero interface to GPIO devices with Raspberry Pi  
 https://gpiozero.readthedocs.io/en/stable/
 
+[melgh] Mastering Embedded Linux, George Hilliard  
+<https://www.thirtythreeforty.net/posts/2019/08/mastering-embedded-linux-part-1-concepts/>
+
 [pinout] GPIO Pinout guide for the Raspberry Pi  
 https://pinout.xyz/
 

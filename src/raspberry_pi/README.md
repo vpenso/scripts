@@ -30,7 +30,7 @@ tvservice -m DMT     # list monitor resolution
 
 Configure HDMI in `/boot/config.txt`
 
-```
+```bash
 # enable DMT mode
 hdmi_group=2
 # audio over HDMI
@@ -39,6 +39,7 @@ hdmi_drive=2
 hdmi_force_hotplug=1
 # resolution 1920x1080/60Hz (1080p)
 hdmi_mode=82
+```
 
 ### GPIO
 
