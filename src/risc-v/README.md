@@ -11,6 +11,7 @@ tar -xzf buildroot-2020.02.3.tar.gz # change into the directory
 # Configure the target platform
 #   Target options > Target Architecture > RISCV
 #   Toolchain > C library > musl
+#   Host utilities > host qemu
 make menuconfig # save, exit
 # build the cross-compilation toolchain
 make sdk
@@ -33,16 +34,18 @@ EOF
 source riscv64-env.sh
 ```
 
-
 Test the tool chain:
 
 ```bash
+# create a simple hello world program
 cat <<EOF >hello.c
 #include <stdio.h>
 int main() { printf("Hello, World!"); return 0; }
 EOF
-# build a hello world c program with the compiler
+# compile the program
 riscv64-linux-gcc -static -o hello hello.c
+# execute the binary
+qemu-riscv64 hello
 ```
 
 
