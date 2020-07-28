@@ -261,22 +261,7 @@ Git repositories are **not automatically synchronised**:
 ```bash
 # update current (tracking) branch from upstream
 git pull                                 # short for git fetch + git merge
-# push current (tracking) branch
-git push
-```
-
-**Merge vs. Rebase** [1]:
-
-* A **merge** combines the local branch with the remote (branch)
-  - Default merge behaviour is to perform a **fast-forward**
-  - Commits without conflicts are simply absorbed into the branch
-  - A **conflict** requires a **merge commit**
-  - Disable fast-forward `--no-ff` to force every merge to produce a merge commit
-* **rebase** applies commits from current branch onto the head of the specified branch
-  - "replaying" changes with new commits (hashes/timestamps)
-  - Merge resolution is absorbed into the new commit
-
-```bash
+git push                                 # push current (tracking) branch
 git pull --no-ff                         # disable fast-forward
 git pull --rebase                        # short for git fetch + git rebase
 git pull --all                           # update all local branches from their corresponding remote branches
@@ -284,7 +269,6 @@ git pull <remote_name> <branch_name>     # update current branch from a specific
 git push <remote_name> <branch_name>     # push specific branch to a remote
 git push -u ...                          # track remote with current branch
 ```
-
 
 
 Local changes will not be overwritten by `git pull`, ...workflow:
@@ -318,8 +302,6 @@ git branch -a                            # list available local and remote branc
 git branch -dr <remote/branch>           # delete remote branch
 git checkout -b <name> <remote/branch>   # checkout remote branch
 git checkout <branch>                    # checkout local branch
-git merge <branch>                       # merge into current HEAD
-git rebase <branch>                      # rebase HEAD onto branch
 git ls-remote --tags <repo>              # list tags of remote repository
 git fetch                                # fetch remote tags
 git tag -l                               # list local tags
@@ -330,6 +312,26 @@ git tag -a <version> <hash>              # tag specific commit
 git push <name> <tag>                    # push local tag to remote repository
 git push --tags <name>                   # push all local tags to remote repository
 git tag -l | xargs git tag -d            # delete all local tags
+```
+
+**Merge vs. Rebase** [1]:
+
+* A **merge** combines the local branch with the remote (branch)
+  - Default merge behaviour is to perform a **fast-forward**
+  - Commits without conflicts are simply absorbed into the branch
+  - A **conflict** requires a **merge commit**
+  - Disable fast-forward `--no-ff` to force every merge to produce a merge commit
+* **rebase** applies commits from current branch onto the head of the specified branch
+  - "replaying" changes with new commits (hashes/timestamps)
+  - Merge resolution is absorbed into the new commit
+
+```bash
+git merge $branch                       # merge into current HEAD
+git rebase $branch                      # rebase HEAD onto branch
+# avoid a fast-forward commit (modify your working copy)
+git merge --no-commit --no-ff $branch   
+git diff --cached                       # examine the staged changes
+git merge --abort                       # undo the merge
 ```
 
 ## Configuration
