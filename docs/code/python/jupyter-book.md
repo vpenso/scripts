@@ -1,10 +1,16 @@
-
+Jupyter Book
+============
 
 <https://jupyterbook.org>  
-<https://executablebooks.org/>
+<https://executablebooks.org/>  
+<https://github.com/executablebooks/jupyter-book>
+
+## Example
+
+Install Jupyter Book using a Python 3 virtual environment:
 
 ```bash
-# store the virtual environment in /tmp
+# store a virtual environment in /tmp
 jupyter_book=$(mktemp -d /tmp/$USER-jupyther-book.venv.XXXXXX)
 # create a new virtual environment
 python3 -m venv $jupyter_book
