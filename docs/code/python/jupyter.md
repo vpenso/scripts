@@ -76,4 +76,8 @@ https://jupyterlab.readthedocs.io/en/stable/user/documents_kernels.html
 https://github.com/jupyter/jupyter/wiki/Jupyter-kernels
 
 [docks] Jupyter Notebooks on DockerHub  
-https://hub.docker.com/r/jupyter/minimal-notebook
+<https://hub.docker.com/r/jupyter/minimal-notebook>
+
+[jbook] Jupyter Book  
+<https://jupyterbook.org>  
+<https://executablebooks.org/>
