@@ -311,6 +311,7 @@ module Jobs
           --noheader
           --allusers
           --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --endtime $(date +"%Y-%m-%d")
           --format user,account
           --allocations
           | sort 
@@ -324,6 +325,7 @@ module Jobs
           --noheader
           --allusers
           --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --endtime $(date +"%Y-%m-%d")
           --format end,user,account,state,nnodes
           --allocations
           | sort -k 1
@@ -344,8 +346,11 @@ module Jobs
   def failed
     Table.new(%w(Jobs End User Account State Exit)).transform(%Q[
       sacct
-        --noheader --allocations --allusers
+        --noheader 
+        --allocations 
+        --allusers
         --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+        --endtime $(date +"%Y-%m-%d")
         --state failed,node_fail,timeout
         --format end,user,account,state,exitcode
         | sort -k 1
