@@ -248,7 +248,7 @@ module Jobs
         --format '%9T %8u %9P'
         --sort 'u,P'
         --noheader
-        | uniq -f2 -c
+        | uniq -f1 -c
     ")
   end
 
@@ -278,7 +278,7 @@ module Jobs
         --format '%9T %8u %9P %10a'
         --sort 'u'
         --noheader
-        | uniq -f2 -c
+        | uniq -f1 -c
     ")
   end
 
