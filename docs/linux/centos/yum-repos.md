@@ -24,6 +24,11 @@ Inspection:
 yum repolist all                        # list package repositories
 yum repolist enabled                    # list enabled repos only
 yum repo-pkgs <repo> list               # list all packages in a repository
+```
+
+`yum-config-manager` is part of the `yum-utils` package:
+
+```bash
 yum-config-manager                      # display the current values of global yum options
 yum-config-manager | grep '\[.*\]'      # list only the sections
 yum-config-manager --add-repo <url>     # add a repository to /etc/yum.repos.d/
