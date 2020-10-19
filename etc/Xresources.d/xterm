@@ -1,0 +1,4 @@
+Xterm*decTerminalID: vt340
+XTerm*utf8: 1
+XTerm*faceName: InconsolataGo Nerd Font
+XTerm*selectToClipboard: true

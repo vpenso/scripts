@@ -58,6 +58,9 @@ unset __source
 export PATH=$PATH:$SCRIPTS/bin
 PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
 
+# add executables in home-directory if present 
+test -d ~/bin && export PATH=~/bin:$PATH
+
 for file in `\ls $SCRIPTS/var/aliases/*.sh`
 do
 	_debug source $file
