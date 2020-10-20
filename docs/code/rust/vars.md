@@ -1,3 +1,5 @@
+# Variables
+
 Rust is a **statically typed language**
 
 * Use of `snake_case` for variable names by convention
@@ -11,7 +13,8 @@ Declare and initialize a variable with type inference:
 
 ```rust
 fn main() {
-    let x = 1; // a single variable
+    // declare, initialize variable
+    let x = 1; // data type determined by the compiler
     println!("{}",x);
 }
 ```
@@ -21,11 +24,14 @@ fn main() {
 
 ## Declaration
 
-The `let` statement declares a variables in the current scope:
+The `let` statement declares a variables in the current scope.
+
+Local variables may not be initialized when allocated. 
 
 ```rust
 fn main() {
-    let x;  // declare a local variable
+    // declare variable, missing data type
+    let x;
     println!("{}",x);
 }
 ```
@@ -36,12 +42,12 @@ error[E0282]: type annotations needed
   |         ^ consider giving `x` a type
 ```
 
-Local variables may not be initialized when allocated. Then it is necessary to
-define the data type with the declaration.
+Then it is necessary to define the data type with the declaration.
 
 ```rust
 fn main() {
-    let x: i32;  // declare a local variable with type
+    // declare variable with data type
+    let x: i32;
     println!("{}",x);
 }
 ```
@@ -52,15 +58,16 @@ error[E0381]: borrow of possibly-uninitialized variable: `x`
   |                   ^ use of possibly-uninitialized `x`
 ```
 
+Variables can only be accessed after a value has been assigned.
+
 ## Assignment
 
-Variables can only be accessed after a value has been assigned.
-Therefore a subsequent statement needs to initialize the variable.
+After declaration, a subsequent statement initialize the variable.
 
 ```rust
 fn main() {
-    let x: i32;  // declare a local variable
-    x = 1;       // asign a value to variable
+    let x: i32;  // declare variable
+    x = 1;       // initialize variable
     println!("{}",x);
 }
 ```
