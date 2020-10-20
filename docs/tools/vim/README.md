@@ -10,6 +10,15 @@ File                       | Description
 
 ## Install
 
+Neovim releases on GitHub:
+
+<https://github.com/neovim/neovim/releases>
+
+```bash
+wget https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage -P ~/bin
+chmod u+x ~/bin/nvim.appimage
+ln -s ~/bin/nvim.appimage ~/bin/nvim
+```
 
 
 ## References
@@ -17,7 +26,7 @@ File                       | Description
 [abov] A Byte of Vim  
 <https://vim.swaroopch.com/>  
 <https://github.com/swaroopch/byte-of-vim>  
-<http://koydl.in-berlin.de/vim/a_byte_of_vim_de.pdf> (german)
+<http://koydl.in-berlin.de/vim/a_byte_of_vim_de.pdf> (German)
 
 [neovim] neovim: Vim-fork focused on extensibility and usability  
 <https://neovim.io/>  
