@@ -5,9 +5,10 @@ Rust is a **statically typed language**
 * Use of `snake_case` for variable names by convention
 * Compiler must know the types of all variables at compile time
 * The **compiler can usually infer the type on assignment** 
-  based on the value and how we use it (cf. Hindley–Milner type system)
+  based on the value and how the are used (cf. Hindley–Milner type system)
 * The `let` statement declares a variables in the current scope
 * Variables in Rust are **immutable by default**
+* Reassignable variables are declared with `let mut` (mutable)
 
 Declare and initialize a variable with type inference:
 
@@ -176,9 +177,44 @@ fn main() {
 
 Note that the variable uses a different memory address when recycled.
 
+## Constants
+
+> Constants aren’t just immutable by default - they’re always immutable.
+
+Use the **`const` keyword** to declare compile-time constants
+
+* `SCREAMING_SNAKE_CASE` names by convention
+* Declared in any scope, including the global scope
+* Constants must be **explicitly typed**
+
+```rust
+fn main() {
+    const X: u8 = 1; // declare, initialize a contant with type
+    println!("{}",X);
+}
+```
+
+Compile complains about the mutable keyword with `const`:
+
+```
+error: const globals cannot be mutable
+  |
+2 |     const mut X: u8 = 1;
+  |     ----- ^^^ cannot be mutable
+  |     |
+  |     help: you might want to declare a static instead: `static`
+```
+
+> Constants are essentially inlined wherever they are used, meaning that they
+> are copied directly into the relevant context when used. 
+
+
 ## Mutable
 
-`mut` keyword declares a variable 
+**`mut`** keyword declares a variable reassignable
+
+> `mut` conveys intent to future readers of the code by indicating that other
+> parts of the code will be changing this variable’s value
 
 ```rust
 fn main() {
@@ -192,3 +228,10 @@ fn main() {
 1
 2
 ```
+
+> There are multiple trade-offs to consider in addition to the prevention of
+> bugs. For example, in cases where you’re using large data structures, mutating
+> an instance in place may be faster than copying and returning newly allocated
+> instances. With smaller data structures, creating new instances and writing in
+> a more functional programming style may be easier to think through, so lower
+> performance might be a worthwhile penalty for gaining that clarity.
