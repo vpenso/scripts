@@ -59,11 +59,9 @@ error[E0381]: borrow of possibly-uninitialized variable: `x`
   |                   ^ use of possibly-uninitialized `x`
 ```
 
-Variables can only be accessed after a value has been assigned.
+Variables can **only be accessed after a value has been assigned**.
 
-## Assignment
-
-After declaration, a subsequent statement initialize the variable.
+Assignment after declaration by a subsequent statement initialize the variable.
 
 ```rust
 fn main() {
@@ -105,10 +103,8 @@ error[E0384]: cannot assign twice to immutable variable `x`
 
 ## Shadowing
 
-Multiple variables can be defined with the same name:
-
-* Variable shadowing, aka name masking
-* Unable to directly access it beyond the point of shadowing
+Multiple variables can be defined with the same name, which **masks 
+access to a previosly declared varriables** beyond the point of shadowing
 
 ```rust
 fn main() {
@@ -132,7 +128,7 @@ warning: unused variable: `x`
   = note: `#[warn(unused_variables)]` on by default
 ```
 
-No effect on original variable `x`:
+No effect on original variable `x` becomes more evident with scopes:
 
 ```rust
 fn main() {
@@ -155,7 +151,13 @@ fn main() {
 > on a value but have the variable be immutable after those transformations have
 > been completed.
 
-## Rebinding Variable Names
+> Rust cares about protecting against unwanted mutation effects as observed
+> through references. This doesn't conflict with allowing shadowing, because
+> you're not changing values when you shadow, you're just changing what a
+> particular name means in a way that cannot be observed anywhere else.
+> Shadowing is a strictly local change.
+
+## Rebind
 
 If a variable has been declared and used, it is possible to recycle the variable
 name by a new variable declaration statement:
