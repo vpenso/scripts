@@ -57,10 +57,12 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
 
-" syntax highlighting for i3 config
+" syntax highlighting for i3
 Plug 'mboughaba/i3config.vim'
 " Shows git diff markers in the sign column
 Plug 'airblade/vim-gitgutter'
+" Code completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Commands
 "    :PlugInstall      Install plugins
