@@ -1,8 +1,10 @@
-
-### References
+## References
 
 The Rust Programming Language  
 <https://doc.rust-lang.org/book/>
+
+Rust Language Cheat Sheet  
+<https://cheats.rs/>
 
 The Embedded Rust Book  
 <https://docs.rust-embedded.org/book/index.html>  
