@@ -38,8 +38,18 @@ rustup target remove $target        # install an additional target
 rustup component list               # list available components
 ```
 
+Install additional components used during development:
+
+```bash
+rustup component add rls rust-analysis rust-src
+```
+
 
 ### References
 
-The rustup Book  
+[01] The rustup Book  
 <https://rust-lang.github.io/rustup/>
+
+[02] Rust Language Server (RLS)  
+<https://github.com/rust-lang/rls>  
+<https://rust-analyzer.github.io>
