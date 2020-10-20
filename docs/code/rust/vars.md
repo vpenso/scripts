@@ -103,8 +103,6 @@ error[E0384]: cannot assign twice to immutable variable `x`
 ```
 
 
----
-
 ## Shadowing
 
 Multiple variables can be defined with the same name:
@@ -218,15 +216,21 @@ error: const globals cannot be mutable
 
 ```rust
 fn main() {
-    let mut x = 1;  // declare
-    println!("{}",x);
-    x = 2;          // assign value
-    println!("{}",x);
+    // declare, initialize a mutable variable
+    let mut x = 1;
+    println!("{} {:p}", x, &x);
+    // assign new value
+    x = 2;
+    println!("{} {:p}", x, &x);
 }
 ```
+
+Mutable variables are just that – mutable. The value changes but the underlying
+address in memory is the same:
+
 ```
-1
-2
+1 0x7ffd1cd3dce4
+2 0x7ffd1cd3dce4
 ```
 
 > There are multiple trade-offs to consider in addition to the prevention of
