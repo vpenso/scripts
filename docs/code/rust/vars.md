@@ -100,11 +100,27 @@ error[E0384]: cannot assign twice to immutable variable `x`
   |     ^^^^^ cannot assign twice to immutable variable
 ```
 
+> We get the primary benefit we want from immutable-by-default: mutable code is
+> explicitly called out, so you know where to look for bugs.
+
+> Reducing the number of mutable variables in code makes its understanding
+> infinitely easier because you know that once a variable has been given a
+> value, it remains that way. You don’t need to carefully look for places where
+> the value might be mutated...in practice you end up passing lots of values by
+> reference to avoid copy costs. In those cases, it’s very useful to know that
+> calling a specific function won’t mutate its arguments
+
 
 ## Shadowing
 
 Multiple variables can be defined with the same name, which **masks 
 access to a previosly declared varriables** beyond the point of shadowing
+
+> Shadowing is different from marking a variable as `mut`, because we’ll get a
+> compile-time error if we accidentally try to reassign to this variable without
+> using the `let` keyword. By using `let`, we can perform a few transformations
+> on a value but have the variable be immutable after those transformations have
+> been completed.
 
 ```rust
 fn main() {
@@ -145,11 +161,6 @@ fn main() {
 1
 ```
 
-> Shadowing is different from marking a variable as `mut`, because we’ll get a
-> compile-time error if we accidentally try to reassign to this variable without
-> using the `let` keyword. By using `let`, we can perform a few transformations
-> on a value but have the variable be immutable after those transformations have
-> been completed.
 
 > Rust cares about protecting against unwanted mutation effects as observed
 > through references. This doesn't conflict with allowing shadowing, because
@@ -213,8 +224,9 @@ error: const globals cannot be mutable
 
 **`mut`** keyword declares a variable reassignable
 
-> `mut` conveys intent to future readers of the code by indicating that other
-> parts of the code will be changing this variable’s value
+> Mutability is a necessary component of software development. At the lowest
+> level of software, machine code is inherently mutable (mutating memory and
+> register values). We layer abstractions of immutability on top of that...
 
 ```rust
 fn main() {
@@ -241,3 +253,74 @@ address in memory is the same:
 > instances. With smaller data structures, creating new instances and writing in
 > a more functional programming style may be easier to think through, so lower
 > performance might be a worthwhile penalty for gaining that clarity.
+
+# Ownership
+
+Tight coupling between assignment and ownership
+
+Rust enforces three simple rules of ownership:
+
+1. Each value has a variable which is the owner.
+2. Each value has exactly one owner at a time.
+3. When the owner goes out of scope the value is dropped 
+
+Rust uses [lexical scopes][ls] where name resolution depends on the location in
+the source code and the lexical context.
+
+[ls]: https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scope_vs._dynamic_scope
+
+```rust
+fn main() {
+    { // anonymous scope created
+        let x = 1;
+    } // drop value of x
+    println!("{}", x);
+}
+```
+```
+error[E0425]: cannot find value `x` in this scope
+  |
+5 |     println!("{}", x);
+  |
+```
+
+```rust
+fn main() {
+    let x = "a".to_string();
+    let y = x;    // move ownership
+    let z = x;    // previous owner can no longer be used
+    println!("{}", z);
+}
+```
+
+The compiler complains about the ownership 
+
+```
+error[E0382]: use of moved value: `x`
+  |
+2 |     let x = "a".to_string();
+  |         - move occurs because `x` has type `std::string::String`, which does not implement the `Copy` trait
+3 |     let y = x;
+  |             - value moved here
+4 |     let z = x;
+  |             ^ value used here after move
+```
+
+
+## Borrowing
+
+> Given that there are rules about only having one mutable pointer to a variable
+> binding at a time, rust employs a concept of borrowing.
+
+
+
+# References
+
+[01] Memory Safety in Rust: A Case Study with C  
+<https://willcrichton.net/notes/rust-memory-safety/>
+
+[02] A closer look at Ownership in Rust  
+<https://blog.thoughtram.io/ownership-in-rust/>
+
+[03] The Rust Programming Book - What is Ownership?  
+<https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html>
