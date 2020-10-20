@@ -7,6 +7,7 @@
 	auto = 1
 [core]
 	editor = vim
+        pager = delta diff git
 	quotepath = off
 	excludesfile = /home/vpenso/.gitignore_global
 [alias]
@@ -78,3 +79,7 @@
 	commitencoding = utf8
 [apply]
 	whitespace = nowarn
+
+[delta]
+    features = side-by-side line-numbers decorations
+    whitespace-error-style = 22 reverse
