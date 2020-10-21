@@ -1,17 +1,27 @@
 ## References
 
-The Rust Programming Language  
+[rbook] The Rust Programming Language  
 <https://doc.rust-lang.org/book/>
 
-Rust Language Cheat Sheet  
+[rchea] Rust Language Cheat Sheet  
 <https://cheats.rs/>
 
-The Embedded Rust Book  
+[terbo] The Embedded Rust Book  
 <https://docs.rust-embedded.org/book/index.html>  
 <https://docs.rust-embedded.org/discovery/index.html>
 
-Writing an OS in Rust  
+[waoir] Writing an OS in Rust  
 <https://os.phil-opp.com/>
 
-Operating System development tutorials in Rust on the Raspberry Pi  
+[osdti] Operating System development tutorials in Rust on the Raspberry Pi  
 <https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials>
+
+[msira] Memory Safety in Rust: A Case Study with C  
+<https://willcrichton.net/notes/rust-memory-safety/>
+
+[aclao] A closer look at Ownership in Rust  
+<https://blog.thoughtram.io/ownership-in-rust/>
+
+[trpbw] The Rust Programming Book - What is Ownership?  
+<https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html>
+
