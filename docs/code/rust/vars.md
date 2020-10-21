@@ -27,7 +27,9 @@ fn main() {
 
 Every value in Rust is of a certain data type.
 
-**Scalar Types** represents a single value:
+### Scalar Types
+
+Represents a **single value**
 
 * Integer number without a fractional component
   - Signed integer types start with `i`, instead of `u`
@@ -36,8 +38,13 @@ Every value in Rust is of a certain data type.
 * Floating-point types are `f32` and `f64`, which are 32 bits and 64 bits in size
 * One byte Boolean type `bool` with two values: `true` and `false`
 * `char` character type, specified with single quotes `'ℤ'`
+* Most primitives implement the `Copy` trait
+  - Can be moved without owning the value in question
+  - Copied byte-for-byte in memory to produce a new, identical value
 
-**Compound types** can group multiple values into one type
+### Compound Types
+
+**Group multiple values** into one type
 
 **Tuple** groups a number of values with a variety of types
 
@@ -65,6 +72,8 @@ let a = [3; 5]; // expands to [3, 3, 3, 3, 3]
 // access elements of an array using indexing
 let first = a[0];
 ```
+
+The `Vec<T>` standard library type provides a heap-allocated resizable array type.
 
 
 ## Literals
@@ -392,6 +401,12 @@ error[E0382]: use of moved value: `x`
 > Given that there are rules about only having one mutable pointer to a variable
 > binding at a time, rust employs a concept of borrowing.
 
+
+One piece of data can be borrowed either as a shared borrow or as a mutable
+borrow at a given time. But not both at the same time.
+
+* **Shared Borrowing** - borrowed by a single or multiple users, data should not be altered
+* **Mutable Borrowing** - borrowed and altered by a single user
 
 
 # References
