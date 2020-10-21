@@ -23,6 +23,72 @@ fn main() {
 1
 ```
 
+## Data Types
+
+Every value in Rust is of a certain data type.
+
+**Scalar Types** represents a single value:
+
+* Integer number without a fractional component
+  - Signed integer types start with `i`, instead of `u`
+  - 8,16,32,64,128 bit variants, i.e. `i32` (signed 32 bit integer)
+  - `isize` and `usize` types depend on architecture
+* Floating-point types are `f32` and `f64`, which are 32 bits and 64 bits in size
+* One byte Boolean type `bool` with two values: `true` and `false`
+* `char` character type, specified with single quotes `'ℤ'`
+
+**Compound types** can group multiple values into one type
+
+**Tuple** groups a number of values with a variety of types
+
+```rust
+// comma-separated list of values inside parentheses
+let t = (500, 6.4, 1);
+// access elements directly using a period
+let x = t.0                                // index starts at zero
+// with type annotation
+let t: (i32, f64, u8) = (500, 6.4, 1);     
+// desctruct tuple into three separate variables
+let (x, y, z) = t;
+```
+
+**Array** in Rust have a **fixed length** (like tuples), and are allocated **on
+the stack**
+
+```rust
+// comma-separated list inside square brackets
+let a = [1, 2, 3, 4, 5];
+// define a type, and size
+let a: [i32; 5] = [1, 2, 3, 4, 5];
+// initial value, size
+let a = [3; 5]; // expands to [3, 3, 3, 3, 3]
+// access elements of an array using indexing
+let first = a[0];
+```
+
+
+## Literals
+
+
+```rust
+1           // integer
+98_222      // decimal with _ visual separator
+1.2         // floating point
+0xff        // hex
+0o77        // octal
+0b1111_0000 // binary
+b'A'        // byte (u8 only)
+'a'         // character
+```
+
+Number literals except the byte literal allow a type suffix
+
+```rust
+57u8       // unsigned integer 8 bit
+```
+
+
+
 ## Declaration
 
 The `let` statement declares a variables in the current scope.
@@ -258,9 +324,21 @@ address in memory is the same:
 
 # Ownership
 
-Tight coupling between assignment and ownership
+Tight coupling between assignment and ownership.
 
-Rust enforces three simple rules of ownership:
+* Code analyses to check a standard set of safe code conventions
+* Rust enforces [Resource acquisition is initialization][raii] (RAII)
+  - Automatic and predictable release of resources (drop)
+  - Prevents bugs associated with resource leak
+  - No need to manually free memory
+  - No garbage collection
+* Variable lifetime spans from declaration until compiler infers it can be dropped
+* Drop of a variable includes all resources which it has ownership of
+* Notion of a destructor in Rust is provided through the `Drop` trait
+
+[raii]: https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization
+
+Rust enforces three simple **rules of ownership**:
 
 1. Each value has a variable which is the owner.
 2. Each value has exactly one owner at a time.
