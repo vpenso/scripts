@@ -43,7 +43,8 @@ error[E0282]: type annotations needed
   |         ^ consider giving `x` a type
 ```
 
-Then it is necessary to define the data type with the declaration.
+If data type inference is not possible, then it is **required to define 
+the data type** with the declaration.
 
 ```rust
 fn main() {
@@ -76,7 +77,10 @@ fn main() {
 
 ## Immutable
 
-Variables in Rust are immutable by default:
+> We get the primary benefit we want from immutable-by-default: mutable code is
+> explicitly called out, so you know where to look for bugs.
+
+Example of an assignment to an immutable variable:
 
 ```rust
 fn main() {
@@ -100,8 +104,6 @@ error[E0384]: cannot assign twice to immutable variable `x`
   |     ^^^^^ cannot assign twice to immutable variable
 ```
 
-> We get the primary benefit we want from immutable-by-default: mutable code is
-> explicitly called out, so you know where to look for bugs.
 
 > Reducing the number of mutable variables in code makes its understanding
 > infinitely easier because you know that once a variable has been given a
@@ -177,7 +179,7 @@ name by a new variable declaration statement:
 fn main() {
     let x = 1;  // declare
     println!("{} {:p}",x,&x);
-    let x = 2;  // recycle
+    let x = 2;  // rebind
     println!("{} {:p}",x,&x);
 }
 ```
@@ -200,12 +202,12 @@ Use the **`const` keyword** to declare compile-time constants
 
 ```rust
 fn main() {
-    const X: u8 = 1; // declare, initialize a contant with type
+    const X: u8 = 1; // declare, initialize a constant with type
     println!("{}",X);
 }
 ```
 
-Compile complains about the mutable keyword with `const`:
+Compiler complains about the mutable keyword with `const`:
 
 ```
 error: const globals cannot be mutable
@@ -264,7 +266,7 @@ Rust enforces three simple rules of ownership:
 2. Each value has exactly one owner at a time.
 3. When the owner goes out of scope the value is dropped 
 
-Rust uses [lexical scopes][ls] where name resolution depends on the location in
+Rust uses [lexical scopes][ls] - name resolution depends on the location in
 the source code and the lexical context.
 
 [ls]: https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scope_vs._dynamic_scope
