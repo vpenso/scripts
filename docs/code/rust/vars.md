@@ -7,7 +7,6 @@ Rust is a **statically typed language**
 * The **compiler can usually infer the type on assignment** 
   based on the value and how the are used (cf. Hindley–Milner type system)
 * The `let` statement declares a variables in the current scope
-* Variables in Rust are **immutable by default**
 * Reassignable variables are declared with `let mut` (mutable)
 
 Declare and initialize a variable with type inference:
@@ -181,7 +180,9 @@ fn main() {
 1
 ```
 
-## Immutable
+## Immutability
+
+Variables in Rust are **immutable by default**:
 
 > We get the primary benefit we want from immutable-by-default: mutable code is
 > explicitly called out, so you know where to look for bugs.
@@ -210,13 +211,31 @@ error[E0384]: cannot assign twice to immutable variable `x`
   |     ^^^^^ cannot assign twice to immutable variable
 ```
 
-
 > Reducing the number of mutable variables in code makes its understanding
 > infinitely easier because you know that once a variable has been given a
 > value, it remains that way. You don’t need to carefully look for places where
 > the value might be mutated...in practice you end up passing lots of values by
 > reference to avoid copy costs. In those cases, it’s very useful to know that
 > calling a specific function won’t mutate its arguments
+
+The compile warns about mutable variables which never get a reassignment:
+
+```rust
+fn main() {
+    let mut a = 1;
+    println!("{}", a);
+}
+```
+```
+warning: variable does not need to be mutable
+ --> vars.rs:2:9
+  |
+2 |     let mut a = 1;
+  |         ----^
+  |         |
+  |         help: remove this `mut`
+  |
+```
 
 
 ## Shadowing
