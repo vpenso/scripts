@@ -5,7 +5,7 @@ All strings in Rust are **UTF-8 encoded**.
 ```rust
 fn main() {
     // string literal initalizing a `&str` slice
-    let ss = "a";
+    let ss = "a";    // equivalent to `let ss: &str = "a"`
     // create a `String` from a string literal
     let st = "b".to_string();
     // equivalent to
@@ -71,3 +71,30 @@ fn main() {
 ```
 abcdef f
 ```
+
+## Split
+
+`split()` returns an iterator over substrings of a string slice:
+
+```rust
+fn main() {
+    let s = "a,b,c";
+    for t in s.split(",") {
+        print!("{} ",t);
+    }
+}
+```
+
+`split_whitespace()` splits the input string into different strings
+
+```rust
+fn main() {
+    let s = "a b   c";
+    for t in s.split_whitespace() {
+        print!("{},",t);
+    }
+}
+```
+
+
+
