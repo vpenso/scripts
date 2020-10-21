@@ -427,19 +427,34 @@ error[E0382]: use of moved value: `x`
 ```
 
 
-## Borrowing
+# Borrowing
 
 > Given that there are rules about only having one mutable pointer to a variable
 > binding at a time, rust employs a concept of borrowing.
 
 One piece of data can be borrowed either as a shared borrow or as a mutable
-borrow at a given time. But not both at the same time.
+borrow at a given time (not both at the same time).
 
-* **Shared Borrowing** - borrowed by a single or multiple users, data should not be altered
+## Shared Borrowing
 
-### Mutable Borrowing
+Data is borrowed by a single or multiple users. 
 
-A piece of data can be borrowed and **altered by a single user**
+**Data can not be altered, but is readable by all users.**
+
+```rust
+fn main() {
+    let a = [1,2,3,4,5];
+    let b = &a;                   // shared borrow of `a`
+    println!("{:?} {}", a, b[1]);
+}
+```
+```
+[1, 2, 3, 4, 5] 2
+```
+
+## Mutable Borrowing
+
+Data can be borrowed and **altered by a single user**.
 
 
 ```rust
@@ -455,7 +470,7 @@ fn main() {
 [6, 2, 3, 4, 5]
 ```
 
-The data should not be **accessible for any other users** at that time.
+**Data not accessible for any other users** at that time.
 
 ```rust
 fn main() {
