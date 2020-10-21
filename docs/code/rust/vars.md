@@ -378,12 +378,6 @@ Tight coupling between assignment and ownership.
 
 [raii]: https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization
 
-Rust enforces three simple **rules of ownership**:
-
-1. Each value has a variable which is the owner.
-2. Each value has exactly one owner at a time.
-3. When the owner goes out of scope the value is dropped 
-
 Rust uses [lexical scopes][ls] - name resolution depends on the location in
 the source code and the lexical context.
 
@@ -403,6 +397,12 @@ error[E0425]: cannot find value `x` in this scope
 5 |     println!("{}", x);
   |
 ```
+
+Rust enforces three simple **rules of ownership**:
+
+1. Each value has a variable which is the owner.
+2. Each value has exactly one owner at a time.
+3. When the owner goes out of scope the value is dropped 
 
 ```rust
 fn main() {
@@ -436,8 +436,45 @@ One piece of data can be borrowed either as a shared borrow or as a mutable
 borrow at a given time. But not both at the same time.
 
 * **Shared Borrowing** - borrowed by a single or multiple users, data should not be altered
-* **Mutable Borrowing** - borrowed and altered by a single user
 
+### Mutable Borrowing
+
+A piece of data can be borrowed and **altered by a single user**
+
+
+```rust
+fn main() {
+    let mut a = [1,2,3,4,5];
+    let b = &mut a;         // mutable borrowing of `a`
+    b[0] = 6;               // ⁝
+                            // ...ends here
+    println!("{:?}", a);
+}
+```
+```
+[6, 2, 3, 4, 5]
+```
+
+The data should not be **accessible for any other users** at that time.
+
+```rust
+fn main() {
+    let mut a = [1,2,3,4,5];
+    let b = &mut a;          // mutable borrowing of `a`
+    a[1] = 7;                // ⁝
+    println!("{:?}", b);     // ...ends here
+}
+```
+```
+error[E0503]: cannot use `a` because it was mutably borrowed
+  |
+3 |     let b = &mut a;
+  |             ------ borrow of `a` occurs here
+4 |     a[1] = 7;
+  |     ^^^^ use of borrowed `a`
+5 |     println!("{:?}", b);
+  |                      - borrow later used here
+```
 
 # References
 
