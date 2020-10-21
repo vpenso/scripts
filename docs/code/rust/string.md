@@ -2,7 +2,7 @@
 
 All strings in Rust are **UTF-8 encoded**.
 
-```bash
+```rust
 fn main() {
     // string literal initalizing a `&str` slice
     let ss = "a";
@@ -26,27 +26,28 @@ The **`&str` slice** is provided by the Rust Core:
 The **`String` type** is provided by the Rust’s standard library:
 
 * `String` is a wrapper over a `Vec<u8>`
-* Stores an object with a pointer on the stack, data is stored in a
-  heap-allocated buffer; resizes its buffer when needed
-* **Does not support indexing**, since index into the string’s bytes will not
-  always correlate to a valid Unicode scalar value.
-* Strings have three representations: as bytes, scalar values, and grapheme
-  clusters
-* Use ranges to create string slices with caution, because doing so can crash
-  your program.
+* Stores a pointer on the stack, and data in a heap-allocated buffer
+* Automatically resizes its buffer on demand
+* Interpretation as bytes, as slice, scalar values, and grapheme clusters
+* **No indexing** (bytes do not correlate to a Unicode scalar value)
 
-> It’s safe to say that, if the API we’re building doesn’t need to own or mutate
+> It’s safe to say that, if the API we’re building doesn't need to own or mutate
 > the text it’s working with, it should take a `&str` instead of a `String`
 
-Loop over characters in `String`:
+Rust has this super powerful feature called [`Deref` coercing][deref] which
+allows it to turn any passed String reference using the borrow operator:
+
+[deref]: https://doc.rust-lang.org/std/ops/trait.Deref.html#more-on-deref-coercion
 
 ```rust
+fn puts(s: &str) {
+    print!("{}",s)
+}
 fn main() {
-    let s = "abcde";
-    // iterate over a string
-    for c in s.chars() {
-        println!("{}", c);
-    }
+    let s = "ab";             // `&str` slice
+    let t = "cd".to_string(); // `String` type
+    puts(s);
+    puts(&t);                 // pass by reference
 }
 ```
 
