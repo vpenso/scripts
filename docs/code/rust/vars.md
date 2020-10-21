@@ -29,18 +29,30 @@ Every value in Rust is of a certain data type.
 
 ### Scalar Types
 
-Represents a **single value**
+**Primitive** data types that represents a **single value**
 
 * Integer number without a fractional component
-  - Signed integer types start with `i`, instead of `u`
+  - Signed integer types start with `i`, and unsigned with `u`
   - 8,16,32,64,128 bit variants, i.e. `i32` (signed 32 bit integer)
-  - `isize` and `usize` types depend on architecture
+* `isize` and `usize` types depend on architecture
+  - Pointer sized signed and unsigned integer types
+  - 32 bits on 32-bit platforms and 64 bits on 64-bit platforms
 * Floating-point types are `f32` and `f64`, which are 32 bits and 64 bits in size
 * One byte Boolean type `bool` with two values: `true` and `false`
 * `char` character type, specified with single quotes `'ℤ'`
-* Most primitives implement the `Copy` trait
-  - Can be moved without owning the value in question
-  - Copied byte-for-byte in memory to produce a new, identical value
+
+```rust
+let x = 10;         // default integer type is i32
+let y: i8 = -128;
+let a = 5i8;        // Equals to `let a: i8 = 5;`
+let x = 1.5;        // default float type is f64
+let y: f32 = 2.0;
+```
+
+Most primitives implement the **`Copy` trait**
+
+* Can be moved without owning the value in question
+* Copied byte-for-byte in memory to produce a new, identical value
 
 ### Compound Types
 
@@ -59,8 +71,12 @@ let t: (i32, f64, u8) = (500, 6.4, 1);
 let (x, y, z) = t;
 ```
 
-**Array** in Rust have a **fixed length** (like tuples), and are allocated **on
-the stack**
+**Array** in Rust have a **fixed length** (like tuples):
+
+- Arrays are allocated **on the stack**.
+- Even with `mut`, its element count cannot be changed.
+- The `Vec<T>` standard library type provides a heap-allocated resizable array
+  type.
 
 ```rust
 // comma-separated list inside square brackets
@@ -70,24 +86,39 @@ let a: [i32; 5] = [1, 2, 3, 4, 5];
 // initial value, size
 let a = [3; 5]; // expands to [3, 3, 3, 3, 3]
 // access elements of an array using indexing
-let first = a[0];
+let mut c: [i32; 3] = [1, 2, 3];
+c[0] = 2;
+c[1] = 4;
+c[2] = 6;
 ```
 
-The `Vec<T>` standard library type provides a heap-allocated resizable array type.
+
+
+```rust
+let a: [i32; 4] = [1, 2, 3, 4]; // Parent Array
+let b: &[i32] = &a;             // Slicing whole array
+let c = &a[0..4];               // From 0th position to 4th(excluding)
+let d = &a[..];                 // Slicing whole array
+let e = &a[1..3];               // [2, 3]
+let f = &a[1..];                // [2, 3, 4]
+let g = &a[..3];                // [1, 2, 3]
+```
+
 
 
 ## Literals
 
 
 ```rust
-1           // integer
-98_222      // decimal with _ visual separator
-1.2         // floating point
-0xff        // hex
-0o77        // octal
-0b1111_0000 // binary
-b'A'        // byte (u8 only)
-'a'         // character
+1                // integer
+100_000_000      // _ visual separator, equals 1000000
+1.2              // floating point
+3.141_592        // equals 3.145592
+0xff             // hex
+0o77             // octal
+0b1111_0000      // binary
+b'A'             // byte (u8 only)
+'a'              // character
 ```
 
 Number literals except the byte literal allow a type suffix
@@ -400,7 +431,6 @@ error[E0382]: use of moved value: `x`
 
 > Given that there are rules about only having one mutable pointer to a variable
 > binding at a time, rust employs a concept of borrowing.
-
 
 One piece of data can be borrowed either as a shared borrow or as a mutable
 borrow at a given time. But not both at the same time.
