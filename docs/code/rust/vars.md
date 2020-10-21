@@ -108,7 +108,7 @@ let g = &a[..3];                // [1, 2, 3]
 
 
 ```rust
-1                // integer
+1                // integer type
 100_000_000      // _ visual separator, equals 1000000
 1.2              // floating point
 3.141_592        // equals 3.145592
@@ -116,13 +116,20 @@ let g = &a[..3];                // [1, 2, 3]
 0o77             // octal
 0b1111_0000      // binary
 b'A'             // byte (u8 only)
-'a'              // character
+'a'              // character type
+"string"         // string type
+"\"string\""     // 
 ```
 
 Number literals except the byte literal allow a type suffix
 
 ```rust
-57u8       // unsigned integer 8 bit
+123i32       // type i32
+57u8         // type u8
+123.0f64     // type f64
+12E+99_f64   // scientific notation for type f64
+0xff_u8      // hex type u8
+0o70_i16     // octal type i16
 ```
 
 
