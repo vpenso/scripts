@@ -1,6 +1,8 @@
 # Variables
 
-Rust is a **statically typed language**
+Rust is a **statically typed language**.
+
+Every value in Rust is of a certain data type.
 
 * Use of `snake_case` for variable names by convention
 * Compiler must know the types of all variables at compile time
@@ -21,11 +23,18 @@ fn main() {
 1
 ```
 
-## Data Types
+Rust uses the **stack by default for static values**.
 
-Every value in Rust is of a certain data type.
+Static data (size known at compile time) includes:
 
-### Scalar Types
+* Function frames
+* Scalar (integer, float, etc) & compound types (tuples, arrays)
+* Structs and pointers to dynamic data in the heap
+
+[Collections](collections.md) cannot be stack based since the are dynamic in
+size by nature, and are therefore stored in the heap.
+
+## Scalar Types
 
 **Primitive** data types that represents a **single value**
 
@@ -52,7 +61,7 @@ Most primitives implement the **`Copy` trait**
 * Can be moved without owning the value in question
 * Copied byte-for-byte in memory to produce a new, identical value
 
-### Compound Types
+## Compound Types
 
 **Group multiple values** into one type
 
@@ -102,8 +111,6 @@ let f = &a[1..];                // [2, 3, 4]
 let g = &a[..3];                // [1, 2, 3]
 ```
 
-
-
 ## Literals
 
 
@@ -132,7 +139,7 @@ Number literals except the byte literal allow a type suffix
 
 
 
-## Declaration
+# Declaration
 
 The `let` statement declares a variables in the current scope.
 
@@ -348,8 +355,6 @@ fn main() {
 ```
 
 Note that the variable uses a different memory address when recycled.
-
-
 
 # Mutability
 
