@@ -1,3 +1,28 @@
+# Literals
+
+```rust
+1                // integer
+100_000_000      // _ visual separator, equals 1000000
+1.2              // floating point
+3.141_592        // equals 3.145592
+0xff             // hex
+0o77             // octal
+0b1111_0000      // binary
+b'A'             // byte (u8 only)
+'a'              // character
+```
+
+Number literals except the byte literal allow a **data type suffix**:
+
+```rust
+123i32       // type i32
+57u8         // type u8
+123.0f64     // type f64
+12E+99_f64   // scientific notation for type f64
+0xff_u8      // hex type u8
+0o70_i16     // octal type i16
+```
+
 # Variables
 
 Rust is a **statically typed language**.
@@ -109,32 +134,6 @@ let d = &a[..];                 // Slicing whole array
 let e = &a[1..3];               // [2, 3]
 let f = &a[1..];                // [2, 3, 4]
 let g = &a[..3];                // [1, 2, 3]
-```
-
-## Literals
-
-
-```rust
-1                // integer type
-100_000_000      // _ visual separator, equals 1000000
-1.2              // floating point
-3.141_592        // equals 3.145592
-0xff             // hex
-0o77             // octal
-0b1111_0000      // binary
-b'A'             // byte (u8 only)
-'a'              // character type
-```
-
-Number literals except the byte literal allow a type suffix
-
-```rust
-123i32       // type i32
-57u8         // type u8
-123.0f64     // type f64
-12E+99_f64   // scientific notation for type f64
-0xff_u8      // hex type u8
-0o70_i16     // octal type i16
 ```
 
 
