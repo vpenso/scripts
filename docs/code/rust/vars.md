@@ -7,7 +7,6 @@ Rust is a **statically typed language**
 * The **compiler can usually infer the type on assignment** 
   based on the value and how the are used (cf. Hindley–Milner type system)
 * The `let` statement declares a variables in the current scope
-* Reassignable variables are declared with `let mut` (mutable)
 
 Declare and initialize a variable with type inference:
 
@@ -180,7 +179,7 @@ fn main() {
 1
 ```
 
-## Immutability
+# Immutability
 
 Variables in Rust are **immutable by default**:
 
@@ -237,6 +236,36 @@ warning: variable does not need to be mutable
   |
 ```
 
+## Constants
+
+> Constants aren’t just immutable by default - they’re always immutable.
+
+Use the **`const` keyword** to declare compile-time constants
+
+* `SCREAMING_SNAKE_CASE` names by convention
+* Declared in any scope, including the global scope
+* Constants must be **explicitly typed**
+
+```rust
+fn main() {
+    const X: u8 = 1; // declare, initialize a constant with type
+    println!("{}",X);
+}
+```
+
+Compiler complains about the mutable keyword with `const`:
+
+```
+error: const globals cannot be mutable
+  |
+2 |     const mut X: u8 = 1;
+  |     ----- ^^^ cannot be mutable
+  |     |
+  |     help: you might want to declare a static instead: `static`
+```
+
+> Constants are essentially inlined wherever they are used, meaning that they
+> are copied directly into the relevant context when used. 
 
 ## Shadowing
 
@@ -315,41 +344,11 @@ fn main() {
 
 Note that the variable uses a different memory address when recycled.
 
-## Constants
-
-> Constants aren’t just immutable by default - they’re always immutable.
-
-Use the **`const` keyword** to declare compile-time constants
-
-* `SCREAMING_SNAKE_CASE` names by convention
-* Declared in any scope, including the global scope
-* Constants must be **explicitly typed**
-
-```rust
-fn main() {
-    const X: u8 = 1; // declare, initialize a constant with type
-    println!("{}",X);
-}
-```
-
-Compiler complains about the mutable keyword with `const`:
-
-```
-error: const globals cannot be mutable
-  |
-2 |     const mut X: u8 = 1;
-  |     ----- ^^^ cannot be mutable
-  |     |
-  |     help: you might want to declare a static instead: `static`
-```
-
-> Constants are essentially inlined wherever they are used, meaning that they
-> are copied directly into the relevant context when used. 
 
 
-## Mutable
+# Mutability
 
-**`mut`** keyword declares a variable reassignable
+Re-assignable variables are declared with `let mut` (mutable)
 
 > Mutability is a necessary component of software development. At the lowest
 > level of software, machine code is inherently mutable (mutating memory and
