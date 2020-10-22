@@ -9,21 +9,29 @@ Rust's standard collection library:
 
 Vectors are **re-sizable arrays**.
 
-`Vec<T>` in Rust are generic, they have **no default type**:
+`Vec<T>` in Rust are generic, they have **no default type**.
 
 ```rust
 fn main() {
-    let mut empty_vector = Vec::new();
+    // declare an empty vector with explicit data type
+    let mut empty_vector: Vec<i32> = Vec::new();
     println!("{:?}", empty_vector);
 }
 ```
-```
-error[E0282]: type annotations needed for `std::vec::Vec<T>`
-  |
-2 |     let mut empty_vector = Vec::new();
-  |         ----------------   ^^^^^^^^ cannot infer type for type parameter `T`
-  |         |
-  |         consider giving `empty_vector` the explicit type `std::vec::Vec<T>`, where the type parameter `T` is specified
+
+Initialize a vector using the `Vec::new()` method or the `vec!` macro:
+
+```rust
+fn main() {
+    // initialize a mutable empty vector
+    let mut mutable_vector = Vec::new();
+    // push an element to the vector
+    mutable_vector.push(1);
+    println!("{:?}", mutable_vector);
+    // use `vec!` macro to initialize a immutbale vector with three elements
+    let immutable_vector = vec![2,3,4];
+    println!("{:?}", immutable_vector);
+}
 ```
 
 ### Iterators
