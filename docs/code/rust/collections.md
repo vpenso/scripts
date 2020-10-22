@@ -1,8 +1,57 @@
-# Vector
+# Collections
 
-TODO
+Rust's standard collection library:
 
-# Strings
+* Efficient implementations of common data structures.
+* Cover most use cases for generic data storage and processing
+
+## Vector
+
+Vectors are **re-sizable arrays**.
+
+`Vec<T>` in Rust are generic, they have **no default type**:
+
+```rust
+fn main() {
+    let mut empty_vector = Vec::new();
+    println!("{:?}", empty_vector);
+}
+```
+```
+error[E0282]: type annotations needed for `std::vec::Vec<T>`
+  |
+2 |     let mut empty_vector = Vec::new();
+  |         ----------------   ^^^^^^^^ cannot infer type for type parameter `T`
+  |         |
+  |         consider giving `empty_vector` the explicit type `std::vec::Vec<T>`, where the type parameter `T` is specified
+```
+
+### Iterators
+
+`iter` provides an iterator of **immutable references**:
+
+```rust
+fn main() {
+    let vector = vec![1,2,3];
+    for element in vector.iter() {
+        print!("{} ",element);
+    }
+}
+```
+
+`iter_mut` provides an iterator of **mutable references**:
+
+```rust
+fn main() {
+    let mut vector = vec![1,2,3];
+    for element in vector.iter_mut() {
+        *element += 1;
+        print!("{} ",element);
+    }
+}
+```
+
+## Strings
 
 All strings in Rust are **UTF-8 encoded**.
 
@@ -55,7 +104,7 @@ fn main() {
 }
 ```
 
-## Append
+### Append
 
 Append strings by using push-methods of `String`:
 
@@ -76,7 +125,7 @@ fn main() {
 abcdef f
 ```
 
-## Split
+### Split
 
 `split()` returns an iterator over substrings of a string slice:
 
