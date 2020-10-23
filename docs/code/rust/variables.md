@@ -124,20 +124,6 @@ c[1] = 4;
 c[2] = 6;
 ```
 
-**Slices**
-
-```rust
-let a: [i32; 4] = [1, 2, 3, 4]; // Parent Array
-let b: &[i32] = &a;             // Slicing whole array
-let c = &a[0..4];               // From 0th position to 4th(excluding)
-let d = &a[..];                 // Slicing whole array
-let e = &a[1..3];               // [2, 3]
-let f = &a[1..];                // [2, 3, 4]
-let g = &a[..3];                // [1, 2, 3]
-```
-
-
-
 # Declaration
 
 The `let` statement declares a variables in the current scope.
