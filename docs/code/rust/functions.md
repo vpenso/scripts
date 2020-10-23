@@ -16,10 +16,10 @@ fn add(x: i32, y: i32) -> i32 {
 }
 ```
 
-**Declare new functions with `fn`** keyword \
+**Declare new functions with `fn`** keyword followed by:
 
-* Followed by **`snake_case` function name**
-* **Parameter list in `()`** (empty in the example above)
+* **`snake_case` function name**
+* Input **parameter list in `()`** passed by the caller
 * **Function body in `{}`** containing statements and expressions
   - Statements do not return values
   - Expressions evaluate to something and return a value (no ending semicolon)
