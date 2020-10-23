@@ -9,6 +9,14 @@ Rust's standard collection library:
 
 Vectors are **re-sizable arrays**.
 
+* `Vec` is a (pointer, capacity, length) triplet
+  - Pointer will never be null, so this type is null-pointer-optimized
+  - Memory it points to is on the heap in continuous order of its length
+* As low-overhead as possible in the general case
+* **Automatic capacity increased** on demand
+  - Elements will be reallocated (can be slow)
+  - Will never automatically shrink itself
+
 `Vec<T>` in Rust are generic, they have **no default type**.
 
 ```rust
@@ -31,6 +39,27 @@ fn main() {
     // use `vec!` macro to initialize a immutbale vector with three elements
     let immutable_vector = vec![2,3,4];
     println!("{:?}", immutable_vector);
+}
+```
+
+### Capacity
+
+**Recommended to specify capacity at declaration if possible**
+
+* `capacity()` number of **allocated elements** (without reallocating)
+* `len()` number of **used elements**
+* `push()` and `insert()` never (re)allocate if capacity is sufficient
+* `shrink_to_fit()` drops memory if able:
+
+```rust
+fn main() {
+    let mut vec = Vec::new();
+    vec.push(1);
+    vec.push(2);
+    vec.pop();
+    println!("{} {}",vec.capacity(),vec.len());
+    vec.shrink_to_fit();
+    println!("{} {}",vec.capacity(),vec.len());
 }
 ```
 
