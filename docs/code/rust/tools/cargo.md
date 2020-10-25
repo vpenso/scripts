@@ -9,6 +9,7 @@
 * [Package Layout](https://doc.rust-lang.org/cargo/guide/project-layout.html)
 
 ```bash
+$HOME/.cargo/config.toml   # user configuration file [02]
 cargo new $name            # new package for a binary program
 cargo build                # compile to target/debug/ directory
 cargo run                  # compile and execute 
@@ -19,8 +20,11 @@ cargo test                 # run all tests
 
 ### References
 
-The Cargo Book  
+[01] The Cargo Book  
 <https://doc.rust-lang.org/cargo/>
 
-Rust community's central package registry  
+[02] The Cargo Book - Configuration  
+<https://doc.rust-lang.org/cargo/reference/config.html>
+
+[03] Rust community's central package registry  
 <https://crates.io/>

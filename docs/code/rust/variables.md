@@ -374,3 +374,14 @@ address in memory is the same:
 > instances. With smaller data structures, creating new instances and writing in
 > a more functional programming style may be easier to think through, so lower
 > performance might be a worthwhile penalty for gaining that clarity.
+
+## Static
+
+Global `static` variable can be mutable, and represent a memory address:
+
+> ...primary use cases are global locks, global atomic counters, interfacing
+> with legacy C libraries, and embedded programming.
+
+* Requires `unsafe` block for use
+* Stored in a dedicated section (BSS) in binary
+
