@@ -25,3 +25,5 @@
 [trpbw] The Rust Programming Book - What is Ownership?  
 <https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html>
 
+[cs140] CS140e - An Experimental Course on Operating Systems  
+<https://cs140e.sergio.bz/>
