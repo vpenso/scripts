@@ -8,9 +8,7 @@ File                       | Description
 [02]: ../../var/aliases/vim.sh
 [03]: ../../etc/vimrc
 
-## Install
-
-### NeoVim
+## NeoVim
 
 Install NeoVim, unless a recent version is available as distro package:
 
