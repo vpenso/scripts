@@ -8,7 +8,7 @@
 
 > Rust provides pattern matching via the `match` keyword, which can be used like a C `switch`.
 
-A `match` expression branches on a pattern:
+> A `match` expression takes an input value, classifies it, and then jumps to code written to handle the identified class of data. [mmmmr]
 
 ```rust
 for i in -2..5 {
@@ -67,4 +67,7 @@ let e = match E::C {
 assert_eq!(e,'c')
 ```
 
+# References
 
+[mmmmr] Mixing matching, mutation, and moves in Rust  
+<https://blog.rust-lang.org/2015/04/17/Enums-match-mutation-and-moves.html>
