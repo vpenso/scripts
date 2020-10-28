@@ -12,19 +12,29 @@ File                       | Description
 
 ### NeoVim
 
+Install NeoVim, unless a recent version is available as distro package:
+
 <https://github.com/neovim/neovim/releases>
 
 ```bash
 wget https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage -P ~/bin
 chmod u+x ~/bin/nvim.appimage
 ln -s ~/bin/nvim.appimage ~/bin/nvim
+```
+
+Install vim-plug [vplg]:
+
+```bash
 mkdir -p ~/.config/nvim/autoload
-# install vim-plug [vplg]
 curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-# install configuration file
-ln -s $SCRIPTS/etc/nvim/init.vim ~/.config/nvim/init.vim
 ```
+
+Configuration:
+
+File                   | Description
+-----------------------|-------------------
+`var/aliases/nvim.sh`  | Load NeoVim configuration from within this repository
 
 ## References
 
