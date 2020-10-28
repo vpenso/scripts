@@ -12,5 +12,7 @@ Navigation
 Window Managment mode **Super + Return**
 
   <direction>                 move window
+  Shift + <direction>         resize window
   O                           toggle horizontal/vertical tiling
   Return                      apply changes
+  Esc                         discard changes
