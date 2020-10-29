@@ -22,4 +22,5 @@ sudo apt install -y \
 [01] System76 - Pop!_OS  
 <https://pop.system76.com/>  
 <https://github.com/pop-os>  
-<https://support.system76.com/#pop>
+<https://support.system76.com/#pop>  
+<https://apt.pop-os.org/>
