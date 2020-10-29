@@ -1,7 +1,3 @@
-#!/bin/sh
-
-
-cheat=$(cat <<EOF
             Session
                ┬
          <M^C> │ reload configuration
@@ -53,7 +49,3 @@ cheat=$(cat <<EOF
                ┬
 <M^S^<Bslash>> │ move window to scratchpad
   <M^<Bslash>> │ toggle scratchpad window
-EOF
-)
-
-echo "$cheat"
