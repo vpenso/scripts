@@ -1,7 +1,5 @@
 # command-line fuzzy finder
 # cf. https://github.com/junegunn/fzf
-
-
 export FZF_DEFAULT_OPTS='--height 60% --border'
 
 if [ "$shell" = "zsh" ]
@@ -15,29 +13,6 @@ then
                 [ -f $file ] && source $file
         done
 fi
-
-function fzf-cheat() {
-echo "
-            KEYBINDING
-
-         ctrl-t │ paste selection onto the command-line
-         tab    │ mark item
-         enter  │ select item(s)
-         ctrl-r │ paste command from history
-          alt-c │ cd into slected directory
-        **<tab> │ trigger fuzzy completion
-            esc │ exit
-
-              SEARCH
-
-           'str │ exact-match (quoted)
-           ^str │ prefix-exact-match
-           str$ │ suffix-exact-match
-           !str │ inverse-exact-match
-          !^str │ inverse-prefix-exact-match
-          !str$ │ invert-suffix-exact-match
-"
-}
 
 ##
 # Search all Markdown file in $SCRIPTS/docs and display with a pager
