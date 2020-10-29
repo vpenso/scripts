@@ -4,6 +4,7 @@
 
 Super + Esc                lock screen
 Super + q                  close window
+Super + Space              switch keyboard layout 
 Super + /                  open launcher
 Super + f                  open file manager
 Super + b                  open browser
