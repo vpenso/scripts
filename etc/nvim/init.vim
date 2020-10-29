@@ -3,6 +3,15 @@ set nobackup
 set nowritebackup
 set noswapfile
 
+set spell           " spell checking on
+set hlsearch        " highlight search terms
+
+" more powerful backspacing
+set backspace=indent,eol,start
+set wrap            " wrap lines
+set showbreak=…     " if line numbers are of indicate it
+set expandtab       " no real tabs please!
+
 " disable recording
 map q <Nop>
 " disable ex mode
@@ -12,8 +21,6 @@ noremap <Up> <nop>
 noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
-
-
 
 " highlight the current line & column
 set cursorline
