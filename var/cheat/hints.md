@@ -7,6 +7,7 @@ __            Zsh noglob
 ?             history with time stamps
 ?5            history last five
 b             bat pager
+bm            bookmarks program
 c             search & display cheat sheets from 
 g             Git version control
 l             list files
