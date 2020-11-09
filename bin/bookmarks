@@ -72,6 +72,7 @@ begin
   GetoptLong.new(
     ['--append','-a',GetoptLong::REQUIRED_ARGUMENT],
     ['--browser','-b',GetoptLong::REQUIRED_ARGUMENT],
+    ['--bookmarks-path','-p',GetoptLong::REQUIRED_ARGUMENT],
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--keys','-k',GetoptLong::NO_ARGUMENT],
@@ -84,6 +85,8 @@ begin
       $options.append = arg
     when '--browser'
       $options.browser = arg
+    when '--bookmarks-path'
+      $options.bookmarks_path << arg.split(':')
     when '--debug'
       $options.debug = true
       $logger.level = Logger::DEBUG

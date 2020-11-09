@@ -13,9 +13,11 @@ sudo apt install -y \
         neovim \
         pandoc \
         pmount \
+        ruby \
         sshfs \
         sshuttle \
-        terminator
+        terminator \
+	zsh
 ```
 
 ### References
