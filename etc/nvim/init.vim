@@ -71,6 +71,10 @@ Plug 'airblade/vim-gitgutter'
 " Code completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" official support for Rust
+Plug 'rust-lang/rust.vim'
+Plug 'vim-syntastic/syntastic'
+
 " Commands
 "    :PlugInstall      Install plugins
 "    :PlugClean        Remove unlisted plugins

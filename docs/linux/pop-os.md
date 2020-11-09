@@ -16,6 +16,7 @@ sudo apt install -y \
         ruby \
         sshfs \
         sshuttle \
+        sxiv \
         terminator \
 	zsh
 ```
