@@ -109,7 +109,7 @@ hi LineNr ctermfg=250 ctermbg=254
 " line numbering in cursor line
 hi CursorLineNR ctermfg=232 ctermbg=252 cterm=bold
 
-hi SpellBad     ctermfg=209 cterm=bold
+hi SpellBad     ctermfg=52 ctermbg=209 cterm=bold
 " eol, extends and precedes
 hi NonText      ctermfg=253
 " nbsp, tab and trail
