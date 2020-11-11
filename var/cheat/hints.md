@@ -16,6 +16,7 @@ q             exit
 s             search & display Markdown files
 sd            scripts directory
 se            search & edit Markdown files 
-sr            SSH as root
+sl            list keys in ssh-agent
+sr            ssh with root
 sx            image viewer
 v             Vim editor
