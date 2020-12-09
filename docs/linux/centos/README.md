@@ -13,7 +13,7 @@ Major release | EOL
 --------------|----------------------
 CentOS 6      | 2020/11
 CentOS 7      | 2024/06
-CentOS 8      | 2029/05
+CentOS 8      | 2021/09 
 
 **Upgrade between major releases not supported nor recommended** by CentOS [6].
 
@@ -66,8 +66,7 @@ addons    | Packages not provided by upstream, used to build the CentOS distribu
 * Midstream between the upstream development in Fedora Linux..
 * ..downstream development for Red Hat Enterprise Linux (RHEL)
 
-Released alongside the traditional **CentOS Linux 8**, which is a downstream
-rebuild of the current RHEL 8 release.
+_The rolling release CentOS Stream becomes the identity of CentOS project. There will be no CentOS 9 based on RHEL 9 in the future._ [13]
 
 RHEL 8 content is distributed through the two main repositories:
 
@@ -129,3 +128,6 @@ space component**.
 [12] CentOS Stream  
 <https://wiki.centos.org/Manuals/ReleaseNotes/CentOSStream>  
 <https://wiki.centos.org/FAQ/CentOSStream>
+
+[13] CentOS Stream Fiasco  
+<https://itsfoss.com/centos-stream-fiasco>
