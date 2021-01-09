@@ -269,4 +269,7 @@ chef-server-ctl list-server-admins
 chef-server-ctl remove-server-admin-permissions <user?
 ```
 
+# References
 
+CINC, free distribution of Chef  
+<https://cinc.sh/>

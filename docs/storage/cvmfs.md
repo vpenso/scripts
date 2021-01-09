@@ -39,6 +39,7 @@ Package repositories with [YUM][yr] and [APT][ap]
 [ap]: https://cvmrepo.web.cern.ch/cvmrepo/apt/
 
 ```bash
+yum install -y wget
 ## add the EPEL package source
 wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 rpm -i epel-release-latest-7.noarch.rpm
@@ -107,6 +108,8 @@ Debugging:
 ```bash
 cvmfs_config chksetup                  
 cvmfs_config showconfig $repo       # print repo. specific configuration
+grep cvmfs2 /var/log/messages
+SYSTEMD_LESS=FRXMK journalctl -p err _COMM=cvmfs2
 ```
 
 # Repositories
@@ -132,8 +135,9 @@ Use the `cvmfs_server` command create a new repository:
 →  [Repository Creation and Updating](https://cvmfs.readthedocs.io/en/2.4/cpt-repo.html#sct-repocreation)  
 
 ```bash
-repo=${repo:-bits.devops.test}
-cvmfs_server mkfs $repo
+cvmfs_server list           # list available repos
+cvmfs_server mkfs $repo     # create a new repository
+cvmfs_server rmfs $repo     # remove repository
 cvmfs_server info
 ```
 

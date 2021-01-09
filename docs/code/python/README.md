@@ -56,6 +56,18 @@ else:
 
 # Python Language
 
+`print` is a build in function in Python 3
+
+```python
+print('s')              # s
+print('s',end='')       # disable newline
+print(1,2,3)            # 1 2 3
+print(1,2,3,sep=',')    # 1,2,3
+print('s','r',sep='/')  # s/r
+print([1,2,3])          # [1, 2, 3]
+print(*[1,2,3])         # 1 2 3 
+```
+
 ## Variables
 
 The **assignment operation** `name = object` references values to variables:
@@ -440,6 +452,8 @@ dict(zip(['a','b'],[1,2]))         # {'a': 1, 'b': 2}
 Escape sequences interpreted according to rules similar to those used by Standard C
 
 ```python
+''                                 # empty line
+'\n'                               # blank line
 # Double quote (escape with \)
 "a\"bc"                            # 'a"bc'
 # Single quote
@@ -461,6 +475,26 @@ ord('a')                           # 97
 list('abc')                        # ['a', 'b', 'c']
 set('abc')                         # {'b', 'a', 'c'}
 tuple('abc')                       # ('a', 'b', 'c')
+```
+
+Escape sequences:
+
+```
+\\         Backslash (\)
+\'         Single-quote (')
+\"         Double-quote (")
+\a         ASCII bell (BEL)
+\b         ASCII backspace (BS)
+\f         ASCII formfeed (FF)
+\n         ASCII linefeed (LF)
+\N{name}   Character named name in the Unicode database (Unicode only)
+\r         ASCII carriage return (CR)
+\t         ASCII horizontal tab (TAB)
+\uxxxx     Character with 16- bit hex value xxxx (Unicode only)
+\Uxxxxxxxx Character with 32- bit hex value xxxxxxxx (Unicode only)
+\v         ASCII vertical tab (VT)
+\ooo       Character with octal value oo
+\xhh       Character with hex value hh
 ```
 
 ### Format
@@ -496,6 +530,10 @@ format(10.0,"7.3g")                            # '     10'
 ```python
 # Concatenation
 "s" + "t"                          # 'st'
+"s " + str(123)                    # 's 123'
+# Leading, trailing white-space management 
+" s ".strip()                      # 's'
+' s \n'.rstrip()                   # ' s'
 # Cut by separator
 "s\nt\nr\n".splitlines()           # ['s', 't', 'r']
 "s|t".split("|")                   # ['s', 't']
@@ -505,8 +543,6 @@ format(10.0,"7.3g")                            # '     10'
 "s:r:t".rpartition(':')            # ('s:r', ':', 't')
 # Join by separator
 ':'.join('123')                    # '1:2:3'
-# Leading, trailing white-space management 
-" s ".strip()                      # 's'
 # Matching
 't' in 'str'                       # True
 "st".startswith('s')               # True

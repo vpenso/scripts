@@ -1,6 +1,7 @@
 
 
 ```
+systemctl disable --now firewalld         # disable the firewall
 {/etc,/usr/lib}/firewalld                 # configuration
 firewall-cmd                              # command-line interface
 ```

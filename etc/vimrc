@@ -11,12 +11,35 @@ Plug 'ryanoasis/vim-devicons'
 " i3 configuration syntax highlighting
 "   https://github.com/mboughaba/i3config.vim
 Plug 'mboughaba/i3config.vim'
+" Auto-close inserts matching close pairs
+Plug 'Townk/vim-autoclose'
 
-" run :PlugInstall
+" SnipMate inserts text snippets
+"  cf. https://github.com/garbas/vim-snipmate
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
+Plug 'honza/vim-snippets'
+Plug 'garbas/vim-snipmate'
+" Supertab insert mode completions with Tab
+"  https://github.com/ervandew/supertab
+Plug 'ervandew/supertab'
+
+" Buffergator is a plugin for listing, navigating between, and selecting
+" buffers to edit
+" Cf. https://github.com/jeetsukumaran/vim-buffergator 
+Plug 'jeetsukumaran/vim-buffergator'
+
+" Git command wrapper cf. https://github.com/tpope/vim-fugitive
+Plug 'tpope/vim-fugitive'
+" Shows git diff markers in the sign column
+"  https://github.com/airblade/vim-gitgutter/
+Plug 'airblade/vim-gitgutter/'
+
+" Commands
+"    :PlugInstall      Install plugins
+"    :PlugClean        Remove unlisted plugins 
 " Initialize plugin system
 call plug#end()
-" select a custom theme
-let g:airline_theme='minimalist'
 
 filetype on         " enable file type detection
 filetype indent on  " file type specific indenting
@@ -72,20 +95,16 @@ noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
 
-" Switch to paste mode, disabling all kinds of smartness
-" and enable just pasting a whole buffer of test.
-set pastetoggle=<F3>
-" switch between German and English spelling
-map <F5> :setlocal spell! spelllang=de<CR>
-map <F6> :setlocal spell! spelllang=en<CR>
-" toggle relative line numbers
-map <F7> :set invnumber invrelativenumber<CR>
 
 " To define a mapping which uses the "mapleader" variable, the
-" special string "<Leader>" can be used.  It is replaced with the
+" special string "<leader>" can be used.  It is replaced with the
 " string value of "mapleader". If "mapleader" is not set or empty,
 " a backslash ('\') is used instead as default.
 let mapleader = ','
+
+" make it easy to edit the Vim configuration file
+nmap <leader>s :source $HOME/.vimrc
+nmap <leader>c :e $HOME/.vimrc
 
 " highlight invisible characters
 "set list
@@ -94,9 +113,28 @@ nmap <leader>l :set list!<CR>
 " Use the symbols from Unicode for tab-stops and end-of-line
 set listchars=tab:▸␣,eol:¬,space:·,nbsp:␣,trail:•,precedes:«,extends:»
 
-
 " Clearing highlighted searches
 nmap <silent> <leader>/ :nohlsearch<CR>
+
+" Switch to paste mode, disabling all kinds of smartness
+" and enable just pasting a whole buffer of test.
+set pastetoggle=<F3>
+" switch between German and English spelling
+map <F5> :setlocal spell! spelllang=de<CR>
+nnoremap <leader>d :setlocal spell! spelllang=de<CR>
+map <F6> :setlocal spell! spelllang=en<CR>
+nnoremap <leader>e :setlocal spell! spelllang=en<CR>
+" toggle relative line numbers
+map <F7> :set invnumber invrelativenumber<CR>
+nnoremap <leader>n :set invnumber invrelativenumber<CR>
+
+" disable recording
+map q <Nop>
+" disable ex mode
+nnoremap Q <nop>
+
+" Reset registers
+command! Wipe for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
 " enable relative line numbers
 set rnu
@@ -108,6 +146,27 @@ au InsertEnter * :set nu
 au InsertLeave * :set rnu
 au FocusLost * :set nu
 au FocusGained * :set rnu
+                        \
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" PLUGIN CONFIGURATION
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" select a custom theme
+let g:airline_theme='minimalist'
+
+" Configure the vim-markdown plugin, cf https://github.com/tpope/vim-markdown
+"
+" enable fenced code block syntax highlighting in your markdown documents
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
+let g:markdown_minlines = 100
+
+" Configure the vim-gitgutter plugin, cf. https://github.com/airblade/vim-gitgutter/
+let g:gitgutter_terminal_reports_focus=0
+set updatetime=100
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SYNTAX HIGLIGHTING
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 set t_Co=256

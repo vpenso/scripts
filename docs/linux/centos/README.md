@@ -5,17 +5,7 @@ CentOS (Community Enterprise Operating System):
 * Built from publicly available open-source source code provided by Red Hat
 * Aims to be **functionally compatible with Red Hat Enterprise Linux**
 
-Expected delays after upstream publishes updates, and new releases:
-
-Update        | Time
---------------|--------
-Package       | <72 hours
-Point release | 4-8 weeks
-Major release | month
-
 Cf. [Wikipedia, CentOS Releases](https://en.wikipedia.org/wiki/CentOS#CentOS_releases)
-
-Git repositories for all RPM packages are available on the CentOS Git server [3].
 
 Support EOL (end of live) according to the CentOS FAQ [5]:
 
@@ -23,9 +13,31 @@ Major release | EOL
 --------------|----------------------
 CentOS 6      | 2020/11
 CentOS 7      | 2024/06
-CentOS 8      | 2029/05
+CentOS 8      | 2021/09 
 
 **Upgrade between major releases not supported nor recommended** by CentOS [6].
+
+Git repositories for all RPM packages are available on the CentOS Git server [3].
+
+List of CentOS related package repositories:
+
+Name                  | Description
+----------------------|------------------------
+EPEL                  | https://fedoraproject.org/wiki/EPEL
+ELRepo                | http://elrepo.org
+Software Collections  | https://www.softwarecollections.org
+RPM Fusion            | https://rpmfusion.org
+OpenHPC               | https://github.com/openhpc/ohpc
+
+## CentOS 7
+
+Expected delays after upstream publishes updates, and new releases:
+
+Update        | Time
+--------------|--------
+Package       | <72 hours
+Point release | 4-8 weeks
+Major release | month
 
 Version conventions [7]:
 
@@ -40,79 +52,40 @@ for the active branch [5], i.e.:
 
 <http://mirror.centos.org/centos/7/>
 
-## Repositories
-
-Name      | Description
+Repo      | Description
 ----------|------------------------
 base      | Packages that form CentOS (minor) point releases
 updates   | Security, bugfix or enhancement updates, issued between the regular update sets for point releases
 addons    | Packages not provided by upstream, used to build the CentOS distribution
 
-List of CentOS related package repositories:
 
-Name                  | Description
-----------------------|------------------------
-EPEL                  | https://fedoraproject.org/wiki/EPEL
-ELRepo                | http://elrepo.org
-Software Collections  | https://www.softwarecollections.org
-RPM Fusion            | https://rpmfusion.org
-OpenHPC               | https://github.com/openhpc/ohpc
+## CentOS 8
 
-## Package Errata
+**CentOS Stream** is a **rolling-release** Linux distribution:
 
-Package errata are listings from the package manager (upstream) with 
-updates for when CVE’s and vulnerabilities are found.
+* Midstream between the upstream development in Fedora Linux..
+* ..downstream development for Red Hat Enterprise Linux (RHEL)
 
-### Red Hat
+_The rolling release CentOS Stream becomes the identity of CentOS project. There will be no CentOS 9 based on RHEL 9 in the future._ [13]
 
-Red Hat **Security Advisories** (RHSA) inform customers about security flaws for all Red Hat products:
+RHEL 8 content is distributed through the two main repositories:
 
-<https://access.redhat.com/security/security-updates/#/security-advisories>
+Repository | Description
+-----------|------------------------
+BaseOS     | Core RPM packages that provide OS functionality
+AppStream  | User space RPM packages and RPM modules
 
-RHSA are continuously published to a **announcement mailing list**:
+Both BaseOS and AppStream content sets are required for a basic installation.
 
-<https://www.redhat.com/archives/rhsa-announce/>
+AppStream (Application Stream) allows to install **multiple versions of a user
+space component**.
 
-Security issues receiving special attention by Red Hat are documented by **Vulnerability Responses**:
+* Each AppStream component has a given life cycle
+* Packaged as RPM modules or individual RPM packages
 
-<https://access.redhat.com/security/vulnerabilities>
+**Modules are collections of packages** representing a logical unit.
 
-Data related to security is programmatically available with the Red Hat [Security Data API][rhsda]. Red Hat customers may have access to [Extended Update Support][rheus] (EUS) which provides update channels to stay with a minor version of the base OS. The support time frames are explained at Red Hat [Enterprise Linux Life Cycle][rhellc].
 
-Information is kept in the `UPDATEINFO.XML` file for each repository upstream.
-
-* Use the yum-plugin-security plugin, to list all vulnerable packages `yum list-sec cves`
-* Update any package that has listed errata with `yum update --security`
-
-### CentOS
-
-CentOS Security Advisories (CESA) are continuously published to the **announcement mailing list**:
-
-<https://lists.centos.org/pipermail/centos-announce/>
-
-CESA follows RHSA on its respective mailing-lists closely keeping the same naming convention.
-
-**_Packages distributed by the CentOS repositories do not provide security errata information!_**
-
-CentOS does not have official errata: the CentOS upstream repos do not have an `UPDATEINFO.XML`
-
-**CentOS Errata for Spacewalk** (CEFS) imports security errata information 
-from the CentOS announce mailing list and provides it to a 
-[Spacewalk](http://spacewalk.redhat.com/) server:
-
-<http://cefs.steve-meier.de/>
-
-Following scripts are bases on the security [errata XML file][cefsxml] published by CEFS.
-
-1. The script [generate_updateinfo][cefsgu] creates an `updateinfo.xml` file to be published on a CentOS package repository mirror.
-2. The [Centos-Package-Cron][cefscpc] reports advisories by mail related to packages installed on a specific node.
-
-[rhsda]: https://access.redhat.com/documentation/en-us/red_hat_security_data_api/0.1/html-single/red_hat_security_data_api/
-[rheus]: https://lists.centos.org/pipermail/centos-announce/
-[rhellc]: https://access.redhat.com/support/policy/updates/errata/
-[cefsxml]: http://cefs.steve-meier.de/errata.latest.xml
-[cefsgu]: https://github.com/vmfarms/generate_updateinfo
-[cefscpc]: https://github.com/wied03/centos-package-cron
 
 # References
 
@@ -151,3 +124,10 @@ Following scripts are bases on the security [errata XML file][cefsxml] published
 
 [11] CentOS Project, Youtube  
 <https://www.youtube.com/user/TheCentOSProject>
+
+[12] CentOS Stream  
+<https://wiki.centos.org/Manuals/ReleaseNotes/CentOSStream>  
+<https://wiki.centos.org/FAQ/CentOSStream>
+
+[13] CentOS Stream Fiasco  
+<https://itsfoss.com/centos-stream-fiasco>

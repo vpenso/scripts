@@ -1,4 +1,4 @@
-## Rsync
+# Rsync
 
 Advanced alternative for the `cp` and `scp` commands:
 
@@ -18,7 +18,14 @@ Special treatment to **source directories with a trailing slash `/`**, which
 copies the contents of the source directory to the destination (with no
 intervening sub-directory).
 
-### Dry Run
+Connect with a **non-default SSH port** using the option `-e` (`--rsh`) to
+specify the remote shell to use:
+
+```bash
+rsync -e 'ssh -p 2022' ...
+```
+
+## Dry Run
 
 Use option `-n` to **show changes without modifying** the destination:
 
@@ -61,9 +68,9 @@ YXcstpoguax  path/to/file
          `-- a: The ACL information changed
 ```
 
-### Compare Files
+## Compare Files
 
->  "quick check" algorithm (by default) that looks for files that have changed
+> "quick check" algorithm (by default) that looks for files that have changed
 in size or in last−modified time.
 
 Modifies rsync’s "quick check" algorithm:
@@ -82,7 +89,7 @@ reading all the data..
 --checksum-choice=auto  # overrides the checksum algoriths, "md4", "md5", and "none"
 ```
 
-### Transfer
+## Transfer
 
 Option `-a` **archive mode** equals `-rlptgoD` (not ACLs, hard links or extended attributes such as capabilities):
 
@@ -114,7 +121,7 @@ Option `-hP` **human readable progress**/speed indicator:
 --delete-during   # receiver deletes during the transfer
 ```
 
-### Include & Exclude
+## Include & Exclude
 
 ```
 /dir/   means exclude the root folder /dir

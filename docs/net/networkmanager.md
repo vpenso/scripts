@@ -1,5 +1,10 @@
 ## NetworkManager
 
+```bash
+nmcli device status
+nmcli con mod $device connection.autoconnect yes
+```
+
 GNOME NetworkManager configures and monitors Wifi network connections [1]:
 
 ```bash

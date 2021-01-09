@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2015-2016 Victor Penso
+# Copyright 2015-2020 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,7 +62,12 @@ class Table
 
   def transform(command, delim = ' ')
     System::exec(command).split("\n").each do |line|
-      @rows << line.split(delim)
+      # maintain empty fields
+      fields = line.split(delim,-1)
+      # replace empty fields with a dash
+      fields.collect! { |value| value.empty? ? '-' : value }
+      $logger.debug(line + ' == ' + fields.inspect)
+      @rows << fields
     end
     print()
   end
@@ -128,13 +133,23 @@ HELP = <<EOF
 #{exec_name} [<options>] [<command>] [<subcommand>] [<args>] 
 
 <command>
+  a, accounts                      accounts configuration
   h, help                          show this help information
 > j, jobs                          state of jobs 
   l, limits                        association limits
   n, nodes                         state of execution nodes
   p, partition                     state of the partitions
 
+accounts <subcommand>
+
+  cu, create-user <user> <account,[account]> [<defaultaccount>]
+       Assoicates a Linux user to a Slurm account. The list of accounts
+       can be a comma separated list. The default account if not 
+       specified is 'none'.
+  s, shares                        fair-share state of all accounts
+
 jobs <subcommand>
+  b,   by-id <job_id>              details for a specific job
   c,   completed-by-users          jobs completed by users
   ce,  completed-by-endtime        jobs completed in the last 6 hours
   f,   failed                      jobs finished with a failure
@@ -147,8 +162,9 @@ jobs <subcommand>
   wd,  work-dir <job_id>           working directory of job
 
 limits <subcommand>
-  a,   by-account <account>        limits for account
-  u,   by-user <user>              limits for user
+> a,   accounts                    limits for all accounts
+  A,   by-account <account>        limits for a specific account
+  u,   by-user <user>              limits for a specific user
 
 nodes <subcommand>
   a,   allocated                   nodes executing jobs
@@ -176,6 +192,50 @@ partition <subcommand>
   -v, --version                    print program version
 EOF
 
+module Accounts 
+
+  module_function
+
+  def create_user
+    name = ARGV.shift || raise('Specify a Linux user name!')
+    # check if the user exists
+    unless System::exec("id #{name} 2>/dev/null")
+            raise("#{name} is not a valid Linux user name!")
+    end
+    # check if the user is already in the system
+    unless System::exec("sacctmgr -n show user where name=#{name}").empty?
+      $stdout.puts "The user #{name} exists already with following associations"
+      $stdout.puts System::exec("sacctmgr show user withassoc where name=#{name} format=User,Account,DefaultAccount")
+      exit 1
+    end
+    account = ARGV.shift || raise('Specify the account to associate the user to')
+    # if no default is specified
+    defaultaccount = ARGV.shift || 'none'
+    # create the account
+    puts System::exec("sacctmgr --immediate create user name=#{name} account=#{account} defaultaccount=#{defaultaccount}")
+  end
+
+  def shares
+    format = %w(
+      Account
+      User
+      RawShares
+      NormShares
+      RawUsage
+      NormUsage
+      EffectvUsage
+      FairShare
+    )
+    Table.new(format).transform("
+      sshare 
+        --noheader
+        --parsable
+        --all 
+        --format=#{format.join(',')}
+    ",'|')
+  end
+
+end
 
 module Jobs
 
@@ -188,7 +248,7 @@ module Jobs
         --format '%9T %8u %9P'
         --sort 'u,P'
         --noheader
-        | uniq -f2 -c
+        | uniq -f1 -c
     ")
   end
 
@@ -218,7 +278,7 @@ module Jobs
         --format '%9T %8u %9P %10a'
         --sort 'u'
         --noheader
-        | uniq -f2 -c
+        | uniq -f1 -c
     ")
   end
 
@@ -251,6 +311,7 @@ module Jobs
           --noheader
           --allusers
           --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --endtime $(date +"%Y-%m-%d")
           --format user,account
           --allocations
           | sort 
@@ -264,6 +325,7 @@ module Jobs
           --noheader
           --allusers
           --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --endtime $(date +"%Y-%m-%d")
           --format end,user,account,state,nnodes
           --allocations
           | sort -k 1
@@ -284,13 +346,43 @@ module Jobs
   def failed
     Table.new(%w(Jobs End User Account State Exit)).transform(%Q[
       sacct
-        --noheader --allocations --allusers
+        --noheader 
+        --allocations 
+        --allusers
         --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+        --endtime $(date +"%Y-%m-%d")
         --state failed,node_fail,timeout
         --format end,user,account,state,exitcode
         | sort -k 1
         | uniq -f 1 -c
     ])
+  end
+
+  ##
+  # 
+  def by_id()
+    jobid = ARGV.shift || raise("Specify a SLURM job ID!")
+    format = %w(
+      jobid
+      user
+      state
+      submit
+      start
+      end
+      cputime
+      timelimit
+      exitcode
+      jobname
+      comment
+      nodelist
+    )
+    Table.new(format).transform("
+      sacct
+        --noheader
+        --parsable
+        --format #{format.join(',')}
+        --jobs #{jobid}
+    ",'|')
   end
 
   def begin_time(value = $options.begin_time)
@@ -316,6 +408,18 @@ module Limits
     QOS
   )
 
+  def accounts
+    format = %w(
+    Account User
+    GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+      MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+    )
+    Table.new(format).transform(%Q<
+      sacctmgr -snp show account format=#{format.join(',')}
+    >,'|')
+
+  end
+
   def by_account
     name = ARGV.shift || raise('Specify an account name to show limits for')
     format = %w(
@@ -325,7 +429,7 @@ module Limits
       QOS
     )
     Table.new(format).transform(%Q<
-      sacctmgr -nP show associations where account=#{name} format=#{format.join(',')}
+      sacctmgr -np show associations where account=#{name} format=#{format.join(',')}
     >,'|')
   end
 
@@ -510,18 +614,28 @@ begin
     when '--no-header'
       $options.no_header = true
     when '--version'
-      $stdout.puts 1.2
+      $stdout.puts 1.33
       exit 0
     end
   end
 
   command = ARGV.shift || 'jobs'
   case command
+  when 'a','accounts'
+    subcommand = ARGV.shift || raise('fail')
+    case subcommand
+    when 'cu','create-user'
+      Accounts::create_user
+    when 's','shares'
+      Accounts::shares
+    end
   when 'h','help'
     $stdout.puts HELP
   when 'j','jobs'
     subcommand = ARGV.shift || 'running'
     case subcommand
+    when 'b','by-id'
+      Jobs::by_id
     when 'c','completed-by-users'
       Jobs::completed_by_users
     when 'ce','completed-by-endtime'
@@ -546,9 +660,11 @@ begin
       raise("Sub-command #{subcommand} not supported") 
     end
   when 'l','limits'
-    subcommand = ARGV.shift || 'state'
+    subcommand = ARGV.shift || 'accounts'
     case subcommand
-    when 'a','by-account'
+    when 'a','accounts'
+      Limits::accounts
+    when 'A','by-account'
       Limits::by_account
     when 'u','by-user'
       Limits::by_user

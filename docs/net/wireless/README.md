@@ -73,6 +73,40 @@ Infrastructure mode using a wireless **Access Point** (AP)
 - STA with additional coordination functions
 - Wireless devices must associate to an AP for network access
 
+## Signal Strength
+
+Measured in dBm (decibel milliwatts)
+
+* Absolute number representing power level in mW
+* Expressed in negative values
+* Logarithmic scale, the closer to 0 dBm, the better the signal is
+
+```
+dBm          Quality
+
+-30          Maximum, close to access point
+-50          Excellent
+-60          Good
+-67          Reliable (enough for VoIP, non HD video)
+-70          Week (enough for HTTP, mail)
+-80          Unreliable
+-90          Unusable
+```
+
+```bash
+wavemon                        # TUI to monitor signal strength
+```
+
+RSSI (Received Signal Strength Indicator), relative quality of a received signal
+to a client device
+
+Main factors that can weaken your Wi-Fi quality:
+
+* Physical obstruction
+* Competing WiFi networks
+* Interfering electronics
+
+
 ## Wireless Security 
 
 Cf. [Wireless Security Measures](https://en.wikipedia.org/wiki/Wireless_security#Security_measures)

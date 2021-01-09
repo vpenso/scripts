@@ -67,7 +67,7 @@ tmpdir=$(mktemp -d)
 # change into a temporary directory
 cd $tmpdir
 # copy CD tracks as MP3 files
-cdda2mp3 dev=$CD_DRIVE
+cdda2mp3
 # concatenate MP3s into a single file
 mp3wrap o.mp3 *.mp3
 # copy output file into the original working directory

@@ -4,7 +4,7 @@
 - Designed to deal with multiple clients from the outset
 - Can be combined with systemd-networkd
 
-# Build
+## Build
 
 Depending on the Linux distribution, update `iwd` to a recent version:
 
@@ -33,11 +33,22 @@ rm -rf $tmp
 sudo systemctl daemon-reload
 ```
 
-# Configuration
+## Usage
 
-Wnable the service to manage Wifi connections automatically:
+Make sure to configure following prerequisites:
+
+1. Bring up the interfaces with `systemd-networkd`
+2. Configure DNS resolution with `systemd-resolved`
+
+Minimal configuration to assign IP address(es) and set up routes using a
+built-in DHCP client:
 
 ```bash
+cat > /etc/iwd/main.conf <<EOF
+[General]
+EnableNetworkConfiguration=true
+EOF
+# Enable the service to manage Wifi connections automatically
 sudo systemctl enable --now iwd           
 ```
 
@@ -51,16 +62,18 @@ ExecStart=/usr/libexec/iwd
 sudo IWD_TLS_DEBUG=1 /usr/libexec/iwd -d
 ```
 
-The general service configuration file is store to `/etc/iwd/main.conf`, and may
-include:
+Use the command-line interface `iwctl` to select a WiFi connection:
 
 ```bash
-[General]
-# assign IP address(es) and set up routes using a built-in DHCP client
-EnableNetworkConfiguration=true
+iwctl device list                    # list wireless devices
+iwctl device <dev> show              # show device details
+iwctl station list                   # list state
+iwctl station <dev> scan             # scan for networks
+iwctl station <dev> get-networks     # list networks
+iwctl station <dev> connect <ssid>   # connect to network
 ```
 
-## Access Point configuration
+## Configuration
 
 Access point connection configuration is store:
 
@@ -69,6 +82,14 @@ Access point connection configuration is store:
 
 ```bash
 /var/lib/iwd/*.{open,psk,8021x}      # network configuration files
+```
+
+Configure the **DNS resolution**:
+
+```bash
+[Network]
+NameResolvingService=resolvconf
+# systemd is used by default
 ```
 
 ### WPA2
@@ -129,16 +150,6 @@ EAP-PEAP-Phase2-Password=${password}
 EOF
 ```
 
-# Usage
-
-```bash
-iwctl device list                    # list wireless devices
-iwctl device <dev> show              # show device details
-iwctl station list                   # list state
-iwctl station <dev> scan             # scan for networks
-iwctl station <dev> get-networks     # list networks
-iwctl station <dev> connect <ssid>   # connect to network
-```
 
 ## References
 

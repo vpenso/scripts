@@ -1,6 +1,3 @@
-#!/bin/bash
-
-echo "\
 SHELL
 
         Alt+F2                    Command dialog
@@ -61,4 +58,4 @@ NAUTILUS
         Ctrl+A                    Select all
         Ctrl+S                    Select by pattern
         Ctrl+H                    Toggle hidden files
-        Ctrl+[+,-,0]              Zoom in, out, reset"
+        Ctrl+[+,-,0]              Zoom in, out, reset

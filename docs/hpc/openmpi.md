@@ -1,10 +1,55 @@
 # Open MPI (OMPI)
 
-Main code sections:
+* **MCA** (Modular Component Architecture)
+  - Framework manage a single components type (multiple versions) at run-time
+  - Components implement a framework interface loaded as plugin at run-time
+  - Modules is a run-time instance of a component
+* **MCA parameters** customize the run-time configuration with simple key-value pairs
 
-* **OMPI** (Open MPI layer) the MPI API and supporting logic
-* **ORTE** (Open MPI Run-Time Environment) interfaces the back-end run-time system
-* **OPAL** (Open Portability Access Layer) utility code for the operating system
+Find a comprehensive list of MCA frameworks in the README  
+<https://github.com/open-mpi/ompi/blob/master/README>
+
+```bash
+ompi_info --param all all                 # list all frameworks, MCA paramters
+ompi_info --param $framework all          # ^for a specific framework
+ompi_info --param $framework $component   # ^specific component
+ompi_info --param $framework $component   # ^specific component
+ompi_info --param $framework $component --level 9 
+```
+
+Open MPI FAQ: General run-time tuning  
+<https://www.open-mpi.org/faq/?category=tuning>
+
+Change the behavior of code at run-time in following precedence:
+
+1. Command line arguments `mpirun -mca <name> <value>`
+2. Environment variables `export OMPI_MCA_<name>=<value>`
+3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
+
+ORTE back-end run-time environment component frameworks:
+
+- `ess` RTE environment-specific services
+- `plm` process lifecycle management
+- `ras` resource allocation system
+- `schizo` OpenRTE personality framework
+
+```bash
+# RSH/SSH
+ompi_info --param plm rsh                                                
+                 MCA plm: rsh (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+# PBS/Torque
+ompi_info --param all all | grep tm    
+                 MCA ess: tm (MCA v2.1.0, API v3.0.0, Component v3.1.4)
+                 MCA plm: tm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+                 MCA ras: tm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+# SLURM
+ompi_info --param all all | grep slurm                                  
+                 MCA ess: slurm (MCA v2.1.0, API v3.0.0, Component v3.1.4)
+                 MCA plm: slurm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+                 MCA ras: slurm (MCA v2.1.0, API v2.0.0, Component v3.1.4)
+              MCA schizo: slurm (MCA v2.1.0, API v1.0.0, Component v3.1.4)
+```
+
 
 ## Install
 
@@ -140,28 +185,3 @@ Compile the using `mpicc` an execute it locally with `mpirun`:
 >>> mpirun -np 4 hello_world              # run with 4 processes
 ```
 
-### MCA Parameters
-
-Change the behavior of code at run-time in following precedence:
-
-1. Command line arguments `mpirun -mca <name> <value>`
-2. Environment variables `export OMPI_MCA_<name>=<value>`
-3. Files i.e. `$HOME/.openmpi/mca‐params.conf`
-4. Default value
-
-Use `ompi_info` to investigate the OMPI installation
-
-```bash
-ompi_info --param btl all       # show the BTL (Byte Transfer Layer) supported        
-```
-
-Cf. [Open MPI FAQ: General run-time tuning](https://www.open-mpi.org/faq/?category=tuning)
-
-Configure the port range used by MPI:
-
-```bash
->>> grep ports /etc/openmpi-mca-params.conf
-oob_tcp_dynamic_ipv4_ports=35000-45000
-ompi_info --param oob tcp --level 9 | grep dynamic
-             MCA oob tcp: parameter "oob_tcp_dynamic_ipv4_ports" (current value: "35000-45000",...
-```
