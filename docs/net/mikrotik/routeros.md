@@ -14,22 +14,6 @@ RouterOS is an operating system build buy MikroTik based on the Linux kernel:
 * Intrusion detection system (IDS)
 * Intrusion prevention system (IPS)
 
-[MikroTik](https://mikrotik.com/products) RouterBoard hardware (consumers):
-
-| Name         | Price | CPU    | RAM   | Ports | WLAN                          | USB | SFP | PoE        |
-|--------------|-------|--------|-------|-------|-------------------------------|-----|-----|------------|
-| mAP lite     | ~25   | 650Mhz |  64MB | 1xE   | 2.4GHz Dual-Chain             | no  | no  | 1x (in)    |
-| mAP          | ~45   | 650Mhz |  64MB | 2xE   | 2.4GHz Dual-Chain             | no  | no  | 1x (in/out)|
-| hAP mini     | ~20   | 650Mhz |  32MB | 3xE   | 2.4 GHz (802.11b/g/n)         | no  | no  | no         |
-| hAP lite     | ~25   | 650Mhz |  32MB | 4xE   | 2.4 GHz (802.11b/g/n)         | no  | no  | no         |
-| hAP          | ~45   | 650MHz |  64MB | 5xE   | 2.4 GHz (802.11b/g/n)         | yes | no  | 1x         |
-| hAP AC lite  | ~50   | 650Mhz |  64MB | 4xE   | 2.4GHz/5GHz Dual-Concurrent   | yes | no  | 1x         |
-| hAP AC       | ~130  | 720MHz | 128MB | 5xGE  | 2.4GHz/5GHz Dual-Concurrent   | yes | 1x  | 1x         |
-| hEX lite     | ~40   | 850Mhz |  64MB | 5xE   | no                            | no  | no  | no         |
-| hEX          | ~60   | 880Mhz | 256MB | 5xGE  | no                            | yes | no  | no         | 
-| hEX PoE lite | ~60   | 650MHz |  64MB | 5xE   | no                            | no  | no  | 4x         |
-| hEX PoE      | ~80   | 800Mhz | 128MB | 5xGE  | no                            | yes | 1x  | 4x         |
-
 Management Tools:
 
 * **Console** using serial port, telnet, SSH.
