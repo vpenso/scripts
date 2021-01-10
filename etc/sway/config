@@ -14,10 +14,14 @@ set $term foot
 
 include /etc/sway/config-vars.d/*
 
-### Output configuration
 #
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+# Output configuration
+#
+
+# wallpaper
+output * background "~/.cache/wallpaper" fill
+
+
 #
 # Example configuration:
 #
