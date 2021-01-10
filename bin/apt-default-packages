@@ -8,42 +8,29 @@ then
 		bc \
                 ccrypt \
                 clustershell \
-                compton \
                 curl \
                 dnsutils \
                 encfs \
                 fd-find \
-                feh \
 		firefox-esr \
                 fzf \
                 git \
-                gromit-mpx \
-		gthumb \
-                imagemagick \
-                key-mon \
                 mpd \
                 mpc \
                 mupdf \
-                nnn \
                 ncmpc \
 		pmount \
-                powerline \
                 psmisc \
-                python3-pip \
-                rofi \
+                python \
                 rsync \
                 ruby \
-                screenkey \
                 sshfs \
                 sshuttle \
-                sxiv \
                 tcpdump \
-                terminator \
                 tmux \
                 tree \
                 vim \
                 wget \
-                xclip \
 		vlc \
                 zsh
         fc-cache -f # build font information cache files

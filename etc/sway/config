@@ -213,7 +213,6 @@ bar {
     # Read `man 5 sway-bar` for more information about this section.
     #
     position top
-    gaps 0 20 0 20
     font monospace 11
 
     # Colors are defined within a colors { } block inside a bar { } block. 

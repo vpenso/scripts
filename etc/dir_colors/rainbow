@@ -1,5 +1,6 @@
 TERM screen-256color
 TERM xterm-256color
+TERM foot*
 RESET                 0
 FILE                  00;38;5;241
 DIR                   00;38;5;244
