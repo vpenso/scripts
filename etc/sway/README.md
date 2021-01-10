@@ -9,6 +9,7 @@ sudo apt install -y \
       imv \
       sway \
       upower \
+      wl-clipboard \
       xwayland
 # use the configuration within this repository
 source $SCRPITS/var/aliases/sway.sh
