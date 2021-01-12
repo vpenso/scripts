@@ -85,6 +85,7 @@ Domains=           # a list of the domains used for DNS host name resolution
 
 ```bash
 cat <<EOF | sudo tee /etc/systemd/network/20-wired.network
+[Match]
 Name=en*
 
 [Network]
@@ -94,6 +95,7 @@ DHCP=ipv4
 RouteMetric=10
 EOF 
 cat <<EOF | sudo tee /etc/systemd/network/25-wireless.network
+[Match]
 Name=wl*
 
 [Network]
