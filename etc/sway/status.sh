@@ -1,5 +1,8 @@
-date=$(date +'%Y/%m/%d %H:%M')
-upower=$(upower --show-info $(upower --enumerate | grep BAT) | egrep '(energy:|percentage)' | tr -d ' ' | cut -d: -f2 | tr '\n' ' ')
+date=$(date +'%Y/%m/%dT%H:%M')
+
+battery=$(upower --enumerate | grep BAT)
+energy=$(upower --show-info $battery | grep energy: | cut -d: -f2 | xargs | tr -d ' ')
+percent=$(upower --show-info $battery | grep percent | cut -d: -f2 | xargs)
 
 ethernet=
 wireless=
@@ -19,4 +22,4 @@ do
         esac
 done
 
-echo "$ethernet $wireless | $upower $date"
+echo "$ethernet $wireless -- $percent:$energy -- $date"
