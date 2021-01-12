@@ -1,4 +1,8 @@
+# foot
 
+Wayland terminal emulator
+
+<https://codeberg.org/dnkl/foot>
 
 ```bash
 # add the configuration file to the environment
