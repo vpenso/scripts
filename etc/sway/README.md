@@ -12,6 +12,8 @@ sudo apt install -y \
       imv \
       jq \
       sway \
+      swayidle \
+      swaylock \
       upower \
       wdisplays \
       wl-clipboard \
