@@ -4,6 +4,7 @@
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
+set $alt Mod1
 # Home row direction keys, like vim
 set $left h
 set $down j
@@ -61,7 +62,10 @@ client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333
     bindsym $mod+q kill
 
     # Start your launcher
-    bindsym mod1+2 exec wofi --show run
+    bindsym $alt+2 exec wofi --show run
+
+    # start bookmark menu
+    bindsym $alt+3 exec /usr/local/bin/wofi-bookmarks
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -74,8 +78,6 @@ client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333
     bindsym mod4+Shift+c reload
     # restart (preserves your layout/session, can be used to upgrade)
     bindsym mod4+Shift+r restart
-
-
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'

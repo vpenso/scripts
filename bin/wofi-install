@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# make sure the user has installed dependencies
+for cmd in \
+        wofi
+do
+        command -v $cmd &>/dev/null || {
+                echo "$cmd command not in PATH"
+                exit 1
+        }
+done
+
+# install dependency programs in user local
+for file in \
+        bookmarks \
+        wofi-bookmarks
+do
+        src=$SCRIPTS/bin/$file
+        diffcp -rs $SCRIPTS/bin/$file /usr/local/bin/$file
+done
+
+exit 0
