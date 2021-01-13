@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+export BOOKMARKS_PATH=${BOOKMARKS_PATH:-~/projects/scripts/var/bookmarks:~/projects/gsi-scripts/var/bookmarks}
+echo $BOOKMARKS_PATH
+# ugly shit hack cause...
+wd="$( cd "$(dirname "$0")" ; pwd -P )"
+select=$($wd/bookmarks list -k | wofi --show dmenu -p 'bookmarks')
+$wd/bookmarks search -o $select
