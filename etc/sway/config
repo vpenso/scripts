@@ -82,11 +82,12 @@ client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333
     bindsym $super+Shift+r restart
 
     set $lock exec bash ~/.config/sway/lock.sh
-    bindsym $super+Shift+9 $lock
+    bindsym $super+9 $lock
 
-    # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym $super+0 exec swaymsg exit
 
+
+### Session Menu
 
 #
 # Moving around:

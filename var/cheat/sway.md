@@ -1,3 +1,5 @@
+Super + 9                    Lock
+Super + 0                    Exit
 Super + Shift + Space        Toggle floating/tilling mode
 Super + Space                Swap focus between floating/tiling area
 Super + Right Mouse Button   Move floating container

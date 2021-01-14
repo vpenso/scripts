@@ -1,4 +1,4 @@
-date=$(date +'%Y/%m/%dT%H:%M')
+date=$(date +'%Y/%m/%d %H:%M')
 
 battery=$(upower --enumerate | grep BAT)
 energy=$(upower --show-info $battery | grep energy: | cut -d: -f2 | xargs | tr -d ' ')
@@ -11,15 +11,15 @@ do
         case $i in
         enp*|eth*)
                 ip=$( ip addr show $i | grep 'inet ' | tr -s ' ' | cut -d' ' -f3 )
-                ethernet=$i:$ip
+                ethernet="$i | $ip"
                 ;;
         wlan*)
                 ip=$( ip addr show $i | grep 'inet ' | tr -s ' ' | cut -d' ' -f3 )
                 essid=$( iwconfig wlan0 | head -n1 | cut -d: -f2 | tr -d '"' | xargs )
                 signal=$( iwconfig wlan0 | grep Signal | cut -d= -f3 | tr -d ' ' )
-                wireless="$i:$essid:$ip:$signal"
+                wireless="$i | $essid | $ip | $signal"
         ;;
         esac
 done
 
-echo "$ethernet $wireless -- $percent:$energy -- $date"
+echo "$ethernet $wireless -- $percent | $energy -- $date"
