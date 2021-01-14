@@ -22,4 +22,6 @@ do
         esac
 done
 
-echo "$ethernet $wireless -- $percent | $energy -- $date"
+kbd_layout=$(swaymsg -t get_inputs | grep -i 'active_layout_name' | uniq | cut -d'"' -f4)
+
+echo "$ethernet $wireless -- $percent | $energy -- $kbd_layout | $date"
