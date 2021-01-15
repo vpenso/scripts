@@ -1,3 +1,4 @@
+# vim: filetype=sh nospell
 # Read `man 5 sway` for a complete reference.
 
 ### Variables ----------------------------------------------------------------
@@ -12,8 +13,6 @@ set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
-set $term foot
 
 
 ### Output --------------------------------------------------------------------
@@ -58,38 +57,36 @@ bindsym $super+t focus mode_toggle
 for_window [app_id="wdisplays"] floating enable
 
 ### Key bindings ---------------------------------------------------------------
-#
-# Basics:
-#
-    # Start a terminal
-    bindsym $mod+Return exec $term
-    bindsym $alt+1 exec $term
-    
-    # kill focused window
-    bindsym $mod+q kill
 
-    # Start your launcher
-    bindsym $alt+2 exec wofi --show run
+# Start a terminal
+bindsym $mod+Return exec foot
+bindsym $alt+1 exec terminator
 
-    # start bookmark menu
-    bindsym $alt+3 exec /usr/local/bin/wofi-bookmarks
+# kill focused window
+bindsym $mod+q kill
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
+# Start your launcher
+bindsym $alt+2 exec wofi --show run
 
-    # Reload the configuration file
-    bindsym $super+Shift+c reload
-    # restart (preserves your layout/session, can be used to upgrade)
-    bindsym $super+Shift+r restart
+# start bookmark menu
+bindsym $alt+3 exec /usr/local/bin/wofi-bookmarks
 
-    set $lock exec bash ~/.config/sway/lock.sh
-    bindsym $super+9 $lock
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
 
-    bindsym $super+0 exec swaymsg exit
+# Reload the configuration file
+bindsym $super+Shift+c reload
+# restart (preserves your layout/session, can be used to upgrade)
+bindsym $super+Shift+r restart
+
+set $lock exec bash ~/.config/sway/lock.sh
+bindsym $super+9 $lock
+
+bindsym $super+0 exec swaymsg exit
 
 
 ### Session Menu

@@ -1,3 +1,5 @@
+# vim: filetype=systemd nospell
+
 [global_config]
   dbus = False
   focus = mouse
