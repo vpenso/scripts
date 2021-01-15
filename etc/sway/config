@@ -55,6 +55,7 @@ bindsym $super+t focus mode_toggle
 #
 # Applications which start by default floating
 for_window [app_id="wdisplays"] floating enable
+for_window [app_id="pavucontrol"] floating enable
 
 ### Key bindings ---------------------------------------------------------------
 
