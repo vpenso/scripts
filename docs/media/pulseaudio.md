@@ -2,6 +2,7 @@
 
 ```bash
 sudo apt install -y pulseaudio pulsemixer pavucontrol
+# logout from your session, pulseaudio will be started by systemd/user
 ```
 
 ```bash
