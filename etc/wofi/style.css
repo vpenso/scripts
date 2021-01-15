@@ -1,0 +1,63 @@
+#entry {
+border-radius: 5px;
+padding: 3px;
+margin: 0px 3px 3px 3px;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+#entry:selected {
+        background-color: #f0f8ff;
+        font-weight: bold;
+}
+ 
+#text:selected {
+        color: #000000;
+}
+ 
+#window {
+        background-color: transparent;
+        border-radius: 17px;
+        font-family: Ubuntu Mono;
+}
+
+#input {
+        border: none;
+        background-color: #f5f5f5;
+        padding: 10px;
+        margin: 15px 15px 10px 15px;
+        border-radius: 5px;
+}
+
+#inner-box {
+        color: #d3d3d3;
+        padding-top: 5px;
+        margin: 0px 10px 10px 10px;
+        border-radius: 10px;
+}
+
+#outer-box {
+        margin: 15px;
+        border-radius: 15px;
+        background-color: #ffffff;
+        box-shadow: 0px 0px 5px 0  #0F0F0F;
+}
+
+#scroll {
+        margin-bottom: 10px;
+}
+
+#text {
+        padding: 5px;
+        color: #191970;
+        background-color: transparent;
+} 
+
+#img {
+  background-color: transparent;
+  padding: 5px;
+}
+

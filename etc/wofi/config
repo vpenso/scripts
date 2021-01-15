@@ -1,0 +1,5 @@
+# vim: filetype=sh nospell
+
+hide_scroll=true
+width=500
+lines=12
