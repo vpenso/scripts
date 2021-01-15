@@ -1,7 +1,8 @@
 # Read `man 5 sway` for a complete reference.
 
-### Variables
+### Variables ----------------------------------------------------------------
 #
+
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
 set $super Mod4
@@ -14,21 +15,23 @@ set $right l
 # Your preferred terminal emulator
 set $term foot
 
-include /etc/sway/config-vars.d/*
 
-### Output configuration
+### Output --------------------------------------------------------------------
 
 # wallpaper
 output * background "~/.cache/wallpaper" fill
 
-### Input
+### Input ---------------------------------------------------------------------
+#
 
 # support US and German keyboard layouts
 input * xkb_layout "us,de"
+
 # switch keyboard layout
 bindsym $super+Space exec swaymsg input type:keyboard xkb_switch_layout next
 
-### Appearance
+### Appearance ----------------------------------------------------------------
+#
 
 default_border pixel 3
 gaps inner 6
@@ -40,7 +43,21 @@ client.focused          #900000      #ffffff   #000000   #2e9ef4    #ff7f50
 client.focused_inactive #333333      #ffffff   #000000   #292d2e    #333333
 client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333
 
-### Key bindings
+### Floating -------------------------------------------------------------------
+#
+
+# Toggle the current focus between tiling and floating mode
+bindsym $super+Shift+f floating toggle
+
+# Swap focus between the tiling area and the floating area
+bindsym $super+t focus mode_toggle
+
+# Get an app_id with: `swaymsg -t get_tree | grep app_id`
+#
+# Applications which start by default floating
+for_window [app_id="wdisplays"] floating enable
+
+### Key bindings ---------------------------------------------------------------
 #
 # Basics:
 #
@@ -132,11 +149,6 @@ client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333
     # Make the current focus fullscreen
     bindsym $super+f fullscreen
 
-    # Toggle the current focus between tiling and floating mode
-    bindsym $super+Shift+f floating toggle
-
-    # Swap focus between the tiling area and the floating area
-    bindsym $super+t focus mode_toggle
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
@@ -177,10 +189,9 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
+# Status Bar ---------------------------------------------------------------
 #
-# Status Bar:
-#
-#
+
 bar {
 
     #
