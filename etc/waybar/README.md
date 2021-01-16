@@ -4,18 +4,20 @@ Status bar for Wayland, Wlroots, and Sway.
 
 ```bash
 sudo apt install -y waybar       # Debain >=11
+~/.config/waybar                 # default configuration path
 ```
 
-`$SCRIPTS/etc/sway/config` loads Waybar with following configuration:
+File                                | Description
+------------------------------------|-----------------------------------------
+[etc/sway/config.d/waybar][01]      | Load this configuration in Sway
+[var/aliases/waybar.sh][02]         | Configure the local environment
+`config.d/`                         | Configuration files
+`config`                            | Active configuration
+`styles.d/`                         | Style (CSS) configuration files
+`style.css`                         | Active style
 
-```sh
-bar {
-    swaybar_command waybar
-}
-```
-
-Waybar expects its configuration in `~/.config/waybar` by default.
-`$SCRIPTS/var/aliases/waybar.sh` links this path into this repository.
+[01]: ../sway/config.d/waybar
+[02]: ../../var/aliases/waybar.sh
 
 ### References
 
