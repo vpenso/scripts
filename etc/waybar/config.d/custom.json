@@ -8,6 +8,8 @@
     "battery": {
         "format": "{icon} {capacity}%",
         "format-time": "{H}:{M}",
+        "format-charging": "<span color='#f53c3c'> </span>({time}) {icon} {capacity}%",
+        "format-plugged":  "  {icon} {capacity}%",
         "format-icons": ["", "", "", "", ""]
     },
     "custom/clock": {

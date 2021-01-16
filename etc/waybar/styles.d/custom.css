@@ -33,7 +33,7 @@ window#waybar {
 }
 
 #workspaces button.focused {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.6);
         color: rgba(0, 0, 0, 0.9);
         font-weight: bold;
 }
@@ -48,10 +48,6 @@ window#waybar {
         color: rgba(255, 255, 255, 0.9);
         border-radius: 3px;
         margin: 0 3px 0 3px;
-}
-
-#battery.charging {
-    border: solid 2px rgb(230, 179, 14);
 }
 
 
