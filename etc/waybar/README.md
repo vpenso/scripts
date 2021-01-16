@@ -3,7 +3,7 @@
 Status bar for Wayland, Wlroots, and Sway.
 
 ```bash
-sudo apt install -y waybar       # Debain >=11
+sudo apt install -y waybar fonts-font-awesome     # Debain >=11
 ~/.config/waybar                 # default configuration path
 ```
 

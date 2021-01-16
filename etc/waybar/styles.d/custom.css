@@ -8,7 +8,7 @@
 
 
 window#waybar {
-/*        background-color: rgba(255, 255, 255, 0.1); */
+/*      background-color: rgba(255, 255, 255, 0.1); */
         background-color: transparent;
         border-radius: 3px;
         border: none;
@@ -24,21 +24,17 @@ window#waybar {
 }
 
 #workspaces button {
-  background: rgba(255, 255, 255, 0.1);
-  color: darkgray;
-  border-radius: 3px;
+        background: rgba(255, 255, 255, 0.2);
+        color: rgba(0, 0, 0, 0.9);
+        border-radius: 3px;
 }
 
 #workspaces button:hover {
-  background: #477083;
-  color: #ffffff;
-  box-shadow: none;
-  text-shadow: none;
 }
 
 #workspaces button.focused {
-        background-color: rgba(8, 154, 25, 0.3);
-        color: rgb(3, 57, 9);
+        background: rgba(255, 255, 255, 0.9);
+        color: rgba(0, 0, 0, 0.9);
         font-weight: bold;
 }
 
@@ -47,39 +43,31 @@ window#waybar {
   color: #fff;
 }
 
-#mode, #clock, #battery {
-    padding: 0 10px;
-    margin: 0 5px;
-}
-
-#mode {
-    background: #64727D;
-    border-bottom: 3px solid white;
-}
-
-#battery {
-    background-color: black;
-    color: white;
-    border-radius: 3px;
-    margin: 0;
+#battery, #custom-clock {
+        background-color: rgba(0, 0, 0, 0.9);
+        color: rgba(255, 255, 255, 0.9);
+        border-radius: 3px;
+        margin: 0 3px 0 3px;
 }
 
 #battery.charging {
     border: solid 2px rgb(230, 179, 14);
 }
 
-#custom-clock {
-        background-color: black;
-        color: white;
-        border-radius: 3px;
-        margin: 0;
-}
 
 @keyframes blink {
     to {
         background-color: #ffffff;
         color: black;
     }
+}
+
+#memory, #cpu, #temperature,
+#network, #pulseaudio {
+        background-color: rgba(0, 0, 0, 0.6);
+        color: rgba(255, 255, 255, 0.7);
+        border-radius: 3px;
+        margin: 0 3px 0 3px;
 }
 
 #battery.warning:not(.charging) {
