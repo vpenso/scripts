@@ -2,12 +2,10 @@
     "layer": "top",
     "height": 20,
     "margin": 5,
-    "modules-left": ["custom/clock"],
-    "modules-center": ["sway/workspaces"],
+    "modules-left": ["custom/clock","sway/workspaces"],
     "modules-right": ["battery"],
     "battery": {
-        "format": "{capacity}% {icon}",
-        "format-icons": ["", "", "", "", ""]
+        "format": "{capacity}% {time}",
     },
     "custom/clock": {
         "exec": "date +'%Y/%m/%d %H:%M'",
