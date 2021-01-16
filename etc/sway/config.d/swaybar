@@ -1,0 +1,25 @@
+# vim: filetype=sh nospell
+
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+
+    position top
+    font monospace 11
+    
+    # Colors are defined within a colors { } block inside a bar { } block. 
+    # Colors must be defined in hex: #RRGGBB or #RRGGBBAA
+    colors {
+        statusline #000000
+        background #ffffffaa
+                           #border   #background #text
+        inactive_workspace #0000cdaa #1e90ffaa   #ffffff
+        focused_workspace  #b8860baa #ffd700aa   #000000
+        urgent_workspace   #800000aa #a52a2aaa   #ffffff
+    }
+   
+    # execute the status command
+    status_command while ~/.config/sway/status.sh ; do sleep 1 ; done
+    status_edge_padding 5
+
+}
+

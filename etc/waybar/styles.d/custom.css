@@ -1,0 +1,82 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    min-height:  0;
+}
+
+
+window#waybar {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    border: none;
+    color: rgba(2, 19, 38, 1);
+}
+
+.modules-left > widget > label,
+.modules-right > widget > label {
+  color: #000000;
+  background: #ffffff;
+  margin: 0px 0px 2px 0px;
+  padding: 0px 6px;
+}
+
+#workspaces button {
+  background: rgba(216, 243, 252, 0.6);
+  border-radius: 3px;
+}
+
+#workspaces button:hover {
+  background: #477083;
+  color: #ffffff;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+#workspaces button.focused {
+  border-bottom: 2px solid #477083;
+}
+
+#workspaces button.urgent {
+  background-color: #eb4d4b;
+  color: #fff;
+}
+
+#mode, #clock, #battery {
+    padding: 0 10px;
+    margin: 0 5px;
+}
+
+#mode {
+    background: #64727D;
+    border-bottom: 3px solid white;
+}
+
+
+#battery {
+    color: white;
+    border-radius: 3px;
+    background-color: rgba(13, 61, 165, 0.47);
+}
+
+#battery.charging {
+    border: solid 2px rgb(230, 179, 14);
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: black;
+    }
+}
+
+#battery.warning:not(.charging) {
+    background: #f53c3c;
+    color: white;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
