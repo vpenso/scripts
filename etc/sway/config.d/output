@@ -1,0 +1,4 @@
+# vim: filetype=sh nospell
+
+# wallpaper
+output * background "~/.cache/wallpaper" fill

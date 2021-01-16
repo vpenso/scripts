@@ -1,0 +1,24 @@
+# vim: filetype=sh nospell
+
+# Start a terminal
+bindsym $super+Return exec foot
+bindsym $alt+1 exec terminator
+
+# kill focused window
+bindsym $super+q kill
+
+# Start your launcher
+bindsym $alt+2 exec swaymsg exec $(wofi --show run)
+
+# start bookmark menu
+bindsym $alt+3 exec /usr/local/bin/wofi-bookmarks
+
+# Reload the configuration file
+bindsym $super+Shift+c reload
+# restart (preserves your layout/session, can be used to upgrade)
+bindsym $super+Shift+r restart
+# lock the screen
+set $lock exec bash ~/.config/sway/lock.sh
+bindsym $super+9 $lock
+# exit Sway session
+bindsym $super+0 exec swaymsg exit

@@ -1,0 +1,12 @@
+# vim: filetype=sh nospell
+# Read `man 5 sway` for a complete reference.
+
+default_border pixel 3
+gaps inner 6
+smart_gaps on
+smart_borders smart
+
+# class                 title brd.   backgr.   text      indicator  border
+client.focused          #900000      #ffffff   #000000   #2e9ef4    #ff7f50
+client.focused_inactive #333333      #ffffff   #000000   #292d2e    #333333
+client.unfocused        #333333      #ffffff   #000000   #292d2e    #333333

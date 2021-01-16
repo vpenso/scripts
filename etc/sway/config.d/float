@@ -1,0 +1,16 @@
+# vim: filetype=sh nospell
+
+# Toggle the current focus between tiling and floating mode
+bindsym $super+Shift+f floating toggle
+
+# Swap focus between the tiling area and the floating area
+bindsym $super+t focus mode_toggle
+
+# Drag floating windows by holding down $super and left mouse button.
+# Resize them with right mouse button + $super.
+floating_modifier $super normal
+
+# Get an app_id with: `swaymsg -t get_tree | grep app_id`
+# Applications which start by default floating
+for_window [app_id="wdisplays"] floating enable
+for_window [app_id="pavucontrol"] floating enable

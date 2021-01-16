@@ -1,0 +1,7 @@
+# vim: filetype=sh nospell
+
+# support US and German keyboard layouts
+input * xkb_layout "us,de"
+
+# switch keyboard layout
+bindsym $super+Space exec swaymsg input type:keyboard xkb_switch_layout next
