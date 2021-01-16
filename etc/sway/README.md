@@ -37,6 +37,8 @@ Related files in this repository:
 Files                        | Description
 -----------------------------|---------------------------------------
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
+[`etc/waybar`][02]           | Alternative status bar replacing `swaybar`
+[`etc/wofi`][03]             | Application launcher for Sway/Wayland
 
 ```shell
 # load the configuration manually
@@ -51,3 +53,5 @@ swaymsg reload
 <https://github.com/swaywm/swayhttps://github.com/swaywm/sway>
 
 [01]: ../../var/aliases/sway.sh
+[02]: ../waybar/
+[03]: ../wofi/
