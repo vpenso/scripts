@@ -2,15 +2,15 @@
 #
 # Depending on the Linux distribution...
 #
-command -v systemctl >&- && {
-        if systemctl is-enabled --quiet mpd 2>&-
+command -v systemctl >/dev/null && {
+        if systemctl is-enabled --quiet mpd 2>/dev/null
         then
                 echo Stop/disable mpd service
                 sudo systemctl disable --now mpd.service
         fi
 }
 
-command -v mpd >&- && {
+command -v mpd >/dev/null && {
 
         MPD_CONF=$SCRIPTS/etc/mpdconf
         # read the port from the configuration file
