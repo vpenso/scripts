@@ -5,6 +5,7 @@ Install Sway using package management
 ```bash
 # Debian >=11
 sudo apt install -y \
+      gammastep \
       sway \
       swayidle \
       swaylock \
@@ -17,6 +18,7 @@ sudo apt install -y \
 
 Packages used with Wayland, Wlroots, and Sway:
 
+* `gammastep` brightness configuration
 * `imv` image viewer (wayland native)
 * `jq` required to `status.sh`
 * `upower` power management used in `status.sh`
@@ -50,7 +52,7 @@ swaymsg reload
 ### References
 
 [swscr] Sway Source Code Reository, GitHub  
-<https://github.com/swaywm/swayhttps://github.com/swaywm/sway>
+<https://github.com/swaywm/sway>
 
 [01]: ../../var/aliases/sway.sh
 [02]: ../waybar/
