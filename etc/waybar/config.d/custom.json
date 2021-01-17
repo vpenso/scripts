@@ -4,7 +4,7 @@
     "margin": 5,
     "modules-left": ["custom/clock", "pulseaudio", "mpd" ],
     "modules-center": [ "sway/workspaces" ],
-    "modules-right": [ "network", "cpu", "memory", "battery"],
+    "modules-right": [ "network", "cpu", "memory", "battery", "tray"],
     "battery": {
         "format": "{icon} {capacity}%",
         "format-time": "{H}:{M}",

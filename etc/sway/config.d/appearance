@@ -7,6 +7,6 @@ smart_gaps off
 smart_borders smart
 
 # class                 title brd.   backgr.   text      indicator  border
-client.focused          #900000      #ffffff   #000000   #2e9ef4    #ff7f50aa
+client.focused          #900000      #ffffff   #000000   #2e9ef4    #990033aa
 client.focused_inactive #333333      #ffffff   #000000   #292d2e    #333333aa
 client.unfocused        #333333      #ffffff   #000000   #292d2e    #000000aa
