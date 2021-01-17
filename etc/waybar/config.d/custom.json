@@ -45,28 +45,15 @@
          "on-click": "pavucontrol"
     },
     "mpd": {
-	"format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ",
-	"format-disconnected": "Disconnected ",
-	"format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+	"format": "{stateIcon} {songPosition}/{queueLength} ({elapsedTime:%M:%S}/{totalTime:%M:%S})",
+	"format-disconnected": " Disconnected",
+	"format-stopped": " Stopped",
 	"interval": 10,
-	"consume-icons": {
-		"on": " " // Icon shows only when "consume" is on
-	},
-	"random-icons": {
-		"off": "<span color=\"#f53c3c\"></span> ", // Icon grayed out when "random" is off
-		"on": " "
-	},
-	"repeat-icons": {
-		"on": " "
-	},
-	"single-icons": {
-		"on": "1 "
-	},
 	"state-icons": {
 		"paused": "",
 		"playing": ""
 	},
-	"tooltip-format": "MPD (connected)",
+	"tooltip-format": "{artist} - {title}",
 	"tooltip-format-disconnected": "MPD (disconnected)"
     }
 }

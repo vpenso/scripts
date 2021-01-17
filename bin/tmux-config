@@ -24,7 +24,6 @@ test -d ~/.tmux/plugins/tpm || {
 
 # install files from this repository
 diffcp -b $SCRIPTS/etc/tmux.conf ~/.tmux.conf
-diffcp -s $SCRIPTS/bin/tmux-cheat /usr/local/bin/tmux-cheat
 
 aliases=$(mktemp)
 cat > $aliases <<EOF

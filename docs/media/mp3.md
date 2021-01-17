@@ -6,13 +6,13 @@ File                             | Description
 [`bin/cd2mp3`][02]               | Read a CD and create a single MP3 file
 
 
-[01]: ../var/aliases/youtube-dl.sh
+[01]: ../../var/aliases/youtube-dl.sh
 [02]: ../../bin/cd2mp3
 
 
 Create/change MP3 audio files:
 
-```bash
+```shell
 apt install -y icedax mp3wrap lame     # install tools on Debian
 cat /proc/sys/dev/cdrom/info           # find the CD/DVD drive
 lsblk                                  # look for type `rom`
