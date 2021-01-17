@@ -1,8 +1,14 @@
+Related file in this repository:
+
 File                             | Description
 ---------------------------------|--------------------------------
-[bin/cd2mp3][02]                 | Read a CD and create a single MP3 file
+[`var/aliases/youtube.dl`][01]   | Defines `yt2mp3` command alias
+[`bin/cd2mp3`][02]               | Read a CD and create a single MP3 file
 
+
+[01]: ../var/aliases/youtube-dl.sh
 [02]: ../../bin/cd2mp3
+
 
 Create/change MP3 audio files:
 
