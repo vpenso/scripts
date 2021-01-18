@@ -1,7 +1,8 @@
-learn/pagedout                    https://pagedout.institute
-learn/project-based-learning      https://github.com/tuvtran/project-based-learning
-learn/selfie                      https://github.com/cksystemsteaching/selfie
-learn/hackspace-magazine          https://hackspace.raspberrypi.org/issues
-learn/magpi-magazine              https://magpi.raspberrypi.org/issues
-lectures/unix-programming         https://stevens.netmeister.org/631
-ebooks/standardebooks             https://standardebooks.org/ebooks
+learn/pagedout                             https://pagedout.institute
+learn/project-based-learning               https://github.com/tuvtran/project-based-learning
+learn/selfie                               https://github.com/cksystemsteaching/selfie
+learn/hackspace-magazine                   https://hackspace.raspberrypi.org/issues
+learn/magpi-magazine                       https://magpi.raspberrypi.org/issues
+lectures/unix-programming                  https://stevens.netmeister.org/631
+lecture/toronto/scinetific-computing       https://support.scinet.utoronto.ca/education/go.php/545/index.php/ib/1//p_course/545
+ebooks/standardebooks                      https://standardebooks.org/ebooks
