@@ -205,25 +205,38 @@ dpkg-buildpackage -us -uc                            # build the package
 
 ### Testing, Unstable & Experimental
 
-Add the following repos to `/etc/apt/source.list.d/*.list`:
+Add the testing package repository
 
-```
+```shell
+cat > /etc/apt/source.list.d/testing.list <<EOF
 deb http://deb.debian.org/debian          testing              main contrib non-free
 deb http://deb.debian.org/debian-security testing/updates      main contrib non-free
+EOF
+cat > /etc/apt/preferences/testing.pref <<EOF
+Package: *
+Pin: release a=testing
+Pin-Priority: -1
+EOF
+```
+
+Add repositories for unstable and experimental packages:
+
+```bash
+cat > /etc/apt/source.list.d/unstable.list <<EOF
 deb http://deb.debian.org/debian          unstable             main contrib non-free
+EOF
+cat > /etc/apt/source.list.d/experimental.list <<EOF
 deb http://deb.debian.org/debian          experimental         main contrib non-free
+EOF
 ```
 
 Configure the package preferences in `/etc/apt/preferences/*.pref` to **prioritize packages in testing**
 
-```
+```shell
 Package: *
 Pin: release a=stable
 Pin-Priority: 800
 
-Package: *
-Pin: release a=testing
-Pin-Priority: 950
 
 Package: *
 Pin: release a=unstable
