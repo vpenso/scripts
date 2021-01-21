@@ -208,7 +208,7 @@ dpkg-buildpackage -us -uc                            # build the package
 Add the testing package repository
 
 ```shell
-cat > /etc/apt/source.list.d/testing.list <<EOF
+cat > /etc/apt/sources.list.d/testing.list <<EOF
 deb http://deb.debian.org/debian          testing              main contrib non-free
 deb http://deb.debian.org/debian-security testing/updates      main contrib non-free
 EOF
@@ -222,15 +222,15 @@ EOF
 Add repositories for unstable and experimental packages:
 
 ```bash
-cat > /etc/apt/source.list.d/unstable.list <<EOF
+cat > /etc/apt/sources.list.d/unstable.list <<EOF
 deb http://deb.debian.org/debian          unstable             main contrib non-free
 EOF
-cat > /etc/apt/source.list.d/experimental.list <<EOF
+cat > /etc/apt/sources.list.d/experimental.list <<EOF
 deb http://deb.debian.org/debian          experimental         main contrib non-free
 EOF
 ```
 
-Configure the package preferences in `/etc/apt/preferences/*.pref` to **prioritize packages in testing**
+Configure the package preferences in `/etc/apt/preferences.d/*.pref` to **prioritize packages in testing**
 
 ```shell
 Package: *
