@@ -210,7 +210,8 @@ Add the testing package repository
 ```shell
 cat > /etc/apt/sources.list.d/testing.list <<EOF
 deb http://deb.debian.org/debian          testing              main contrib non-free
-deb http://deb.debian.org/debian-security testing/updates      main contrib non-free
+deb http://deb.debian.org/debian          testing-updates      main contrib non-free
+deb http://deb.debian.org/debian-security testing-security     main contrib non-free
 EOF
 cat > /etc/apt/preferences.d/testing.pref <<EOF
 Package: *
