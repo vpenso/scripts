@@ -212,7 +212,7 @@ cat > /etc/apt/source.list.d/testing.list <<EOF
 deb http://deb.debian.org/debian          testing              main contrib non-free
 deb http://deb.debian.org/debian-security testing/updates      main contrib non-free
 EOF
-cat > /etc/apt/preferences/testing.pref <<EOF
+cat > /etc/apt/preferences.d/testing.pref <<EOF
 Package: *
 Pin: release a=testing
 Pin-Priority: -1
@@ -236,7 +236,6 @@ Configure the package preferences in `/etc/apt/preferences/*.pref` to **prioriti
 Package: *
 Pin: release a=stable
 Pin-Priority: 800
-
 
 Package: *
 Pin: release a=unstable
