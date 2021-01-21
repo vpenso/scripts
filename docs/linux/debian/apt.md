@@ -19,6 +19,21 @@ Package **version format**:
 
 Cf. <https://www.debian.org/doc/debian-policy/#s-f-version>
 
+Repositories for Debian 11 (Bullseye):
+
+```shell
+cat > /etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian/ bullseye main contrib non-free
+deb-src http://deb.debian.org/debian/ bullseye main contrib non-free
+deb http://security.debian.org/debian-security bullseye-security main
+deb-src http://security.debian.org/debian-security bullseye-security main
+deb http://deb.debian.org/debian/ bullseye-updates main contrib non-free
+deb-src http://deb.debian.org/debian/ bullseye-updates main contrib non-free
+deb http://deb.debian.org/debian/ bullseye-backports main contrib non-free
+deb-src http://deb.debian.org/debian/ bullseye-backports main contrib non-free
+EOF
+```
+
 ## Package Management
 
 ```bash
@@ -177,13 +192,8 @@ Regional redirection for Debian mirrors:
 
 ### Backports
 
-→ [official backports](https://backports.debian.org/Instructions/)
-→ [official firefox backports](http://mozilla.debian.net/)
 
 ```bash
-# configure the backports repository
-echo 'deb http://ftp.debian.org/debian buster-backports main' \
-        > /etc/apt/sources.list.d/backports.list
 # installe a package from backports
 apt update && apt install -t buster-backports <package>
 # list packages installed from backports
@@ -203,49 +213,6 @@ fakeroot debian/rules binary                         # build the source
 dpkg-buildpackage -us -uc                            # build the package
 ```
 
-### Testing, Unstable & Experimental
-
-Add the testing package repository
-
-```shell
-cat > /etc/apt/sources.list.d/testing.list <<EOF
-deb http://deb.debian.org/debian          testing              main contrib non-free
-deb http://deb.debian.org/debian          testing-updates      main contrib non-free
-deb http://deb.debian.org/debian-security testing-security     main contrib non-free
-EOF
-cat > /etc/apt/preferences.d/testing.pref <<EOF
-Package: *
-Pin: release a=testing
-Pin-Priority: -1
-EOF
-```
-
-Add repositories for unstable and experimental packages:
-
-```bash
-cat > /etc/apt/sources.list.d/unstable.list <<EOF
-deb http://deb.debian.org/debian          unstable             main contrib non-free
-EOF
-cat > /etc/apt/sources.list.d/experimental.list <<EOF
-deb http://deb.debian.org/debian          experimental         main contrib non-free
-EOF
-```
-
-Configure the package preferences in `/etc/apt/preferences.d/*.pref` to **prioritize packages in testing**
-
-```shell
-Package: *
-Pin: release a=stable
-Pin-Priority: 800
-
-Package: *
-Pin: release a=unstable
-Pin-Priority: 700
-
-Package: *
-Pin: release a=experimental
-Pin-Priority: 500
-```
 
 # References
 
