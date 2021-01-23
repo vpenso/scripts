@@ -13,6 +13,7 @@ super ⋅ s                    Stacking layout
 super ⋅ t                    Focus between tiling/floating area
 super ⋅ q                    Kill focused window
 super ⋅ w                    Tabbed layout
+super ⋅ z                    Mute microphone
 super ⋅ shift ⋅ 1-4          Move focus container to workspace
 super ⋅ shift ⋅ -            Horizontal tile
 super ⋅ shift ⋅ |            Vertical tile

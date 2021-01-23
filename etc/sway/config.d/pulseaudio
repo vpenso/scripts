@@ -9,3 +9,5 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 # use function keys to toggle microphone mute
 bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+# the same in a more practical place
+bindsym $super+z exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
