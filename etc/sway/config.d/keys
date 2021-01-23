@@ -21,4 +21,4 @@ bindsym $super+Shift+r restart
 set $lock exec bash ~/.config/sway/lock.sh
 bindsym $super+9 $lock
 # exit Sway session
-bindsym $super+0 exec swaymsg exit
+#bindsym $super+0 exec swaymsg exit

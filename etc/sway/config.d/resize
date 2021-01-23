@@ -1,5 +1,8 @@
 # Resizing containers:
-mode "resize" {
+
+set $resize Resize
+bindsym $mod+r mode "$resize"
+mode "$resize" {
 
     # left will shrink the containers width
     # right will grow the containers width
@@ -21,4 +24,3 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
