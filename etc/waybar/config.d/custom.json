@@ -11,12 +11,12 @@
         "format-icons": ["", ""]
     },
     "battery": {
+        "interval": 3,
         "format": "{icon} {capacity}%",
         "format-time": "{H}:{M}",
-        "format-charging": "<span color='#f53c3c'> </span>({time}) {icon} {capacity}%",
-        "format-plugged":  "  {icon} {capacity}%",
+        "format-charging": "<span color='#ffd700'> </span>({time}) {icon} {capacity}%",
         "format-full":  "{icon} {capacity}%",
-        "format-discharging":  "<span color='#ffd700'></span> {icon} {capacity}%",
+        "format-discharging":  "<span color='#f53c3c'></span> {icon} {capacity}% {time}",
         "format-icons": ["", "", "", "", ""]
     },
     "cpu": {
