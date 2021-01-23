@@ -9,6 +9,7 @@ include ~/.config/sway/config.d/float
 include ~/.config/sway/config.d/focus
 include ~/.config/sway/config.d/layout
 include ~/.config/sway/config.d/workspaces
+include ~/.config/sway/config.d/scratchpad
 include ~/.config/sway/config.d/appearance
 include ~/.config/sway/config.d/resize
 include ~/.config/sway/config.d/session

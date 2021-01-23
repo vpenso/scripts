@@ -1,0 +1,6 @@
+# vim: filetype=sh nospell
+
+# move a window to the scratchpad workspace
+bindsym $super+Shift+BackSpace move scratchpad
+# toggle visibility of the scratchpad window
+bindsym $super+BackSpace scratchpad show
