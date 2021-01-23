@@ -41,6 +41,7 @@ Files                        | Description
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`etc/waybar`][02]           | Alternative status bar replacing `swaybar`
 [`etc/wofi`][03]             | Application launcher for Sway/Wayland
+[`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
 
 ```shell
 # load the configuration manually
@@ -57,3 +58,4 @@ swaymsg reload
 [01]: ../../var/aliases/sway.sh
 [02]: ../waybar/
 [03]: ../wofi/
+[04]: ../../var/cheat/sway.md
