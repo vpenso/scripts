@@ -6,12 +6,17 @@ include ~/.config/sway/config.d/output
 include ~/.config/sway/config.d/input
 include ~/.config/sway/config.d/keys
 include ~/.config/sway/config.d/float
-include ~/.config/sway/config.d/layout
 include ~/.config/sway/config.d/focus
+include ~/.config/sway/config.d/layout
 include ~/.config/sway/config.d/workspaces
 include ~/.config/sway/config.d/appearance
 include ~/.config/sway/config.d/resize
 include ~/.config/sway/config.d/session
+
+## application bindings
+include ~/.config/sway/config.d/pulseaudio
+include ~/.config/sway/config.d/light
+
+## status bars
 #include ~/.config/sway/config.d/swaybar
 include ~/.config/sway/config.d/waybar
-include ~/.config/sway/config.d/pulseaudio

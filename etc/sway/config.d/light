@@ -1,0 +1,7 @@
+# vim: filetype=sh nospell
+
+# if `light` package is installed
+
+# use function keys to changing sound volume
+bindsym XF86MonBrightnessUp exec light -A 4
+bindsym XF86MonBrightnessDown exec light -U 2
