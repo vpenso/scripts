@@ -17,6 +17,7 @@ include ~/.config/sway/config.d/session
 ## application bindings
 include ~/.config/sway/config.d/pulseaudio
 include ~/.config/sway/config.d/light
+include ~/.config/sway/config.d/grimshot
 
 ## status bars
 #include ~/.config/sway/config.d/swaybar

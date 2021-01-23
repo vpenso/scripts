@@ -1,0 +1,10 @@
+# vim: filetype=sh nospell
+
+# if `grimshot` package is installed
+
+# screenshot entire screen
+bindsym --release $alt+s exec grimshot --notify save output /tmp/grimshot-$(date +%Y%m%dT%H%M).jpg
+# screenshot selected area
+bindsym --release $alt+a exec grimshot --notify save area /tmp/grimshot-$(date +%Y%m%dT%H%M).jpg
+# screenshot focused window
+bindsym --release $alt+w exec grimshot --notify save window /tmp/grimshot-$(date +%Y%m%dT%H%M).jpg

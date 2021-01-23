@@ -6,6 +6,8 @@ Install Sway using package management
 # Debian >=11
 sudo apt install -y \
       gammastep \
+      grimshot \
+      light \
       sway \
       swayidle \
       swaylock \
@@ -19,8 +21,8 @@ sudo apt install -y \
 Packages used with Wayland, Wlroots, and Sway:
 
 * `gammastep` brightness configuration
-* `imv` image viewer (wayland native)
-* `jq` required to `status.sh`
+* `grimshot` screen capture utility
+* `light` LCD brightness control
 * `upower` power management used in `status.sh`
 * `wdisplays` GUI output display manager
 * `wl-clipboard` clipboard copy/paste
