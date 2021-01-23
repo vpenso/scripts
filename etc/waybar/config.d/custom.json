@@ -33,11 +33,11 @@
         "tooltip-format-wifi": "{ifname} | {ipaddr}/{cidr}"
     },
     "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-bluetooth": "{volume}% {icon}",
-        "format-muted": "",
+        "format": "{format_source} {icon} {volume}%",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": "{format_source} <span color='#f53c3c'></span>",
         "format-icons": {
-             "headphone": "",
+              "headphone": "",
               "hands-free": "",
               "headset": "",
               "phone": "",
@@ -45,6 +45,8 @@
               "car": "",
               "default": ["", ""]
          },
+         "format-source": "<span color='#008000'></span>",
+         "format-source-muted": "<span color='#f53c3c'></span>",
          "scroll-step": 1,
          "on-click": "pavucontrol"
     },
