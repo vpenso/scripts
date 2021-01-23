@@ -13,6 +13,7 @@ sudo apt install -y \
       swaylock \
       upower \
       wdisplays \
+      wf-recorder \
       wl-clipboard \
       wofi \
       xwayland

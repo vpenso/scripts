@@ -1,0 +1,5 @@
+# vim: filetype=sh nospell
+
+# if `wf-recorder` package is installed
+bindsym --to-code $super+$alt+r exec ~/.config/sway/toggle-wf-recorder.sh
+

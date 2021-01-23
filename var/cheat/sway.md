@@ -2,7 +2,6 @@
 super ⋅ space                Toggle keyboard layout
 super ⋅ 9                    Lock screen
 super ⋅ 0                    Session menu
-super ⋅ z                    Mute microphone
 super ⋅ shift ⋅ c            Reload Sway configuration
 super ⋅ shift ⋅ r            Restart Sway
 ```
@@ -29,13 +28,17 @@ super ⋅ shift ⋅ backspace    Move focus window to scratchpad
 super ⋅ backspace            Toggle scratchpad visibility
 ```
 
-### Screenshot
+### Screen-Shots & -Recording
 
 ```
-alt ⋅ a                      Area select
-alt ⋅ s                      Screen
-alt ⋅ w                      Window select
+super ⋅ z                    Mute microphone
+alt ⋅ a                      Screenshot with area selection
+alt ⋅ s                      Screenshot active workspace
+alt ⋅ w                      Screenshot with window selection
+super ⋅ alt ⋅ w              Toggle screenrecording
 ```
+
+Output is stored to `/tmp/{grimshot,wf-recorder}-{$date}`
 
 ### Workspaces
 

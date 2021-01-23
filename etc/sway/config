@@ -18,6 +18,7 @@ include ~/.config/sway/config.d/session
 include ~/.config/sway/config.d/pulseaudio
 include ~/.config/sway/config.d/light
 include ~/.config/sway/config.d/grimshot
+include ~/.config/sway/config.d/wf-recorder
 
 ## status bars
 #include ~/.config/sway/config.d/swaybar
