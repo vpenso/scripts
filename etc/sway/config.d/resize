@@ -1,6 +1,6 @@
 # Resizing containers:
 
-set $resize Resize
+set $resize (h) shrink (l) grow width - (j) grow (k) shrink height
 bindsym $mod+r mode "$resize"
 mode "$resize" {
 
