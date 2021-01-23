@@ -7,4 +7,4 @@ swayidle \
 swaylock --color 000000 \
          --indicator-radius 100
 # Kills last background task so idle timer doesn't keep running
-kill %%
+killall swayidle

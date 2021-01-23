@@ -1,0 +1,33 @@
+#!/bin/sh
+
+case "$1" in
+        lock|l)
+                command -v sway >/dev/null && ~/.config/sway/lock.sh
+                command -v i3 >/dev/null && $( i3lock-fancy || i3lock )
+                ;;
+        logout|g)
+                command -v sway >/dev/null && swaymsg exit
+                command -v i3 >/dev/null && i3-msg exit
+                ;;
+        suspend|s)
+                lock & 
+                sleep 2
+                systemctl suspend
+                ;;
+        hibernate|h)
+                lock &
+                sleep 2
+                systemctl hibernate
+                ;;
+        reboot|r)
+                systemctl reboot
+                ;;
+        shutdown|s)
+                systemctl poweroff
+                ;;
+        *)
+                echo "Usage: $0 {lock|logout|suspend|hibernate|reboot|shutdown}"
+                exit 2
+esac
+
+exit 0
