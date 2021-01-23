@@ -2,15 +2,28 @@
     "layer": "top",
     "height": 20,
     "margin": 5,
-    "modules-left": ["custom/clock", "pulseaudio", "mpd" ],
+    "modules-left": ["custom/clock", "sway/language", "backlight", "pulseaudio", "mpd" ],
     "modules-center": [ "sway/workspaces", "sway/mode" ],
     "modules-right": [ "network", "cpu", "memory", "battery", "tray"],
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon} {percent}%",
+        "format-icons": ["", ""]
+    },
     "battery": {
         "format": "{icon} {capacity}%",
         "format-time": "{H}:{M}",
         "format-charging": "<span color='#f53c3c'> </span>({time}) {icon} {capacity}%",
         "format-plugged":  "  {icon} {capacity}%",
         "format-icons": ["", "", "", "", ""]
+    },
+    "cpu": {
+        "format": " {load}%",
+        "interval": 1
+    },
+    "custom/clock": {
+        "exec": "date +'%Y/%m/%d %H:%M'",
+        "interval": 5
     },
     "sway/mode": {
         "format": " <span color='#f53c3c'> </span>{} ",
@@ -19,14 +32,6 @@
     "tray": {
         "icon-size": 21,
         "spacing": 10
-    },
-    "custom/clock": {
-        "exec": "date +'%Y/%m/%d %H:%M'",
-        "interval": 5
-    },
-    "cpu": {
-        "format": " {load}%",
-        "interval": 1
     },
     "memory": {
         "format": " {avail:0.1f}G"
@@ -65,5 +70,9 @@
 	},
 	"tooltip-format": "{artist} - {title}",
 	"tooltip-format-disconnected": "MPD (disconnected)"
+    },
+    "sway/language": {
+         "format": " {}",
+         "max-length": 50
     }
 }
