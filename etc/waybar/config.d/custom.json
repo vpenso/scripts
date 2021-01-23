@@ -3,7 +3,7 @@
     "height": 20,
     "margin": 5,
     "modules-left": ["custom/clock", "pulseaudio", "mpd" ],
-    "modules-center": [ "sway/mode","sway/workspaces" ],
+    "modules-center": [ "sway/workspaces", "sway/mode" ],
     "modules-right": [ "network", "cpu", "memory", "battery", "tray"],
     "battery": {
         "format": "{icon} {capacity}%",
@@ -14,7 +14,11 @@
     },
     "sway/mode": {
         "format": " <span color='#f53c3c'> </span>{} ",
-        "max-length": 50
+        "max-length": 70
+    },
+    "tray": {
+        "icon-size": 21,
+        "spacing": 10
     },
     "custom/clock": {
         "exec": "date +'%Y/%m/%d %H:%M'",

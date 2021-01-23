@@ -43,7 +43,7 @@ window#waybar {
   color: #fff;
 }
 
-#battery, #custom-clock, #mode {
+#battery, #custom-clock, #mode, #tray {
         background-color: rgba(0, 0, 0, 0.9);
         color: rgba(255, 255, 255, 0.9);
         border-radius: 3px;
