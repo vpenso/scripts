@@ -3,7 +3,7 @@
     "height": 20,
     "margin": 5,
     "modules-left": ["custom/clock", "pulseaudio", "mpd" ],
-    "modules-center": [ "sway/workspaces" ],
+    "modules-center": [ "sway/mode","sway/workspaces" ],
     "modules-right": [ "network", "cpu", "memory", "battery", "tray"],
     "battery": {
         "format": "{icon} {capacity}%",
@@ -11,6 +11,10 @@
         "format-charging": "<span color='#f53c3c'> </span>({time}) {icon} {capacity}%",
         "format-plugged":  "  {icon} {capacity}%",
         "format-icons": ["", "", "", "", ""]
+    },
+    "sway/mode": {
+        "format": " <span color='#f53c3c'> </span>{} ",
+        "max-length": 50
     },
     "custom/clock": {
         "exec": "date +'%Y/%m/%d %H:%M'",
