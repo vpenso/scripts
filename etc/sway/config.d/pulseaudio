@@ -1,0 +1,9 @@
+# vim: filetype=sh nospell
+
+# if Pulseaudio is installed on the system
+
+# use function keys to changing sound volume
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+# use function key to toggle mute
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle

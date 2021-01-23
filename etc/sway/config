@@ -14,3 +14,4 @@ include ~/.config/sway/config.d/resize
 include ~/.config/sway/config.d/session
 #include ~/.config/sway/config.d/swaybar
 include ~/.config/sway/config.d/waybar
+include ~/.config/sway/config.d/pulseaudio
