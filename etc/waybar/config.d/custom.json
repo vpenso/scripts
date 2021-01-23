@@ -14,9 +14,9 @@
         "interval": 3,
         "format": "{icon} {capacity}%",
         "format-time": "{H}h{M}m",
-        "format-charging": "<span color='#ffd700'> </span>({time}) {icon} {capacity}%",
+        "format-charging": "<span color='#ffd700'> </span>{icon} {capacity}% {time}",
         "format-full":  "{icon} {capacity}%",
-        "format-discharging":  "<span color='#f53c3c'></span> {icon} {capacity}% {time}",
+        "format-discharging":  "<span color='#f53c3c'></span>{icon} {capacity}% {time}",
         "format-icons": ["", "", "", "", ""]
     },
     "cpu": {
