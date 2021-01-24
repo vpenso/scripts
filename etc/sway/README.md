@@ -65,14 +65,14 @@ Files                        | Description
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
 
-Reload the configuration:
 
 ```shell
 # from the commnad-line
 swaymsg reload
+# set an imageas background wallpaper, cf. `var/aliases/sway.sh`
+sway-wallpaper $path
 ```
 
-Alternatively use a key binding **Super + Shift + C**.
 
 ### Status Line
 
