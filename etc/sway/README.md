@@ -50,7 +50,9 @@ Files                        | Description
 -----------------------------|---------------------------------------
 `config`                     | Sway configuration files includes `config.d/*`
 `config.d/*`                 | Specific Sway configurations for components
+`config.d/input`             | Keyboard layout configuration (US,DE)
 `config.d/float`             | Move windows into the float area, apps. floating by default
+`config.d/output`            | Background wallpaper configuration in `~/.cache/wallpaper`
 `lock.sh`                    | `swaylock` script used in `config.d/keys`
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
@@ -87,6 +89,13 @@ Screenshots with `grim`, `slurp` and `grimshot` [grim]:
 Files                        | Description
 -----------------------------|---------------------------------------
 `config.d/grimshot`          | Key binding for `grimshot`
+
+LCD back light configuration with `light`:
+
+
+Files                        | Description
+-----------------------------|---------------------------------------
+`config.d/light`             | Key binding for function keys
 
 Volume and microphone control with `pulseaudio`:
 
