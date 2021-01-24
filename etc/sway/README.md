@@ -61,7 +61,6 @@ Files                        | Description
 `config.d/input`             | Keyboard layout configuration (US,DE)
 `config.d/float`             | Move windows into the float area, apps. floating by default
 `config.d/output`            | Background wallpaper configuration in `~/.cache/wallpaper`
-`lock.sh`                    | `swaylock` script used in `config.d/keys`
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
 
@@ -69,10 +68,19 @@ Files                        | Description
 ```shell
 # from the commnad-line
 swaymsg reload
-# set an imageas background wallpaper, cf. `var/aliases/sway.sh`
+# set a background wallpaper, cf. `var/aliases/sway.sh`
 sway-wallpaper $path
 ```
 
+### Session Management
+
+Use **Super + 0** keys to access the session key bindings:
+
+Files                        | Description
+-----------------------------|---------------------------------------
+`lock.sh`                    | Script to lock the screen with `swaylock`
+`session.sh`                 | Script to shutdown, hibernate, etc.
+`config.d/session`           | Key bindings for the session and lock
 
 ### Status Line
 

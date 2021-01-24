@@ -2,12 +2,10 @@
 
 case "$1" in
         lock|l)
-                command -v sway >/dev/null && ~/.config/sway/lock.sh
-                command -v i3 >/dev/null && $( i3lock-fancy || i3lock )
+                ~/.config/sway/lock.sh
                 ;;
         logout|g)
-                command -v sway >/dev/null && swaymsg exit
-                command -v i3 >/dev/null && i3-msg exit
+                swaymsg exit
                 ;;
         suspend|s)
                 lock & 
