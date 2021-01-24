@@ -1,4 +1,6 @@
-## Sway
+# Sway
+
+## Installation
 
 Install Sway using package management
 
@@ -30,6 +32,8 @@ Packages used with Wayland, Wlroots, and Sway:
 * `wdisplays` GUI output display manager
 * `wl-clipboard` clipboard copy/paste
 
+## Configuration
+
 Configuration in this directory:
 
 Files                        | Description
@@ -48,6 +52,13 @@ source $SCRIPTS/var/aliases/sway.sh
 swaymsg reload
 ```
 
+Status line with `waybar` (replacing `swaybar`)
+
+Files                        | Description
+-----------------------------|---------------------------------------
+[`etc/waybar`][02]           | Configuration files
+`config.d/waybar`            | Enable WayBar in Sway
+
 ### Applications
 
 Screenshots with `grim`, `slurp` and `grimshot`
@@ -56,6 +67,12 @@ Files                        | Description
 -----------------------------|---------------------------------------
 `config.d/grimshot`          | Key binding for `grimshot`
 
+Volume and microphone control with `pulseaudio`
+
+Files                        | Description
+-----------------------------|---------------------------------------
+`config.d/pulseaudio`        | Key binding to function keys
+
 Screen recording with `wf-recorder`
 
 Files                        | Description
@@ -63,12 +80,6 @@ Files                        | Description
 `toggle-wf-recorder.sh`      | Help script to control `wf-recorder`
 `config.d/wf-recorder`       | Key binding to enable/disable `wf-recorder`
 
-Status line with `waybar` (replacing `swaybar`)
-
-Files                        | Description
------------------------------|---------------------------------------
-[`etc/waybar`][02]           | Configuration files
-`config.d/waybar`            | Enable WayBar in Sway
 
 Application launcher `wofi`
 
@@ -82,7 +93,7 @@ Files                        | Description
 [swscr] Sway Source Code Reository, GitHub  
 <https://github.com/swaywm/sway>
 
-[grims] Grim $ Slurp Wayland tools for Screen Shots  
+[grims] Grim & Slurp Wayland tools for Screen Shots  
 <https://wayland.emersion.fr/grim/>  
 <https://wayland.emersion.fr/slurp/>  
 <https://github.com/swaywm/sway/blob/master/contrib/grimshot>
