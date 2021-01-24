@@ -4,6 +4,8 @@ _Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window
 
 Wayland is a display server protocol build as successor of the X Window System. Display servers using the Wayland protocol are called compositors. [wayld] XWayland is an X Server that runs under Wayland. It provides backwards compatibility for legacy X11 applications.
 
+The Sway configuration in this repository looks like the following screenshot:
+
 ![Screenshot of Sway with WayBar](screenshot.jpg)
 
 ## Installation
