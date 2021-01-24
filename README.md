@@ -28,7 +28,7 @@ Path                               | Description
 
 ## License
 
-Copyright 2012-2020 Victor Penso
+Copyright 2012-2021 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public
