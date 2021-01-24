@@ -41,7 +41,6 @@ Files                        | Description
 `config`                     | Sway configuration files includes `config.d/*`
 `config.d/*`                 | Specific Sawy configurations for components
 `lock.sh`                    | `swaylock` script used in `config.d/keys`
-`status.sh`                  | `swaybar` script used in `config.d/swaybar`
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
 
@@ -52,7 +51,16 @@ source $SCRIPTS/var/aliases/sway.sh
 swaymsg reload
 ```
 
-Status line with `waybar` (replacing `swaybar`)
+### Status Line
+
+Sway default status line `swaybar`
+
+Files                        | Description
+-----------------------------|---------------------------------------
+`status.sh`                  | Status line script used by `swaybar`
+`config.d/swaybar`           | Enable `swaybar` configuration
+
+More customizable status line with `waybar` (replacing `swaybar`) 
 
 Files                        | Description
 -----------------------------|---------------------------------------
