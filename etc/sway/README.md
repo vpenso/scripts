@@ -38,14 +38,7 @@ Files                        | Description
 `config.d/*`                 | Specific Sawy configurations for components
 `lock.sh`                    | `swaylock` script used in `config.d/keys`
 `status.sh`                  | `swaybar` script used in `config.d/swaybar`
-
-Related files in this repository:
-
-Files                        | Description
------------------------------|---------------------------------------
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
-[`etc/waybar`][02]           | Alternative status bar replacing `swaybar`
-[`etc/wofi`][03]             | Application launcher for Sway/Wayland
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
 
 ```shell
@@ -55,10 +48,44 @@ source $SCRIPTS/var/aliases/sway.sh
 swaymsg reload
 ```
 
+### Applications
+
+Screenshots with `grim`, `slurp` and `grimshot`
+
+Files                        | Description
+-----------------------------|---------------------------------------
+`config.d/grimshot`          | Key binding for `grimshot`
+
+Screen recording with `wf-recorder`
+
+Files                        | Description
+-----------------------------|---------------------------------------
+`toggle-wf-recorder.sh`      | Help script to control `wf-recorder`
+`config.d/wf-recorder`       | Key binding to enable/disable `wf-recorder`
+
+Status line with `waybar` (replacing `swaybar`)
+
+Files                        | Description
+-----------------------------|---------------------------------------
+[`etc/waybar`][02]           | Configuration files
+`config.d/waybar`            | Enable WayBar in Sway
+
+Application launcher `wofi`
+
+Files                        | Description
+-----------------------------|---------------------------------------
+[`etc/wofi`][03]             | `wofi` configuration files
+`config.d/wofi`              | Key binding for `wofi`
+
 ### References
 
 [swscr] Sway Source Code Reository, GitHub  
 <https://github.com/swaywm/sway>
+
+[grims] Grim $ Slurp Wayland tools for Screen Shots  
+<https://wayland.emersion.fr/grim/>  
+<https://wayland.emersion.fr/slurp/>  
+<https://github.com/swaywm/sway/blob/master/contrib/grimshot>
 
 [01]: ../../var/aliases/sway.sh
 [02]: ../waybar/

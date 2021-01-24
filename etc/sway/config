@@ -15,10 +15,11 @@ include ~/.config/sway/config.d/resize
 include ~/.config/sway/config.d/session
 
 ## application bindings
-include ~/.config/sway/config.d/pulseaudio
-include ~/.config/sway/config.d/light
 include ~/.config/sway/config.d/grimshot
+include ~/.config/sway/config.d/light
+include ~/.config/sway/config.d/pulseaudio
 include ~/.config/sway/config.d/wf-recorder
+include ~/.config/sway/config.d/wofi
 
 ## status bars
 #include ~/.config/sway/config.d/swaybar
