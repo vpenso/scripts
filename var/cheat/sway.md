@@ -35,6 +35,7 @@ super ⋅ z                    Mute microphone
 alt ⋅ a                      Screen shot with area selection
 alt ⋅ s                      Screen shot active workspace
 alt ⋅ w                      Screen shot with window selection
+super ⋅ alt ⋅ a              Toggle screen recording with area selection
 super ⋅ alt ⋅ s              Toggle screen recording
 ```
 

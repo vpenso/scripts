@@ -2,6 +2,9 @@
 
 # if `wf-recorder` package is installed
 
+# recording of a selected area
+bindsym --to-code $super+$alt+a exec ~/.config/sway/toggle-wf-recorder.sh area
+
 # full screen recording
 bindsym --to-code $super+$alt+s exec ~/.config/sway/toggle-wf-recorder.sh
 

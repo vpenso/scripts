@@ -8,6 +8,7 @@ sudo apt install -y \
       gammastep \
       grimshot \
       light \
+      slurp \
       sway \
       swayidle \
       swaylock \
@@ -24,6 +25,7 @@ Packages used with Wayland, Wlroots, and Sway:
 * `gammastep` brightness configuration
 * `grimshot` screen capture utility
 * `light` LCD brightness control
+* `slurp` selects a region in Wayland
 * `upower` power management used in `status.sh`
 * `wdisplays` GUI output display manager
 * `wl-clipboard` clipboard copy/paste
