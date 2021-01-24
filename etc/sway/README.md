@@ -1,5 +1,9 @@
 # Sway
 
+_Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11. It works with your existing i3 configuration and supports most of i3's features, plus a few extras._ [swscr]
+
+Wayland is a display server protocol build as successor of the X Window System. Display servers using the Wayland protocol are called compositors. [wayld]
+
 ## Installation
 
 Install Sway using package management
@@ -120,13 +124,16 @@ Files                        | Description
 
 ### References
 
-[swscr] Sway Source Code Reository, GitHub  
-<https://github.com/swaywm/sway>
-
 [grims] Grim & Slurp Wayland tools for Screen Shots  
 <https://wayland.emersion.fr/grim/>  
 <https://wayland.emersion.fr/slurp/>  
 <https://github.com/swaywm/sway/blob/master/contrib/grimshot>
+
+[swscr] Sway Source Code Reository, GitHub  
+<https://github.com/swaywm/sway>
+
+[wayld] Wayland Display Server  
+<https://wayland.freedesktop.org>
 
 [01]: ../../var/aliases/sway.sh
 [02]: ../waybar/
