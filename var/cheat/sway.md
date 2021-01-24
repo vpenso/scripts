@@ -28,14 +28,14 @@ super ⋅ shift ⋅ backspace    Move focus window to scratchpad
 super ⋅ backspace            Toggle scratchpad visibility
 ```
 
-### Screen-Shots & -Recording
+### Screen Shots & Recording
 
 ```
 super ⋅ z                    Mute microphone
-alt ⋅ a                      Screenshot with area selection
-alt ⋅ s                      Screenshot active workspace
-alt ⋅ w                      Screenshot with window selection
-super ⋅ alt ⋅ w              Toggle screenrecording
+alt ⋅ a                      Screen shot with area selection
+alt ⋅ s                      Screen shot active workspace
+alt ⋅ w                      Screen shot with window selection
+super ⋅ alt ⋅ s              Toggle screen recording
 ```
 
 Output is stored to `/tmp/{grimshot,wf-recorder}-{$date}`

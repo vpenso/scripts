@@ -1,5 +1,7 @@
 # vim: filetype=sh nospell
 
 # if `wf-recorder` package is installed
-bindsym --to-code $super+$alt+r exec ~/.config/sway/toggle-wf-recorder.sh
+
+# full screen recording
+bindsym --to-code $super+$alt+s exec ~/.config/sway/toggle-wf-recorder.sh
 
