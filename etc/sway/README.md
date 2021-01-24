@@ -10,6 +10,7 @@ sudo apt install -y \
       gammastep \
       grimshot \
       light \
+      mpv \
       slurp \
       sway \
       swayidle \
@@ -27,6 +28,7 @@ Packages used with Wayland, Wlroots, and Sway:
 * `gammastep` brightness configuration
 * `grimshot` screen capture utility
 * `light` LCD brightness control
+* `mpv` video playback
 * `slurp` selects a region in Wayland
 * `upower` power management used in `status.sh`
 * `wdisplays` GUI output display manager
@@ -34,12 +36,12 @@ Packages used with Wayland, Wlroots, and Sway:
 
 ## Configuration
 
-Configuration in this directory:
 
 Files                        | Description
 -----------------------------|---------------------------------------
 `config`                     | Sway configuration files includes `config.d/*`
-`config.d/*`                 | Specific Sawy configurations for components
+`config.d/*`                 | Specific Sway configurations for components
+`config.d/float`             | Move windows into the float area, apps. floating by default
 `lock.sh`                    | `swaylock` script used in `config.d/keys`
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
@@ -69,19 +71,19 @@ Files                        | Description
 
 ### Applications
 
-Screenshots with `grim`, `slurp` and `grimshot`
+Screenshots with `grim`, `slurp` and `grimshot` [grim]:
 
 Files                        | Description
 -----------------------------|---------------------------------------
 `config.d/grimshot`          | Key binding for `grimshot`
 
-Volume and microphone control with `pulseaudio`
+Volume and microphone control with `pulseaudio`:
 
 Files                        | Description
 -----------------------------|---------------------------------------
 `config.d/pulseaudio`        | Key binding to function keys
 
-Screen recording with `wf-recorder`
+Screen recording with `wf-recorder`:
 
 Files                        | Description
 -----------------------------|---------------------------------------
@@ -89,7 +91,7 @@ Files                        | Description
 `config.d/wf-recorder`       | Key binding to enable/disable `wf-recorder`
 
 
-Application launcher `wofi`
+Application launcher `wofi`:
 
 Files                        | Description
 -----------------------------|---------------------------------------

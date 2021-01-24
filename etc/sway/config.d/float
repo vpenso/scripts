@@ -12,5 +12,7 @@ floating_modifier $super normal
 
 # Get an app_id with: `swaymsg -t get_tree | grep app_id`
 # Applications which start by default floating
-for_window [app_id="wdisplays"] floating enable
+for_window [app_id="mpv"] floating enable
 for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="vlc"] floating enable
+for_window [app_id="wdisplays"] floating enable
