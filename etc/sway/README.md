@@ -34,6 +34,15 @@ Packages used with Wayland, Wlroots, and Sway:
 * `wdisplays` GUI output display manager
 * `wl-clipboard` clipboard copy/paste
 
+Start Sway:
+
+```shell
+# load the configuration manually
+source $SCRIPTS/var/aliases/sway.sh
+# start the window manager from the command-line
+sway
+```
+
 ## Configuration
 
 
@@ -46,12 +55,14 @@ Files                        | Description
 [`var/aliases/sway.sh`][01]  | Load Sway configuration to the environment
 [`var/cheat/sway.md`][04]    | Keyboard binding cheat sheet
 
+Reload the configuration:
+
 ```shell
-# load the configuration manually
-source $SCRIPTS/var/aliases/sway.sh
-# reload the configuration file
+# from the commnad-line
 swaymsg reload
 ```
+
+Alternatively use a key binding **Super + Shift + C**.
 
 ### Status Line
 
