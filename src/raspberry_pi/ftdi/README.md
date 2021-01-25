@@ -32,3 +32,8 @@ screen /dev/ttyUSB0 115200
 
 [01]: https://www.raspberrypi.org/documentation/configuration/uart.md
 [02]: https://www.ftdichip.com/Products/ICs/FT232R.htm
+
+### Reference
+
+[tioty] tio - terminal application  
+<https://github.com/tio/tio>
