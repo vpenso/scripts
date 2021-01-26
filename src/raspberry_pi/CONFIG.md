@@ -25,7 +25,7 @@ Build your own images with:
 [yocto] Yocto Embedded Linux Distribution  
 <https://www.yoctoproject.org>
 
-## Raspberry Pi OS
+### Raspberry Pi OS
 
 Download the latest image from:
 
@@ -39,33 +39,3 @@ unzip -p $archive | sudo dd status=progress bs=4M of=/dev/mmcblk0 conv=fsync
 ```
 
 Default user `pi` password `raspberry`
-
-# Configuration
-
-```
-# find the Pi revision number
-grep -i -e ^revision -e ^hardware /proc/cpuinfo
-# model information (in later versions)
-cat /proc/device-tree/model     
-```
-
-### Monitor Resolution
-
-```
-tvservice -s         # current resolution
-tvservice -m DMT     # list monitor resolution
-```
-
-Configure HDMI in `/boot/config.txt`
-
-```bash
-# enable DMT mode
-hdmi_group=2
-# audio over HDMI
-hdmi_drive=2
-# always start HDMI
-hdmi_force_hotplug=1
-# resolution 1920x1080/60Hz (1080p)
-hdmi_mode=82
-```
-
