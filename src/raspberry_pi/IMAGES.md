@@ -1,8 +1,9 @@
+# Installation
 
 Options for pre-build operating systems (OS) images:
 
 [rpios] Raspberry Pi OS  
-<https://www.raspberrypi.org/software>
+<https://www.raspberrypi.org/software>  
 
 [rpidb] Debian Raspberry Pi images  
 <https://raspi.debian.net>
@@ -24,14 +25,22 @@ Build your own images with:
 [yocto] Yocto Embedded Linux Distribution  
 <https://www.yoctoproject.org>
 
+## Raspberry Pi OS
+
+Download the latest image from:
+
+<https://downloads.raspberrypi.org/>
+
+Raspberry Pi OS Lite minimal image without the X-server window manager.
+
 ```bash
-# Raspbian
-unzip -p $archive | sudo dd status=progress bs=4M of=/dev/sdb conv=fsync
-# Fedora
-xzcat $image | sudo dd status=progress bs=4M of=/dev/sdb conv=fsync
+# write the image to SD card
+unzip -p $archive | sudo dd status=progress bs=4M of=/dev/mmcblk0 conv=fsync
 ```
 
-Debian user/password pi/raspberry
+Default user `pi` password `raspberry`
+
+# Configuration
 
 ```
 # find the Pi revision number
