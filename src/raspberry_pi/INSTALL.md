@@ -35,7 +35,8 @@ Raspberry Pi OS Lite minimal image without the X-server window manager.
 
 ```bash
 # write the image to SD card
-unzip -p $archive | sudo dd status=progress bs=4M of=/dev/mmcblk0 conv=fsync
+unzip -p $archive \
+        | sudo dd status=progress conv=fsync bs=4M of=/dev/mmcblkX
 ```
 
 Default user `pi` password `raspberry`
@@ -67,7 +68,11 @@ git clone http://git.buildroot.net/buildroot
 ```shell
 # generate the configuration for the target hardware
 make raspberrypi0w_defconfig
+# build
 make
+# write the SD card image
+sudo dd bs=1M status=progress conv=fsync \
+        if=output/images/sdcard.img of=/dev/mmcblkX
 ```
 
 Directory structure:
