@@ -75,6 +75,20 @@ sudo dd bs=1M status=progress conv=fsync \
         if=output/images/sdcard.img of=/dev/mmcblkX
 ```
 
+For debugging/testing it may be more convenient to use a:
+
+```shell
+# virtual machine configuration
+make qemu_x86_64_defconfig
+...
+# launch the root-filesystem in a virtual machine
+output/host/bin/qemu-system-x86_64 -M pc \
+        -kernel output/images/bzImage \
+        -drive file=output/images/rootfs.ext2,if=virtio,format=raw \
+        -append "rootwait root=/dev/vda" \
+        -net nic,model=virtio -net user
+```
+
 Directory structure:
 
 ```shell
