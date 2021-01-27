@@ -9,7 +9,7 @@ command -v sway >/dev/null && {
         # Set a background wallpaper
         function sway-wallpaper() {
                 local img=${1:?Missing image file as first command-line argument}
-                rm ~/.cache/wallpaper
+                test -f ~/.cache/wallpaper && rm ~/.cache/wallpaper
                 ln -s $img ~/.cache/wallpaper
                 swaymsg reload
         }
