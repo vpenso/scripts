@@ -2,23 +2,18 @@
 
 if command -v apt-get |:
 then
-        sudo apt-get update
-        sudo apt-get install --assume-yes \
-                arandr \
+        apt-get update
+        apt-get install --assume-yes \
 		bc \
                 ccrypt \
-                clustershell \
                 curl \
                 dnsutils \
                 encfs \
                 fd-find \
-		firefox-esr \
                 fzf \
                 git \
                 mpd \
                 mpc \
-                mupdf \
-                ncmpc \
 		pmount \
                 psmisc \
                 python \
@@ -31,7 +26,5 @@ then
                 tree \
                 vim \
                 wget \
-		vlc \
                 zsh
-        fc-cache -f # build font information cache files
 fi
