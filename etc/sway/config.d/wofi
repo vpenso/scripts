@@ -6,4 +6,4 @@
 bindsym $alt+2 exec swaymsg exec $(wofi --show run)
 
 # start bookmark menu
-bindsym $alt+3 exec /usr/local/bin/wofi-bookmarks
+bindsym $alt+3 exec $SCRIPTS/bin/wofi-bookmarks
