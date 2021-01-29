@@ -1,5 +1,5 @@
 # make Firefox the default browser
-export BROWSER=${BROWSER:-chromium-browser}
+export BROWSER=${BROWSER:-firefox}
 
 # Allow multiple instances of Firefox
 ff() {
