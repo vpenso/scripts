@@ -12,6 +12,7 @@ then
                 fd-find \
                 fzf \
                 git \
+		iwd \
                 mpd \
                 mpc \
 		pmount \
