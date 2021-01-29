@@ -9,6 +9,8 @@ then
 	      grimshot \
 	      light \
 	      mpv \
+	      pavucontrol \
+	      pulseaudio \
 	      slurp \
 	      sway \
 	      swayidle \
