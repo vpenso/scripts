@@ -4,29 +4,25 @@ if command -v apt-get |:
 then
         sudo apt-get update
         sudo apt-get install --assume-yes \
-              fonts-font-awesome \
-	      gammastep \
-	      grimshot \
-	      light \
-	      mpv \
-	      pavucontrol \
-	      pulseaudio \
-	      slurp \
-	      sway \
-	      swayidle \
-	      swaylock \
-	      sxiv \
-	      terminator \
-	      upower \
-	      wdisplays \
-	      wf-recorder \
-	      wl-clipboard \
-	      wofi \
-	      xwayland
+		batcat \
+		fonts-font-awesome \
+		gammastep \
+		grimshot \
+		light \
+		mpv \
+		neovim \
+		pavucontrol \
+		pulseaudio \
+		slurp \
+		sway \
+		swayidle \
+		swaylock \
+		sxiv \
+		terminator \
+		upower \
+		wdisplays \
+		wf-recorder \
+		wl-clipboard \
+		wofi \
+		xwayland
 fi
-
-# download and install Inconsolata fonts
-$SCRIPTS/bin/font-install-nerdfonts
-# install the configuration file
-diffcp -r $SCRIPTS/etc/terminator/config ~/.config/terminator/config
-

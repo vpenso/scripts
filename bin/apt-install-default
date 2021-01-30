@@ -15,6 +15,7 @@ then
 		iwd \
                 mpd \
                 mpc \
+		neovim \
 		pmount \
                 psmisc \
                 python \
