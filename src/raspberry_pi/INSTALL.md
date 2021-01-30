@@ -73,8 +73,12 @@ git clone https://github.com/buildroot/buildroot.git
 ```
 
 ```shell
+# list available boards
+make list-defconfigs | grep rasp
 # generate the configuration for the target hardware
 make raspberrypi0w_defconfig
+# customization
+make menuconfig    # search with `/`
 # build
 make
 # write the SD card image
@@ -96,9 +100,12 @@ output/host/bin/qemu-system-x86_64 -M pc \
         -net nic,model=virtio -net user
 ```
 
+
+
 Directory structure:
 
 ```shell
+host/           Built for the host, sysroot of the target toolchain
 board/	        Files and scripts to support each target board
 configs/	Build configurations such as raspberrypi0w_defconfig
 package/	Package definitions
