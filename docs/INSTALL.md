@@ -25,8 +25,10 @@ git clone http://github.com/$USER/scripts.git ~/projects/scripts
 # make Zsh my default shell
 sudo usermod -s /bin/zsh $USER      # relogin
 # initialize my user environment
-source ~/projects/scripts/source_ms.sh # relogin
-ln -s ~/projects/scripts/source_ms.sh ~/.zshrc.d/00-scripts.sh
+source ~/projects/scripts/source_ms.sh
+ln -s $SCRIPTS/source_me.sh ~/.zshrc.d/00-scripts.sh
+# re-login
+tmux-config
 ```
 
 ### i3

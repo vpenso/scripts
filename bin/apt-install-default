@@ -4,6 +4,7 @@ if command -v apt-get |:
 then
         apt-get update
         apt-get install --assume-yes \
+                bat \
 		bc \
                 ccrypt \
                 curl \
