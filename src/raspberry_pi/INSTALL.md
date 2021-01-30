@@ -44,6 +44,9 @@ Default user `pi` password `raspberry`
 
 # BuildRoot
 
+[bldrm] The Buildroot User Manual  
+<https://buildroot.org/downloads/manual/manual.html>
+
 [melgh] Mastering Embedded Linux, George Hilliard  
 <https://www.thirtythreeforty.net/posts/2019/08/mastering-embedded-linux-part-1-concepts/>
 
@@ -62,7 +65,7 @@ sudo apt install -y \
         unzip \
         wget \
 # get the BuildRoot source code
-git clone http://git.buildroot.net/buildroot
+git clone git://git.busybox.net/buildroot
 ```
 
 ```shell
