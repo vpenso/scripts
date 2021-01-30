@@ -50,6 +50,8 @@ Default user `pi` password `raspberry`
 [melgh] Mastering Embedded Linux, George Hilliard  
 <https://www.thirtythreeforty.net/posts/2019/08/mastering-embedded-linux-part-1-concepts/>
 
+Use a virtual machine as build environment:
+
 ```shell
 # install depenencies
 sudo apt install -y \
@@ -66,6 +68,8 @@ sudo apt install -y \
         wget \
 # get the BuildRoot source code
 git clone git://git.busybox.net/buildroot
+# or
+git clone https://github.com/buildroot/buildroot.git
 ```
 
 ```shell
