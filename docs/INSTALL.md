@@ -10,7 +10,7 @@ Install and de-select all package groups (node Desktop, print server, etc.)
 After reboot configure [Sudo](linux/sudo.md) for my user account:
 
 ```bash
-apt update && apt install -y sudo neovim git
+apt update && apt install -y git sudo vim
 echo "$user ALL=(ALL) ALL" > /etc/sudoers.d/$user
 ```
 
@@ -28,23 +28,26 @@ sudo usermod -s /bin/zsh $USER      # relogin
 source ~/projects/scripts/source_ms.sh
 ln -s $SCRIPTS/source_me.sh ~/.zshrc.d/00-scripts.sh
 # re-login
-tmux-config
 ```
 
-### i3
+Command-line programs:
 
 ```shell
-# install the i3 window manager, inluding the Polybar status bar
-i3-build
-i3-config
+tmux-config
+vim-config
+```
+
+## Window Manager
+
+```shell
 # install additional fonts
 font-install-nerdfonts
+## i3
+i3-build
+i3-config
 # install the menu switcher
 rofi-config
-```
-
-### Sway
-
-```shell
+## sway
 apt-install-sway
 ```
+
