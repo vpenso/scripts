@@ -81,3 +81,7 @@ sudo systemd-nspawn --setenv=DISPLAY=$DISPLAY \
                     --image $FIREFOX_NSPAWN_CONTAINER
 ```
 
+## Extensions
+
+Privacy Badger  
+<https://privacybadger.org/>
