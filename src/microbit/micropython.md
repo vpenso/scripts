@@ -1,15 +1,19 @@
 # MicroPython
 
-What is MicroPython?
+What is MicroPython? [micoy]
 
-* Reimplementation of Python 3
-  - Written in C++, runtime compiled offline
+* Reimplementation of Python 3 for MCUs
+  - Efficient with resources, runs on bare metal
+  - Written in C++, includes compiler, run-time
+  - REPL (read, evaluate, print loop)
+  - Support inline assembler
+* Pre-compiles run-time on the micro:bit
   - Runtime `.hex` flashed to the micro:bit
   - `.hex` contains complete MicroPython language
 
 CicruitPython [cicpy] open source derivative of MicroPython
 
-## References
+# References
 
 [cicpy] CircuitPython, Adafruit  
 <https://circuitpython.org/>  
@@ -41,22 +45,21 @@ CicruitPython [cicpy] open source derivative of MicroPython
 
 ### Workshops & Tutorials 
 
-[bbcmb] BBC micro:bit MicroPython documentation  
+BBC micro:bit MicroPython documentation  
 <https://microbit-micropython.readthedocs.io>  
 <https://github.com/bbcmicrobit/micropython>
 
-
-[mpmce] MicroPython for the Micro:bit Workshop, Core Electronics  
+MicroPython for the Micro:bit Workshop, Core Electronics  
 <https://www.youtube.com/playlist?list=PLPK2l9Knytg6SygFSODc3H1JL4KEm-Ruv>
 
-[nmbpy] Networking with the micro:bit Python Edition  
+Networking with the micro:bit Python Edition  
 <https://microbit.nominetresearch.uk/networking-book-online-python/>
 
-[uclmb] UCL’s BBC Micro:bit Tutorials  
+UCL’s BBC Micro:bit Tutorials  
 <https://microbit-challenges.readthedocs.io>  
 <https://github.com/rharbird/microbit-challenges>
 
-[mbcry] Micro:bit Lessons - Introduction to cryptography  
+Micro:bit Lessons - Introduction to cryptography  
 https://microbit.org/lessons/cryptography>
 
 Conway's Game of Life  
@@ -81,3 +84,6 @@ MicroPython – Python for Microcontrollers, 35C3
 
 MicroPython Basics: What is MicroPython?, Adafruit  
 <https://www.youtube.com/watch?v=8btQWSu7DdM>
+
+Writing fast and efficient MicroPython, Damien George  
+<https://www.youtube.com/watch?v=hHec4qL00x0>
