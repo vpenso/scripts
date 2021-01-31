@@ -6,8 +6,13 @@ What is MicroPython? [micoy]
   - Efficient with resources, runs on bare metal
   - Written in C++, includes compiler, run-time
   - REPL (read, evaluate, print loop)
-  - Support inline assembler
-* Pre-compiles run-time on the micro:bit
+* Compiler emitters...
+  - Byte code for a virtual machine
+  - Native machine code (x86, x64, ARM...)
+  - Supports inline assembler
+
+Micro:bit uses a pre-compiles run-time...
+
   - Runtime `.hex` flashed to the micro:bit
   - `.hex` contains complete MicroPython language
 
@@ -85,5 +90,8 @@ MicroPython – Python for Microcontrollers, 35C3
 MicroPython Basics: What is MicroPython?, Adafruit  
 <https://www.youtube.com/watch?v=8btQWSu7DdM>
 
-Writing fast and efficient MicroPython, Damien George  
+Writing fast and efficient MicroPython, Damien George (2018)  
 <https://www.youtube.com/watch?v=hHec4qL00x0>
+
+Extending MicroPython: Using C for good!, Matt Trentini (2019)  
+<https://www.youtube.com/watch?v=437CZBnK8vI>
