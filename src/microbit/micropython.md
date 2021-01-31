@@ -45,6 +45,7 @@ CicruitPython [cicpy] open source derivative of MicroPython
 <https://microbit-micropython.readthedocs.io>  
 <https://github.com/bbcmicrobit/micropython>
 
+
 [mpmce] MicroPython for the Micro:bit Workshop, Core Electronics  
 <https://www.youtube.com/playlist?list=PLPK2l9Knytg6SygFSODc3H1JL4KEm-Ruv>
 
@@ -58,8 +59,14 @@ CicruitPython [cicpy] open source derivative of MicroPython
 [mbcry] Micro:bit Lessons - Introduction to cryptography  
 https://microbit.org/lessons/cryptography>
 
-[mbtet] BBC micro:bit – Tetris Game  
+Conway's Game of Life  
+<https://www.hackster.io/ivo-ruaro/conway-s-game-of-life-e383e3>
+
+BBC micro:bit – Tetris Game  
 <https://www.101computing.net/bbc-microbit-tetris-game/>
+
+micro:bit Space Invaders  
+<https://www.mfitzp.com/article/microbit-space-invaders>
 
 ### Videos
 
