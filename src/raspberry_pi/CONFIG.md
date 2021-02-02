@@ -2,37 +2,50 @@ Default user `pi` password `raspberry`
 
 ## USB Gadget
 
-Install DNS for local IP addresses and static services:
+Using an SD card with Raspberry Pi OS:
 
 ```shell
-sudo apt install -y avahi-daemon avahi-discover libnss-mdns
-```
-
-Using an SD card with RaspberryPi OS:
-
-```shell
+# mount the boot partition
 pmount /dev/mmcblk0p1 && cd /media/mmcblk0p1
+# add the OTG driver
 echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+# enable SSH in a headless setup
 touch ssh
-cp cmdline.txt cmdline.txt.org
-# Look for rootwait, and add modules-load=dwc2,g_ether immediately after
+vi cmdline.txt # Look for rootwait, and add modules-load=dwc2,g_ether immediately after
 cd && pumount /media/mmcblk0p1
 ```
 
+### Virtual Ethernet
+
+The `g_ether` modules able virtual Ethernet point to point networking.
+
+On the host computer:
+
+```
+dmesg | grep cdc_ether    # renames the interface to enx*
+# interface name and mac-address
+ip -o link | grep enx | awk '{print $2, $17}'
+```
+
+Assign an IP address to the interface `enx*`:
+
 ```shell
->>> sudo dmesg
-usb 1-1.2: new full-speed USB device number 12 using xhci_hcd
-usb 1-1.2: new high-speed USB device number 13 using xhci_hcd
-usb 1-1.2: New USB device found, idVendor=0525, idProduct=a4a2, bcdDevice= 5.04
-usb 1-1.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-usb 1-1.2: Product: RNDIS/Ethernet Gadget
-usb 1-1.2: Manufacturer: Linux 5.4.83+ with 20980000.usb
-cdc_ether 1-1.2:1.0 usb0: register 'cdc_ether' at usb-0000:00:14.0-1.2, CDC Ethernet Device, fe:d4:76:2e:6b:00
-usbcore: registered new interface driver cdc_ether
-usbcore: registered new interface driver cdc_subset
-cdc_ether 1-1.2:1.0 enxfed4762e6b00: renamed from usb0
->>> sudo journalctl -u avahi-daemon
+iface=$(ip -o link | grep enx | awk '{print $2}' | tr -d ':')
+ip a add 192.168.7.1/24 dev $iface
+ip link set dev $iface up
+```
+
+```
+echo 'MulticastDNS=yes' > /etc/systemd/resolved.conf.d/mdns.conf
+systemctl restart systemd-resolved
+systemd-resolve --set-mdns=yes --interface=usb0 \
+        && systemd-resolve --status usb0
 ```
 
 Raspberry Pi Zero OTG Mode  
 <https://gist.github.com/gbaman/50b6cca61dd1c3f88f41>
+
+Raspberry Pi Console over USB: Configuring an Ethernet Gadget  
+<https://shallowsky.com/blog/linux/raspberry-pi-ethernet-gadget.html>  
+<https://shallowsky.com/blog/linux/raspberry-pi-ethernet-gadget-2.html>  
+<https://shallowsky.com/blog/linux/raspberry-pi-ethernet-gadget-3.html>
