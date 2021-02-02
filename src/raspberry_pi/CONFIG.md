@@ -42,6 +42,17 @@ systemd-resolve --set-mdns=yes --interface=usb0 \
         && systemd-resolve --status usb0
 ```
 
+### Serial Console
+
+The `g_serial` module enables serial console on a connected computer:
+
+```
+sudo modprobe g_serial
+sudo systemctl start getty@ttyGS0.service
+```
+
+# References
+
 Raspberry Pi Zero OTG Mode  
 <https://gist.github.com/gbaman/50b6cca61dd1c3f88f41>
 
