@@ -35,3 +35,6 @@ Linux UVC driver [lxuvc]
 
 [rphqc] Raspberry Pi High Quality Camera  
 <https://www.raspberrypi.org/products/raspberry-pi-high-quality-camera/>  
+
+[babuw] Build a Better USB Webcam!  
+<https://www.youtube.com/watch?v=x_4XuQ0JgQo>
