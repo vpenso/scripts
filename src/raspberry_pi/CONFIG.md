@@ -4,25 +4,44 @@ Default user `pi` password `raspberry`
 
 Using an SD card with Raspberry Pi OS:
 
+* `/dev/mmcblk0p1` is the `/boot` partition
+* `/dev/mmcblk0p2` is the `/` root partition
+
 ```shell
-# mount the boot partition
-pmount /dev/mmcblk0p1 && cd /media/mmcblk0p1
-# add the OTG driver
-echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
-# enable SSH in a headless setup
-touch ssh
-vi cmdline.txt # Look for rootwait, and add modules-load=dwc2,g_ether immediately after
-cd && pumount /media/mmcblk0p1
+seq 1 2 | parallel "pmount /dev/mmcblk0p{}"              # mount
+sync ; seq 1 2 | parallel "pumount /media/mmcblk0p{}"    # unmount
 ```
 
 ### Virtual Ethernet
 
 The `g_ether` modules able virtual Ethernet point to point networking.
 
+In the `/boot` partition:
+
+```shell
+# add the OTG driver
+echo "dtoverlay=dwc2" >> config.txt
+# enable SSH in a headless setup
+touch ssh
+# Look for rootwait, and add modules-load=dwc2,g_ether immediately after
+vi cmdline.txt 
+```
+
+In the `/` root partition, write a static IP address configuration:
+
+```shell
+cat > etc/dhcpcd.conf <<EOF
+interface usb0
+static ip_address=192.168.7.2
+static routers=192.168.7.1
+static domain_name_servers=192.168.7.1
+EOF
+```
+
 On the host computer:
 
 ```
-dmesg | grep cdc_ether    # renames the interface to enx*
+sudo dmesg | grep cdc_ether    # renames the interface to enx*
 # interface name and mac-address
 ip -o link | grep enx | awk '{print $2, $17}'
 ```
