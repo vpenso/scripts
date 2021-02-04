@@ -50,8 +50,8 @@ Assign an IP address to the interface `enx*`:
 
 ```shell
 iface=$(ip -o link | grep enx | awk '{print $2}' | tr -d ':')
-ip a add 192.168.7.1/24 dev $iface
-ip link set dev $iface up
+sudo ip a add 192.168.7.1/24 dev $iface
+sudo ip link set dev $iface up
 ```
 
 ```
