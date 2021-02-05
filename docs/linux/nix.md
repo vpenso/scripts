@@ -10,14 +10,13 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 rm -rf /nix
 ```
 
-Users have complete control over environment:
-
-* Any number of versions and builds of packages
-* Prior versions remain accessible until explicit release and garbage collection
-* All operations are fully atomic
-
+### Environments
 
 `nix-env` create environments, profiles and their generations
+
+* A **Derivation** describes a build action
+  - Creates one or more entries in the Nix Store
+* Package name equals the derivation name minus the version
 
 ```shell
 nix search name           # search package
@@ -28,6 +27,12 @@ nix-env -qa 'name.*'      # list available packages
 nix-env -i name           # install package
 nix-env -e name           # un-install package
 nix-env --rollback        # rollback to the old generation
+```
+
+A **Generation** is past version of an environment, rollback facilities rely on
+Generations:
+
+```shell
 nix-env --list-generations
 nix-env --switch-generation 
 ```
