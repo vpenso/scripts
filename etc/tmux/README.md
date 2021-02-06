@@ -13,7 +13,7 @@ Commonly used terminal multiplexers are [tmux][tx] and GNU [screen][sc].
 File                                  | Description
 --------------------------------------|----------------------------------
 [etc/tmux.conf][tc]                   | Custom configuration file
-[bin/tmux-config](../bin/tmux-config) | Deploy the configuration
+[bin/tmux-config][tcc]                | Deploy the configuration
 [bin/tmux-cheat][tt]                  | Custom key binding cheat sheet 
 
 The [tmux][tx] terminal multiplexer, cf.:
@@ -71,7 +71,8 @@ set -g @plugin 'tmux-plugins/tmux-open'
 ```
 
 [tc]: tmux.conf
-[tt]: ../bin/tmux-cheat
+[tt]: ../../bin/tmux-cheat
+[tcc]: ../../bin/tmux-config
 [tp]: https://en.m.wikipedia.org/wiki/Terminal_multiplexer
 [tx]: https://github.com/tmux/tmux
 [sc]: http://www.gnu.org/software/screen/
