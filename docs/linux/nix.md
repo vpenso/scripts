@@ -1,3 +1,5 @@
+# Nix 
+
 Single user installation:
 
 ```shell
@@ -144,7 +146,6 @@ nix-env -u  # upgrade all packages in the environment
 
 ### Nix Language
 
-
 * Very limited functionality except of executing derivations
 * Lazy evaluated
 * (Almost) free of side-effects
@@ -153,6 +154,12 @@ nix-env -u  # upgrade all packages in the environment
   - no file writing
   - no output (except traces)
 * Builds done by other Nix tooling
+
+`nixpkgs` global default package repository
+
+* One big Nix expression including derivations
+* Each package is a derivation
+* Package dependencies recursive derivation calls
 
 # References
 
