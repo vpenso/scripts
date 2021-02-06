@@ -142,7 +142,17 @@ nix-env -u  # upgrade all packages in the environment
 * Creates a new generation of the channels profile and unpack it under
   `~/.nix-defexpr/channels`
 
+### Nix Language
 
+
+* Very limited functionality except of executing derivations
+* Lazy evaluated
+* (Almost) free of side-effects
+  - no networking
+  - no user input
+  - no file writing
+  - no output (except traces)
+* Builds done by other Nix tooling
 
 # References
 
