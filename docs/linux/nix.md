@@ -67,16 +67,21 @@ nix-store --gc --print-roots
   - `args` - program argument list
   - `env` - build environment
 * Only contents referenced in the derivation available during build
- - No implicit dependencies possible
- - All dependencies made explicit
- - All dependencies codified in the output hash
- - Nothing is machine dependent (good for binary caching)
+  - No implicit dependencies possible
+  - All dependencies made explicit
+  - All dependencies codified in the output hash
+  - Nothing is machine dependent (good for binary caching)
 
 Build a derivation with `nix-build`:
 
 ```shell
 nix-build /nix/store/lzha201i0b0d52rjxqlxbrximwf9bjiv-firefox-85.0.drv
 ```
+
+Any software build/install can be a binary download with no other prerequisites
+except the nix platform.
+
+### Environments
 
 `nix-env` create environments, profiles and their generations
 
