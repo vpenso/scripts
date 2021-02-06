@@ -15,9 +15,12 @@ Install NeoVim, unless a recent version is available as distro package:
 <https://github.com/neovim/neovim/releases>
 
 ```bash
+# official AppImage
 wget https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage -P ~/bin
 chmod u+x ~/bin/nvim.appimage
 ln -s ~/bin/nvim.appimage ~/bin/nvim
+# install as Nix pacage
+nix-env -i neovim
 ```
 
 Install vim-plug [vplg]:
