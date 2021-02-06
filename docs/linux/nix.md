@@ -1,7 +1,6 @@
-## Usage
+Single user installation:
 
 ```shell
-# single user installation
 sudo mkdir /nix
 sudo chown $USER:$USER /nix
 sh <(curl -L https://nixos.org/nix/install) --no-daemon
@@ -11,13 +10,6 @@ rm -rf /nix
 ```
 
 ### Nix Store
-
-```shell
-nix-store --optimise      # save space by hardlinking store files
-nix-store --gc            # clean up storage
-# see which result files prevent garbage collection
-nix-store --gc --print-roots
-```
 
 Software is a graph of dependencies:
 
@@ -35,7 +27,7 @@ Nodes include references to paths in other nodes (edges).
 * For a given hash its Contents is always identical across machines/platforms
 * Can't be modified after creation (immutable)
 
-```shell
+```
 /nix/store/gv4rgr1p1dq5s4hx7ald6a7kli6p3xrz-firefox-85.0
            |                              | |
            |                              | `----------- name
@@ -53,6 +45,13 @@ nix-store --query --tree $(which firefox)
 nix-store --query --graph $(which firefox) | dot -Tsvg
 ```
 
+```shell
+nix-store --optimise      # save space by hardlinking store files
+nix-store --gc            # clean up storage
+# see which result files prevent garbage collection
+nix-store --gc --print-roots
+```
+
 ### Derivations
 
 * Derivations recipe how to build other paths in the Nix store
@@ -67,7 +66,11 @@ nix-store --query --graph $(which firefox) | dot -Tsvg
   - `builder` - program to run for the build
   - `args` - program argument list
   - `env` - build environment
-* Package name equals the derivation name minus the version
+* Only contents referenced in the derivation available during build
+ - No implicit dependencies possible
+ - All dependencies made explicit
+ - All dependencies codified in the output hash
+ - Nothing is machine dependent (good for binary caching)
 
 Build a derivation with `nix-build`:
 
@@ -76,6 +79,8 @@ nix-build /nix/store/lzha201i0b0d52rjxqlxbrximwf9bjiv-firefox-85.0.drv
 ```
 
 `nix-env` create environments, profiles and their generations
+
+* Package name equals the derivation name minus the version
 
 ```shell
 nix search name           # search package
