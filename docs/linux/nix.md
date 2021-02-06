@@ -1,4 +1,4 @@
-# Nix
+## Usage
 
 ```shell
 # single user installation
@@ -77,18 +77,43 @@ nix-env -u  # upgrade all packages in the environment
 ### Nix Store
 
 ```shell
-/nix/store                # read-only data store
-/nix/var/nix/db           # Nix database
 nix-store --optimise      # save space by hardlinking store files
 nix-store --gc            # clean up storage
 # see which result files prevent garbage collection
 nix-store --gc --print-roots
+```
+
+Software is a graph of dependencies:
+
+* This graph typically implicit
+* Nix makes this graph explicit
+
+```shell
+/nix/store                # (directed acyclic) graph (database)
+/nix/store/*              # nodes (immutable)
+```
+
+Nodes include references to paths in other nodes (edges).
+
+* Each node is prefixed by a (unique) hash
+* For a given hash its Contents is always identical across machines/platforms
+* Can't be modified after creation (immutable)
+
+```shell
+/nix/store/gv4rgr1p1dq5s4hx7ald6a7kli6p3xrz-firefox-85.0
+           |                              | |
+           |                              | `----------- name
+           `------------------------------`------------- hash
+```
+
+Query the nix store like a graph database:
+
+```shell
 # list run-time dependencies for derivation (i.e. Firefox)
 nix-store -q --references $(which firefox)
 # ^ recursive as tree
 nix-store -q --tree $(which firefox)
 ```
-
 
 # References
 
