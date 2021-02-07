@@ -2,7 +2,7 @@ Install the configuration file:
 
 ```bash
 # download and install Inconsolata fonts
-$SCRIPTS/bin/fonts-install-nerdfonts
+$SCRIPTS/bin/font-install-nerdfonts
 # install the configuration file
 diffcp -r $SCRIPTS/etc/terminator/config ~/.config/terminator/config
 ```
