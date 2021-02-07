@@ -10,7 +10,8 @@ def wait_for_button():
     while not (button_a.was_pressed() or button_b.was_pressed()):
         sleep(1)
 
-def ship_move():
+def user_input():
+    
     global ship_position
     acceleration = accelerometer.get_x()
     if acceleration < -100:
@@ -20,14 +21,19 @@ def ship_move():
         if ship_position < 4:
             ship_position += 1
 
-def fire():
+    global missiles
     if button_a.was_pressed():
-        missiles.append((ship_position,4))
-        
+        missiles.append((ship_position,3))
 
 def draw():
     display.clear()
+    
+    # draw ship
     display.set_pixel(ship_position,4,9)
+    
+    # draw missiles
+    for missile in missiles:
+        display.set_pixel(missile[0],missile[1],3)
 
 while True:
 
@@ -35,8 +41,8 @@ while True:
     wait_for_button()
     while True:
         draw()
-        ship_move()
-        fire()
+        user_input()
         sleep(50)
     display.show(Image.ANGRY)
     sleep(1000)
+
