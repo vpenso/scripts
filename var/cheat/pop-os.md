@@ -2,22 +2,23 @@
 
 ## Navigation
 
-Super + Esc                lock screen
-Super + q                  close window
-Super + Space              switch keyboard layout 
-Super + /                  open launcher
-Super + f                  open file manager
-Super + b                  open browser
-Super + m                  maximize focused window
-Super + <direction>        focus switching
-Super + g                  toggle floating and tiling
+Super ⋅ Esc                Lock screen
+Super ⋅ q                  Close window
+Super ⋅ Space              Switch keyboard layout 
+Super ⋅ /                  Open launcher
+Super ⋅ f                  Open file manager
+Super ⋅ b                  Open browser
+Super ⋅ m                  Maximize focused window
+Super ⋅ <direction>        Focus switching
+Super ⋅ g                  Toggle floating and tiling
+Super ⋅ Ctrl ⋅ <direction> Workspace down/up
 
 ## Window Management 
 
-**Super + Return** to enter window management mode
+**Super ⋅ Return** to enter window management mode
 
 <direction>                 move window
-Shift + <direction>         resize window
+Shift  ⋅ <direction>        resize window
 O                           toggle horizontal/vertical tiling
 Return                      apply changes
 Esc                         discard changes
