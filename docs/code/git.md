@@ -451,3 +451,6 @@ Each directory is followed by a list of remotes using the notation of <tt>git re
 
 [8] GitLab, commercial Git service based on Open Source core  
 <https://gitlab.com/>
+
+[9] A Visual Git Reference  
+<http://marklodato.github.io/visual-git-guide/index-en.html>
