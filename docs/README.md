@@ -95,8 +95,10 @@ Why use [Markdown][md] for plain text formating?
   - [mdless](https://github.com/ttscoff/mdless)
   - [mdv](https://github.com/axiros/terminal_markdown_viewer)
   - [mdcut](https://github.com/lunaryorn/mdcat)
-* Edit Markdown online: [dillinger](https://github.com/joemccann/dillinger)
-* [Markor](https://github.com/gsantner/markor) for Android
+* Editors
+  - [dillinger](https://github.com/joemccann/dillinger) online
+  - [ghostwriter](https://github.com/wereturtle/ghostwriter) all platforms
+  - [Markor](https://github.com/gsantner/markor) for Android
 * [ArgDown](https://github.com/christianvoigt/argdown) for analyzing complex argumentation
 
 [ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
