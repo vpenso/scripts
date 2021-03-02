@@ -14,6 +14,13 @@ exp() { read n; export $1=$n ; }
 
 # run Clustershell using the NODES environment variable
 alias rush='clush -l root -w $NODES'
+rush-no-checks() {
+        clush \
+                -l root \
+                -O ssh_options='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' \
+                -w $NODES \
+                "$@"
+}
 
 if [[ $SHELL == *zsh ]]
 then
