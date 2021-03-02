@@ -15,12 +15,12 @@ exp() { read n; export $1=$n ; }
 # run Clustershell using the NODES environment variable
 alias rush='clush -l root -w $NODES'
 rush-no-checks() {
-        ${NODES:?NODES environment variable not set}
+        local nodes=${NODES:?NODES environment variable not set}
         clush \
-                -q \
+                -q -P \
                 -l root \
-                -O ssh_options='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' \
-                -w $NODES \
+                -O ssh_options='-o LogLevel=FATAL -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' \
+                -w "$nodes" \
                 $@
 }
 
