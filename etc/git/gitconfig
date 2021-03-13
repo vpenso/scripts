@@ -3,6 +3,10 @@
 	email = vic.penso@gmail.com
 [push]
 	default = current
+
+[pull]
+        rebase = false
+        ff = only
 [gc]
 	auto = 1
 [core]
