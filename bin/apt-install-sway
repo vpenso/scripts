@@ -22,6 +22,7 @@ then
 		wdisplays \
 		wf-recorder \
 		wl-clipboard \
+                waybar \
 		wofi \
 		xwayland
 fi

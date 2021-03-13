@@ -21,11 +21,12 @@ Login to the user account:
 mkdir ~/projects
 git clone http://github.com/$USER/scripts.git ~/projects/scripts
 # install my dependecies
-~/project/scripts/bin/apt-install-default
+sudo ~/project/scripts/bin/apt-install-default
 # make Zsh my default shell
 sudo usermod -s /bin/zsh $USER      # relogin
 # initialize my user environment
 source ~/projects/scripts/source_ms.sh
+source $SCRIPTS/bin/zsh-config
 ln -s $SCRIPTS/source_me.sh ~/.zshrc.d/00-scripts.sh
 # re-login
 ```
@@ -39,6 +40,8 @@ vim-config
 
 ## Window Manager
 
+
+
 ```shell
 # install additional fonts
 font-install-nerdfonts
@@ -47,7 +50,7 @@ i3-build
 i3-config
 # install the menu switcher
 rofi-config
-## sway
+## sway (re-login)
 apt-install-sway
 ```
 
