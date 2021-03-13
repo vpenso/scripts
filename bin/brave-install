@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+sudo apt install -y apt-transport-https curl gnupg
+# add the repository key to APT
+curl -s https://brave-browser-apt-release.s3.brave.com/brave-core.asc \
+        | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -
+# add repository to the APt configuration
+echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" \
+        | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+# install the browser
+sudo apt update
+sudo apt install -y brave-browser
