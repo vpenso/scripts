@@ -18,6 +18,16 @@ Micro:bit uses a pre-compiles run-time...
 
 CicruitPython [cicpy] open source derivative of MicroPython
 
+Install `uflash` [ulfmb]:
+
+```shell
+sudo apt install -y python3-pip
+pip3 install uflash
+# mount the device
+pmount /dev/sdb MICROBIT
+uflash $source
+```
+
 # References
 
 [cicpy] CircuitPython, Adafruit  
