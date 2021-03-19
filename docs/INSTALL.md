@@ -20,34 +20,32 @@ Login to the user account:
 # clone this repository
 mkdir ~/projects
 git clone http://github.com/$USER/scripts.git ~/projects/scripts
-# install my dependecies
-~/project/scripts/bin/apt-install-default
+# install my dependencies
+sudo ~/project/scripts/bin/apt-install-default
 # make Zsh my default shell
-sudo usermod -s /bin/zsh $USER      # relogin
+sudo usermod -s /bin/zsh $USER
 # initialize my user environment
 source ~/projects/scripts/source_ms.sh
+tmux-config
+vim-config
+font-install-nerdfonts
+source $SCRIPTS/bin/zsh-config
 ln -s $SCRIPTS/source_me.sh ~/.zshrc.d/00-scripts.sh
 # re-login
 ```
-
-Command-line programs:
-
-```shell
-tmux-config
-vim-config
-```
-
 ## Window Manager
 
 ```shell
-# install additional fonts
-font-install-nerdfonts
+## sway (re-login)
+apt-install-sway
+## terminator configuration
+diffcp -r $SCRIPTS/etc/terminator/config ~/.config/terminator/config
+```
+
+```shell
 ## i3
 i3-build
 i3-config
 # install the menu switcher
 rofi-config
-## sway
-apt-install-sway
-```
-
+```shell
