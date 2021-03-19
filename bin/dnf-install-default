@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+if command -v dnf >/dev/null
+then
+        dnf install -y \
+                bat \
+		bc \
+                ccrypt \
+                curl \
+                dnsutils \
+                encfs \
+                fd-find \
+                fzf \
+                git \
+		iwd \
+		neovim \
+		pmount \
+                psmisc \
+                python \
+                rsync \
+                ruby \
+                sshfs \
+                sshuttle \
+                tcpdump \
+                tmux \
+                tree \
+                vim \
+                wget \
+                zsh
+fi
