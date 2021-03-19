@@ -12,6 +12,7 @@ After reboot configure [Sudo](linux/sudo.md) for my user account:
 ```bash
 apt update && apt install -y git sudo vim
 echo "$user ALL=(ALL) ALL" > /etc/sudoers.d/$user
+dnf install -y git vim zsh
 ```
 
 Login to the user account:
