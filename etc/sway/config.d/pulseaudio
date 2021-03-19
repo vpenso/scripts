@@ -4,9 +4,12 @@
 
 # use function keys to changing sound volume
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym $alt+u exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym $alt+d exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 # use function key to toggle volumen mute
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym $alt+m exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 # use function keys to toggle microphone mute
 bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 # the same in a more practical place

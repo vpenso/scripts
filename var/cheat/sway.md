@@ -12,6 +12,9 @@ super ⋅ shift ⋅ r            Restart Sway
 alt ⋅ 1                      Terminator
 alt ⋅ 2                      Launcher
 alt ⋅ 3                      Bookmarks
+alt ⋅ u                      Volume up
+alt ⋅ d                      Volume down
+alt ⋅ m                      Volume mute
 ```
 
 ### Windows
