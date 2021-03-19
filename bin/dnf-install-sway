@@ -13,6 +13,7 @@ then
         sudo dnf install -y \
 		fontawesome-fonts \
 		gammastep \
+                grim \
 		light \
 		mpv \
 		pavucontrol \
