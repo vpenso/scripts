@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+if command -v dnf >/dev/null
+then
+	if yum repolist | grep ^rpmfusion >/dev/null
+	then
+		url=https://mirrors.rpmfusion.org/free/fedora
+		sudo dnf install -y \
+			$url/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+			$url/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+	fi
+
+        sudo dnf install -y \
+		fontawesome-fonts \
+		gammastep \
+		light \
+		mpv \
+		pavucontrol \
+		slurp \
+		sway \
+		swayidle \
+		swaylock \
+		sxiv \
+		terminator \
+		wdisplays \
+		wf-recorder \
+		wl-clipboard \
+                waybar \
+		wofi
+fi
