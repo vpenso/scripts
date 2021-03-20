@@ -15,6 +15,9 @@ alt ⋅ 3                      Bookmarks
 alt ⋅ u                      Volume up
 alt ⋅ d                      Volume down
 alt ⋅ m                      Volume mute
+super ⋅ alt ⋅ u              Microphone volume up
+super ⋅ alt ⋅ d              Microphone volume down
+super ⋅ alt ⋅ m              Microphone mute
 ```
 
 ### Windows
@@ -34,7 +37,6 @@ super ⋅ backspace            Toggle scratchpad visibility
 ### Screen Shots & Recording
 
 ```
-super ⋅ z                    Mute microphone
 alt ⋅ a                      Screen shot with area selection
 alt ⋅ s                      Screen shot active workspace
 alt ⋅ w                      Screen shot with window selection
