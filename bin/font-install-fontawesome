@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+mkdir ~/.fonts |:
+
+cd /tmp
+
+wget https://fontawesome.com/v4.7.0/assets/font-awesome-4.7.0.zip
+unzip font-awesome-4.7.0.zip 
+cp -v font-awesome-4.7.0/fonts/*.{ttf,otf} ~/.fonts
+
+cd - |:
+
+fc-cache -f -v
