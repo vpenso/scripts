@@ -4,10 +4,15 @@ mkdir ~/.fonts |:
 
 cd /tmp
 
+version=${1:-v2.1.0}
+
+##
+# Look for available fonts at https://www.nerdfonts.com/font-downloads
+#
 for zip in Inconsolata.zip \
            InconsolataGo.zip
 do
-        curl -Lf https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/$zip -o $zip
+        curl -Lf https://github.com/ryanoasis/nerd-fonts/releases/download/$version/$zip -o $zip
         unzip $zip
 done
 
