@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if pactl list modules | grep module-loopback >/dev/null
+then
+        pactl unload-module module-loopback
+else
+        pactl load-module module-loopback
+fi
