@@ -60,6 +60,7 @@ PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS;
 
 # add executables in home-directory if present 
 test -d ~/bin && export PATH=~/bin:$PATH
+test -d ~/.local/bin && export PATH=~/.local/bin:$PATH
 
 for file in `\ls $SCRIPTS/var/aliases/*.sh`
 do

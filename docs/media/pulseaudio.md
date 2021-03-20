@@ -24,4 +24,4 @@ pacmd list-sinks | grep -e 'name:' -e 'index:'
 ## References
 
 [pauth] PulseAudio under the hood (2017)  
-https://gavv.github.io/articles/pulseaudio-under-the-hood/
+<https://gavv.github.io/articles/pulseaudio-under-the-hood>
