@@ -63,10 +63,11 @@
               "car": "",
               "default": ["", ""]
          },
-         "format-source": "<span color='#008000'></span>",
+         "format-source": "<span color='#008000'></span> {volume}%",
          "format-source-muted": "<span color='#f53c3c'></span>",
          "scroll-step": 1,
-         "on-click": "pavucontrol"
+         "on-click": "pavucontrol",
+         "on-click-right": "pulseeffects"
     },
     "mpd": {
 	"format": "{stateIcon} {songPosition}/{queueLength} ({elapsedTime:%M:%S}/{totalTime:%M:%S})",
