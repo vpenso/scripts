@@ -1,20 +1,42 @@
 # Toolbox
 
-Built on top of Podman, and OCI standard container technologies.
 
-Provides a fully mutable container used for development and debugging of applications.
+Fully mutable container environment for everyday software development and
+debugging. Built on top of Podman and OCI standard container technologies.
+
+From the Fedora documentation [tbxfd]:
+
+_Each toolbox container is an environment that you can enter from the command
+line. Inside each one, you will find:_
+
+* _Your existing username and permissions_
+* _Access to your home directory and several other locations_
+* _Access to both system and session D-Bus, system journal and Kerberos_
+* _Common command lines tools, including a package manager_
+
 
 ## Images
 
->>>
-Toolbox customizes newly created containers in a certain way. This requires
+_Toolbox customizes newly created containers in a certain way. This requires
 certain tools and paths to be present and have certain characteristics inside
-the OCI image.
->>>
+the OCI image. ... Toolbox enables sudo(8) access inside containers_ [tbxsc]
 
 Fedora images for toolbox:
 
 <https://github.com/containers/toolbox/tree/master/images/fedora>
+
+Create a toolbox container:
+
+* Download an OCI container image from a registry (if available)
+* By default an image matching the version of the host
+* If the host system does not have a matching image, a Fedora image is used instead
+
+```bash
+toolbox create # using the defaults
+toolbox enter
+```
+
+Use a specific version of Fedora:
 
 ```bash
 toolbox --image fedora-toolbox:34 create
@@ -35,5 +57,10 @@ build-debian-toolbox 20.10 ubuntu
 toolbox enter 20.10
 ```
 
-Toolbox Source Code Repository, GitHub  
+### References
+
+[tbxsc] Toolbox Source Code Repository, GitHub  
 <https://github.com/containers/toolbox>
+
+[tbxfd] Toolbox, Fedora Documentation  
+<https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox/>
