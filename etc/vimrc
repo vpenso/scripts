@@ -19,7 +19,7 @@ Plug 'Townk/vim-autoclose'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'honza/vim-snippets'
-Plug 'garbas/vim-snipmate'
+"Plug 'garbas/vim-snipmate'
 " Supertab insert mode completions with Tab
 "  https://github.com/ervandew/supertab
 Plug 'ervandew/supertab'
@@ -68,7 +68,10 @@ set hlsearch        " highlight search terms
 " more powerful backspacing
 set backspace=indent,eol,start
 set wrap            " wrap lines
+set linebreak       " break at a word boundary
 set showbreak=…     " if line numbers are of indicate it
+set textwidth=80
+set colorcolumn=+1  " highlight column after 'textwidth'
 set expandtab       " no real tabs please!
 
 " highlight the current line & column
@@ -77,8 +80,6 @@ set cursorcolumn
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline cursorcolumn
 
-set textwidth=80
-set colorcolumn=+1 " highlight column after 'textwidth'
 
 "no backup files at all
 set nobackup
