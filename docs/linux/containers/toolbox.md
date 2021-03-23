@@ -4,6 +4,7 @@ Unprivileged fully mutable container environment for everyday software
 development and debugging. 
 
 * Front-end built on top of Podman and OCI standard container technologies.
+* Keeps the host system small and decoupled from development environments
 
 From the Fedora documentation [tbxfd]:
 
@@ -78,3 +79,6 @@ toolbox rmi -a            # remove all images
 
 [fedcr] Fedora Container Registry  
 <https://registry.fedoraproject.org/>
+
+[tblxg] `tblx`, GitLab  
+<https://gitlab.com/uppercat/tlbx>
