@@ -1,10 +1,10 @@
 File                       | Description
 ---------------------------|-----------------------------------
-[bin/vim-cheat][01]        | Custom Vim keybinding list
+[var/cheat/vim.md][01]     | Custom Vim keybinding list
 [etc/vimrc][03]            | Custom Vim configuration
 [var/aliases/vim.sh][02]   | Vim environment configuration
 
-[01]: ../../bin/vim-cheat
+[01]: ../../var/cheat/vim.md
 [02]: ../../var/aliases/vim.sh
 [03]: ../../etc/vimrc
 
