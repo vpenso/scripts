@@ -1,3 +1,11 @@
+# PopOS
+
+Install Pop shell on Fedora:
+
+```bash
+sudo dnf install gnome-shell-extension-pop-shell
+```
+
 Gnome extensions:
 
 ```bash
