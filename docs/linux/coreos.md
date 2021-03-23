@@ -1,3 +1,16 @@
+# Fedora CoreOS
+
+Purpose-build Linux distribution to host containerized workloads.
+
+* Descended of CoreOS Container Linux and Fedora Atomic Host
+* Upstream to RHEL CoreOS (as a component of OpenShift)
+* Immutable infrastructure...
+  - Customization entirely in provisioning configuration
+  - No post-provisioning configuration management
+* All workloads (services/applications) containerized
+* OS incremental updates do not provide stable binary interfaces
+  - Images based atomic updates/rollback based  on `ostree`
+
 Download a CoreOS Qcow2 virtual machine image file:
 
 ```bash
