@@ -2,7 +2,7 @@
 
 if command -v dnf >/dev/null
 then
-        dnf install -y \
+        sudo dnf install -y \
                 bat \
 		bc \
                 ccrypt \
@@ -15,6 +15,7 @@ then
                 git-delta \
 		iwd \
 		neovim \
+                openssl \
 		pmount \
                 psmisc \
                 python \
