@@ -12,6 +12,7 @@ then
                 fd-find \
                 fzf \
                 git \
+                git-delta \
 		iwd \
 		neovim \
 		pmount \
