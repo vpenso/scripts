@@ -57,3 +57,6 @@ File                   | Description
 
 [vplg] vim-plug: A minimalist Vim plugin manager  
 <https://github.com/junegunn/vim-plug>
+
+Learn Vim Progressively  
+<https://yannesposito.com/Scratch/en/blog/Learn-Vim-Progressively/>
