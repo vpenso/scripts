@@ -86,20 +86,13 @@ Why use [Markdown][md] for plain text formating?
 **Markdown Ecosystem**
 
 * Conversion to other formats: 
-  - [pandoc](https://github.com/jgm/pandoc)
-  - [mkdocs](https://github.com/mkdocs/mkdocs/)
-  - [readthedocs](https://github.com/rtfd/readthedocs.org)
-  - [rmarkdown-book](https://github.com/rstudio/rmarkdown-book), [R Markdown: The Definitive Guide][rb]
-* Viewer Markdown in the shell: 
-  - [glow](https://github.com/charmbracelet/glow)
-  - [mdless](https://github.com/ttscoff/mdless)
-  - [mdv](https://github.com/axiros/terminal_markdown_viewer)
-  - [mdcut](https://github.com/lunaryorn/mdcat)
-* Editors
-  - [dillinger](https://github.com/joemccann/dillinger) online
-  - [ghostwriter](https://github.com/wereturtle/ghostwriter) all platforms
-  - [Markor](https://github.com/gsantner/markor) for Android
-* [ArgDown](https://github.com/christianvoigt/argdown) for analyzing complex argumentation
+  - [Pandoc](https://github.com/jgm/pandoc)  a universal document converter
+  - [mkdocs](https://github.com/mkdocs/mkdocs/) project documentation with Markdown
+  - [ReadTheDocs](https://github.com/rtfd/readthedocs.org) simplified software documentation
+  - [R Markdown: The Definitive Guide](https://github.com/rstudio/rmarkdown-book)
+  - [Jupyter Book](https://jupyterbook.org/intro.html) publication-quality books and documents from computational material
+  - [GitHub Flavored Markdown](https://github.github.com/gfm/),
+    [GitLab Markdown](https://docs.gitlab.com/ee/user/markdown.html)
 
 [ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
 [cm]: https://commonmark.org/
@@ -107,7 +100,6 @@ Why use [Markdown][md] for plain text formating?
 [gm]: https://help.github.com/categories/writing-on-github/
 [md]: https://en.m.wikipedia.org/wiki/Markdown
 [tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
-[rb]: https://bookdown.org/yihui/rmarkdown/
 
 ---
 
