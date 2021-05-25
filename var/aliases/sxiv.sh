@@ -9,10 +9,14 @@ command -v sxiv >&- && {
         test -d ~/.cache/sxiv && rm -rf ~/.cache/sxiv
 
         function sxe() {
+                echo $@
                 sxiv -pt $(
                         fd --type f '.*' $PWD \
                         | sort \
-                        | fzf -e -m --bind 'ctrl-a:select-all+accept'
+                        | fzf --exact \
+                              --multi \
+                              --bind 'ctrl-a:select-all+accept' \
+                              --query "${@:-}"
                 )
         }
 
