@@ -9,8 +9,7 @@ command -v sxiv >&- && {
         test -d ~/.cache/sxiv && rm -rf ~/.cache/sxiv
 
         function sxe() {
-                echo $@
-                sxiv -pt $(
+                sxiv -bo -pt $(
                         fd --type f '.*' $PWD \
                         | sort \
                         | fzf --exact \
