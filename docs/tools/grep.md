@@ -112,3 +112,10 @@ foo matches
 bar does not match
 ```
 
+---
+
+# References
+
+[bwrge] BRE/ERE Regular Expressions  
+<https://learnbyexample.github.io/learn_gnugrep_ripgrep/breere-regular-expressions.html>  
+<https://learnbyexample.github.io/gnu-bre-ere-cheatsheet>
