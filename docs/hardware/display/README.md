@@ -27,9 +27,17 @@ Displays emitting light called **active**.
 
 Displays modulating available light (reflection/transmission) called **passive**.
 
+Modern displays are basically giant grids...
+
+* ...each gird elements represented by a bit value encoding the color
+  information
+* individual gird elements are referred to as **pixel**
+
 ## Resolution
 
-Monitor resolution describes the visual dimensions of any given display. 
+Number of pixels from left-to-right & top-to-bottom determines the **screen
+resolution**. Monitor resolution describes the visual dimensions of any given
+display. 
 
 width x height | abbr. | marketing term
 ---------------|-------|---------------
@@ -42,7 +50,14 @@ width x height | abbr. | marketing term
 
 **Aspect ratio** describes the correlation between width and height
 
-**PPI** (pixels per inch) describes a monitor screen’s pixel density
+* 4:3 (640x480, 1024x768, 1600x1200) traditional screen resolutions
+* 16:9 (1920x1200, 2560x1440, 3840x2160) widescreen
+
+**PPI** (pixels per inch) describes a monitor screen’s pixel density...
+
+* ...how fine-grained the individual pixels are
+* The higher the PPI the better image quality will appear to the human eye
+* similar to DPI (dots per inch) for printers
 
 ### Synchronization Technology
 
