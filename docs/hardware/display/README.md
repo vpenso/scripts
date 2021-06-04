@@ -59,7 +59,7 @@ width x height | abbr. | marketing term
 * The higher the PPI the better image quality will appear to the human eye
 * similar to DPI (dots per inch) for printers
 
-### Synchronization Technology
+## Synchronization Technology
 
 Reduces screen tearing, and improves input lag:
 
@@ -67,10 +67,6 @@ Reduces screen tearing, and improves input lag:
 * Solved by driving the screen refresh with the graphic device
 
 G-Sync (Nvidia), or FreeSync (AMD) operate with **VRR** (variable refresh rate)
-
-### Brightness
-
-HDR (High Dynamic Range)
 
 
 
