@@ -8,7 +8,7 @@ Physiological aspect of the human eye:
   - Green (550nm +/-40)
   - Red (600nm +/-35)
 
-
+# Displays
 
 Display device is an output device to present information.
 
@@ -31,7 +31,7 @@ Displays modulating available light (reflection/transmission) called **passive**
 
 Monitor resolution describes the visual dimensions of any given display. 
 
-width x height |       |
+width x height | abbr. | marketing term
 ---------------|-------|---------------
 1280x720       | 720p  | HD 
 1920x1080      | 1080p | FHD
