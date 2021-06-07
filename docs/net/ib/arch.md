@@ -5,32 +5,6 @@
   - CPU offload, hardware based transport protocol, bypass of the kernel
 * [Mellanox Community](https://community.mellanox.com/)
 
-## Topology
-
-### Fat-Tree
-
-**Fat-Tree** topologies provide (non-)blocking fabrics with consistent hop count, resulting in predictable latency. 
-  - They do not scale linearly with cluster size (max. 7 layers/tiers)
-  - The switches at the top of the pyramid shape are called **Spines**/Core
-  - The switches at the bottom of the Pyramid are called **Leafs**/Lines/Edges
-  - **External connections** connect nodes to edge switches.
-  - **Internal Connections** connect core with edge switches. 
-
-* **Constant Bisectional Bandwidth** (CBB)
-  - Non blocking (1:1 ratio) 
-  - Equal number of external and internal connections (balanced)
-* **Blocking** (x:1), external connections is higher than internal connections, over subscription
-
-### Torrus
-
-**Torus** (Cube/Mesh) 3D topologies, CBB ratio 1:6
-
-- Every switch node is connected to six neighbors
-- Add orthogonal dimensions of interconnect as they grow
-- Simple wiring using shorter cables, and expandable without re-cabling
-- Can be optimized for localized and/or global communication within the cluster
-- Requires routing engine to handle loops
-
 ## Addresses
 
 * **GUID** Globally Unique Identifier
@@ -139,13 +113,15 @@ root_guid_file /etc/opensm/rootswitches.list
 ```
             Speed                       Width Rate     Latency   Encoding    Eff.Speed
 ---------------------------------------------------------------------------------------
-1999   SDR  Single Data Rate     2.5Gbps   x4 10Gbps   5usec        
-2004   DDR  Double Data Rate     5Gbps     x4 20Gbps   2.5usec   8/10 bit    16Gbps
-2008   QDR  Quadruple Data Rate  10Gbps    x4 40Gbps   1.3usec   8/10 bit    32Gbps
-2011   FDR  Fourteen Data Rate   14Gbps    x4 56Gbps   0.7usec   64/66 bit   54.6Gbps
-2014   EDR  Enhanced Data Rate   25Gbps    x4 100Gbps  0.5usec   64/66 bit   96.97Gbps 
-2017   HDR  High Data Rate       50Gbps    x4 200Gbps <0.5usec            
-~2020  NDR  Next Data Rate 
+1999   SDR  Single Data Rate     2.5Gbps   x4 10Gbps   5usec     NRZ 
+2004   DDR  Double Data Rate     5Gbps     x4 20Gbps   2.5usec   NRZ 8/10    16Gbps
+2008   QDR  Quadruple Data Rate  10Gbps    x4 40Gbps   1.3usec   NRZ 8/10    32Gbps
+2011   FDR  Fourteen Data Rate   14Gbps    x4 56Gbps   0.7usec   NRZ 64/66   54.6Gbps
+2014   EDR  Enhanced Data Rate   25Gbps    x4 100Gbps  0.5usec   NRZ 64/66   96.97Gbps 
+2017   HDR  High Data Rate       50Gbps    x4 200Gbps <0.5usec   PAM-4 
+2021   NDR  Next Data Rate       100Gbps   x4 400Gbps            PAM-4
+2023   XDR                       200Gbps   x4 800Gbps            PAM-4
+       GDR                                    1.6Tbps
 ```
 
 ### Link Layer
