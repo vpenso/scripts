@@ -8,3 +8,12 @@ fi
 
 # open a bookmark in the default web-browser
 alias bm='bookmarks --open search'
+
+command -v brave-browser >/dev/null && \
+        alias bmb='bookmarks --open --browser brave-browser search'
+
+command -v chromium >/dev/null && \
+        alias bmc='bookmarks --open --browser chromium search'
+
+command -v firefox >/dev/null && \
+        alias bmf='bookmarks --open --browser firefox search'
