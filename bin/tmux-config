@@ -30,7 +30,6 @@ cat > $aliases <<EOF
 alias t=tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
-alias tc=tmux-cheat
 EOF
 
 diffcp -bs $aliases /etc/profile.d/tmux.sh

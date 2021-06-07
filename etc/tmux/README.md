@@ -14,7 +14,7 @@ File                                  | Description
 --------------------------------------|----------------------------------
 [etc/tmux.conf][tc]                   | Custom configuration file
 [bin/tmux-config][tcc]                | Deploy the configuration
-[bin/tmux-cheat][tt]                  | Custom key binding cheat sheet 
+[var/cheat/tmux][tt]                  | Custom key binding cheat sheet 
 
 The [tmux][tx] terminal multiplexer, cf.:
 
@@ -37,14 +37,12 @@ Use the `tmux-config` command to install the configuration from this repository.
 
 1. Install [Tmux Plugin Manager][tp] to `~/.tmux/plugins/tpm`.
 2. Copy [etc/tmux.conf][tc] to `~/.tmux.conf`
-3. Copy [bin/tmux-cheat][tt] to `/usr/local/bin/tmux-cheat`
 4. Define shell aliases in `/etc/profile.d/tmux.conf`
 
 ```bash
 alias t=tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session"
-alias tc=tmux-cheat
 ```
 
 ### Usage
@@ -71,7 +69,7 @@ set -g @plugin 'tmux-plugins/tmux-open'
 ```
 
 [tc]: tmux.conf
-[tt]: ../../bin/tmux-cheat
+[tt]: ../../var/cheat/tmux
 [tcc]: ../../bin/tmux-config
 [tp]: https://en.m.wikipedia.org/wiki/Terminal_multiplexer
 [tx]: https://github.com/tmux/tmux
