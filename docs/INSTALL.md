@@ -49,4 +49,12 @@ i3-build
 i3-config
 # install the menu switcher
 rofi-config
-```shell
+```
+
+## Wifi
+
+Add `non-free` to `/etc/apt/sources.list`
+
+```bash
+sudo apt install -y firmware-atheros
+```
