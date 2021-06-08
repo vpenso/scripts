@@ -12,6 +12,8 @@ then
 		neovim \
 		pavucontrol \
 		pulseaudio \
+                pulseaudio-module-bluetooth \
+                bluez-firmware \
 		slurp \
 		sway \
 		swayidle \
