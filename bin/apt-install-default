@@ -6,6 +6,7 @@ then
         apt-get install --assume-yes \
                 bat \
 		bc \
+                bsdmainutils \
                 ccrypt \
                 curl \
                 dnsutils \
