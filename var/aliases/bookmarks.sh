@@ -14,6 +14,10 @@ command -v brave-browser >/dev/null && \
 
 command -v chromium >/dev/null && \
         alias bmc='bookmarks --open --browser chromium search'
+command -v google-chrome >/dev/null && \
+        alias bmc='bookmarks --open --browser google-chrome search'
 
+command -v firefox-esr >/dev/null && \
+        alias bmf='bookmarks --open --browser firefox-esr search'
 command -v firefox >/dev/null && \
         alias bmf='bookmarks --open --browser firefox search'
