@@ -6,6 +6,11 @@ topology (roadmap of the network)
 * defines how the channels and routers are connected
 * sets performance bounds (network diameter, bisection bandwidth)
 * determines the cost of the network
+* keys to topology evaluation
+  - network throughput - for application traffic patterns
+  - network diameter - min/avg/max latency between hosts
+  - scalability - cost of adding new end-nodes
+  - cost per host - number of network routers/ports per end-node
 
 **routing**
 
@@ -39,18 +44,27 @@ nodal degree: how  many  links  connect  to  each node
 
 ## Fat-Tree
 
-**Fat-Tree** topologies provide (non-)blocking fabrics
+* pros
+  - simple routing
+  - maximal network throughput
+  - fault-tolerant (path diversity)
+  - credit loop deadlock free routing
+* cons
+  - large diameter...
+  - ...more expensive
 
-- Consistent hop count, resulting in predictable latency.
-- They do not scale linearly with cluster size (max. 7 layers/tiers)
-- The switches at the top of the pyramid shape are called **Spines**/Core
-- The switches at the bottom of the Pyramid are called **Leafs**/Lines/Edges
-- **External Connections** connect nodes to edge switches.
-- **Internal Connections** connect core with edge switches.
-- **Constant Bisectional Bandwidth** (CBB)
-  - Non blocking (1:1 ratio)
-  - Equal number of external and internal connections (balanced)
-- **Blocking** (x:1), external connections is higher than internal connections, over subscription
+most common topology
+
+- consistent hop count, resulting in predictable latency.
+- does not scale linearly with cluster size (max. 7 layers/tiers)
+- switches at the top of the pyramid shape are called **Spines**/Core
+- switches at the bottom of the pyramid are called **Leafs**/Lines/Edges
+- **external connections** connect nodes to edge switches.
+- **internal connections** connect core with edge switches.
+- constant bisectional bandwidth (CBB)
+  - non blocking (1:1 ratio)
+  - equal number of external and internal connections (balanced)
+- **blocking** (x:1), external connections is higher than internal connections, over subscription
 
 ## Torrus
 
@@ -62,12 +76,31 @@ nodal degree: how  many  links  connect  to  each node
 - Can be optimized for localized and/or global communication within the cluster
 - Requires routing engine to handle loops
 
-## Dragonfly 
+## Dragonfly
 
-* network groups: multiple nodes are connected within a fat tree
-* direct one-to-one connection between each network group
+* pros
+  - reduce number of long links and network diameter...
+  - reduced total cost of network
+  - more scalable (compared to fat-tree)
+* cons
+  - more complex routing
+
+Hierarchical topology dividing hosts to groups
+
+* all-to-all connection between each network group
   - avoids the need for external top level switches
-  - reduce number of long links and network diameter (total cost of network)
+  - each group has at least on direct link to other groups
 * requires adaptive routing to enable efficient operation
+  - Fully Progressive Adaptive Routing (FPAR)
 
+Flavors diverge on **group topology**
+
+* 1D flattened butterfly, completely connected (default recommendation)
+* 2D flattened butterfly
+* Dragonfly+ (benefits of Dragonfly and Fat Tree)
+
+Locality, **group size**
+
+* Lager group size, larger amount of group-internal traffic
+* Dragonfly+ and Fat Tree groups have full bi-sectional bandwidth 
 
