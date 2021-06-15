@@ -6,6 +6,8 @@ command -v sway >/dev/null && {
         test -L ~/.config/sway || \
                 ln -s $SCRIPTS/etc/sway ~/.config/sway
 
+        export XDG_CURRENT_DESKTOP=sway
+
         # Set a background wallpaper
         function sway-wallpaper() {
                 local img=${1:?Missing image file as first command-line argument}

@@ -26,5 +26,6 @@ then
 		wl-clipboard \
                 waybar \
 		wofi \
+                xdg-desktop-portal-wlr \
 		xwayland
 fi
