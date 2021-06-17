@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+test -f $HOME/bin/nvim-0.4.4-appimage || {
+        test -d $HOME/bin || mkdir $HOME/bin
+        # download from Github
+        wget -O $HOME/bin/nvim-0.4.4-appimage \
+                https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage
+        # add executable bit
+        chmod u+x $HOME/bin/nvim-0.4.4-appimage
+        # make this default
+        ln -s $HOME/bin/nvim-0.4.4-appimage $HOME/bin/nvim.appimage
+}

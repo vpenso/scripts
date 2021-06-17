@@ -14,6 +14,8 @@ command -v nvim >/dev/null && {
 	test -L ~/.config/nvim/init.vim || \
 		ln -s $SCRIPTS/etc/nvim/init.vim ~/.config/nvim/init.vim
 
-	alias nv=nvim
+        # use the AppImage if present
+        test -f $HOME/bin/nvim.appimage && alias nvim=nvim.appimage
+        alias nv=nvim
 
 }
