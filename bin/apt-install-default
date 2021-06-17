@@ -30,5 +30,6 @@ then
                 tree \
                 vim \
                 wget \
+                zoxide \
                 zsh
 fi
