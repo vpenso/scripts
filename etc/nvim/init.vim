@@ -101,10 +101,14 @@ hi GitGutterChange ctermfg=21
 hi GitGutterDelete ctermfg=27
 
 " key mapping for fzf.vim
-nnoremap <silent> <C-f> :GFiles<CR>       " search all filenames in this git repository
-inoremap <C-f> <Esc><Esc> :BLines<CR>     " search in current file wehn in insert mode
-nnoremap <silent> <Leader>f :Rg<CR>       " search content of files
-nnoremap <silent> <Leader>g :Commits<CR>  " search in git commit history
+" search all filenames in this git repository
+nnoremap <silent> <C-f> :GFiles<CR>
+" search in current file wehn in insert mode
+inoremap <C-f> <Esc><Esc> :BLines<CR>
+" search content of files
+nnoremap <silent> <Leader>f :Rg<CR> 
+" search in git commit history
+nnoremap <silent> <Leader>g :Commits<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SYNTAX HIGHLIGHTING COLORS
