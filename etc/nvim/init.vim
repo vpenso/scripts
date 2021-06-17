@@ -60,8 +60,7 @@ nmap <silent> <leader>/ :nohlsearch<CR>
 
 call plug#begin('~/.config/nvim/autoload/plugged')
 
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
 Plug 'ryanoasis/vim-devicons'
 
 " syntax highlighting for i3
@@ -86,11 +85,15 @@ call plug#end()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " select a custom theme
-let g:airline_theme='minimalist'
+let g:lightline = { 'colorscheme': 'ayu_light', }
 
 " Configure the vim-gitgutter plugin
 let g:gitgutter_terminal_reports_focus=0
 set updatetime=100
+hi SignColumn      ctermbg=231
+hi GitGutterAdd    ctermfg=22
+hi GitGutterChange ctermfg=21
+hi GitGutterDelete ctermfg=27
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SYNTAX HIGHLIGHTING COLORS
@@ -105,15 +108,15 @@ hi CursorColumn ctermfg=none ctermbg=230
 " text width indicator column
 hi ColorColumn ctermfg=none ctermbg=254
 " line numbering on the left
-hi LineNr ctermfg=250 ctermbg=254
+hi LineNr ctermfg=252 ctermbg=255
 " line numbering in cursor line
 hi CursorLineNR ctermfg=232 ctermbg=252 cterm=bold
 
 hi SpellBad     ctermfg=52 ctermbg=209 cterm=bold
 " eol, extends and precedes
-hi NonText      ctermfg=253
+hi NonText      ctermfg=124
 " nbsp, tab and trail
-hi SpecialKey   ctermfg=253 cterm=bold
+hi SpecialKey   ctermfg=124 cterm=bold
 
 hi Comment      ctermfg=247 ctermbg=255
 hi Number       ctermfg=166
