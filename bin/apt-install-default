@@ -21,6 +21,7 @@ then
 		pmount \
                 psmisc \
                 python \
+                ripgrep \
                 rsync \
                 ruby \
                 sshfs \

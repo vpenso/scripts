@@ -43,7 +43,7 @@ au FocusGained * :set rnu
 " special string "<leader>" can be used.  It is replaced with the
 " string value of "mapleader". If "mapleader" is not set or empty,
 " a backslash ('\') is used instead as default.
-let mapleader = ','
+let mapleader = ' '
 
 " highlight invisible characters
 "
@@ -74,6 +74,11 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
 
+Plug 'folke/which-key.nvim'
+
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
 " Commands
 "    :PlugInstall      Install plugins
 "    :PlugClean        Remove unlisted plugins
@@ -94,6 +99,12 @@ hi SignColumn      ctermbg=231
 hi GitGutterAdd    ctermfg=22
 hi GitGutterChange ctermfg=21
 hi GitGutterDelete ctermfg=27
+
+" key mapping for fzf.vim
+nnoremap <silent> <C-f> :GFiles<CR>
+nnoremap <silent> <Leader>f :Rg<CR>
+nnoremap <silent> <Leader>b :Buffers<CR>
+nnoremap <silent> <Leader>g :Commits<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SYNTAX HIGHLIGHTING COLORS
