@@ -19,6 +19,17 @@ command -v nvim >/dev/null && {
         # use the AppImage if present
         test -f $HOME/bin/nvim.appimage && alias nvim=nvim.appimage
         alias nv=nvim
-        test -f $HOME/bin/nvim-nightly.appimage && alias nvn=nvim-nightly.appimage
+        test -f $HOME/bin/nvim-nightly.appimage && {
+
+                alias nvn=nvim-nightly.appimage
+
+                nvnf() { 
+                        $HOME/bin/nvim-nightly.appimage \
+                                $(fd --type f '.*' $SCRIPTS |\
+                                        fzf --ansi --exact --query ${1:-''})
+                }
+
+        }
+
 
 }
