@@ -25,7 +25,7 @@ command -v nvim >/dev/null && {
 
                 nvnf() { 
                         $HOME/bin/nvim-nightly.appimage \
-                                $(fd --type f '.*' $SCRIPTS |\
+                                $(fd --type f '.*' $PWD |\
                                         fzf --ansi --exact --query ${1:-''})
                 }
 
