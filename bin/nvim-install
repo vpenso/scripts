@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 
+test -d $HOME/bin || mkdir -v $HOME/bin
+
 test -f $HOME/bin/nvim-0.4.4-appimage || {
-        test -d $HOME/bin || mkdir $HOME/bin
         # download from Github
-        wget -O $HOME/bin/nvim-0.4.4-appimage \
+        wget -q -O $HOME/bin/nvim-0.4.4-appimage \
                 https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage
         # add executable bit
         chmod u+x $HOME/bin/nvim-0.4.4-appimage
         # make this default
-        ln -s $HOME/bin/nvim-0.4.4-appimage $HOME/bin/nvim.appimage
+        ln -vs $HOME/bin/nvim-0.4.4-appimage $HOME/bin/nvim.appimage
+}
+
+
+appimage=$HOME/bin/nvim-$(date +%Y%m%d).appimage
+test -f $appimage || {
+        wget -q -O $appimage \
+                https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+        chmod u+x $appimage
+        ln -vs $appimage $HOME/bin/nvim-nightly.appimage
 }
