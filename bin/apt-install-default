@@ -11,6 +11,7 @@ then
                 curl \
                 dnsutils \
                 encfs \
+                exa \
                 fd-find \
                 fzf \
                 git \
@@ -24,6 +25,7 @@ then
                 ripgrep \
                 rsync \
                 ruby \
+                silversearcher-ag \
                 sshfs \
                 sshuttle \
                 tcpdump \

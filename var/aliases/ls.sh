@@ -16,8 +16,9 @@ alias tu='tree -pfughF --du'       # permissions, user, group, sizes
 
 # if the exa command is installed
 command -v exa >&- && {
-        alias el='exa -l --git'
-        alias eG='exa -lG --git'
+        alias l='exa -1'
+        alias ls='exa -F'
+        alias ll='exa -alF'
         alias eT='exa -lT --git --group-directories-first -@ -L 2'
 }
 
