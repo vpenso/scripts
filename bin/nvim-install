@@ -11,12 +11,3 @@ test -f $HOME/bin/nvim-0.4.4-appimage || {
         # make this default
         ln -vs $HOME/bin/nvim-0.4.4-appimage $HOME/bin/nvim.appimage
 }
-
-
-appimage=$HOME/bin/nvim-$(date +%Y%m%d).appimage
-test -f $appimage || {
-        wget -q -O $appimage \
-                https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-        chmod u+x $appimage
-        ln -vs $appimage $HOME/bin/nvim-nightly.appimage
-}

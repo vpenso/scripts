@@ -72,7 +72,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
 
-Plug 'folke/which-key.nvim'
+"Plug 'folke/which-key.nvim'
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
