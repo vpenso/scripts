@@ -33,6 +33,7 @@ sudo apt install -y \
 
 cd /tmp
 
+rm -rf polybar*
 version=3.4.0
 wget https://github.com/jaagr/polybar/releases/download/$version/polybar-$version.tar
 tar -xvf polybar-$version.tar && cd polybar

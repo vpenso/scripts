@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 sudo apt install -y \
+        meson \
         dh-autoreconf \
         gcc \
         i3lock-fancy \
@@ -29,14 +30,14 @@ sudo apt install -y \
 # network-manager-gnome include nm-applet used for Wifi configuration
 
 cd /tmp
+rm -rf i3-gaps
 git clone https://www.github.com/Airblader/i3 i3-gaps
 cd i3-gaps
-autoreconf --force --install
 rm -rf build/
 mkdir -p build && cd build/
-../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
-make
-sudo make install
+meson --prefix /usr/local
+ninja
+sudo ninja install
 
 # cf etc/polybar/README.md
-polybar-build
+#polybar-build
