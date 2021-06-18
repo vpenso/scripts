@@ -5,25 +5,24 @@
 eval "$(dircolors -b $SCRIPTS/etc/dir_colors/rainbow)"
 
 alias ls='ls -Fh --color=always'   # default to classify, human readable sizes and colors
-alias lS='ls -lS'                  # displays file size in order
 alias l='ls -1'                    # only names, one per line
 alias ll='ls -l'                   # long format
-alias l.='ls -lA -d .*'            # only hidden files
-alias cls='clear ; ls'             # clear shell and exec ls
-alias td='tree -d'                 # list only directories
-alias t2='tree -L 2'               # max recursive depth of 2 levels
-alias tu='tree -pfughF --du'       # permissions, user, group, sizes 
+alias lS='ls -lS'                  # displays file size in order
 
-# if the exa command is installed
-command -v exa >&- && {
-        alias l='exa -1'
-        alias ls='exa -F'
-        alias ll='exa -alF'
-        alias eT='exa -lT --git --group-directories-first -@ -L 2'
+command -v tree >/dev/null && {
+        alias td='tree -d'                 # list only directories
+        alias t2='tree -L 2'               # max recursive depth of 2 levels
+        alias tu='tree -pfughF --du'       # permissions, user, group, sizes
 }
 
-# if the `lsd` command is installed
-command -v lsd >&- && {
+command -v exa >/dev/null && {
+        alias ls='exa -F'
+        alias l='exa -1'
+        alias ll='exa -alF'
+        alias lt='exa -lT --git --group-directories-first -@ -L 2'
+}
+
+command -v lsd >/dev/null && {
         alias ls=lsd
         alias l='lsd -1F --group-dirs=first'
         alias l.='lsd -1 --all --group-dirs=first'
