@@ -39,22 +39,3 @@ done
 # run PlugInstall! and PlugUpdate!
 
 diffcp -b $SCRIPTS/etc/vimrc ~/.vimrc
-
-aliases=$(mktemp)
-cat > $aliases <<EOF
-export EDITOR=vim
-alias v=vim
-alias v0='vim --clean'
-alias vc=vim-cheat
-EOF
-
-if test -d ~/.zshrc.d
-then
-        diffcp $aliases ~/.zshrc.d/vim
-elif test -d ~/.bashrc.d
-then
-        diffcp $aliases ~/.bashrc.d/vim
-else
-        echo Could not write shell configuration to ~/.{bash,zsh}rc.d
-        echo $aliases
-fi
