@@ -21,11 +21,9 @@ do
         diffcp -rs $SCRIPTS/etc/polybar/$file /etc/polybar/$file
 done 
 
-# deploy configuration from this repository
-diffcp -rs $SCRIPTS/etc/i3/config /etc/i3/config
+diffcp -r $SCRIPTS/etc/i3/config $HOME/.config/i3/config
 
 for cmd in \
-        i3-cheat \
         i3-exit \
         i3-start
 do 

@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 sudo apt install -y \
+        arandr \
         meson \
         dh-autoreconf \
+        feh \
         gcc \
+        compton \
         i3lock-fancy \
         libxcb-keysyms1-dev \
         libpango1.0-dev \
@@ -24,6 +27,8 @@ sudo apt install -y \
         libxcb-shape0-dev \
         make \
         policykit-1 \
+        polybar \
+        rofi \
         xcb \
         xinit
 
@@ -39,5 +44,5 @@ meson --prefix /usr/local
 ninja
 sudo ninja install
 
-# cf etc/polybar/README.md
-#polybar-build
+i3-config
+rofi-config
