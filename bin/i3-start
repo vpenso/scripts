@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-startx /usr/local/bin/i3
+startx i3
