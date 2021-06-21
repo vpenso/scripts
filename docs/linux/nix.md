@@ -1,5 +1,18 @@
 # Nix 
 
+Underlying NixOS is the Nix **functional package manager**
+
+Nix is a **software building and composition system** 
+implemented with...
+
+...Nix a pure, lazy, function declarative language used to
+express the composition declarations...
+
+* Compositions are pure (only determined by input declaration)
+* Compositions are immutable
+* Compositions are shared
+* Compositions are built on compositions
+
 Single user installation:
 
 ```shell
