@@ -17,22 +17,26 @@ fi
 ##
 # Search all Markdown file in $SCRIPTS/docs and display with a pager
 #
-s() {
-        file=$(fd --type f '.*' $SCRIPTS | sort | \
-                        fzf --ansi --exact --query ${1:-''})
-        command -v bat >&- && {
-                bat --style=header,grid $file
-                return
-        }
-        cat $file
+fzf-preview() {
+        pager='cat {}'
+        command -v bat >&- && \
+                pager='bat --style=numbers --color=always --line-range :500 {}'
+        fd --type f '.*' $SCRIPTS \
+        | sort \
+        | fzf --ansi \
+              --exact \
+              --preview "$pager" \
+              --query ${1:-''}
 }
+
+alias f=fzf-preview
 
 ##
 # Search all Markdown file in $SCRIPTS/docs and open with the Vim editor
 #
-se() {
-        file=$(fd --type f '.*' $SCRIPTS |\
-                        fzf --ansi --exact --query ${1:-''})
-        ${EDITOR:-vim} $file
+fzf-edit() {
+        ${EDITOR:-vim} $(fzf-preview $@)
 }
+
+alias fe=fzf-edit
 

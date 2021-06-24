@@ -4,7 +4,7 @@
          tab    │ mark item
          enter  │ select item(s)
          ctrl-r │ paste command from history
-          alt-c │ cd into slected directory
+          alt-c │ cd into selected directory
         **<tab> │ trigger fuzzy completion
             esc │ exit
 

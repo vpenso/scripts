@@ -28,12 +28,4 @@ command -v nvim >/dev/null && {
         alias v=nvim
         alias v0='nvim --clean'
 
-        vf() { 
-                nvim $(
-                        fd --type f '.*' $PWD \
-                                | fzf --ansi --exact --query ${1:-''}
-                )
-        }
-
-
 }

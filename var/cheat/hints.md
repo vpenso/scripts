@@ -9,16 +9,15 @@ __            Zsh noglob
 b             bat pager
 bm            bookmarks program
 bt            bluetooth control
-c             search & display cheat sheets from 
+c             search & display cheat sheets from
+f             fzf preview $SCRIPTS
+fe            ^^ open selection in $EDITOR
 g             Git version control
 l             list files
 m             music control
-s             search & display Markdown files
 sd            scripts directory
-se            search & edit Markdown files 
 sr            ssh with root
 sx            image viewer
 v             editor
-v0            editor un-configured
-vf            fuzzy search file & open in editor
+v0            editor without configuration
 q             exit
