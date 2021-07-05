@@ -2,12 +2,14 @@
 
 test -d $HOME/bin || mkdir -v $HOME/bin
 
-test -f $HOME/bin/nvim-0.4.4-appimage || {
+version=${1:-0.5.0}
+target=$HOME/bin/nvim-$version-appimage
+url=https://github.com/neovim/neovim/releases/download/v$version/nvim.appimage
+test -f $target || {
         # download from Github
-        wget -q -O $HOME/bin/nvim-0.4.4-appimage \
-                https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage
+        wget -O $target $url
         # add executable bit
-        chmod u+x $HOME/bin/nvim-0.4.4-appimage
+        chmod u+x $target
         # make this default
-        ln -vs $HOME/bin/nvim-0.4.4-appimage $HOME/bin/nvim.appimage
+        ln -fvs $target $HOME/bin/nvim.appimage
 }

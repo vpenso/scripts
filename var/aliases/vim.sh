@@ -22,8 +22,8 @@ command -v nvim >/dev/null && {
         test -f $HOME/bin/nvim.appimage \
                 && alias nvim=nvim.appimage
         # prefer the latest version if present
-        test -f $HOME/bin/nvim-nightly.appimage \
-                && alias nvim=nvim-nightly.appimage
+#        test -f $HOME/bin/nvim-nightly.appimage \
+#              && alias nvim=nvim-nightly.appimage
 
         alias v=nvim
         alias v0='nvim --clean'
