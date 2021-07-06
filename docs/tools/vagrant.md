@@ -31,6 +31,12 @@ EOF
 vagrant up
 ```
 
+Change the default provider with an environment variable:
+
+```bash
+export VAGRANT_DEFAULT_PROVIDER=libvirt
+```
+
 **Boxes** package format for Vagrant environments
 
 <https://app.vagrantup.com/boxes/search>
@@ -38,7 +44,7 @@ vagrant up
 ```bash
 vagrant box list
 # download a specific version
-vagrant box add centos/stream8 --box-version 20210210.0 --provider libvirt
+vagrant box add centos/stream8 --box-version 20210210.0
 vagrant box remove centos/7
 ```
 
