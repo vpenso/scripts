@@ -60,6 +60,9 @@ SSH into a running Vagrant machine
 ```bash
 vagrant ssh          # login
 vagrant ssh-config   # show SSH configuration
+# copy a file
+vagrant ssh-config > ssh-config
+scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
 
 # Usage
