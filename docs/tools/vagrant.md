@@ -79,6 +79,21 @@ vagrant ssh-config > ssh-config
 scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
 
+## Multi
+
+Configure multiple nodes with the same configuration:
+
+```ruby
+  nodes = [ 'a1', 'b2' ]
+  (0..(nodes.length - 1)).each do |num|
+    name = nodes[num]
+    config.vm.define "#{name}" do |node|
+      node.vm.hostname = name
+      node.vm.network "private_network", ip: "192.168.18.#{10+num}"
+    end
+  end
+```
+
 ## Provisioning
 
 Configure provisioning with Chef:
