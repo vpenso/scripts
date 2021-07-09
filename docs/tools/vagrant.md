@@ -79,7 +79,7 @@ vagrant ssh-config > ssh-config
 scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
 
-## Multi
+## Multiple Boxes
 
 Configure multiple nodes with the same configuration:
 
@@ -108,6 +108,43 @@ vagrant destroy alpha  # remove a box
 ```
 
 ## Provisioning
+
+<https://www.vagrantup.com/docs/provisioning>
+
+```ruby
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<-SCRIPT
+mkdir projects
+cd projects
+git clone https://github.com/vpenso/scripts.git
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos/7"
+
+  # run a command as root
+  config.vm.provision "shell" do |s|
+    s.inline = "yum install -y git"
+    s.privileged = true
+  end
+
+  # copy multiple files
+  [
+    ".gitconfig",
+    ".gitignore_global"
+  ].each do |file|
+     config.vm.provision "file", source: "~/#{file}", destination: file
+  end
+
+  # execute a script defined as here-document
+  config.vm.provision "shell", inline: $script
+end
+```
+
+
+### Chef
 
 Configure provisioning with Chef:
 
