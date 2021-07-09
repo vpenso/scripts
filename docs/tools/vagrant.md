@@ -84,7 +84,11 @@ scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 Configure multiple nodes with the same configuration:
 
 ```ruby
-  nodes = [ 'a1', 'b2' ]
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  nodes = [ 'alpha', 'beta' ]
   (0..(nodes.length - 1)).each do |num|
     name = nodes[num]
     config.vm.define "#{name}" do |node|
@@ -92,6 +96,15 @@ Configure multiple nodes with the same configuration:
       node.vm.network "private_network", ip: "192.168.18.#{10+num}"
     end
   end
+end
+```
+
+Use names to operate on a specific box:
+
+```bash
+vagrant up alpha       # start specifc box
+vagrant ssh alpha      # login to a box
+vagrant destroy alpha  # remove a box 
 ```
 
 ## Provisioning
