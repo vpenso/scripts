@@ -1,6 +1,7 @@
 # Vagrant
 
-Quickstart after installation with `libvirt`:
+
+Quickstart with `libvirt`:
 
 ```bash
 vagrant plugin install vagrant-libvirt
@@ -37,22 +38,35 @@ Change the default provider with an environment variable:
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 ```
 
-**Boxes** package format for Vagrant environments
+**Boxes**
+
+* Virtual machine images use a clone templates
+* Dedicated box storage for each user
 
 <https://app.vagrantup.com/boxes/search>
 
 ```bash
+# list localy available boxes
 vagrant box list
 # download a specific version
 vagrant box add centos/stream8 --box-version 20210210.0
 vagrant box remove centos/7
 ```
 
+`Vagrantfile`...
+
+* ...configure provisioning of a virtual machine
+* ...Ruby syntax
+* ...use one file per project
+* ...commit to version control
+
 ```bash
-vagrant up           # start machine (described in Vagrantfile)
-vagrant status       # state of the machines
-vagrant halt         # stop machine, keep environment (for later use)
-vagrant destroy      # remove machine, discard environment
+vagrant init centos/7    # create a ./Vagrantfile
+vagrant validate         # check ./Vagrantfile
+vagrant up               # start machine (described in Vagrantfile)
+vagrant status           # state of the machines
+vagrant halt             # stop machine, keep environment (for later use)
+vagrant destroy          # remove machine, discard environment
 ```
 
 SSH into a running Vagrant machine
@@ -65,13 +79,26 @@ vagrant ssh-config > ssh-config
 scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
 
-# Usage
+## Provisioning
 
-`Vagrantfile`...
+Configure provisioning with Chef:
 
-* ...is Ruby syntax
-* ...configure and provision these machines
-* ...uses one file per project
-* ...commit to version control
+```ruby
+config.vm.provision "chef_solo" do |chef|
+      chef.cookbooks_path = "#{ENV['HOME']}/chef/cookbooks"
+      chef.roles_path = "#{ENV['HOME']}/chef/roles"
+      chef.add_role "role"
+      chef.add_recipe "recipe"
+      chef.json = { "key" => "value" }
+end
+```
 
+Run provisioning:
+
+```bash
+vagrant up             # implicitly runs provisioning
+vagrant up --no-provision
+vagrant provision      # provision a running environment
+vagrant reload --provision
+```
 
