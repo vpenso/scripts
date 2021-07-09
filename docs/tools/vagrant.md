@@ -111,6 +111,8 @@ vagrant destroy alpha  # remove a box
 
 <https://www.vagrantup.com/docs/provisioning>
 
+`shell` and `file` provisioner:
+
 ```ruby
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
@@ -126,7 +128,7 @@ Vagrant.configure("2") do |config|
 
   # run a command as root
   config.vm.provision "shell" do |s|
-    s.inline = "yum install -y git"
+    s.inline = "yum install -y git vim"
     s.privileged = true
   end
 
