@@ -9,7 +9,9 @@ sudo apt-get install libvirt-daemon-system vagrant vagrant-libvirt
 # alternativly install libvirt support with the plugin sub-command
 vagrant plugin install vagrant-libvirt
 vagrant plugin list
+# download the offical CentOS 7 box
 vagrant box add centos/7 --provider=libvirt
+# create a Vagrantfile configuration and start a box
 cd $(mktemp -d)
 cat > Vagrantfile <<EOF
 # -*- mode: ruby -*-
@@ -34,7 +36,7 @@ EOF
 vagrant up
 ```
 
-Change the default provider with an environment variable:
+Configure the default provider with an environment variable:
 
 ```bash
 export VAGRANT_DEFAULT_PROVIDER=libvirt
