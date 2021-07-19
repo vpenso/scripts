@@ -16,17 +16,21 @@ EOF
 vagrunt up && vagrant ssh
 # after login install the software
 curl -sSL https://install.pi-hole.net | bash
-
+# display running status
+pihole status
+# set the admin password
+pihole -a -p 12345678
+# open the web-interface
 $BROWSER http://192.168.0.10/admin/
+# query the DNS
+host www.google.de 192.168.0.10
 ```
-
 
 ### References
 
-
-
 [picwr] Pi-hole Community Resources  
 <https://pi-hole.net/>  
+<https://docs.pi-hole.net/>  
 <https://github.com/pi-hole/pi-hole>
 
 [htsph] How to Setup Pi-hole on a Local Computer without Raspberry Pi  
