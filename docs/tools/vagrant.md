@@ -42,7 +42,7 @@ Configure the default provider with an environment variable:
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 ```
 
-**Boxes**
+### Boxes
 
 * Virtual machine images use a clone templates
 * Dedicated box storage for each user
@@ -85,8 +85,6 @@ vagrant ssh-config   # show SSH configuration
 vagrant ssh-config > ssh-config
 scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
-
-## Multiple Boxes
 
 Configure multiple nodes with the same configuration:
 
