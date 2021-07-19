@@ -4,8 +4,10 @@
 Quickstart with `libvirt`:
 
 ```bash
+# install libvirt & vagrant on Debian/Ubuntu
+sudo apt-get install libvirt-daemon-system vagrant vagrant-libvirt
+# alternativly install libvirt support with the plugin sub-command
 vagrant plugin install vagrant-libvirt
-vagrant plugin install vagrant-mutate
 vagrant plugin list
 vagrant box add centos/7 --provider=libvirt
 cd $(mktemp -d)
