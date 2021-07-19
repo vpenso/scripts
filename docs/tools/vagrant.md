@@ -5,7 +5,7 @@ Quickstart with `libvirt`:
 
 ```bash
 # install libvirt & vagrant on Debian/Ubuntu
-sudo apt-get install libvirt-daemon-system vagrant vagrant-libvirt
+sudo apt-get install libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
 # alternativly install libvirt support with the plugin sub-command
 vagrant plugin install vagrant-libvirt
 vagrant plugin list
@@ -55,6 +55,9 @@ vagrant box list
 # download a specific version
 vagrant box add centos/stream8 --box-version 20210210.0
 vagrant box remove centos/7
+# convert a VirtualBox image [vgpmu]
+vagrant box add ubuntu/focal64
+vagrant mutate ubuntu/focal64 libvirt
 ```
 
 `Vagrantfile`...
@@ -173,3 +176,7 @@ vagrant provision      # provision a running environment
 vagrant reload --provision
 ```
 
+## References
+
+[vgpmu] Vagrant Plugin Mutate  
+<https://github.com/sciurus/vagrant-mutate>
