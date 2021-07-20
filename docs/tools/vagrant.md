@@ -12,14 +12,11 @@ By default Vagrant uses VirtualBox:
 sudo apt install -y virtualbox vagrant
 ```
 
-Alternatively is is possible to `libvirt` on Linux
+Alternatively use `libvirt`:
 
 ```bash
 # install libvirt & vagrant on Debian/Ubuntu
 sudo apt-get install libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
-# alternativly install libvirt support with the plugin sub-command
-vagrant plugin install vagrant-libvirt
-vagrant plugin list
 # download the offical CentOS 7 box
 vagrant box add centos/7 --provider=libvirt
 # create a Vagrantfile configuration and start a box
@@ -57,6 +54,9 @@ export VAGRANT_DEFAULT_PROVIDER=libvirt
 
 * Virtual machine images use a clone templates
 * Dedicated box storage for each user
+* Vagrant boxes are all provider-specific
+  - A box must be installed for each provider
+  - Can share the same name as long as the providers differ
 
 <https://app.vagrantup.com/boxes/search>
 
@@ -65,6 +65,8 @@ export VAGRANT_DEFAULT_PROVIDER=libvirt
 vagrant box list
 # download a specific version
 vagrant box add centos/stream8 --box-version 20210210.0
+# download for a specific provider
+vagrant box add centos/7 --provider=libvirt
 vagrant box remove centos/7
 # convert a VirtualBox image [vgpmu]
 vagrant box add ubuntu/focal64
@@ -82,6 +84,7 @@ vagrant mutate ubuntu/focal64 libvirt
 vagrant init centos/7    # create a ./Vagrantfile
 vagrant validate         # check ./Vagrantfile
 vagrant up               # start machine (described in Vagrantfile)
+vagrant up --provider=libvirt
 vagrant status           # state of the machines
 vagrant halt             # stop machine, keep environment (for later use)
 vagrant destroy          # remove machine, discard environment
