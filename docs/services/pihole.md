@@ -16,7 +16,13 @@ Vagrant.configure("2") do |config|
   config.vm.box_check_update = false
   config.vm.synced_folder ".", "/vagrant", disabled: true
   # this is only required for the deployment using Docker
-  #config.vm.provision "shell", inline: "sudo apt install -y docker docker-compose
+  #config.vm.provision "shell" do |s|
+  #  s.privileged = true,
+  #  s.inline = <<-SCRIPT
+  #    apt-get update
+  #    apt-get install -y docker docker-compose
+  #  SCRIPT
+  #end
 end
 EOF
 vagrant up && vagrant ssh
