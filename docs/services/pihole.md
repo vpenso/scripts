@@ -47,8 +47,11 @@ host www.google.de 192.168.50.10
 Deployment using the official docker container:
 
 ```bash
-wget -0 docker-compose.yml \
-      https://github.com/pi-hole/docker-pi-hole/blob/master/docker-compose.yml.example
+# download a docker configuration file
+wget -O docker-compose.yml \
+      https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
+# start the docker container
+sudo docker-compose up --detach
 ```
 
 ## References
