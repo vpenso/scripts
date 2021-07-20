@@ -19,6 +19,9 @@ end
 EOF
 vagrant up && vagrant ssh
 ```
+
+Install using the GitHub repository and a script:
+
 ```bash
 # after login install the software (make sure to select the 
 # right network interface in the dialog)
@@ -30,7 +33,7 @@ pihole -a -p 12345678
 # open the web-interface
 $BROWSER http://192.168.50.10/admin/
 # query the DNS
-host www.google.de 192.168.0.10
+host www.google.de 192.168.50.10
 ```
 
 ### References
