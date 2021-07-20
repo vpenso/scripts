@@ -50,13 +50,14 @@ Deployment using the official docker container [dkpic]:
 # download a docker configuration file
 wget -O docker-compose.yml \
       https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
+sudo su 
 # start the docker container
-sudo docker-compose up --detach
+docker-compose up --detach
+# find the randomly generated admin password
+docker logs pihole | grep random
 ```
 
 Customize the docker container configuration with [environment variables][01]
-
-
 
 ## References
 
