@@ -117,15 +117,6 @@ vagrant ssh alpha      # login to a box
 vagrant destroy alpha  # remove a box 
 ```
 
-### Synced Folders
-
-By default the project directory is shared to `/vagrant`
-
-```bash
-# Disabling the default /vagrant share
-config.vm.synced_folder ".", "/vagrant", disabled: true
-```
-
 ### SSH
 
 SSH into a running Vagrant machine
@@ -136,6 +127,29 @@ vagrant ssh-config   # show SSH configuration
 # copy a file
 vagrant ssh-config > ssh-config
 scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
+```
+
+### Networking
+
+Typically virtual machines are given a private network address:
+
+* Multiple machines can shared the same sub-network
+* Configuration of IP address can be static of via DHCP
+
+```bash
+# automatic assignment of IP via DHCP
+config.vm.network "private_network", type: "dhcp"
+# specify a static IP for the machine
+config.vm.network "private_network", ip: "192.168.50.4"
+```
+
+### Synced Folders
+
+By default the project directory is shared to `/vagrant`
+
+```bash
+# Disabling the default /vagrant share
+config.vm.synced_folder ".", "/vagrant", disabled: true
 ```
 
 ## Provisioning
