@@ -76,15 +76,6 @@ vagrant halt             # stop machine, keep environment (for later use)
 vagrant destroy          # remove machine, discard environment
 ```
 
-SSH into a running Vagrant machine
-
-```bash
-vagrant ssh          # login
-vagrant ssh-config   # show SSH configuration
-# copy a file
-vagrant ssh-config > ssh-config
-scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
-```
 
 Configure multiple nodes with the same configuration:
 
@@ -110,6 +101,27 @@ Use names to operate on a specific box:
 vagrant up alpha       # start specifc box
 vagrant ssh alpha      # login to a box
 vagrant destroy alpha  # remove a box 
+```
+
+### Synced Folders
+
+By default the project directory is shared to `/vagrant`
+
+```bash
+# Disabling the default /vagrant share
+config.vm.synced_folder ".", "/vagrant", disabled: true
+```
+
+### SSH
+
+SSH into a running Vagrant machine
+
+```bash
+vagrant ssh          # login
+vagrant ssh-config   # show SSH configuration
+# copy a file
+vagrant ssh-config > ssh-config
+scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
 
 ## Provisioning
