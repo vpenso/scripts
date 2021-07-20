@@ -28,7 +28,7 @@ EOF
 vagrant up && vagrant ssh
 ```
 
-Install using the GitHub repository and a script:
+Deployment using the official script:
 
 ```bash
 # after login install the software (make sure to select the 
@@ -44,7 +44,7 @@ $BROWSER http://192.168.50.10/admin/
 host www.google.de 192.168.50.10
 ```
 
-Deployment using the official docker container:
+Deployment using the official docker container [dkpic]:
 
 ```bash
 # download a docker configuration file
@@ -53,6 +53,10 @@ wget -O docker-compose.yml \
 # start the docker container
 sudo docker-compose up --detach
 ```
+
+Customize the docker container configuration with [environment variables][01]
+
+
 
 ## References
 
@@ -67,3 +71,5 @@ sudo docker-compose up --detach
 
 [htsph] How to Setup Pi-hole on a Local Computer without Raspberry Pi  
 <https://pawelurbanek.com/pihole-local-computer>
+
+[01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
