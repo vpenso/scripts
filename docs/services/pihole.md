@@ -1,5 +1,5 @@
 
-### Deployment
+## Deployment
 
 Simple test environment with Vagrant:
 
@@ -15,6 +15,8 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.50.10"
   config.vm.box_check_update = false
   config.vm.synced_folder ".", "/vagrant", disabled: true
+  # this is only required for the deployment using Docker
+  #config.vm.provision "shell", inline: "sudo apt install -y docker docker-compose
 end
 EOF
 vagrant up && vagrant ssh
@@ -36,7 +38,7 @@ $BROWSER http://192.168.50.10/admin/
 host www.google.de 192.168.50.10
 ```
 
-### References
+## References
 
 [picwr] Pi-hole Community Resources  
 <https://pi-hole.net/>  
