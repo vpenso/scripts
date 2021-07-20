@@ -1,7 +1,18 @@
 # Vagrant
 
+Command line utility for managing the life cycle of virtual machines.
 
-Quickstart with `libvirt`:
+### Providers
+
+Providers interface with different virtual machine monitors (aka. hypervisors).
+By default Vagrant uses VirtualBox:
+
+```bash
+# install VirtualBox and vagrant on Ubuntu/Debian
+sudo apt install -y virtualbox vagrant
+```
+
+Alternatively is is possible to `libvirt` on Linux
 
 ```bash
 # install libvirt & vagrant on Debian/Ubuntu
