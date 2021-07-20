@@ -44,6 +44,13 @@ $BROWSER http://192.168.50.10/admin/
 host www.google.de 192.168.50.10
 ```
 
+Deployment using the official docker container:
+
+```bash
+wget -0 docker-compose.yml \
+      https://github.com/pi-hole/docker-pi-hole/blob/master/docker-compose.yml.example
+```
+
 ## References
 
 [picwr] Pi-hole Community Resources  
