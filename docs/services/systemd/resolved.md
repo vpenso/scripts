@@ -4,12 +4,9 @@ Provides resolver services for DNS (DNSSEC, DNS over TLS)
 
 ```bash
 systemctl enable --now systemd-resolved # start the service daemon
-resolvectl status                       # check service status
+systemd-resolve --status
 /etc/systemd/resolved.conf              # conf. file
 /etc/systemd/resolved.conf.d/*.conf     # drop-in conf. files
-man resolved.conf                       # conf. file man-page
-resolvectl query <ip|name>              # query DNS records
-resolvectl statistics                   # show DNS cache stats
 ```
 
 Fallback DNS addresses ensure DNS resolution in case no config is present
@@ -24,6 +21,12 @@ ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 ```
 
 ### Configuration
+
+Temporarily change the DNS server configuration for a network interface
+
+```bash
+systemd-resolve -i $iface --set-dns=$ip
+```
 
 Configure a custom list of DNS resolvers, and enable DNSSEC
 
@@ -53,7 +56,13 @@ systemd-resolved currently only supports `opportunistic` DNS over TLS resolution
 
 DNS server certificates are not checked making systemd-resolved vulnerable to man-in-the-middle attacks
 
-### Debugging
+### resolvectl
+
+```bash
+resolvectl status                       # check service status
+resolvectl query <ip|name>              # query DNS records
+resolvectl statistics                   # show DNS cache stats
+```
 
 Enable debugging and follow the logs:
 
