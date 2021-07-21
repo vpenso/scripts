@@ -129,6 +129,9 @@ pihole -c -e         # [cronometer] console dashboard
 <https://github.com/NLnetLabs/unbound>  
 <https://docs.pi-hole.net/guides/dns/unbound>
 
+Pihole + unbound docker setup on Raspberry Pi  
+<https://www.xfelix.com/2020/09/pihole-unbound-docker-setup-on-raspberry-pi>
+
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
 [02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
 [03]: https://docs.pi-hole.net/docker/dhcp
