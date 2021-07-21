@@ -18,7 +18,8 @@ Network-level DNS sinkhole:
 Blocks DNS requests for known tracking and advertising domains
 
 * Hands out non-routable addresses for all domains in the sinkhole.
-* Modified `dnsmasq` called **FTLDNS** acts as DNS server for a private network.
+* Modified `dnsmasq` called **FTLDNS** acts as...
+  - ...caching and forwarding DNS server
 
 ## Installation
 
@@ -90,7 +91,7 @@ Cf. [Docker DHCP and Network Modes][03]
 
 ## Usage
 
-List of [upstream DNS providers][02]...
+List of [upstream DNS providers][02]... setup with a recursive DNS server [rcdns]
 
 The `pihole` command:
 
@@ -122,6 +123,11 @@ pihole -c -e         # [cronometer] console dashboard
 [adghm] AdGuard Home  
 <https://adguard.com/en/adguard-home/overview.html>  
 <https://github.com/AdguardTeam/AdguardHome>
+
+[rcdns] Unbound Recursive, Caching DNS Resolver  
+<https://nlnetlabs.nl/projects/unbound>  
+<https://github.com/NLnetLabs/unbound>  
+<https://docs.pi-hole.net/guides/dns/unbound>
 
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
 [02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
