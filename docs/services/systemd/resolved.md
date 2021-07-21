@@ -22,10 +22,15 @@ ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 ### Configuration
 
-Temporarily change the DNS server configuration for a network interface
+Temporarily change the DNS server configuration:
+
+* `LINK` specifies the network interface, get the name from `resolvectl status` or `ip addr`
+* `SERVER` specifies the IP address of a DNS server i.e. `1.1.1.1`
 
 ```bash
-systemd-resolve -i $iface --set-dns=$ip
+systemd-resolve -i LINK --set-dns=SERVER
+# or
+sudo resolvectl dns LINK SERVER
 ```
 
 Configure a custom list of DNS resolvers, and enable DNSSEC
