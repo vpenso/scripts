@@ -52,3 +52,14 @@ systemd-resolved currently only supports `opportunistic` DNS over TLS resolution
 - Eventually another option will be added `strict` to prevent fallback
 
 DNS server certificates are not checked making systemd-resolved vulnerable to man-in-the-middle attacks
+
+### Debugging
+
+Enable debugging and follow the logs:
+
+```bash
+resolvectl log-level debug             
+journalctl -fu systemd-resolved
+# disable debugging
+resolvectl log-level info
+```
