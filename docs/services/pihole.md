@@ -6,9 +6,10 @@ Network-level DNS sinkhole:
 
 * Intended for use in small private networks (at home).
 * Blocks traffic of all devices in a network including
-  - Desktop, workstations
+  - Desktops, workstations, laptops
   - Mobiles, tablets
   - Smart TVs, gaming consoles
+  - Other "smart" devices... (watches, fridges, TV sticks, etc.)
 * Benefits...
   - Improve overall network performance
   - Faster loading of web-sites
@@ -91,7 +92,13 @@ Cf. [Docker DHCP and Network Modes][03]
 
 ## Usage
 
-List of [upstream DNS providers][02]... setup with a recursive DNS server [rcdns]
+Select your [upstream DNS providers][02] or setup with a recursive DNS server [rcdns]
+
+Configure blocklists...
+
+* Defaults to list hosted at [github.com/StevenBlack/hosts][04] [blsbh]...
+* ...provides alternative list with expanded blocking adult content and fake news
+* OISD [osdib] provides a very comprehensive "Full" blocklist
 
 The `pihole` command:
 
@@ -106,7 +113,7 @@ pihole -c -e         # [cronometer] console dashboard
 ```
 
 
-## References
+### References
 
 [picwr] Pi-hole Community Resources  
 <https://pi-hole.net/>  
@@ -117,21 +124,33 @@ pihole -c -e         # [cronometer] console dashboard
 <https://hub.docker.com/r/pihole/pihole>  
 <https://github.com/pi-hole/docker-pi-hole>
 
-[htsph] How to Setup Pi-hole on a Local Computer without Raspberry Pi  
-<https://pawelurbanek.com/pihole-local-computer>
-
-[adghm] AdGuard Home  
-<https://adguard.com/en/adguard-home/overview.html>  
-<https://github.com/AdguardTeam/AdguardHome>
+[blsbh] Default Blocklist by Steven Black  
+<https://github.com/StevenBlack/hosts>
 
 [rcdns] Unbound Recursive, Caching DNS Resolver  
 <https://nlnetlabs.nl/projects/unbound>  
 <https://github.com/NLnetLabs/unbound>  
 <https://docs.pi-hole.net/guides/dns/unbound>
 
-Pihole + unbound docker setup on Raspberry Pi  
+[osdib] Official OISD Blocklist  
+<https://oisd.nl/>
+
+### Links
+
+AdGuard Home (Pi-hole alternative)  
+<https://adguard.com/en/adguard-home/overview.html>  
+<https://github.com/AdguardTeam/AdguardHome>
+
+How to Setup Pi-hole on a Local Computer without Raspberry Pi  
+<https://pawelurbanek.com/pihole-local-computer>
+
+Pihole + unbound docker setup on Raspberry Pi, 2020/09  
 <https://www.xfelix.com/2020/09/pihole-unbound-docker-setup-on-raspberry-pi>
+
+The Best PiHole Blocklists, 2021/04  
+<https://avoidthehack.com/best-pihole-blocklists>
 
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
 [02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
 [03]: https://docs.pi-hole.net/docker/dhcp
+[04]: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
