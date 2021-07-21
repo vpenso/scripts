@@ -83,7 +83,9 @@ docker-compose up --detach
 # find the randomly generated admin password
 docker logs pihole | grep random
 # use the `pihole` command in the container
-docker exec pihole pihole status
+docker exec pihole pihole SUBCOMMAND
+# start a shell in the container
+docker exec -it pihole bash
 ```
 
 Customize the docker container configuration with [environment variables][01].
@@ -149,6 +151,9 @@ Pihole + unbound docker setup on Raspberry Pi, 2020/09
 
 The Best PiHole Blocklists, 2021/04  
 <https://avoidthehack.com/best-pihole-blocklists>
+
+Blocklists for Pihole and Adguard Home  
+<https://blocklists.info>
 
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
 [02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
