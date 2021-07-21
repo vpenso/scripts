@@ -117,43 +117,41 @@ pihole -c -e         # [cronometer] console dashboard
 
 ### References
 
-[picwr] Pi-hole Community Resources  
-<https://pi-hole.net/>  
-<https://docs.pi-hole.net/>  
-<https://github.com/pi-hole/pi-hole>
+[adfho] AdGuard Home (Pi-hole alternative)  
+<https://adguard.com/en/adguard-home/overview.html>  
+<https://github.com/AdguardTeam/AdguardHome>
+
+[blpah] Blocklists for Pihole and Adguard Home  
+<https://blocklists.info>
+
+[blsbh] Default Blocklist by Steven Black  
+<https://github.com/StevenBlack/hosts>
 
 [dkpic] Docker Pi-hole Container  
 <https://hub.docker.com/r/pihole/pihole>  
 <https://github.com/pi-hole/docker-pi-hole>
 
-[blsbh] Default Blocklist by Steven Black  
-<https://github.com/StevenBlack/hosts>
+[osdib] Official OISD Blocklist  
+<https://oisd.nl/>
+
+[picwr] Pi-hole Community Resources  
+<https://pi-hole.net/>  
+<https://docs.pi-hole.net/>  
+<https://github.com/pi-hole/pi-hole>
 
 [rcdns] Unbound Recursive, Caching DNS Resolver  
 <https://nlnetlabs.nl/projects/unbound>  
 <https://github.com/NLnetLabs/unbound>  
 <https://docs.pi-hole.net/guides/dns/unbound>
 
-[osdib] Official OISD Blocklist  
-<https://oisd.nl/>
-
-### Links
-
-AdGuard Home (Pi-hole alternative)  
-<https://adguard.com/en/adguard-home/overview.html>  
-<https://github.com/AdguardTeam/AdguardHome>
-
-How to Setup Pi-hole on a Local Computer without Raspberry Pi  
+[slcrp] How to Setup Pi-hole on a Local Computer without Raspberry Pi  
 <https://pawelurbanek.com/pihole-local-computer>
 
-Pihole + unbound docker setup on Raspberry Pi, 2020/09  
-<https://www.xfelix.com/2020/09/pihole-unbound-docker-setup-on-raspberry-pi>
-
-The Best PiHole Blocklists, 2021/04  
+[tbpib] The Best PiHole Blocklists, 2021/04  
 <https://avoidthehack.com/best-pihole-blocklists>
 
-Blocklists for Pihole and Adguard Home  
-<https://blocklists.info>
+[udsrp] Pihole + unbound docker setup on Raspberry Pi, 2020/09  
+<https://www.xfelix.com/2020/09/pihole-unbound-docker-setup-on-raspberry-pi>
 
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
 [02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
