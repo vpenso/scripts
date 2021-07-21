@@ -49,6 +49,8 @@ EOF
 vagrant up && vagrant ssh
 ```
 
+### Script
+
 Deployment using the official script:
 
 ```bash
@@ -65,6 +67,8 @@ $BROWSER http://192.168.50.10/admin/
 host www.google.de 192.168.50.10
 ```
 
+### Docker
+
 Deployment using the official docker container [dkpic]:
 
 ```bash
@@ -80,7 +84,9 @@ docker logs pihole | grep random
 docker exec pihole pihole status
 ```
 
-Customize the docker container configuration with [environment variables][01]
+Customize the docker container configuration with [environment variables][01]:
+
+* [Upstream DNS Providers][02]
 
 ## References
 
@@ -96,4 +102,9 @@ Customize the docker container configuration with [environment variables][01]
 [htsph] How to Setup Pi-hole on a Local Computer without Raspberry Pi  
 <https://pawelurbanek.com/pihole-local-computer>
 
+[adghm] AdGuard Home  
+<https://adguard.com/en/adguard-home/overview.html>  
+<https://github.com/AdguardTeam/AdguardHome>
+
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
+[02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
