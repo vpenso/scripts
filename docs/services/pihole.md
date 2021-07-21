@@ -55,6 +55,8 @@ sudo su
 docker-compose up --detach
 # find the randomly generated admin password
 docker logs pihole | grep random
+# use the `pihole` command in the container
+docker exec pihole pihole status
 ```
 
 Customize the docker container configuration with [environment variables][01]
