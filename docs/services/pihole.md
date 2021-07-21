@@ -1,3 +1,24 @@
+# Pi-hole
+
+**Block internet advertisement, tracking and malware**
+
+Network-level DNS sinkhole:
+
+* Intended for use in small private networks (at home).
+* Blocks traffic of all devices in a network including
+  - Desktop, workstations
+  - Mobiles, tablets
+  - Smart TVs, gaming consoles
+* Benefits...
+  - Improve overall network performance
+  - Faster loading of web-sites
+  - Reduce data usage
+  - Monitor performance and statistics
+
+Blocks DNS requests for known tracking and advertising domains
+
+* Hands out non-routable addresses for all domains in the sinkhole.
+* Modified `dnsmasq` called **FTLDNS** acts as DNS server for a private network.
 
 ## Deployment
 
