@@ -20,7 +20,7 @@ Blocks DNS requests for known tracking and advertising domains
 * Hands out non-routable addresses for all domains in the sinkhole.
 * Modified `dnsmasq` called **FTLDNS** acts as DNS server for a private network.
 
-## Deployment
+## Installation
 
 Simple test environment with Vagrant:
 
@@ -84,9 +84,26 @@ docker logs pihole | grep random
 docker exec pihole pihole status
 ```
 
-Customize the docker container configuration with [environment variables][01]:
+Customize the docker container configuration with [environment variables][01].
 
-* [Upstream DNS Providers][02]
+Cf. [Docker DHCP and Network Modes][03]
+
+## Usage
+
+List of [upstream DNS providers][02]...
+
+The `pihole` command:
+
+```
+pihole status        # status of blocking services
+pihole -v            # list versions of components
+pihole -g            # [gravity] retrieve blocklists, consolidate with black/whitelists
+pihole -q DOMAIN     # search white/blacklist, wildcards and adlists for a specified domain
+pihole -w DOMAIN     # whitelist DNS domain
+pihole -w DOMAIN -d  # remove a DNS domain from whitelist
+pihole -c -e         # [cronometer] console dashboard
+```
+
 
 ## References
 
@@ -108,3 +125,4 @@ Customize the docker container configuration with [environment variables][01]:
 
 [01]: https://github.com/pi-hole/docker-pi-hole/#environment-variables
 [02]: https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
+[03]: https://docs.pi-hole.net/docker/dhcp
