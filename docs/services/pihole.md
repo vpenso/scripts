@@ -84,6 +84,9 @@ docker exec pihole pihole SUBCOMMAND
 docker exec -it pihole bash
 ```
 
+* Customize the configuration with [environment variables][01].
+* Cf. [Docker DHCP and Network Modes][03] depending on the deployment scenario
+
 Vagrant box with docker container:
 
 ```bash
@@ -113,9 +116,6 @@ vagrant up && vagrant ssh
 
 
 
-Customize the docker container configuration with [environment variables][01].
-
-Cf. [Docker DHCP and Network Modes][03]
 
 ## Usage
 
