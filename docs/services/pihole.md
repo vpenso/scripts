@@ -109,7 +109,7 @@ services:
     environment:
       TZ: 'Europa/Berlin'
       WEBPASSWORD: '12345678'
-      PIHOLE_DNS_: 208.67.222.222,208.67.220.220,1.1.1.1,1.0.0.1
+      PIHOLE_DNS_: 1.1.1.1;1.0.0.1
       IPv6: 'false'
     volumes:
       - './etc-pihole/:/etc/pihole/'
