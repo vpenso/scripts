@@ -107,7 +107,7 @@ Vagrant.configure("2") do |config|
     s.inline = <<-SCRIPT
       apt-get update
       apt-get install -y docker docker-compose
-      wget -O docker-compose.yml \
+      wget -q -O docker-compose.yml \
             https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
       sudo docker-compose up --detach
     SCRIPT
