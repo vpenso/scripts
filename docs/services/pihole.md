@@ -96,7 +96,7 @@ cat > Vagrantfile <<EOF
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 docker_compose = %q(
-version: "3"
+version: '3'
 services:
   pihole:
     container_name: pihole
@@ -110,7 +110,7 @@ services:
       TZ: 'Europa/Berlin'
       WEBPASSWORD: '12345678'
       PIHOLE_DNS_: 208.67.222.222,208.67.220.220,1.1.1.1,1.0.0.1
-      IPv6: false
+      IPv6: 'false'
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
