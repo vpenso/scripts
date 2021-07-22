@@ -128,8 +128,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell" do |s|
     s.privileged = true,
     s.inline = %Q(
-      apt-get update
-      apt-get install -y docker docker-compose
+      apt-get update -q
+      apt-get install -q -y docker docker-compose
       echo "#{docker_compose}" > docker-compose.yml 
       docker-compose up --detach
     )
