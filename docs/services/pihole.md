@@ -95,6 +95,30 @@ cd $(mktemp -d)
 cat > Vagrantfile <<EOF
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+docker_compose = <<-EOF
+version: "3"
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+    environment:
+      TZ: 'Europa/Berlin'
+      WEBPASSWORD: '12345678'
+      PIHOLE_DNS_:208.67.222.222,208.67.220.220,1.1.1.1,1.0.0.1
+      IPv6: false
+    volumes:
+      - './etc-pihole/:/etc/pihole/'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+EOF
+
 Vagrant.configure("2") do |config|
   config.vm.define  "pihole"
   config.vm.box = "debian/buster64"
@@ -109,7 +133,7 @@ Vagrant.configure("2") do |config|
       apt-get install -y docker docker-compose
       wget -q -O docker-compose.yml \
             https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
-      sudo docker-compose up --detach
+      docker-compose up --detach
     SCRIPT
   end
 end
