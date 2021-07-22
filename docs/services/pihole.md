@@ -107,6 +107,9 @@ Vagrant.configure("2") do |config|
     s.inline = <<-SCRIPT
       apt-get update
       apt-get install -y docker docker-compose
+      wget -O docker-compose.yml \
+            https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
+      sudo docker-compose up --detach
     SCRIPT
   end
 end
@@ -124,7 +127,7 @@ Select your [upstream DNS providers][02] or setup with a recursive DNS server [r
 Configure blocklists [blpah] ...
 
 * Defaults to list hosted at [github.com/StevenBlack/hosts][04] [blsbh]...
-* ...provides alternative list with expanded blocking adult content and fake news
+* ...alternative lists with expanded blocking for adult content and fake news
 * OISD [osdib] provides a very comprehensive "Full" blocklist
 
 The `pihole` command:
