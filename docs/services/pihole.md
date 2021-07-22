@@ -95,7 +95,7 @@ cd $(mktemp -d)
 cat > Vagrantfile <<EOF
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-docker_compose = <<-EOF
+docker_compose = %q(
 version: "3"
 services:
   pihole:
@@ -109,7 +109,7 @@ services:
     environment:
       TZ: 'Europa/Berlin'
       WEBPASSWORD: '12345678'
-      PIHOLE_DNS_:208.67.222.222,208.67.220.220,1.1.1.1,1.0.0.1
+      PIHOLE_DNS_: 208.67.222.222,208.67.220.220,1.1.1.1,1.0.0.1
       IPv6: false
     volumes:
       - './etc-pihole/:/etc/pihole/'
@@ -117,7 +117,7 @@ services:
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
-EOF
+)
 
 Vagrant.configure("2") do |config|
   config.vm.define  "pihole"
@@ -128,12 +128,12 @@ Vagrant.configure("2") do |config|
   # this is only required for the deployment using Docker
   config.vm.provision "shell" do |s|
     s.privileged = true,
-    s.inline = <<-SCRIPT
+    s.inline = %Q(
       apt-get update
       apt-get install -y docker docker-compose
       echo "#{docker_compose}" > docker-compose.yml 
       docker-compose up --detach
-    SCRIPT
+    )
   end
 end
 EOF
