@@ -65,7 +65,26 @@ host www.google.de 192.168.50.10
 
 ### Docker
 
-Deployment using a Docker container [dkpic]
+Deployment using the official docker container [dkpic]
+
+```bash
+# install Docker (Debian packages) 
+apt-get install -y docker docker-compose
+# download a docker configuration file
+wget -O docker-compose.yml \
+      https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
+sudo su 
+# start the docker container
+docker-compose up --detach
+# find the randomly generated admin password
+docker logs pihole | grep random
+# use the `pihole` command in the container
+docker exec pihole pihole SUBCOMMAND
+# start a shell in the container
+docker exec -it pihole bash
+```
+
+Vagrant box with docker container:
 
 ```bash
 cd $(mktemp -d)
@@ -92,22 +111,7 @@ EOF
 vagrant up && vagrant ssh
 ```
 
-Deployment using the official docker container [dkpic]:
 
-```bash
-# download a docker configuration file
-wget -O docker-compose.yml \
-      https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker-compose.yml.example
-sudo su 
-# start the docker container
-docker-compose up --detach
-# find the randomly generated admin password
-docker logs pihole | grep random
-# use the `pihole` command in the container
-docker exec pihole pihole SUBCOMMAND
-# start a shell in the container
-docker exec -it pihole bash
-```
 
 Customize the docker container configuration with [environment variables][01].
 
