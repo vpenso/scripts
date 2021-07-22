@@ -84,7 +84,7 @@ docker exec pihole pihole SUBCOMMAND
 docker exec -it pihole bash
 ```
 
-* Customize the configuration with [environment variables][01].
+* Customize the configuration with [environment variables][01]
 * Cf. [Docker DHCP and Network Modes][03] depending on the deployment scenario
 
 Vagrant box with docker container:
@@ -121,7 +121,7 @@ vagrant up && vagrant ssh
 
 Select your [upstream DNS providers][02] or setup with a recursive DNS server [rcdns]
 
-Configure blocklists...
+Configure blocklists [blpah] ...
 
 * Defaults to list hosted at [github.com/StevenBlack/hosts][04] [blsbh]...
 * ...provides alternative list with expanded blocking adult content and fake news
@@ -165,13 +165,13 @@ pihole -c -e         # [cronometer] console dashboard
 <https://github.com/pi-hole/pi-hole>
 
 [piiss] Pi-hole Installation Script  
-<https://github.com/pi-hole/pi-hole/#one-step-automated-install>
+<https://github.com/pi-hole/pi-hole/#one-step-automated-install>  
 <https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh>
 
 [rcdns] Unbound Recursive, Caching DNS Resolver  
+<https://docs.pi-hole.net/guides/dns/unbound>
 <https://nlnetlabs.nl/projects/unbound>  
 <https://github.com/NLnetLabs/unbound>  
-<https://docs.pi-hole.net/guides/dns/unbound>
 
 [slcrp] How to Setup Pi-hole on a Local Computer without Raspberry Pi  
 <https://pawelurbanek.com/pihole-local-computer>
