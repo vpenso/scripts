@@ -87,11 +87,11 @@ docker exec -it pihole bash
 * Customize the configuration with [environment variables][01]
 * Cf. [Docker DHCP and Network Modes][03] depending on the deployment scenario
 
-Vagrant box with docker container:
+`Vagrantfile` which installs Docker and writes `docker-compose.yml` file
+to pull the Pi-hole docker container and start the service:
 
 ```bash
 cd $(mktemp -d)
-# prepare a virtual machine for testing
 cat > Vagrantfile <<EOF
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
@@ -118,7 +118,6 @@ services:
       - NET_ADMIN
     restart: unless-stopped
 )
-
 Vagrant.configure("2") do |config|
   config.vm.define  "pihole"
   config.vm.box = "debian/buster64"
@@ -140,10 +139,7 @@ EOF
 vagrant up && vagrant ssh
 ```
 
-
-
-
-## Usage
+## Configuration
 
 Select your [upstream DNS providers][02] or setup with a recursive DNS server [rcdns]
 
@@ -165,8 +161,12 @@ pihole -w DOMAIN -d  # remove a DNS domain from whitelist
 pihole -c -e         # [cronometer] console dashboard
 ```
 
+## Usage
 
-### References
+
+
+
+## References
 
 [adfho] AdGuard Home (Pi-hole alternative)  
 <https://adguard.com/en/adguard-home/overview.html>  
