@@ -1,10 +1,10 @@
 # Pi-hole
 
+Pi-Hole [picwr] is a network-level DNS sinkhole to:
+
 **Block internet advertisement, tracking and malware**
 
-Network-level DNS sinkhole:
-
-* Intended for use in small private networks (at home).
+* Intended for use in small private networks (at home)
 * Blocks traffic of all devices in a network including
   - Desktops, workstations, laptops
   - Mobiles, tablets
@@ -15,14 +15,18 @@ Network-level DNS sinkhole:
   - Faster loading of web-sites
   - Reduce data usage
   - Monitor performance and statistics
-
-Blocks DNS requests for known tracking and advertising domains
-
 * Hands out non-routable addresses for all domains in the sinkhole.
-* Modified `dnsmasq` called **FTLDNS** acts as...
-  - ...caching and forwarding DNS server
+* Modified `dnsmasq` called **FTLDNS** acts as caching and forwarding DNS server
 
 ## Installation
+
+Installation is supported on multiple Linux distributions including
+Debian/Ubuntu and Fedora/CentOS. Furthermore an official Docker container image
+is supported.
+
+### Script
+
+Using the official installation script [piiss].
 
 Simple test environment with Vagrant:
 
@@ -38,20 +42,10 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.50.10"
   config.vm.box_check_update = false
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  # this is only required for the deployment using Docker
-  #config.vm.provision "shell" do |s|
-  #  s.privileged = true,
-  #  s.inline = <<-SCRIPT
-  #    apt-get update
-  #    apt-get install -y docker docker-compose
-  #  SCRIPT
-  #end
 end
 EOF
 vagrant up && vagrant ssh
 ```
-
-### Script
 
 Deployment using the official script:
 
@@ -70,6 +64,33 @@ host www.google.de 192.168.50.10
 ```
 
 ### Docker
+
+Deployment using a Docker container [dkpic]
+
+```bash
+cd $(mktemp -d)
+# prepare a virtual machine for testing
+cat > Vagrantfile <<EOF
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  config.vm.define  "pihole"
+  config.vm.box = "debian/buster64"
+  config.vm.network "private_network", ip: "192.168.50.10"
+  config.vm.box_check_update = false
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # this is only required for the deployment using Docker
+  config.vm.provision "shell" do |s|
+    s.privileged = true,
+    s.inline = <<-SCRIPT
+      apt-get update
+      apt-get install -y docker docker-compose
+    SCRIPT
+  end
+end
+EOF
+vagrant up && vagrant ssh
+```
 
 Deployment using the official docker container [dkpic]:
 
@@ -138,6 +159,10 @@ pihole -c -e         # [cronometer] console dashboard
 <https://pi-hole.net/>  
 <https://docs.pi-hole.net/>  
 <https://github.com/pi-hole/pi-hole>
+
+[piiss] Pi-hole Installation Script  
+<https://github.com/pi-hole/pi-hole/#one-step-automated-install>
+<https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh>
 
 [rcdns] Unbound Recursive, Caching DNS Resolver  
 <https://nlnetlabs.nl/projects/unbound>  
