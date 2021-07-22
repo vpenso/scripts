@@ -163,7 +163,15 @@ pihole -c -e         # [cronometer] console dashboard
 
 ## Usage
 
+Configure a DNS resolver to use the Pi-hole service deployed above
+depending on the implementation on your host system:
 
+* Modify `/etc/resolv.conf` _nameserver_ configuration line
+* If the `systemd-resolved` service is enabled use the following command
+
+```bash
+resolvectl dns ${iface} 192.168.50.10
+```
 
 
 ## References
