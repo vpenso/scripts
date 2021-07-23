@@ -117,6 +117,10 @@ Packages are available at:
 
 <http://downloads.cinc.sh/>
 
+Cf. <https://docs.chef.io/release_notes_client/#knife-moved-to-workstation>
+
+Use a `cinc` package before version 17 to include `knife`
+
 **`chef-client`** (on managed nodes):
 
 * Runs `ohai` & builds node attributes
