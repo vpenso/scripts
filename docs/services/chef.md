@@ -113,16 +113,9 @@ knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client
 
 ## Client
 
-Install [chef package](https://downloads.chef.io/chef) including [chef-client](https://docs.chef.io/ctl_chef_client.html):
+Packages are available at:
 
-```bash
-## Debian Stretch (using the Jessie package)
-wget https://packages.chef.io/files/stable/chef/14.7.17/debian/9/chef_14.7.17-1_amd64.deb
-dpkg -i chef_14.7.17-1_amd64.deb
-## CentOS 7
-wget https://packages.chef.io/files/stable/chef/14.7.17/el/7/chef-14.7.17-1.el7.x86_64.rpm
-yum install -y chef-14.7.17-1.el7.x86_64.rpm
-```
+<http://downloads.cinc.sh/>
 
 **`chef-client`** (on managed nodes):
 
