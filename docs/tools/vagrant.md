@@ -162,10 +162,11 @@ config.vm.synced_folder ".", "/vagrant", disabled: true
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+content = 'write this to a file'
+
 script = %q(
-mkdir projects
-cd projects
-git clone https://github.com/vpenso/scripts.git
+mkdir ~/projects
+echo "foo'bar" > ~/projects/bar.txt
 )
 
 Vagrant.configure("2") do |config|
@@ -185,7 +186,11 @@ Vagrant.configure("2") do |config|
      config.vm.provision "file", source: "~/#{file}", destination: file
   end
 
-  # execute a script defined as here-document
+  # variable expansion...
+  config.vm.provision "shell",
+    inline: %Q(echo "#{content}" > /tmp/content.txt)
+
+  # execute multiline string as script
   config.vm.provision "shell", inline: script
 end
 ```
