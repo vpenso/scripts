@@ -162,11 +162,11 @@ config.vm.synced_folder ".", "/vagrant", disabled: true
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$script = <<-SCRIPT
+script = %q(
 mkdir projects
 cd projects
 git clone https://github.com/vpenso/scripts.git
-SCRIPT
+)
 
 Vagrant.configure("2") do |config|
   config.vm.box = "centos/7"
@@ -186,7 +186,7 @@ Vagrant.configure("2") do |config|
   end
 
   # execute a script defined as here-document
-  config.vm.provision "shell", inline: $script
+  config.vm.provision "shell", inline: script
 end
 ```
 
