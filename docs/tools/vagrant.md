@@ -119,12 +119,21 @@ vagrant destroy alpha  # remove a box
 
 ### SSH
 
-SSH into a running Vagrant machine
+Login to a running box:
 
 ```bash
-vagrant ssh          # login
-vagrant ssh-config   # show SSH configuration
-# copy a file
+vagrant ssh ${name:-}
+```
+
+Append commands to be executed:
+
+```bash
+vagrand ssh ${name:-} -- ls -l
+```
+
+Use `ssh-config` to copy files from localhost with `scp`
+
+```bash
 vagrant ssh-config > ssh-config
 scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 ```
