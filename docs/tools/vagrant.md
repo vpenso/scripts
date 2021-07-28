@@ -152,6 +152,13 @@ config.vm.network "private_network", type: "dhcp"
 config.vm.network "private_network", ip: "192.168.50.4"
 ```
 
+[Forwarded Ports](https://www.vagrantup.com/docs/networking/forwarded_ports):
+
+```bash
+# change the default port got the SSH connection
+config.vm.network "forwarded_port", id: "ssh", host: 2200, guest: 22
+```
+
 ### Synced Folders
 
 By default the project directory is shared to `/vagrant`
