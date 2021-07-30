@@ -1,12 +1,19 @@
 # Installation
 
+Use [etcher](https://etcher.io/) to create bootable SD/USB devices.
+
 Options for pre-build operating systems (OS) images:
 
 [rpios] Raspberry Pi OS  
 <https://www.raspberrypi.org/software>  
 
 [rpidb] Debian Raspberry Pi images  
-<https://raspi.debian.net>
+<https://raspi.debian.net>  
+<https://raspi.debian.net/defaults-and-settings> 
+
+* Default login `root` with empty password
+* Customize in `/boot/firmware/sysconf.txt`
+* Ethernet port runs DHCP by default
 
 [rpiub] Ubuntu Raspberry Pi Images  
 <https://ubuntu.com/download/raspberry-pi>
@@ -24,8 +31,6 @@ Build your own images with:
 
 [yocto] Yocto Embedded Linux Distribution  
 <https://www.yoctoproject.org>
-
-### Raspberry Pi OS
 
 Download the latest image from:
 
