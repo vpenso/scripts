@@ -1,11 +1,26 @@
 # Installation
 
-Use [etcher](https://etcher.io/) to create bootable SD/USB devices.
-
-Options for pre-build operating systems (OS) images:
 
 [rpios] Raspberry Pi OS  
 <https://www.raspberrypi.org/software>  
+
+Download the latest image from:
+
+<https://downloads.raspberrypi.org/>
+
+Use [etcher](https://etcher.io/) to create bootable SD/USB devices.
+
+```bash
+# write the image to SD card
+unzip -p $archive \
+        | sudo dd status=progress conv=fsync bs=4M of=/dev/mmcblkX
+```
+
+Default user `pi` password `raspberry`
+
+## Alternatives
+
+Options for pre-build operating systems (OS) images:
 
 [rpidb] Debian Raspberry Pi images  
 <https://raspi.debian.net>  
@@ -32,19 +47,6 @@ Build your own images with:
 [yocto] Yocto Embedded Linux Distribution  
 <https://www.yoctoproject.org>
 
-Download the latest image from:
-
-<https://downloads.raspberrypi.org/>
-
-Raspberry Pi OS Lite minimal image without the X-server window manager.
-
-```bash
-# write the image to SD card
-unzip -p $archive \
-        | sudo dd status=progress conv=fsync bs=4M of=/dev/mmcblkX
-```
-
-Default user `pi` password `raspberry`
 
 
 # BuildRoot
