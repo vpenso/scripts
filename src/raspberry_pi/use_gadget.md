@@ -1,5 +1,3 @@
-Default user `pi` password `raspberry`
-
 ## USB Gadget
 
 Using an SD card with Raspberry Pi OS:

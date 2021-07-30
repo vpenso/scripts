@@ -11,12 +11,17 @@ Download the latest image from:
 Use [etcher](https://etcher.io/) to create bootable SD/USB devices.
 
 ```bash
-# write the image to SD card
+# or write the image to SD card
 unzip -p $archive \
         | sudo dd status=progress conv=fsync bs=4M of=/dev/mmcblkX
 ```
 
 Default user `pi` password `raspberry`
+
+```
+# update the entire system
+sudo apt update ; sudo apt full-upgrade
+```
 
 ## Alternatives
 
