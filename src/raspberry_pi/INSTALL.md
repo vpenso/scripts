@@ -1,14 +1,11 @@
 # Installation
 
-
 [rpios] Raspberry Pi OS  
 <https://www.raspberrypi.org/software>  
 
 Download the latest image from:
 
 <https://downloads.raspberrypi.org/>
-
-Use [etcher](https://etcher.io/) to create bootable SD/USB devices.
 
 ```bash
 # or write the image to SD card
@@ -24,6 +21,8 @@ sudo apt update ; sudo apt full-upgrade
 ```
 
 ## Alternatives
+
+Use [etcher](https://etcher.io/) to create bootable SD/USB devices.
 
 Options for pre-build operating systems (OS) images:
 
