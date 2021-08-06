@@ -163,10 +163,27 @@ config.vm.network "forwarded_port", id: "ssh", host: 2200, guest: 22
 
 By default the project directory is shared to `/vagrant`
 
-```bash
-# Disabling the default /vagrant share
+```ruby
+# disabling the default /vagrant share
 config.vm.synced_folder ".", "/vagrant", disabled: true
 ```
+
+Configure `rsync` as mechanism
+
+```ruby
+config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+```
+
+Use the sub-commands to sync on demand, cf. [vagrant-rsync-back](https://github.com/smerrill/vagrant-rsync-back)
+
+```bash
+vagrant rsync ...
+vagrant rsync-back ...
+# install the plugin if required
+vagrant plugin install vagrant-rsync-back
+```
+
+
 
 ## Provisioning
 
