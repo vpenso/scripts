@@ -117,7 +117,7 @@ vagrant ssh alpha      # login to a box
 vagrant destroy alpha  # remove a box 
 ```
 
-### SSH
+### Login
 
 Login to a running box:
 
@@ -145,7 +145,7 @@ Typically virtual machines are given a private network address:
 * Multiple machines can shared the same sub-network
 * Configuration of IP address can be static of via DHCP
 
-```bash
+```ruby
 # automatic assignment of IP via DHCP
 config.vm.network "private_network", type: "dhcp"
 # specify a static IP for the machine
@@ -154,7 +154,7 @@ config.vm.network "private_network", ip: "192.168.50.4"
 
 [Forwarded Ports](https://www.vagrantup.com/docs/networking/forwarded_ports):
 
-```bash
+```ruby
 # change the default port got the SSH connection
 config.vm.network "forwarded_port", id: "ssh", host: 2200, guest: 22
 ```
