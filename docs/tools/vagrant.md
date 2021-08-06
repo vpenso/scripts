@@ -168,13 +168,13 @@ By default the project directory is shared to `/vagrant`
 config.vm.synced_folder ".", "/vagrant", disabled: true
 ```
 
-Configure `rsync` as mechanism
+Configure `rsync` as mechanism:
 
 ```ruby
 config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
 ```
 
-Use the sub-commands to sync on demand, cf. [vagrant-rsync-back](https://github.com/smerrill/vagrant-rsync-back)
+Use the sub-commands to sync on demand [vgpry]:
 
 ```bash
 vagrant rsync ...
@@ -256,3 +256,6 @@ vagrant reload --provision
 
 [vgpmu] Vagrant Plugin Mutate  
 <https://github.com/sciurus/vagrant-mutate>
+
+[vgpry] Vagrant RSync Plugin  
+<https://github.com/smerrill/vagrant-rsync-back>
