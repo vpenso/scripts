@@ -59,4 +59,8 @@ Add `non-free` to `/etc/apt/sources.list`
 
 ```bash
 sudo apt install -y firmware-atheros
+# or
+sudo apt install -y firmware-iwlwifi
+# make sure to run
+rfkill unblock wlan
 ```
