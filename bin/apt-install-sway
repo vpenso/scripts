@@ -13,11 +13,9 @@ then
 		pavucontrol \
 		pulseaudio \
                 pulseaudio-module-bluetooth \
-                bluez-firmware \
 		slurp \
 		sway \
 		swayidle \
-		swaylock \
 		sxiv \
 		terminator \
 		upower \

@@ -7,6 +7,7 @@ case $ZSH_VERSION in
         # that is to old
         ;;
 *)
+        typeset -gA ZSH_HIGHLIGHT_STYLES
         export ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
         # parameter assignments (x=foo and x=( ))
         export ZSH_HIGHLIGHT_STYLES[assign]='fg=52'
