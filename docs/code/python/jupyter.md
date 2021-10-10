@@ -77,3 +77,6 @@ https://github.com/jupyter/jupyter/wiki/Jupyter-kernels
 
 [docks] Jupyter Notebooks on DockerHub  
 <https://hub.docker.com/r/jupyter/minimal-notebook>
+
+[judsk] JupyterLab Desktop  
+<https://github.com/jupyterlab/jupyterlab-desktop>
