@@ -47,6 +47,8 @@ diffcp -r $SCRIPTS/etc/terminator/config ~/.config/terminator/config
 ## i3
 i3-build
 i3-config
+# if polybar is not available as package
+polybar-build
 # install the menu switcher
 rofi-config
 ```
