@@ -52,7 +52,9 @@ Noteworthy extensions include:
 * [jupyterlab-vim](https://github.com/jwkvam/jupyterlab-vim)
 
 ```bash
-sudo python3 -m pip install jupyterlab-git
+sudo python3 -m pip install \
+    jupyterlab-git \
+    jupyterlab-spellchecker
 ## or
 sudo apt install -u nodejs npm
 # install an extension
