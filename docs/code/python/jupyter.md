@@ -1,11 +1,8 @@
 Install JupyterLab on Debian:
 
 ```bash
-sudo apt install -y python python-pip python3 python3-pip
+sudo apt install -y python3 python3-pip
 sudo python3 -m pip install jupyterlab
-# (optional) install Python 2 kernel
-sudo python2 -m pip install ipykernel
-sudo python2 -m ipykernel install --user
 ```
 
 Start the server:
@@ -55,6 +52,8 @@ Noteworthy extensions include:
 * [jupyterlab-vim](https://github.com/jwkvam/jupyterlab-vim)
 
 ```bash
+sudo python3 -m pip install jupyterlab-git
+## or
 sudo apt install -u nodejs npm
 # install an extension
 sudo jupyter labextension install @jupyterlab/toc
