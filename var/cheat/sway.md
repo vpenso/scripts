@@ -1,4 +1,6 @@
 ```
+super ⋅ h,j,k,l              Move focus around
+super ⋅ shift ⋅ h,j,k,l      Move focused window around
 super ⋅ space                Toggle keyboard layout
 super ⋅ 9                    Lock screen
 super ⋅ 0                    Session menu
