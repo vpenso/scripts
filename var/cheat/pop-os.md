@@ -2,6 +2,7 @@
 
 ## Navigation
 
+```
 Super ⋅ Esc                   Lock screen
 Super ⋅ q                     Close window
 Super ⋅ Space                 Switch keyboard layout 
@@ -13,13 +14,16 @@ Super ⋅ <direction>           Focus switching
 Super ⋅ g                     Toggle floating and tiling
 Super ⋅ Ctrl ⋅ <direction>    Workspace down/up
 Super ⋅ Shift ⋅ <direction>   Move active window between workspaces
+```
 
 ## Window Management 
 
 **Super ⋅ Return** to enter window management mode
 
+```
 <direction>                 move window
 Shift  ⋅ <direction>        resize window
 O                           toggle horizontal/vertical tiling
 Return                      apply changes
 Esc                         discard changes
+```
