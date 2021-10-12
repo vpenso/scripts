@@ -2,7 +2,7 @@
 command -v sxiv >&- && {
 
         function sx() {
-                sxiv -tp ${@:-$PWD}
+                sxiv -o -b -tp ${@:-$PWD}
         }
 
         # clean up cache in $HOME
@@ -17,6 +17,11 @@ command -v sxiv >&- && {
                               --bind 'ctrl-a:select-all+accept' \
                               --query "${@:-}"
                 )
+        }
+
+        function sxi() {
+                local file=${1:?Path to file missing}
+                cat $file | sxiv -i -t -b -p
         }
 
 } 
