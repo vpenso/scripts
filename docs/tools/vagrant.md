@@ -6,7 +6,11 @@ Command line utility for managing the life cycle of virtual machines.
 
 Providers interface with different virtual machine monitors (aka. hypervisors).
 
-By default Vagrant uses VirtualBox:
+By default Vagrant uses VirtualBox. 
+
+### VirtualBox
+
+Install VirtualBox on Debian 11:
 
 ```bash
 # Debian provides VirtualBox to stable users on a "rolling" basis by Debian Fast Track
@@ -20,13 +24,17 @@ wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-
 sudo cat > /etc/apt/sources.list.d/virtualbox.list <<EOF
 deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bullseye contrib
 EOF
-sudo apt install virtualbox-6.1
+sudo apt install -y virtualbox-6.1
+# enable the current user to run VirtualBox
+sudo adduser $USER vboxusers
 ```
 
-```
+```bash
 # install the packages
-sudo apt install -y virtualbox vagrant
+sudo apt install -y vagrant
 ```
+
+### Libvirt
 
 Alternatively use `libvirt`:
 
@@ -165,8 +173,11 @@ Typically virtual machines are given a private network address:
 # automatic assignment of IP via DHCP
 config.vm.network "private_network", type: "dhcp"
 # specify a static IP for the machine
-config.vm.network "private_network", ip: "192.168.50.4"
+config.vm.network "private_network", ip: "192.168.56.4"
 ```
+
+VirtualBox will only allow IP addresses in **192.68.56.0/21** range to be
+assigned to host-only adapters cf. [Host-Only Networking](https://www.virtualbox.org/manual/ch06.html#network_hostonly)
 
 [Forwarded Ports](https://www.vagrantup.com/docs/networking/forwarded_ports):
 
