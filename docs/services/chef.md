@@ -201,8 +201,24 @@ AccuracySec=300sec
 >>> systemctl start chef-client.timer && systemctl enable chef-client.timer
 ```
 
+## [Chef-Solo](https://docs.chef.io/chef_solo)
 
-## Server
+`chef-solo` supports two locations from which cookbooks can be run:
+
+* A local directory.
+* A URL at which a tar.gz archive is located.
+
+```bash
+# create a example cookbooke
+mkdir -p ~/chef/cookbooks
+chef generate cookbook ~/chef/cookbooks/example
+# run the example againt localhost
+sudo chef-solo --config-option cookbook_path=~/chef/cookbooks \
+               --override-runlist 'recipe[example]'
+```
+
+
+# Server
 
 Dummy deployment for a [chef-server-core](https://downloads.chef.io/chef-server) package:
 
