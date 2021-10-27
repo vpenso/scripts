@@ -175,7 +175,7 @@ config.vm.network "private_network", type: "dhcp"
 config.vm.network "private_network", ip: "192.168.56.4"
 ```
 
-VirtualBox will only allow IP addresses in **192.68.56.0/21** range to be
+VirtualBox will only allow IP addresses in **192.168.56.0/21** range to be
 assigned to host-only adapters cf. [Host-Only Networking](https://www.virtualbox.org/manual/ch06.html#network_hostonly)
 
 [Forwarded Ports](https://www.vagrantup.com/docs/networking/forwarded_ports):
