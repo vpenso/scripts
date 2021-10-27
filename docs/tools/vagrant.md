@@ -2,6 +2,11 @@
 
 Command line utility for managing the life cycle of virtual machines.
 
+```bash
+# install the packages
+sudo apt install -y vagrant
+```
+
 ## Providers
 
 Providers interface with different virtual machine monitors (aka. hypervisors).
@@ -9,8 +14,6 @@ Providers interface with different virtual machine monitors (aka. hypervisors).
 By default Vagrant uses VirtualBox. 
 
 ### VirtualBox
-
-Install VirtualBox on Debian 11:
 
 ```bash
 # Debian provides VirtualBox to stable users on a "rolling" basis by Debian Fast Track
@@ -29,10 +32,6 @@ sudo apt install -y virtualbox-6.1
 sudo adduser $USER vboxusers
 ```
 
-```bash
-# install the packages
-sudo apt install -y vagrant
-```
 
 ### Libvirt
 
