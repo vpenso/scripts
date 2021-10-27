@@ -113,26 +113,25 @@ knife bootstrap -N $fqdn $fqdn --bootstrap-template default -r 'role[chef_client
 
 ## Client
 
-Packages are available at:
+Packages are available at: <http://downloads.cinc.sh/>
 
-<http://downloads.cinc.sh/>
+* Use a `cinc` package before version 17 to include `knife`
+  - Cf. <https://docs.chef.io/release_notes_client/#knife-moved-to-workstation>
+* **`chef-client`** (on managed nodes)
+  - Runs `ohai` & builds node attributes
+  - Connects to the server (registers & syncs cookbooks, etc.)
+  - Compiles resources (libs, attr., recipes)
+  - Converges (resources & providers)
+  - Saves node & runs handlers
+* [Run list](https://docs.chef.io/run_lists.html), ordered collection of policies
+  - Obtained from the Chef server
+  - Used to ensure node compliance
 
-Cf. <https://docs.chef.io/release_notes_client/#knife-moved-to-workstation>
-
-Use a `cinc` package before version 17 to include `knife`
-
-**`chef-client`** (on managed nodes):
-
-* Runs `ohai` & builds node attributes
-* Connects to the server (registers & syncs cookbooks, etc.)
-* Compiles resources (libs, attr., recipes)
-* Converges (resources & providers)
-* Saves node & runs handlers
-
-[Run list](https://docs.chef.io/run_lists.html), ordered collection of policies
-
-* Obtained from the Chef server
-* Used to ensure node compliance
+```bash
+version=17.6.18
+# CentOS 7
+sudo yum install -y http://downloads.cinc.sh/files/stable/cinc/$version/el/7/cinc-$version-1.el7.x86_64.rpm
+```
 
 ### Configuration
 
