@@ -13,6 +13,7 @@ include ~/.config/sway/config.d/scratchpad
 include ~/.config/sway/config.d/appearance
 include ~/.config/sway/config.d/resize
 include ~/.config/sway/config.d/session
+include ~/.config/sway/config.d/swayidle
 
 ## application bindings
 include ~/.config/sway/config.d/grimshot

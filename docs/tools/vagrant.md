@@ -8,7 +8,12 @@ Providers interface with different virtual machine monitors (aka. hypervisors).
 By default Vagrant uses VirtualBox:
 
 ```bash
-# install VirtualBox and vagrant on Ubuntu/Debian
+# VirtualBox is made available to stable users on a "rolling" basis by Debian Fast Track
+sudo apt install -y fasttrack-archive-keyring
+sudo cat > /etc/apt/sources.list.d/fasttrack.list <<EOF
+deb https://fasttrack.debian.net/debian-fasttrack/ bullseye-fasttrack main contrib
+EOF
+# install the packages
 sudo apt install -y virtualbox vagrant
 ```
 
