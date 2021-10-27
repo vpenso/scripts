@@ -1,5 +1,4 @@
 # Set shut down, restart and locking features
-
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 bindsym $super+0 mode "$mode_system"
 mode "$mode_system" {

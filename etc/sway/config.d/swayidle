@@ -1,0 +1,8 @@
+# vim: filetype=sh nospell 
+
+### idle configuration
+#
+# turn off displays after 300 seconds of inactivity
+exec swayidle \
+        timeout 300 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' &
