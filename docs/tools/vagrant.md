@@ -1,18 +1,29 @@
-# Vagrant
+# [Vagrant](https://www.vagrantup.com/docs)
 
 Command line utility for managing the life cycle of virtual machines.
 
-### Providers
+## Providers
 
 Providers interface with different virtual machine monitors (aka. hypervisors).
+
 By default Vagrant uses VirtualBox:
 
 ```bash
-# VirtualBox is made available to stable users on a "rolling" basis by Debian Fast Track
+# Debian provides VirtualBox to stable users on a "rolling" basis by Debian Fast Track
 sudo apt install -y fasttrack-archive-keyring
 sudo cat > /etc/apt/sources.list.d/fasttrack.list <<EOF
 deb https://fasttrack.debian.net/debian-fasttrack/ bullseye-fasttrack main contrib
 EOF
+sudo apt install -y virtualbox
+# from the official repository...
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+sudo cat > /etc/apt/sources.list.d/virtualbox.list <<EOF
+deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bullseye contrib
+EOF
+sudo apt install virtualbox-6.1
+```
+
+```
 # install the packages
 sudo apt install -y virtualbox vagrant
 ```
@@ -55,7 +66,7 @@ Configure the default provider with an environment variable:
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 ```
 
-### Boxes
+## Boxes
 
 * Virtual machine images use a clone templates
 * Dedicated box storage for each user
