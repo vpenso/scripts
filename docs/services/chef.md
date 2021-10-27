@@ -30,10 +30,26 @@ Fundamental building blocks:
 * Data bags store global variables (secrets)
 * [Environments](https://docs.chef.io/environments.html) map a workflow (i.e. production, staging, testing) within an organisation
 
+# [Chef Workstation](https://docs.chef.io/workstation/)
+
+Installation:
+
+```bash
+version=21.10.640
+# CentOS 7
+sudo yum install http://downloads.cinc.sh/files/unstable/cinc-workstation/$version/el/7/cinc-workstation-$version-1.el7.x86_64.rpm
+```
+
+* [Cookbook Development Workflow](https://docs.chef.io/workstation/#cookbook-development-workflow)
+
+```bash
+chef generate cookbook $name           # create a new cookbook
+cookstyle $cookbook_path               # code linting tool
+```
 
 ## Knife
 
-Configure [Knife](https://docs.chef.io/knife.html) for the devops user:
+Configure [Knife](https://docs.chef.io/knife.html):
 
 ```bash
 ~/.chef/knife.rb         user specific configuration file
