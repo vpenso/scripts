@@ -89,6 +89,7 @@ Why use [Markdown][md] for plain text formating?
   - [Pandoc](https://github.com/jgm/pandoc)  a universal document converter
   - [mkdocs](https://github.com/mkdocs/mkdocs/) project documentation with Markdown
   - [ReadTheDocs](https://github.com/rtfd/readthedocs.org) simplified software documentation
+  - [MarkText](https://github.com/marktext/marktext)
   - [R Markdown: The Definitive Guide](https://github.com/rstudio/rmarkdown-book)
   - [Jupyter Book](https://jupyterbook.org/intro.html) publication-quality books and documents from computational material
   - [GitHub Flavored Markdown](https://github.github.com/gfm/),
