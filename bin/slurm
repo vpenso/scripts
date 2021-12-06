@@ -1,0 +1,744 @@
+#!/usr/bin/env ruby
+#
+# Copyright 2015-2020 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+class System 
+  def self.exec(command)
+    command = command.gsub(/\n/," ").strip.gsub(/\s+/,' ')
+    command + ' 2>&1'
+    $logger.debug "Exec [#{command}]"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "Returned with #{state}"
+    if state == 0
+      return output.gsub(/^$\n/, '')
+    else
+      $logger.warn "Failed to execute [#{command}]"
+      return nil
+    end
+  end
+end
+
+class Hash
+  def self.autonew(*args)
+    new(*args){|hsh, key| hsh[key] = Hash.new(&hsh.default_proc) }
+  end
+end
+
+class Table
+
+  attr_writer :no_header
+
+  def initialize(header)
+    @header = header
+    @rows = Array.new
+    @no_header = $options.no_header
+  end
+
+  def transform(command, delim = ' ')
+    System::exec(command).split("\n").each do |line|
+      # maintain empty fields
+      fields = line.split(delim,-1)
+      # replace empty fields with a dash
+      fields.collect! { |value| value.empty? ? '-' : value }
+      $logger.debug(line + ' == ' + fields.inspect)
+      @rows << fields
+    end
+    print()
+  end
+
+  private
+
+  def print
+    table = Array.new
+    table << @header unless @no_header
+    table = table + @rows
+    $stdout.puts CLI::Table.print(table)
+  end
+
+end
+
+module CLI
+
+  class Table
+
+    def initialize(output)
+      @output = output
+    end
+    def self.print(table)
+      Table.new(table).rows
+    end
+    def rows
+      form = format()
+      rows = String.new
+      @output.each do |row|
+        $logger.debug("#{row.inspect}")
+        rows << sprintf("#{form}\n", *row)
+      end
+      return rows
+    end
+    def format
+      format = Array.new
+      columns = @output.first.length
+      0.upto(columns-1) do |column|
+        format << "%-#{field_width(column)}s"
+      end
+      $logger.debug("Table format #{format}")
+      return format.join(' ')
+    end
+    def field_width(field = 0)
+      max_width = 0
+      @output.each do |row|
+        elem = row[field].to_s
+        next if elem.empty?
+        width = elem.length
+        max_width = width if width > max_width
+      end
+      return max_width
+    end
+
+  end
+
+end
+
+
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] [<command>] [<subcommand>] [<args>] 
+
+<command>
+  a, accounts                      accounts configuration
+  h, help                          show this help information
+> j, jobs                          state of jobs 
+  l, limits                        association limits
+  n, nodes                         state of execution nodes
+  p, partition                     state of the partitions
+
+accounts <subcommand>
+
+  cu, create-user <user> <account,[account]> [<defaultaccount>]
+       Assoicates a Linux user to a Slurm account. The list of accounts
+       can be a comma separated list. The default account if not 
+       specified is 'none'.
+  s, shares                        fair-share state of all accounts
+
+jobs <subcommand>
+  b,   by-id <job_id>              details for a specific job
+  c,   completed-by-users          jobs completed by users
+  ce,  completed-by-endtime        jobs completed in the last 6 hours
+  f,   failed                      jobs finished with a failure
+  p,   pending                     pending jobs
+  ps,  pending-by-submit           pending jobs by submit time
+  pp,  pending-by-priority         pending jobs by priority 
+> r,   running                     running jobs by user
+  rr,  running-by-runtime          running jobs by runtime 
+  ru,  running-by-user <user>      running jobs from user
+  wd,  work-dir <job_id>           working directory of job
+
+limits <subcommand>
+> a,   accounts                    limits for all accounts
+  A,   by-account <account>        limits for a specific account
+  u,   by-user <user>              limits for a specific user
+
+nodes <subcommand>
+  a,   allocated                   nodes executing jobs
+  au,  allocated-by-user <user>    nodeset allocated by user
+  d,   defect                      number of nodes with defects
+  dn,  defect-nodes                list defect nodes on-by-line
+  dr,  drain <nodeset> <reason>    drain nodes
+  drn, drain-nodeset <reason>      drain nodes in $NODES
+  i,   idle                        nodes with available resources
+  j,   jobs_time_used <nodeset>    jobs run-time used and time limits
+  r,   resume <nodeset>            resume nodes
+  rn,  resume-nodeset              resume nodes in $NODES
+> s,   state                       node states
+  u,   users                       list users of each node
+
+partition <subcommand>
+  r,   resources                   partition hardware resources
+> s,   state                       partition states
+  t,   times                       partition time limits
+
+<options>
+  -b, --begin-time <[0-9]*[hd]>    hours/days to look back in the accounting     
+  -d, --debug                      show stacktraces in case of errors
+  -h, --help                       show this help information
+  -n, --no-header                  do not show table header
+  -v, --version                    print program version
+EOF
+
+module Accounts 
+
+  module_function
+
+  def create_user
+    name = ARGV.shift || raise('Specify a Linux user name!')
+    # check if the user exists
+    unless System::exec("id #{name} 2>/dev/null")
+            raise("#{name} is not a valid Linux user name!")
+    end
+    # check if the user is already in the system
+    unless System::exec("sacctmgr -n show user where name=#{name}").empty?
+      $stdout.puts "The user #{name} exists already with following associations"
+      $stdout.puts System::exec("sacctmgr show user withassoc where name=#{name} format=User,Account,DefaultAccount")
+      exit 1
+    end
+    account = ARGV.shift || raise('Specify the account to associate the user to')
+    # if no default is specified
+    defaultaccount = ARGV.shift || 'none'
+    # create the account
+    puts System::exec("sacctmgr --immediate create user name=#{name} account=#{account} defaultaccount=#{defaultaccount}")
+  end
+
+  def shares
+    format = %w(
+      Account
+      User
+      RawShares
+      NormShares
+      RawUsage
+      NormUsage
+      EffectvUsage
+      FairShare
+    )
+    Table.new(format).transform("
+      sshare 
+        --noheader
+        --parsable
+        --all 
+        --format=#{format.join(',')}
+    ",'|')
+  end
+
+end
+
+module Jobs
+
+  module_function
+
+  def running
+    Table.new(%w(Jobs State User Partition)).transform("
+      squeue
+        --states RUNNING
+        --format '%9T %8u %9P'
+        --sort 'u,P'
+        --noheader
+        | uniq -f1 -c
+    ")
+  end
+
+  def running_by_runtime
+    Table.new(%w(Jobs State Run-Time Time-Left Partition User Account)).transform("
+      squeue 
+        --states RUNNING 
+        --format '%9T %.11M %.11L %9P %8u %10a' 
+        --sort '-M,L' 
+        --noheader 
+        | uniq -f3 -c 
+    ")
+  end
+
+  def running_by_user
+    user = ARGV.shift || raise('No user specified')
+    Table.new(%w[Jobs ID* Node Account Partition CxN Workdir Command]).transform("
+      squeue -h -o '%A %N %a %P %Cx%D %Z %o' -S P,N -t R -u #{user} | uniq -f 1 -c
+    ")
+  end
+
+
+  def pending
+    Table.new(%w(Jobs State User Partition Account)).transform("
+      squeue
+        --states PENDING
+        --format '%9T %8u %9P %10a'
+        --sort 'u'
+        --noheader
+        | uniq -f1 -c
+    ")
+  end
+
+  def pending_by_priority
+    Table.new(%w(Jobs State Priority User Account Partition CPUs Nodes Time-Limit Features GRES QoS Reason)).transform("
+      squeue
+        --all
+        --sort '-Q,P,u,C,D,l,t' -t pd
+        --format '%9T %8Q %8u %10a %9P %.4C %5D %11l %8f %6b %6q %r'
+        --noheader
+        | uniq -c
+    ")
+  end
+
+  def pending_by_submit_date
+    Table.new(%w(Jobs State Submitted Priority User Account Partition Reason)).transform("
+      squeue 
+        --all 
+        --state pending 
+        --format '%9T %V %8Q %8u %10a %9P %r' 
+        --noheader 
+        | uniq -f 2 -c 
+        | sort -k 3
+    ")
+  end
+
+  def completed_by_users
+    Table.new(%w(Jobs User Account)).transform(%Q[
+      sacct --state completed
+          --noheader
+          --allusers
+          --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --endtime $(date +"%Y-%m-%d")
+          --format user,account
+          --allocations
+          | sort 
+          | uniq -c
+    ])
+  end
+
+  def completed_by_endtime
+    Table.new(%w(Jobs End User Accounts State Nodes)).transform(%Q[
+      sacct --state completed
+          --noheader
+          --allusers
+          --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+          --endtime $(date +"%Y-%m-%d")
+          --format end,user,account,state,nnodes
+          --allocations
+          | sort -k 1
+          | uniq -f 2 -c
+    ])
+  end
+
+  def wd
+    job = ARGV.shift || raise('Missing job ID')
+    if System::exec("squeue -j #{job} 2>&-").nil?
+      raise("Job #{job} not running")
+    else
+      work_dir = System::exec("scontrol show job #{job} | grep WorkDir").split('=')[-1]
+      puts work_dir
+    end
+  end
+
+  def failed
+    Table.new(%w(Jobs End User Account State Exit)).transform(%Q[
+      sacct
+        --noheader 
+        --allocations 
+        --allusers
+        --starttime $(date --date="#{begin_time}" +"%Y-%m-%d")
+        --endtime $(date +"%Y-%m-%d")
+        --state failed,node_fail,timeout
+        --format end,user,account,state,exitcode
+        | sort -k 1
+        | uniq -f 1 -c
+    ])
+  end
+
+  ##
+  # 
+  def by_id()
+    jobid = ARGV.shift || raise("Specify a SLURM job ID!")
+    format = %w(
+      jobid
+      user
+      state
+      submit
+      start
+      end
+      cputime
+      timelimit
+      exitcode
+      jobname
+      comment
+      nodelist
+    )
+    Table.new(format).transform("
+      sacct
+        --noheader
+        --parsable
+        --format #{format.join(',')}
+        --jobs #{jobid}
+    ",'|')
+  end
+
+  def begin_time(value = $options.begin_time)
+    case value
+    when /^[0-9]*h$/
+      value.gsub(/h$/,' hours ago')
+    when /^[0-9]*d$/
+      value.gsub(/d$/,' days ago')
+    end
+  end
+
+
+end
+
+module Limits
+
+  module_function
+
+  LIMITS_FORMAT = %w(
+    Cluster Account User Partition Share 
+    GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+    MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+    QOS
+  )
+
+  def accounts
+    format = %w(
+    Account User
+    GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+      MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+    )
+    Table.new(format).transform(%Q<
+      sacctmgr -snp show account format=#{format.join(',')}
+    >,'|')
+
+  end
+
+  def by_account
+    name = ARGV.shift || raise('Specify an account name to show limits for')
+    format = %w(
+      Cluster Account User Partition Share 
+      GrpSubmit GrpJobs GrpNodes GrpCPUs GrpCPUMin GrpCPURunMins GrpMem GrpWall
+      MaxSubmit MaxJobs MaxNodes MaxCPUs MaxCPUMins MaxWall
+      QOS
+    )
+    Table.new(format).transform(%Q<
+      sacctmgr -np show associations where account=#{name} format=#{format.join(',')}
+    >,'|')
+  end
+
+  def by_user
+    name = ARGV.shift || raise('Specify an user name to show limits for')
+    Table.new(LIMITS_FORMAT).transform(%Q<
+      sacctmgr -snP show user where user=#{name} format=#{LIMITS_FORMAT.join(',')}
+    >,'|')
+
+  end
+
+end
+
+module Partition
+  
+  module_function
+
+  def resources
+    Table.new(%w(Partition Groups CPUs S:C:T Memory Nodes CPUS(A/I/O/T))).transform(%q[
+      sinfo -o "%9P %6g %4c %6z %6m %5D %20C"
+        | tail -n+2
+        | tr -s ' '
+    ])
+  end
+
+  def state
+    Table.new(%w(Partition State NumNodes CPUsAlloc CPUsIdle NodeNames)).transform(%q[
+      sinfo -o '%9P %.5a %5D %20C %N' 
+        | tail -n+2 
+        | tr '/' ' ' 
+        | tr -s ' ' 
+        | cut -d' ' -f1-5,8-
+    ])
+  end
+
+  def times
+    Table.new(%w(Partition Groups Default Limit Nodes CPUS(A/I/O/T))).transform(%q[
+      sinfo -o "%9P  %6g %11L %10l %5D %20C" 
+        | tail -n+2 
+        | tr -s ' '
+    ])
+    
+  end
+
+end
+
+module Nodes
+
+  module_function
+
+  def state
+    state = {}
+    System::exec(%q[ sinfo -o "%D|%T" -s 'T' --noheader ]).split("\n").each do |line|
+      n, s = line.split('|')
+      n = n.to_i
+      state[s] = 0 unless state.has_key? s
+      state[s] += n
+    end
+    state = state.to_a
+    state.unshift ['State','Nodes']
+    $stdout.puts CLI::Table.print state
+  end
+
+  def idle
+    Table.new(%w(Node State Partition Time Limit RAM S:C:T Share Features GRES)).transform("
+      sinfo 
+        --format='%o|%T|%P|%L|%l|%m|%z|%h|%f|%G' 
+        --noheader
+        --state=idle
+        --sort o
+    ",'|')
+  end
+  
+  def allocated
+    Table.new(%w(Node State Load CPUs(A/I/O/T))).transform(%Q{
+      sinfo 
+        --format='%o %T %O %C' 
+        --noheader
+        --state=allocated
+        --sort o
+    })
+  end
+  
+  def drain
+    nodes = ARGV.shift || raise('Nodeset to drain not defined!')
+    message = ARGV.shift || raise('Specify a reason for draining the nodes')
+    System::exec "scontrol update state=drain nodename='#{nodes}' reason='#{message}'"
+  end
+
+  def drain_nodeset
+    nodes = ENV['NODES'] || raise('$NODES environment variable not defined!')
+    message = ARGV.shift || raise('Specify a reason for draining the nodes')
+    System::exec "scontrol update state=drain nodename='#{nodes}' reason='#{message}'"
+  end
+
+  def defect
+    Table.new(%w(Nodes State Reason)).transform(%q{
+      sinfo -h -o '%D|%T|%E' -S '-D' -t drain,draining,drained,down
+    },'|')
+  end
+
+  def defect_nodes
+    Table.new(%w(Nodes State Reason)).transform("
+      sinfo -h -o '%n|%T|%E' -S 'E,T' -t drain,draining,drained,down | uniq
+    ",'|')
+  end
+
+  def resume
+    nodes = ARGV.shift || raise('Nodeset to resume not defined!')
+    System::exec "scontrol update state=resume nodename=#{nodes}"
+  end
+  
+  def resume_nodeset
+    nodes = ENV['NODES'] || raise('$NODES environment variable not defined!')
+    System::exec "scontrol update state=resume nodename=#{nodes}"
+  end
+
+  def users
+    Table.new(%w(Nodeset Nodes User Account RunTime TimeLeft WorkingDirectory Executed)).transform("
+      squeue 
+        --noheader
+        --states RUNNING
+        --sort 'N'
+        --format '%N|%D|%u|%a|%M|%L|%Z|%o'
+    ",'|')
+  end
+
+  def jobs_time_used
+    nodes = ARGV.shift || raise('Specify a nodeset!')
+    Table.new(%w(
+      Count User Node TimeLimit TimeUsed
+    )).transform(%Q(
+      squeue 
+        --format "%A %u %N %l %M"
+        --sort "-M,-I"
+        --noheader
+        --nodelist "#{nodes}" 
+      | tr -s ' ' | cut -d' ' -f2- | uniq -c | tr -s ' '
+    ),' ')
+  end
+
+  def allocated_by_user 
+    user = ARGV.shift || raise('No user specified')
+    $stdout.puts `squeue -h -u #{user} -t r -o '%N %i' | cut -d' ' -f1  | sort | uniq | nodeset -f`
+  end
+
+end
+
+
+
+begin
+
+  #stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.begin_time = '1h'
+  $options.no_header = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
+  end
+  $logger.level = Logger::FATAL
+
+  GetoptLong.new(
+    ['--begin-time','-b',GetoptLong::REQUIRED_ARGUMENT],
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--no-header','-n',GetoptLong::NO_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--begin-time'
+      $options.begin_time = arg if arg =~ /[0-9]*[hd]/
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--no-header'
+      $options.no_header = true
+    when '--version'
+      $stdout.puts 1.34
+      exit 0
+    end
+  end
+
+  command = ARGV.shift || 'jobs'
+  case command
+  when 'a','accounts'
+    subcommand = ARGV.shift || raise('fail')
+    case subcommand
+    when 'cu','create-user'
+      Accounts::create_user
+    when 's','shares'
+      Accounts::shares
+    end
+  when 'h','help'
+    $stdout.puts HELP
+  when 'j','jobs'
+    subcommand = ARGV.shift || 'running'
+    case subcommand
+    when 'b','by-id'
+      Jobs::by_id
+    when 'c','completed-by-users'
+      Jobs::completed_by_users
+    when 'ce','completed-by-endtime'
+      Jobs::completed_by_endtime
+    when 'p','pending'
+      Jobs::pending
+    when 'ps','pending-by-submit'
+      Jobs::pending_by_submit_date
+    when 'pp','pending-by-priority'
+      Jobs::pending_by_priority
+    when 'r','running'
+      Jobs::running
+    when 'rr','running-by-runtime'
+      Jobs::running_by_runtime
+    when 'ru', 'running-by-user'
+      Jobs::running_by_user
+    when 'f','failed'
+      Jobs::failed
+    when 'wd'
+      Jobs::wd
+    else
+      raise("Sub-command #{subcommand} not supported") 
+    end
+  when 'l','limits'
+    subcommand = ARGV.shift || 'accounts'
+    case subcommand
+    when 'a','accounts'
+      Limits::accounts
+    when 'A','by-account'
+      Limits::by_account
+    when 'u','by-user'
+      Limits::by_user
+    else
+      raise("Sub-command #{subcommand} not supported") 
+    end
+  when 'p','partition'
+    subcommand = ARGV.shift || 'state'
+    case subcommand
+    when 'r', 'resources'
+      Partition::resources
+    when 's','state'
+      Partition::state
+    when 't','times'
+      Partition::times
+    end
+  when 'n','nodes'
+    subcommand = ARGV.shift || 'state'
+    case subcommand
+    when 'a','allocated'
+      Nodes::allocated
+    when 'au','allocated-by-user'
+      Nodes::allocated_by_user
+    when 'dr', 'drain'
+      Nodes::drain
+    when 'drn', 'drain-nodeset'
+      Nodes::drain_nodeset
+    when 'd','defect'
+      Nodes::defect
+    when 'dn','defect-nodes'
+      Nodes::defect_nodes
+    when 'i','idle'
+      Nodes::idle
+    when 'j','jobs_time_used'
+      Nodes::jobs_time_used
+    when 'r','resume'
+      Nodes::resume
+    when 'rn', 'resume-nodeset'
+      Nodes::resume_nodeset
+    when 's','state'
+      Nodes::state
+    when 'u','users'
+      Nodes::users
+    end
+  else
+    raise("Command '#{command}' not supported!")
+  end
+
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
