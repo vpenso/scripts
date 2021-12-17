@@ -2,12 +2,13 @@
 
 if command -v dnf >/dev/null
 then
-	if yum repolist | grep ^rpmfusion >/dev/null
+
+        # https://rpmfusion.org/Configuration
+	if ! yum repolist | grep ^rpmfusion-*release >/dev/null
 	then
 		url=https://mirrors.rpmfusion.org/free/fedora
-		sudo dnf install -y \
-			$url/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-			$url/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+		sudo dnf install -y $url/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+		sudo dnf install -y $url/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 	fi
 
         sudo dnf install -y \
@@ -15,7 +16,6 @@ then
 		gammastep \
                 grim \
 		light \
-		mpv \
 		pavucontrol \
 		slurp \
 		sway \
