@@ -121,17 +121,17 @@ hi CursorColumn ctermfg=none ctermbg=230
 " text width indicator column
 hi ColorColumn ctermfg=none ctermbg=254
 " line numbering on the left
-hi LineNr ctermfg=252 ctermbg=255
+hi LineNr ctermfg=136 ctermbg=255
 " line numbering in cursor line
-hi CursorLineNR ctermfg=232 ctermbg=252 cterm=bold
+hi CursorLineNR ctermfg=94 ctermbg=221 cterm=bold
 
-hi SpellBad     ctermfg=52 ctermbg=209 cterm=bold
+hi SpellBad     ctermfg=166 ctermbg=223 cterm=bold
 " eol, extends and precedes
 hi NonText      ctermfg=124
 " nbsp, tab and trail
 hi SpecialKey   ctermfg=124 cterm=bold
 
-hi Comment      ctermfg=247 ctermbg=255
+hi Comment      ctermfg=247
 hi Number       ctermfg=166
 hi String       ctermfg=74
 hi Boolean      ctermfg=39
