@@ -7,7 +7,7 @@ Install with [`rustup`](tools/rustup.md)...
 
 Language concepts...
 
-* [variables][variables.md] & [ownership](ownership.md)
+* [variables](variables.md) & [ownership](ownership.md)
 * [collections](collections.md) (including strings)
 
 ## References
