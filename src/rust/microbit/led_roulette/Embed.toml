@@ -1,11 +1,15 @@
-[default.probe]
-protocol = "Swd"
-
+# micro controller used by the Micro:Bit V2
 [default.general]
-chip = "nrf52833_xxAA" # micro:bit V2
+chip = "nrf52833_xxAA" 
 
+# halt the chip after we flashed it so our program does not instantly jump to the loop
+[default.reset]
+halt_afterwards = true
+
+# disable text debugging
 [default.rtt]
-enabled = true
-
-[default.gdb]
 enabled = false
+
+# enable the GDB debugger
+[default.gdb]
+enabled = true
