@@ -1,5 +1,8 @@
-Rust Embedded Micro:Bit  
-<https://docs.rust-embedded.org/discovery/microbit>
+Rust Embedded for Micro:Bit  
+<https://docs.rust-embedded.org/discovery/microbit>  
+<https://github.com/rust-embedded/discovery>
+
+### Configuration
 
 Install additional components for embedded development and configure the host:
 
@@ -15,14 +18,6 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="0d28", ATTR{idProduct}=="0204", MODE:="666"
 EOF
 sudo udevadm control --reload-rules
 ```
-
-
-Source Code, GitHub  
-<https://github.com/rust-embedded/discovery>
-
-Nordic nRF52833, Nordic Semiconductor  
-<https://www.nordicsemi.com/products/nrf52833>  
-<https://infocenter.nordicsemi.com/pdf/nRF52833_PS_v1.5.pdf>
 
 ### Terminology
 
@@ -43,28 +38,3 @@ Nordic nRF52833, Nordic Semiconductor
 
 An Overview of the Embedded Rust Ecosystem, Oxidize 2020  
 <https://www.youtube.com/watch?v=vLYit_HHPaY>
-
-## Hello World
-
-```bash
-├── build.rs
-├── .cargo
-│   └── config
-├── Cargo.toml
-├── Embed.toml
-├── memory.x            # specify the memory layout of the target device
-└── src
-    └── main.rs
-```
-
-Build for ARM Cortex-M4F (with FPU support)
-
-```bash
-cargo embed --target thumbv7em-none-eabihf
-```
-
-Rust on BBC micro:bit - starting with a blinky  
-<https://flames-of-code.netlify.app/blog/rust-microbit/>
-
-
-
