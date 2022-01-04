@@ -1,22 +1,8 @@
-```bash
-├── build.rs
-├── .cargo
-│   └── config
-├── Cargo.toml
-├── Embed.toml
-├── memory.x            # specify the memory layout of the target device
-└── src
-    └── main.rs
-```
-
-Build for ARM Cortex-M4F (with FPU support)
+Connect a Micro:Bit v2 via USB and run:
 
 ```bash
-cargo embed --target thumbv7em-none-eabihf
+cargo embed  
+# target is defined in .cargo/config as well
 ```
 
-Rust on BBC micro:bit - starting with a blinky  
-<https://flames-of-code.netlify.app/blog/rust-microbit/>
-
-Template for building applications for ARM Cortex-M microcontroller  
-<https://docs.rust-embedded.org/cortex-m-quickstart/cortex_m_quickstart>
+This should build a binary file and flash it to the Micro:Bit.

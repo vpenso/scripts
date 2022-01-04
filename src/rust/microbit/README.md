@@ -2,7 +2,7 @@ Rust Embedded for Micro:Bit
 <https://docs.rust-embedded.org/discovery/microbit>  
 <https://github.com/rust-embedded/discovery>
 
-### Configuration
+### Prerequisites
 
 Install additional components for embedded development and configure the host:
 
@@ -18,6 +18,8 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="0d28", ATTR{idProduct}=="0204", MODE:="666"
 EOF
 sudo udevadm control --reload-rules
 ```
+
+Verify that development environment is work using the [hello_world](hello_world) example.
 
 ### Terminology
 
