@@ -1,3 +1,12 @@
+# Rust
+
+Install with [`rustup`](tools/rustup.md)...
+
+* ...build a binary with [`rustc`](tools/rustc.md)
+* ...build a project with [`cargo`](tools/cargo.md`)
+
+
+
 ## References
 
 [rbook] The Rust Programming Language  

@@ -99,7 +99,7 @@ let t = (500, 6.4, 1);
 let x = t.0                                // index starts at zero
 // with type annotation
 let t: (i32, f64, u8) = (500, 6.4, 1);     
-// desctruct tuple into three separate variables
+// deconstruct tuple into three separate variables
 let (x, y, z) = t;
 ```
 

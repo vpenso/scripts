@@ -47,10 +47,9 @@
 * Charging rates beyond 1C is considered fast charging
 * **C-Rating** output capability
   - `25C/40C` continuous discharge rating/burst discharge rating
-* Calculate **Maximum Continious Discharge Rate**
+* Calculate **Maximum Continuous Discharge Rate**
   - 25C `25 * C = 25 * 2.2A = 55A`
   - 30C `30 * C = 30 * 5A = 150A`
-
 
 ## Handling
 
