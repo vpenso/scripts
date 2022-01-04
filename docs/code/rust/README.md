@@ -5,7 +5,10 @@ Install with [`rustup`](tools/rustup.md)...
 * ...build a binary with [`rustc`](tools/rustc.md)
 * ...build a project with [`cargo`](tools/cargo.md`)
 
+Language concepts...
 
+* [variables][variables.md] & [ownership](ownership.md)
+* [collections](collections.md) (including strings)
 
 ## References
 

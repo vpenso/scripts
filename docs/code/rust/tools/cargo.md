@@ -2,6 +2,34 @@
 
 `cargo` is a package manager and build tool for the Rust language:
 
+```bash
+# create a new project
+>>> cargo new hello ; cd hello
+     Created binary (application) `hello` package
+# basic skeleton
+>>> tree
+.
+├── Cargo.toml
+└── src
+    └── main.rs
+# modify the source code
+>>> cat > src/main.rs <<EOF
+fn main() {
+    println!("Hello World!");
+}
+EOF
+# build an executable
+>>> cargo build            
+   Compiling hello v0.1.0 (/tmp/hello)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.77s
+# run the program
+>>> cargo run  
+    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/hello`
+Hello World!
+
+```
+
 * Automatically fetches and builds your package’s dependencies
 * `Cargo.toml` **manifest**,  metadata & various bits of package information
   - [Specifying Dependencies](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html)
