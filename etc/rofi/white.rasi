@@ -2,49 +2,51 @@
     background:  rgba(0,0,0,0);
 }
 
-#window {
+window {
     transparency: "screenshot";
     background-color: #ffffff99;
     border: 1px;
     border-color:lightgray;
     padding: 20px;
+    width: 25%;
 }
 
-#mainbox {
+mainbox {
     border:1px;
     border-color:lightgray;
     padding:0;
 }
 
-#listview {
+listview {
     fixed-height: 0;
     border: 2px 0px 0px ;
     scrollbar: false;
     padding: 2px;
 }
 
-#element {
+element {
     border:  0px;
     padding: 2px ;
 }
 
-#element.normal.normal {
-    background-color: white;
-    text-color: lightsteelblue;
-}
-
-#element.selected.normal {
-    background-color: whitesmoke;
-    text-color: midnightblue;
-}
-
-#element.alternate.normal {
-    background-color: white;
-    text-color: royalblue;
+element-text normal.normal {
+    background-color: White;
+    text-color: RoyalBlue;
 }
 
 
-#inputbar {
+element-text selected {
+    background-color: MistyRose;
+    text-color: Maroon;
+}
+
+element-text alternate.normal {
+    background-color: White;
+    text-color: LightSkyBlue;
+}
+
+
+inputbar {
     spacing:    0;
     text-color: black;
     border:2px;
@@ -53,13 +55,13 @@
     padding:2px;
 }
 
-#prompt {
+prompt {
     spacing: 0;
     text-color: black;
     background-color: mistyrose;
 }
 
-#textbox-prompt-colon {
+textbox-prompt-colon {
     expand:     false;
     str:        ":";
     margin:     0.3px 0.3em 0em 0em ;
@@ -68,33 +70,33 @@
 }
 
 /* bottom bar */
-#sidebar {
+sidebar {
     border:2px;
     border-color:goldenrod;
 }
-#button.normal {
+button.normal {
     text-color:sandybrown;
     background-color:ivory;
 }
 /* bottom bar selection*/
-#button.selected {
+button.selected {
     background-color:lemonchiffon;
     text-color:maroon;
     border:1px;
     border-color:moccasin;
 }
 
-#case-indicator {
+case-indicator {
     spacing:    0;
     text-color: black;
 }
 
-#entry {
+entry {
     spacing: 0;
     text-color:firebrick;
     background-color:seashell;
 }
-#inputbar {
+inputbar {
     children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
 }
 
