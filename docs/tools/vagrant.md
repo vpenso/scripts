@@ -46,7 +46,7 @@ sudo apt install -y libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
 Install on Fedora...
 
 ```bash
-sudo dnf install -y @vagrant
+sudo dnf install -y @virtualization @vagrant
 # add yourself to the `libvirt` group
 sudo gpasswd -a ${USER} libvirt && newgrp libvirt
 # start the service
