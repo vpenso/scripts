@@ -93,6 +93,15 @@ export VAGRANT_DEFAULT_PROVIDER=libvirt
 
 <https://app.vagrantup.com/boxes/search>
 
+Box        | URL
+-----------|----------------------------
+almalinux  | <https://app.vagrantup.com/almalinux>
+centos     | <https://app.vagrantup.com/centos>
+debian     | <https://app.vagrantup.com/debian>
+fedora     | <https://app.vagrantup.com/fedora>
+rockylinux | <https://app.vagrantup.com/rockylinux>
+ubuntu     | <https://app.vagrantup.com/ubuntu>
+
 ```bash
 # list localy available boxes
 vagrant box list
