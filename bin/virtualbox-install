@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+
+
+if command -v dnf >/dev/null
+then
+        test -f /etc/yum.repos.d/virtualbox.repo \
+                || sudo wget -O /etc/yum.repos.d/virtualbox.repo \
+                        http://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+        sudo dnf install -y \
+                gcc \
+                binutils \
+                make \
+                glibc-devel \
+                patch libgomp \
+                glibc-headers \
+                kernel-headers \
+                kernel-devel-$(uname -r) \
+                dkms
+        sudo dnf install -y VirtualBox-6.1 vagrant
+        sudo usermod -a -G vboxusers ${USER}
+        sudo /usr/lib/virtualbox/vboxdrv.sh setup
+fi
