@@ -35,7 +35,7 @@ sudo adduser $USER vboxusers
 
 ### Libvirt
 
-Alternatively use `libvirt`:
+Install...
 
 ```bash
 # Debian/Ubuntu
@@ -44,9 +44,9 @@ sudo apt install -y libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
 sudo dnf install -y libvirt vagrant vagrant-libvirt
 ```
 
-Use the libvirt provider:
+Use...
 
-```
+```bash
 # download the offical CentOS 7 box
 vagrant box add centos/7 --provider=libvirt
 # create a Vagrantfile configuration and start a box
