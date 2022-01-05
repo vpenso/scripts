@@ -66,17 +66,11 @@ cat > Vagrantfile <<EOF
 
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
 VAGRANTFILE_API_VERSION = "2"
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-
-  config.vm.define "centos7" do |config|
   config.vm.hostname = "centos7"
   config.vm.box = "centos/7"
-  config.vm.box_check_update = false
-  config.vm.network "private_network", ip: "192.168.56.4"
   config.vm.provider :libvirt do |v|
     v.memory = 1024
-    end
   end
 end
 EOF
