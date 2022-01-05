@@ -35,6 +35,8 @@ sudo adduser $USER vboxusers
 
 ### Libvirt
 
+<https://github.com/vagrant-libvirt/vagrant-libvirt>
+
 Install on Debian/Ubuntu...
 
 ```bash
@@ -44,9 +46,11 @@ sudo apt install -y libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
 Install on Fedora...
 
 ```bash
-sudo dnf install -y libvirt vagrant vagrant-libvirt
+sudo dnf install -y @vagrant
 # add yourself to the `libvirt` group
 sudo gpasswd -a ${USER} libvirt && newgrp libvirt
+# start the service
+sudo systemctl enable --now  libvirtd
 ```
 
 Use...
@@ -69,7 +73,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname = "centos7"
   config.vm.box = "centos/7"
   config.vm.box_check_update = false
-  config.vm.network "private_network", ip: "192.168.18.9"
+  config.vm.network "private_network", ip: "192.168.56.4"
   config.vm.provider :libvirt do |v|
     v.memory = 1024
     end
