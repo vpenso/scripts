@@ -35,13 +35,18 @@ sudo adduser $USER vboxusers
 
 ### Libvirt
 
-Install...
+Install on Debian/Ubuntu...
 
 ```bash
-# Debian/Ubuntu
 sudo apt install -y libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
-# Fedora
+```
+
+Install on Fedora...
+
+```bash
 sudo dnf install -y libvirt vagrant vagrant-libvirt
+# add yourself to the `libvirt` group
+sudo gpasswd -a ${USER} libvirt && newgrp libvirt
 ```
 
 Use...
