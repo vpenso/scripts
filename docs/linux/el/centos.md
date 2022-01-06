@@ -2,16 +2,6 @@
 
 Git repositories for all RPM packages are available on the CentOS Git server [3].
 
-List of RPM related package repositories:
-
-Name                  | Description
-----------------------|------------------------
-EPEL                  | https://fedoraproject.org/wiki/EPEL
-ELRepo                | http://elrepo.org
-Software Collections  | https://www.softwarecollections.org
-RPM Fusion            | https://rpmfusion.org
-OpenHPC               | https://github.com/openhpc/ohpc
-
 ## CentOS Stream
 
 The (rolling release) [CentOS Stream](https://www.centos.org/) becomes the

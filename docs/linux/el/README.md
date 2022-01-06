@@ -1,5 +1,18 @@
 # Enterprise Linux
 
+[Red Hat](https://www.redhat.com) compatible Linux distributions based on
+the [RPM package manager](rpm.md).
+
+List of RPM related package repositories:
+
+Name                  | Description
+----------------------|------------------------
+EPEL                  | https://fedoraproject.org/wiki/EPEL
+ELRepo                | http://elrepo.org
+Software Collections  | https://www.softwarecollections.org
+RPM Fusion            | https://rpmfusion.org
+OpenHPC               | https://github.com/openhpc/ohpc
+
 The **[CentOS Project](centos.md) provides an upstream distribution the RHEL**
 with CentOS Stream.
 
