@@ -11,7 +11,7 @@ rpmdev-newspec ${name}.spec
 ```
 
 
+## References
 
-
-[^rpmpg]: RPM Packaging Guide  
+[rpmpg] RPM Packaging Guide  
 <https://rpm-packaging-guide.github.io/>

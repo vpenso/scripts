@@ -34,8 +34,8 @@ Package groups:
 dnf group                        # number of available/installed package groups
 dnf group list --installed       # list installed groups
 dnf group list --ids             # list available groups
-dnf group info ${group}          # show package in a group
-dnf install @${group}            # install a group using the `@` prefix
+dnf group info <group>           # show package in a group
+dnf install @<group>             # install a group using the `@` prefix
 ```
 
 ## Upgrades

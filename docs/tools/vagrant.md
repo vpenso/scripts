@@ -15,6 +15,8 @@ By default Vagrant uses VirtualBox.
 
 ### VirtualBox
 
+Install on Debian
+
 ```bash
 # Debian provides VirtualBox to stable users on a "rolling" basis by Debian Fast Track
 sudo apt install -y fasttrack-archive-keyring
@@ -32,6 +34,24 @@ sudo apt install -y virtualbox-6.1
 sudo adduser $USER vboxusers
 ```
 
+Install on Fedora
+
+```bash
+sudo wget -O /etc/yum.repos.d/virtualbox.repo \
+        http://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+sudo dnf install -y \
+                gcc \
+                binutils \
+                make \
+                glibc-devel \
+                patch libgomp \
+                glibc-headers \
+                kernel-headers \
+                kernel-devel-$(uname -r) \
+                dkms
+sudo dnf install -y VirtualBox-6.1 vagrant
+sudo usermod -a -G vboxusers ${USER} && newgrp vboxusers
+```
 
 ### Libvirt
 

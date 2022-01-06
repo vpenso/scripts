@@ -19,5 +19,5 @@ then
                 dkms
         sudo dnf install -y VirtualBox-6.1 vagrant
         sudo usermod -a -G vboxusers ${USER}
-        sudo /usr/lib/virtualbox/vboxdrv.sh setup
+#        sudo /usr/lib/virtualbox/vboxdrv.sh setup
 fi
