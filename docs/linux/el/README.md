@@ -18,7 +18,7 @@ with CentOS Stream.
 
 ## Downstream RHEL
 
-[AlmaLinux](almalinux.md) and [RockyLinux](rockylinux.md) are successors to
+**[AlmaLinux](almalinux.md) and [RockyLinux](rockylinux.md)** are successors to
 original CentOS...enterprise-grade, production-ready Linux in the form of a
 (100% binary compatible) downstream release of RHEL. The AlmaLinux project
 provides an [comparison over the available Enterprise Linux][01] (EL)

@@ -1,5 +1,10 @@
 # DNF
 
+> DNF or Dandified YUM[2][3][4] is the next-generation version of the Yellowdog
+> Updater, Modified (yum), a package manager for .rpm-based distributions. DNF
+> was introduced in Fedora 18 in 2013,[5] it has been the default package
+> manager since Fedora 22 in 2015[6] and Red Hat Enterprise Linux 8. [dnfg]
+
 
 ```bash
 /etc/dnf/dnf.conf                 # local main configuration
@@ -67,3 +72,7 @@ apply_updates = yes
 
 [cofrf] Configuration Reference  
 <http://dnf.readthedocs.org/en/latest/conf_ref.html>
+
+[dnfg] Dandified YUM, GitHub  
+<https://github.com/rpm-software-management/dnf>  
+<https://dnf.readthedocs.io>
