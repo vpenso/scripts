@@ -5,6 +5,11 @@ Install with [`rustup`](tools/rustup.md)...
 * ...build a binary with [`rustc`](tools/rustc.md)
 * ...build a project with [`cargo`](tools/cargo.md`)
 
+Install Microsoft Visual Studio  
+<https://code.visualstudio.com/docs/setup/linux>
+
+* Install the rust-analyzer extension
+
 Language concepts...
 
 * [variables](variables.md) & [ownership](ownership.md)
