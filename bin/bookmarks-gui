@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+_error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+export BOOKMARKS_PATH=${BOOKMARKS_PATH:-~/projects/scripts/var/bookmarks:~/projects/gsi-scripts/var/bookmarks}
+
+# ugly shit hack cause...
+wd="$( cd "$(dirname "$0")" ; pwd -P )"
+
+session_type=$(loginctl show-session $(awk '/tty/ {print $1}' <(loginctl)) -p Type | awk -F= '{print $2}')
+case "$session_type" in
+        x11)
+                if command -v rofi >/dev/null
+                then
+                        selection=$($wd/bookmarks list -k | rofi -dmenu -p 'bookmarks' -theme white)
+                else
+                        _error "Command rofi not in PATH"
+                fi
+                ;;
+        *) # this assumes wayland
+                if command -v wofi >/dev/null
+                then
+                        selection=$($wd/bookmarks list -k | wofi --show dmenu -p 'bookmarks')
+                else
+                        _error "Command wofi not in PATH"
+                fi
+
+                ;;
+esac
+
+if [ -n "$selection" ] # not empty
+then
+        # open the selection in the default browser
+        $wd/bookmarks search -o $selection
+fi
