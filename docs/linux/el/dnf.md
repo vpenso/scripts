@@ -1,15 +1,19 @@
 # DNF
 
-> DNF or Dandified YUM[2][3][4] is the next-generation version of the Yellowdog
-> Updater, Modified (yum), a package manager for .rpm-based distributions. DNF
-> was introduced in Fedora 18 in 2013,[5] it has been the default package
-> manager since Fedora 22 in 2015[6] and Red Hat Enterprise Linux 8. [dnfg]
+`dnf` command line interface is a successor and  mostly compatible to [`yum`](yum.md).
+Both are front-ends to install [RPM](rpm.md) packages from [RPM repositories](rpm-repos.md).
 
+## Configuration
 
 ```bash
 /etc/dnf/dnf.conf                 # local main configuration
 /var/cache/dnf                    # cache files
 dnf repolist -v all               # list all repositories
+```
+
+## Usage 
+
+```bash
 dnf search <package>              # search for a package by name
 dnf list <package>
 dnf list installed

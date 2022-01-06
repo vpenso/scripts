@@ -6,9 +6,10 @@ The name RPM refers to `.rpm` file format and the package manager program itself
 * Binary RPMs containing the compiled version of some software
 * Source RPMs `.src.rpm` containing the source code used to build a binary package
 
-RPMs are often collected centrally in one or more RPM repository. Several
-front-ends to RPM ease the process of obtaining and installing RPMs from
-repositories such as [DNF](dnf.md) and its predecessor [Yum](yum.md).
+RPMs are often collected centrally in one or more [RPM
+repository](rpm-repos.md). Several front-ends to RPM ease the process of
+obtaining and installing RPMs from repositories such as [DNF](dnf.md) and its
+predecessor [Yum](yum.md).
 
 Packages use following name specification:
 
