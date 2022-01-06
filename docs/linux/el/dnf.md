@@ -1,8 +1,5 @@
 # DNF
 
-Package manager for RPM based distributions → [DNF on GitHub](https://github.com/rpm-software-management/dnf)
-
-→ [Configuration Reference](http://dnf.readthedocs.org/en/latest/conf_ref.html)
 
 ```bash
 /etc/dnf/dnf.conf                 # local main configuration
@@ -31,6 +28,15 @@ dnf history undo <id>                 # revert a transaction (uninstall,downgrad
 dnf history redo <id>
 ```
 
+Package groups:
+
+```bash
+dnf group                        # number of available/installed package groups
+dnf group list --installed       # list installed groups
+dnf group list --ids             # list available groups
+dnf group info ${group}          # show package in a group
+dnf install @${group}            # install a group using the `@` prefix
+```
 
 ## Upgrades
 
@@ -53,3 +59,11 @@ apply_updates = yes
 >>> systemctl enable --now dnf-automatic-install.timer
 >>> systemctl list-timers '*dnf-automatic*'
 ```
+
+## References
+
+[dnfsc] Package manager for RPM based distributions  
+<https://github.com/rpm-software-management/dnf>
+
+[cofrf] Configuration Reference  
+<http://dnf.readthedocs.org/en/latest/conf_ref.html>
