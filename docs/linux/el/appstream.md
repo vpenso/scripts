@@ -1,6 +1,12 @@
 # Modules
 
-Besides individual RPM packages, the AppStream repository contains modules:
+AppStream (Application Stream) allows to install **multiple versions of a user
+space component**.
+
+* Each AppStream component has a given life cycle
+* Packaged as RPM modules or individual RPM packages
+
+**Modules are collections of packages** representing a logical unit.
 
 * Module streams represent versions of the AppStream components.
 * Each of the streams receives updates independently.

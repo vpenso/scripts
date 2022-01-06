@@ -53,8 +53,6 @@ Neal Gompa (member of the OpenSUSE board) [15] described...
 
 > ...the move to Stream is giving the community a more direct mechanism than Fedora to interoperate with this. CentOS has gone from being the operating system for the community enterprise to now being the **developers' interface to the enterprise operating system**.
 
-### AppStream
-
 Content is distributed through the two main repositories:
 
 Repository | Description
@@ -62,15 +60,8 @@ Repository | Description
 BaseOS     | Core RPM packages that provide OS functionality
 AppStream  | User space RPM packages and RPM modules
 
-Both BaseOS and AppStream content sets are required for a basic installation.
+Both BaseOS and [AppStream](appstream.md) content sets are required for a basic installation.
 
-AppStream (Application Stream) allows to install **multiple versions of a user
-space component**.
-
-* Each AppStream component has a given life cycle
-* Packaged as RPM modules or individual RPM packages
-
-**Modules are collections of packages** representing a logical unit.
 
 ## CentOS
 
