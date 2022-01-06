@@ -1,8 +1,8 @@
-# CentOS project
+# CentOS Project
 
 Git repositories for all RPM packages are available on the CentOS Git server [3].
 
-List of CentOS related package repositories:
+List of RPM related package repositories:
 
 Name                  | Description
 ----------------------|------------------------
