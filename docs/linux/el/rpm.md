@@ -8,7 +8,7 @@ The name RPM refers to `.rpm` file format and the package manager program itself
 
 RPMs are often collected centrally in one or more RPM repository. Several
 front-ends to RPM ease the process of obtaining and installing RPMs from
-repositories such as [DNF](dnf.md) and its predecessor [Yum][yum.md].
+repositories such as [DNF](dnf.md) and its predecessor [Yum](yum.md).
 
 Packages use following name specification:
 
@@ -19,6 +19,7 @@ name-[epoch:]version
 name-[epoch:]version-release
 name-[epoch:]version-release.arch
 ```
+
 
 ## Usage
 
@@ -34,6 +35,13 @@ Install development tools
 ```bash
 sudo dnf install -y @development rpmdevtools mock
 ```
+
+The "Recipe" for creating an RPM package is a `.spec` file:
+
+* Contain the package name, version, RPM revision number, steps to build,
+  install, and clean a package, and a changelog.
+* Multiple packages can be built from a single RPM spec file.
+* RPM packages are created from RPM spec files using the `rpmbuild` tool.
 
 ```bash
 # create and populate the spec file
