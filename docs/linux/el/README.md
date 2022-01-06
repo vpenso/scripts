@@ -19,7 +19,12 @@ with CentOS Stream.
 Fedora [CoreOS](coreos.md) is an RPM based distribution within the ecosystem
 build to host containerized workloads on an immutable infrastructure.
 
+## Major Users
+
 The High-Energy Physics (HEP) community is using [CERN "Enterprise Linux"](cern.md).
+
+CentOS Stream Deployment in a High Performance Computing Environment at Facebook AI Research (CentOS Dojo 2021/10)  
+<https://www.youtube.com/watch?v=20iZEJFARZs>
 
 ## Downstream RHEL
 
