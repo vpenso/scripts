@@ -7,17 +7,14 @@ Cern CentOS [01] is a customized distribution that is built on top of the CentOS
 
 Available for mirroring at <http://linuxsoft.cern.ch/>
 
-List or package repositories used by default:
+Discussions about the future after changes to the [CentOS Project](centos.md):
 
-```bash
->>> yum repolist enabled --verbose | grep baseurl | cut -d: -f2- | sort
- http://linuxsoft.cern.ch/cern/centos/7/cern/x86_64/
- http://linuxsoft.cern.ch/cern/centos/7/extras/x86_64/
- http://linuxsoft.cern.ch/cern/centos/7/os/x86_64/
- http://linuxsoft.cern.ch/cern/centos/7/updates/x86_64/
- http://linuxsoft.cern.ch/elrepo/elrepo/el7/x86_64/
- http://linuxsoft.cern.ch/epel/7/x86_64/
-```
+* [Future Linux Distribution Scenarios](https://indico.cern.ch/event/876772/contributions/4175482/attachments/2170305/3664100/future%20linux%20v4.pdf) (Grid Deployment Board 2021/01/12)
+* [Linux at CERN - Current status and future](https://indico.cern.ch/event/995485/contributions/4256466/attachments/2207964/3736640/hepix21-linuxatcern.pdf) (HEPIX 2021/03/15)
+* [CERN Linux Distro Strategy](https://indico.cern.ch/event/1078853/contributions/4576772/attachments/2333946/3977898/20211025-cern-hepix-linux.pdf) (2021/10/25)
+
+**CERN plans to Support CentOS Stream 9 (CS9), and "recommends" migration from
+CentOS 7 to CentOS Stream 9**
 
 ## Security Updates
 
@@ -36,7 +33,7 @@ Install security updates [03]:
 
 ```
 
-# Mirror
+## Mirror
 
 `rsync` the the CERN CentOS Mirror
 
