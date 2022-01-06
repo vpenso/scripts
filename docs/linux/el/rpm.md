@@ -1,12 +1,24 @@
-# RPM Packages
+# RPM Package Manager
+
+The name RPM refers to `.rpm` file format and the package manager program itself [rpmp].
+
+* Package can contain an arbitrary set of files.
+* Binary RPMs containing the compiled version of some software
+* Source RPMs `.src.rpm` containing the source code used to build a binary package
+
+RPMs are often collected centrally in one or more RPM repository. Several
+front-ends to RPM ease the process of obtaining and installing RPMs from
+repositories such as [DNF](dnf.md) and its predecessor [Yum][yum.md].
 
 Packages use following name specification:
 
-    name
-    name.arch
-    name-[epoch:]version
-    name-[epoch:]version-release
-    name-[epoch:]version-release.arch
+```
+name
+name.arch
+name-[epoch:]version
+name-[epoch:]version-release
+name-[epoch:]version-release.arch
+```
 
 ## Usage
 
@@ -30,5 +42,8 @@ rpmdev-newspec ${name}.spec
 
 ## References
 
-[rpg] RPM Packaging Guide  
-https://rpm-packaging-guide.github.io/
+[rpmp] RPM Package Manager Project Page  
+<https://rpm.org>
+
+[rpgu] RPM Packaging Guide  
+<https://rpm-packaging-guide.github.io>
