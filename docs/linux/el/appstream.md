@@ -1,4 +1,4 @@
-# Modules
+# AppStream
 
 AppStream (Application Stream) allows to install **multiple versions of a user
 space component**.
