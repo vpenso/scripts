@@ -21,10 +21,8 @@ command -v nvim >/dev/null && {
         # use the AppImage if present
         test -f $HOME/bin/nvim.appimage \
                 && alias nvim=nvim.appimage
-        # prefer the latest version if present
-#        test -f $HOME/bin/nvim-nightly.appimage \
-#              && alias nvim=nvim-nightly.appimage
 
+        export EDITOR=nvim
         alias v=nvim
         alias v0='nvim --clean'
 
