@@ -8,6 +8,8 @@ the [RPM package manager](rpm.md).
   RHEL** with CentOS Stream. 
 * Fedora [CoreOS](coreos.md) is an RPM based distribution within the ecosystem
   build to host containerized workloads on an immutable infrastructure.
+* Package [errata](errata.md) are listings from the package manager (with
+  updates for when CVE’s and vulnerabilities are found.
 
 [Thinking About Binary Compatibility and CentOS Stream](https://indico.cern.ch/event/1078853/contributions/4576225/attachments/2332405/3975079/StreamCompat-RPM.pdf) (HEPIX 2021/10/25):
 
