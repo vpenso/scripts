@@ -8,8 +8,8 @@ The name RPM refers to `.rpm` file format and the package manager program itself
 
 RPMs are often collected centrally in one or more [RPM
 repository](rpm-repos.md). Several front-ends to RPM ease the process of
-obtaining and installing RPMs from repositories such as [DNF](dnf.md) and its
-predecessor [Yum](yum.md).
+obtaining and installing RPMs from repositories such as [`dnf`](dnf.md) and its
+predecessor [`yum`](yum.md).
 
 Packages use following name specification:
 

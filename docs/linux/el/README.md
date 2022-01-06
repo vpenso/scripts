@@ -14,7 +14,9 @@ RPM Fusion            | https://rpmfusion.org
 OpenHPC               | https://github.com/openhpc/ohpc
 
 The **[CentOS Project](centos.md) provides an upstream distribution the RHEL**
-with CentOS Stream.
+with CentOS Stream. Fedora [CoreOS](coreos.md) is an RPM based distribution 
+within the ecosystem build to host containerized workloads on an immutable
+infrastructure.
 
 ## Downstream RHEL
 
