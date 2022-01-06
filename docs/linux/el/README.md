@@ -1,7 +1,18 @@
 # Enterprise Linux
 
-[Red Hat](https://www.redhat.com) compatible Linux distributions based on
+Enterprise Linux (EL) broadly references [Red Hat Enterprise
+Linux](https://www.redhat.com) (RHEL) compatible Linux distributions based on
 the [RPM package manager](rpm.md).
+
+* The **[CentOS Project](centos.md) provides an upstream distribution the
+  RHEL** with CentOS Stream. 
+* Fedora [CoreOS](coreos.md) is an RPM based distribution within the ecosystem
+  build to host containerized workloads on an immutable infrastructure.
+
+[Thinking About Binary Compatibility and CentOS Stream](https://indico.cern.ch/event/1078853/contributions/4576225/attachments/2332405/3975079/StreamCompat-RPM.pdf) (HEPIX 2021/10/25):
+
+* RHEL updates are published in point releases on a scheduled interval. CentOS Stream is published continuously.
+* **Packages from CentOS Stream are headed into RHEL and can not violate the RHEL ABI/API guarantee.**
 
 List of RPM related package repositories:
 
@@ -13,15 +24,14 @@ Software Collections  | https://www.softwarecollections.org
 RPM Fusion            | https://rpmfusion.org
 OpenHPC               | https://github.com/openhpc/ohpc
 
-The **[CentOS Project](centos.md) provides an upstream distribution the RHEL**
-with CentOS Stream. 
+## User Community
 
-Fedora [CoreOS](coreos.md) is an RPM based distribution within the ecosystem
-build to host containerized workloads on an immutable infrastructure.
-
-## Major Users
+Enterprise Linux is widely used by commercial and public institutions. Many hardware and
+software vendors support RPM based Linux distributions.
 
 The High-Energy Physics (HEP) community is using [CERN "Enterprise Linux"](cern.md).
+
+Most High-Performance Computing (HPC) infrastructure is build with Enterprise Linux.
 
 CentOS Stream Deployment in a High Performance Computing Environment at Facebook AI Research (CentOS Dojo 2021/10)  
 <https://www.youtube.com/watch?v=20iZEJFARZs>
