@@ -1,16 +1,32 @@
+// disable the standard library using only the core crate
 #![no_std]
+
+// replace the operating system entry point
 #![no_main]
 
-use cortex_m_rt::entry;
-use panic_rtt_target as _;
+// implements the minimal startup and runtime for Cortex-M microcontrollers
+use cortex_m_rt::entry; // define the entry point of the program.
+
+// implementation of the RTT (Real-Time Transfer) I/O protocol to 
+// transfer data between host and target device (probe)
 use rtt_target::{rtt_init_print, rprintln};
-use microbit::{board::Board, hal::timer::Timer};
+// logs panic messages over RTT
+use panic_rtt_target as _;
+
+// contains a range of hardware abstraction traits which can are
+// implemented by board specific crates.
 use embedded_hal::{blocking::delay::DelayMs, digital::v2::OutputPin};
 
-#[entry]
-fn main() -> ! {
+use microbit::{board::Board, hal::timer::Timer};
 
+#[entry]
+fn main() -> ! {  // return type of ! means that the function cannot return. 
+                  // An easy way to implement this is to use an infinite loop.
+
+    // RTT convenience macro initializes printing on channel 0
     rtt_init_print!();
+    rprintln!("Boot board...");
+    
     // return an instance of the board the first time it is called
     let mut board = Board::take().unwrap();
 

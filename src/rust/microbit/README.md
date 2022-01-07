@@ -2,6 +2,9 @@ Rust Embedded for Micro:Bit
 <https://docs.rust-embedded.org/discovery/microbit>  
 <https://github.com/rust-embedded/discovery>
 
+MicroRust  
+<https://droogmic.github.io/microrust/>
+
 ### Prerequisites
 
 Install additional components for embedded development and configure the host:
@@ -20,6 +23,18 @@ sudo udevadm control --reload-rules
 ```
 
 Verify that development environment is work using the [hello_world](hello_world) example.
+
+### Cargo Embed
+
+> `cargo-embed` is the big brother of `cargo-flash`. It can also flash a target just like cargo-flash, but it can also open an RTT terminal as well as a GDB server.
+
+<https://docs.rs/crate/cargo-embed>
+
+* Configured via a `Embed.toml` in the project root cf. [cargo-embed/src/config/default.toml](https://github.com/probe-rs/cargo-embed/blob/master/src/config/default.toml)
+* RRT (real time transfers) between host and device
+  - Read/write ringbuffers accessible by target and the debug host
+
+[blink/](blink/) is a basic example for using RTT.
 
 ### Terminology
 
