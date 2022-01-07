@@ -21,7 +21,7 @@ impl Rectangle {
     }
 
     fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+        self.width >= other.width && self.height >= other.height
     }
 }
 
@@ -31,9 +31,20 @@ fn main() {
         height: 50
     };
 
-    println!("{:?}", big_rectangle);
-    println!("Area = {}", big_rectangle.area());
+    println!("{:?} with area {}", big_rectangle, big_rectangle.area());
+
     let small_rectanlge = Rectangle::square(20);
-    println!("{:?}", small_rectanlge);
-    println!("Can hold {}", big_rectangle.can_hold(&small_rectanlge));
+    println!("{:?} can hold big rectanlge? {}", 
+        small_rectanlge,
+        small_rectanlge.can_hold(&big_rectangle)
+    );
+
+    let similar_rectangle = Rectangle {
+        width: 100,
+        ..big_rectangle
+    };
+    println!("{:?} can hold big rectangle? {}", 
+        similar_rectangle,
+        similar_rectangle.can_hold(&big_rectangle)
+    );
 }
