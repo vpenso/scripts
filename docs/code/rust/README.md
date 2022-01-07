@@ -44,3 +44,6 @@ Language concepts...
 
 [cs140] CS140e - An Experimental Course on Operating Systems  
 <https://cs140e.sergio.bz/>
+
+[tkopr] Three Kinds of Polymorphism in Rust, 2022/01  
+<https://www.brandons.me/blog/polymorphism-in-rust>
