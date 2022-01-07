@@ -16,6 +16,7 @@ fn add(x: i32, y: i32) -> i32 {
 }
 ```
 
+
 **Declare new functions with `fn`** keyword followed by:
 
 * **`snake_case` function name**
@@ -32,7 +33,7 @@ Parameters are variables that are part of a function’s signature:
 Functions can **return values** to the code that calls them
 
 * Declare type of a return value with `->`
-* Return value synonymous with the value of the **final expression**
+* Return value synonymous with the value of the **final expression** (implicit return value)
 
 ```rust
 // a function with mutliple return values
@@ -43,3 +44,22 @@ fn main() {
     print!("{:?}",add_sub(1,2));
 }
 ```
+
+**Statements** return no value, while **expressions** return a value.
+
+Return expressions are denoted with the keyword `return`:
+
+```rust
+fn max(a: i32, b: i32) -> i32 {
+    if a > b {
+        return a;
+    }
+    return b;
+}
+
+fn main() {
+    println!("{}", max(27,64));
+}
+```
+
+Return as the last line of a function works, but is considered poor style.

@@ -1,10 +1,4 @@
-# Expressions
-
-**place expression** represents a memory location
-
-**value expression** represents an actual value
-
-## Match
+# Match
 
 > Rust provides pattern matching via the `match` keyword, which can be used like a C `switch`.
 
