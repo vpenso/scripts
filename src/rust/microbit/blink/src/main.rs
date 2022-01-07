@@ -1,11 +1,7 @@
 // disable the standard library using only the core crate
 #![no_std]
-
 // replace the operating system entry point
 #![no_main]
-
-// implements the minimal startup and runtime for Cortex-M microcontrollers
-use cortex_m_rt::entry; // define the entry point of the program.
 
 // implementation of the RTT (Real-Time Transfer) I/O protocol to 
 // transfer data between host and target device (probe)
@@ -17,9 +13,12 @@ use panic_rtt_target as _;
 // implemented by board specific crates.
 use embedded_hal::{blocking::delay::DelayMs, digital::v2::OutputPin};
 
+// contains the interface too the BBC micro:bit 
 use microbit::{board::Board, hal::timer::Timer};
 
-#[entry]
+// cortex_m_rt implements the minimal startup and runtime for Cortex-M 
+// microcontrollers,  and defines the entry point of the program.
+#[cortex_m_rt::entry]
 fn main() -> ! {  // return type of ! means that the function cannot return. 
                   // An easy way to implement this is to use an infinite loop.
 
