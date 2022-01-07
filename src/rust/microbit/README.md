@@ -11,22 +11,26 @@ Single Board Computer (SBC) [mbhw]
   - Sending and receiving serial data back and forth to your main computer (host)
   - SWD software debug interface
 
-Rust software stack for embedded programming on the MicroBit
+Rust software stack for embedded programming is Embedded HAL
 
-* Peripheral Access Crate (PAC) direct interface to the peripherals of the chip
-  - <https://docs.rs/nrf52833-pac>
-  - <https://github.com/nrf-rs/nrf-pacs>
+* Provides traits for common peripherals (GPIO, Timers, UART, etc.)
+* HALs implement `embedded-hal` traits usually by using PACs
+* Drivers use traits to talk with external devices
+
+As specific implementation for the nRF52 application processor
+
 * Hardware Abstraction Layer (HAL)  build up on top of the chip's PAC and
   provide an abstraction that is actually usable
   - <https://docs.rs/nrf52833-hal>
   - <https://github.com/nrf-rs/nrf-hal>
-* Board Support Crate (BSP) abstract a whole board (such as the micro:bit)
-  - <https://docs.rs/microbit>
-  - <https://github.com/nrf-rs/microbit>
-* Embedded HAL, core of the ecosystem
-  - Provides traits for common peripherals (GPIO, Timers, UART, etc.)
-  - HALs implement `embedded-hal` traits usually by using PACs
-  - Drivers use traits to talk with external devices
+* Peripheral Access Crate (PAC) direct interface to the peripherals of the chip
+  - <https://docs.rs/nrf52833-pac>
+  - <https://github.com/nrf-rs/nrf-pacs>
+
+The MicroBit board is implemented in a **Board Support Crate** (BSP)
+
+* <https://docs.rs/microbit>
+* <https://github.com/nrf-rs/microbit>
 
 
 ## Prerequisites
