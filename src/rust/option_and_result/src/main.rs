@@ -1,5 +1,5 @@
 
-// Check if a text string contains a specific character
+// Example function returning Option
 //
 fn contains(text: &str, char: char) -> Option<&str> {
     if text.chars().any( |c| c == char ) {
@@ -9,12 +9,52 @@ fn contains(text: &str, char: char) -> Option<&str> {
     }
 }
 
+#[test]
+fn test_contains() {
+    assert_eq!(contains("abc", 'c').unwrap(), "abc");
+}
+
+#[test]
+#[should_panic(expected = "Error message")]
+fn test_contains_panic() {
+    // text "abc" does not contain character 'd', returns None
+    // expect evaluates to the error message
+    contains("abc",'d').expect("Error message");
+}
+
+
+// Example function returning Result
+//
 fn is_even(number: i32) -> Result<bool,&'static str> {
     if number % 2 == 0{
         return Ok(true);
     } else {
-        return Err("Not an even");
+        return Err("not an even");
     }
+}
+
+#[test]
+fn test_is_even() {
+    assert_eq!(is_even(4).is_ok(), true);
+    assert_eq!(is_even(3).is_err(),true);
+}
+
+use core::num::ParseIntError;
+#[allow(dead_code)]
+fn add_str(x: &str, y: &str) -> Result<i32, ParseIntError> {
+    // use the question mark operator to unwrap a result...
+    // ..or to return with en ParseInError 
+    let x: i32 = x.parse()?;
+    let y: i32 = y.parse()?;
+    Ok(x + y)
+}
+
+#[test]
+fn test_add_str() {
+    // parses both string to integers and returns the sum
+    assert_eq!(add_str("2", "2").unwrap(), 4);
+    // parse a non numeral string results in an error
+    assert_eq!(add_str("2", "a").is_err(), true);
 }
 
 fn main() {
@@ -32,10 +72,10 @@ fn main() {
     // two is an even number...
     println!("Is two even? {}", is_even(2).unwrap()); // true
 
-    // three is an uneven number returning Err
+    // use unwrap_or_else to recover an Err from the is_even method
     let _ = is_even(3).unwrap_or_else(|err| { 
         // print error message
-        println!("Three {}", err);
+        println!("Three is {}", err);
         // return a bool type
         false
     } );
@@ -46,6 +86,7 @@ fn main() {
     }
     
 }
+
 
 #[test]
 fn test_result() {
@@ -62,17 +103,4 @@ fn test_result() {
     assert_eq!(r.ok(), None);
     assert_eq!(r.unwrap_or(10),10);
     assert_eq!(r.unwrap_or_default(),0);
-}
-
-#[test]
-#[should_panic(expected = "Error message")]
-fn test_contains_none() {
-    // text "abc" does not contain character 'd', returns None
-    // expect evaluates to the error message
-    contains("abc",'d').expect("Error message");
-}
-
-#[test]
-fn test_is_even_err() {
-    assert_eq!(is_even(3).is_err(),true);
 }

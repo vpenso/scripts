@@ -1,3 +1,5 @@
+# Option & Result
+
 Rust does not use exceptions or null values.
 
 The `Option<T>` and `Result<T, Err>` types are used to model fallible operations.
@@ -32,7 +34,9 @@ pub enum Result<T, E> {
 }
 ```
 
-Used `unwrap()` (or `expect(msg)`) helper methods during development...
+# Unwrap and Expect
+
+Helper methods during development...
 
 * `unwrap()` a value `Some(T)` or `Ok(T)` and return it or `panic`
 * `unwrap_err()` panic if the value is `Some(T)` or `Ok(T)`
@@ -40,18 +44,19 @@ Used `unwrap()` (or `expect(msg)`) helper methods during development...
 * `unwrap_or_default()` returns default type `T` for `None` or `Err(E)`
 * `unwrap_or_else(c)`  execute a closure `c` (anonymous function) for `None` or `Err(E)`
 
-`expect(msg)` works very similarly to `unwrap()` with the addition of a custom panic message.
+`expect(msg)` works very similarly to unwrap with the addition of a custom panic message:
 
 * "expect" a `Result<T,Err>` to be `Ok(T)`
 * "expect" an `Option<T>` to be `Some(T)` 
 
 Both of the above are debug tools not meant for production code.
 
-## ? Operator
-
-`?` operator can be used in functions that have a return type of `Result` or `Option`...
+`?` operator can be **used in functions** that have a return type of `Result` or `Option`...
 
 * ...for type that implements `std::ops::Try`
+* Unwraps valid values for `Some(T)` or `Ok(T)` or `return` immediately with `None` or `Err(E)`
+
+<https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator>
 
 # Chained transformations
 
