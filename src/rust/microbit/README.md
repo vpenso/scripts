@@ -64,6 +64,9 @@ Verify that development environment is work using the [hello_world](hello_world)
 * ...can open an RTT terminal as well as a GDB server.
   - RRT (real time transfers) between host and device
   - Read/write ringbuffers accessible by target and the debug host
+  - Uses [`rrt_target`][rrt] implementation 
+
+[rrt]: https://docs.rs/rtt-target
 
 Configured via a `Embed.toml` in the project root cf. [cargo-embed/src/config/default.toml](https://github.com/probe-rs/cargo-embed/blob/master/src/config/default.toml)
 

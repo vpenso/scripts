@@ -11,10 +11,16 @@ use panic_rtt_target as _;
 
 // contains a range of hardware abstraction traits which can are
 // implemented by board specific crates.
-use embedded_hal::{blocking::delay::DelayMs, digital::v2::OutputPin};
+use embedded_hal::{
+    blocking::delay::DelayMs, 
+    digital::v2::OutputPin
+};
 
 // contains the interface too the BBC micro:bit 
-use microbit::{board::Board, hal::timer::Timer};
+use microbit::{
+    board::Board, 
+    hal::timer::Timer
+};
 
 // cortex_m_rt implements the minimal startup and runtime for Cortex-M 
 // microcontrollers,  and defines the entry point of the program.
