@@ -1,13 +1,15 @@
-# Option
+Rust does not use exceptions or null values.
 
-Rust does not use exceptions or null values
+The `Option<T>` and `Result<T, Err>` types are used to model fallible operations.
 
-`Option` represent something or nothing by one of two values...
+_"Wrap" stuff you are not sure about, is this an error or not?_
+
+`Option<T>` represent something or nothing by one of two values...
 
 * ...some value `Some()` (of a given type) or...
 * ...no value `None`
 
-<https://doc.rust-lang.org/stable/std/option/>
+<https://doc.rust-lang.org/std/option/>
 
 ```rust
 pub enum Option<T> {
@@ -16,24 +18,46 @@ pub enum Option<T> {
 }
 ```
 
-Try to `unwrap()` some value and return it or `panic`:
+`Result<T,Err>`  represents successful or failure by one of two states...
+
+* ...success `Ok(T)` (of a given type) or...
+* ...error `Err(E)` of type error value
+
+<https://doc.rust-lang.org/std/result/>
 
 ```rust
-impl<T> Option<T> {
-    pub const fn unwrap(self) -> T {
-        match self {
-            Some(val) => val,
-            None => panic!("called `Option::unwrap()` on a `None` value"),
-        }
-    }
+pub enum Result<T, E> {
+    Ok(T),
+    Err(E),
 }
 ```
 
+Used `unwrap()` (or `expect(msg)`) helper methods during development...
 
+* `unwrap()` a value `Some(T)` or `Ok(T)` and return it or `panic`
+* `unwrap_err()` panic if the value is `Some(T)` or `Ok(T)`
+* `unwrap_or(v)` return the value of `Some(T)` or `Ok(T)`, or `v` for `None` or `Err(E)`
+* `unwrap_or_default()` returns default type `T` for `None` or `Err(E)`
+* `unwrap_or_else(c)`  execute a closure `c` (anonymous function) for `None` or `Err(E)`
 
-# Result
+`expect(msg)` works very similarly to `unwrap()` with the addition of a custom panic message.
 
-`Result`  represents successful or failure by one of two states...
+* "expect" a `Result<T,Err>` to be `Ok(T)`
+* "expect" an `Option<T>` to be `Some(T)` 
 
-* ...success `Ok()` (of a given type) or...
-* ...error `Err()` of type `Error`
+Both of the above are debug tools not meant for production code.
+
+## ? Operator
+
+`?` operator can be used in functions that have a return type of `Result` or `Option`...
+
+* ...for type that implements `std::ops::Try`
+
+# Chained transformations
+
+and_then, or_else, map, fold, for_each
+
+## References
+
+Unwrap and Expect in Rust  
+<https://jakedawkins.com/2020-04-16-unwrap-expect-rust/>
