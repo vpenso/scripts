@@ -58,11 +58,21 @@ Both of the above are debug tools not meant for production code.
 
 <https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator>
 
-# Chained transformations
+# Chained Transformations
 
-and_then, or_else, map, fold, for_each
+Combinator functions
+
+* `and_then(c)` calls a closure if `Some(t)` or `Ok(T)`
+* `or_else(c)` call a closure on `None` or `Err(E)`
+* `then(c)` call a closure regardless of the type
+* `map`
+* `fold`
+* `for_each`
 
 ## References
 
 Unwrap and Expect in Rust  
 <https://jakedawkins.com/2020-04-16-unwrap-expect-rust/>
+
+Using and_then and map combinators on the Rust Result Type   
+<https://hermanradtke.com/2016/09/12/rust-using-and_then-and-map-combinators-on-result-type.html>

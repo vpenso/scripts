@@ -14,7 +14,7 @@ fn test_result() {
 }
 
 // Example function returning Option
-//
+#[allow(dead_code)]
 fn contains(text: &str, char: char) -> Option<&str> {
     // return the input text if it contains char
     if text.chars().any( |c| c == char ) {
@@ -82,6 +82,12 @@ fn test_add_str() {
     assert_eq!(add_str("2", "2").unwrap(), 4);
     // parse a non numeral string results in an error
     assert_eq!(add_str("2", "a").is_err(), true);
+
+    // add_str returns Ok(4) used by and_then as input to return Ok(6)
+    assert_eq!(add_str("2","2").and_then(|x| Ok(x + 2)), Ok(6));
+    // the and_then closure is never called...
+    let result = add_str("x","1").and_then(|x| Ok(x));
+    assert_eq!(result.is_err(), true);
 }
 
 fn main() {
