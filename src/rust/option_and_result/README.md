@@ -34,7 +34,7 @@ pub enum Result<T, E> {
 }
 ```
 
-# Unwrap and Expect
+# Unwrap, Expect and ? Operator
 
 Helper methods during development...
 

@@ -1,9 +1,25 @@
+#[test]
+fn test_result() {
+    let r: Result<i32,&str> = Ok(100);
+    assert_eq!(r.unwrap(),100);
+    assert_eq!(r.is_ok(), true);
+    assert_eq!(r.ok(),Some(100));
+
+    let r: Result<i32,&str> = Err("Error message");
+    assert_eq!(r.unwrap_err(),"Error message");
+    assert_eq!(r.is_err(), true);
+    assert_eq!(r.ok(), None);
+    assert_eq!(r.unwrap_or(10),10);
+    assert_eq!(r.unwrap_or_default(),0);
+}
 
 // Example function returning Option
 //
 fn contains(text: &str, char: char) -> Option<&str> {
+    // return the input text if it contains char
     if text.chars().any( |c| c == char ) {
         return Some(text);
+    // return None if the input text does not contain char
     } else {
         return None;
     }
@@ -11,7 +27,14 @@ fn contains(text: &str, char: char) -> Option<&str> {
 
 #[test]
 fn test_contains() {
-    assert_eq!(contains("abc", 'c').unwrap(), "abc");
+    // returns Some(T) since "abc" contains 'a'
+    assert_eq!(contains("abc", 'a'), Some("abc"));
+    // unwrap a value
+    assert_eq!(contains("abc", 'a').unwrap(), "abc");
+    // unwrap or panic
+    assert_eq!(contains("abc", 'a').expect("Error"), "abc");
+    // return None since "abc" does not contain 'd'
+    assert_eq!(contains("abc", 'd'), None);
 }
 
 #[test]
@@ -35,7 +58,11 @@ fn is_even(number: i32) -> Result<bool,&'static str> {
 
 #[test]
 fn test_is_even() {
-    assert_eq!(is_even(4).is_ok(), true);
+    // 4 is an even number
+    assert_eq!(is_even(2).is_ok(), true);
+    // unwrap Ok(T) yields true 
+    assert_eq!(is_even(2).unwrap(), true);
+    // 3 is uneven returns with an error
     assert_eq!(is_even(3).is_err(),true);
 }
 
@@ -58,19 +85,6 @@ fn test_add_str() {
 }
 
 fn main() {
-    let text = contains("abc",'a');
-    let none = contains("abc",'d');
-
-    println!("{:?}", text);          // Some(abc)
-    println!("{:?}", none);          // None
-    println!("{:?}", text.unwrap()); // "abc"
-
-    // match character 'a' in text "abc", expect unwraps 'abc' without error
-    let text = contains("abc", 'a').expect("Error message");
-    println!("{}",text); // abc
-
-    // two is an even number...
-    println!("Is two even? {}", is_even(2).unwrap()); // true
 
     // use unwrap_or_else to recover an Err from the is_even method
     let _ = is_even(3).unwrap_or_else(|err| { 
@@ -80,27 +94,5 @@ fn main() {
         false
     } );
     
-    match contains("abc",'a') {
-        Some(text) => println!("{:?}", text),    // "abc"
-        None => println!("Character not in text!"),
-    }
-    
 }
 
-
-#[test]
-fn test_result() {
-    // test for an Ok(T) on a Result
-    let r: Result<i32,&str> = Ok(100);
-    assert_eq!(r.unwrap(),100);
-    assert_eq!(r.is_ok(), true);
-    assert_eq!(r.ok(),Some(100));
-
-    // test for an Err(E) on a Result
-    let r: Result<i32,&str> = Err("Error message");
-    assert_eq!(r.unwrap_err(),"Error message");
-    assert_eq!(r.is_err(), true);
-    assert_eq!(r.ok(), None);
-    assert_eq!(r.unwrap_or(10),10);
-    assert_eq!(r.unwrap_or_default(),0);
-}
