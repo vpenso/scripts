@@ -241,13 +241,17 @@ nnoremap <silent> <Leader>g :Commits<CR>
 
 " error messages in the command-line
 highlight ErrorMsg ctermfg=52 ctermbg=223
+
 " pop menu normal item
 highlight Pmenu ctermbg=255
 highlight PmenuSel ctermfg=88 ctermbg=253
+
 " prompt and yes/no questions
 highlight Question ctermfg=22
+
 " visual selection mode
 hi Visual ctermfg=none ctermbg=227
+
 " horizontal line at current cursor position
 hi CursorLine ctermbg=230 cterm=none
 " vertical line at current cursor position
@@ -264,6 +268,9 @@ hi SpellBad     ctermfg=166 ctermbg=223 cterm=bold
 hi NonText      ctermfg=124
 " nbsp, tab and trail
 hi SpecialKey   ctermfg=124 cterm=bold
+
+" last search pattern
+highlight Search ctermfg=18 ctermbg=152 cterm=bold
 
 hi Comment      ctermfg=247
 hi Number       ctermfg=166

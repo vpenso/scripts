@@ -122,13 +122,13 @@ p                paste from "
 ## Search
 
 ```
-,/                clear search highlighting
+/pattern<CR>      forward search word
+?pattern<CR>      backward search word 
+<leader> /        clear search highlighting
 f{char}           forward search char
 F{char}           backward search char
 ;                 repeat in same direction
 ,                 repeat in opposite direction
-/pattern<CR>      forward search word
-?pattern<CR>      backward search word 
 n                 next match
 N                 previous match
 *                 next word under cursor
