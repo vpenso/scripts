@@ -68,6 +68,9 @@ Plug 'mboughaba/i3config.vim'
 " Shows git diff markers in the sign column
 Plug 'airblade/vim-gitgutter'
 
+" platform for the completion function
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " :CocInfo
+
 " official support for Rust
 Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
