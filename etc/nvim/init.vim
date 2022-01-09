@@ -184,7 +184,7 @@ let g:lightline = {
       \ 'colorscheme': 'ayu_light',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             ['syntastic', 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+      \             ['syntastic', 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified', 'spell' ] ]
       \ },
       \ 'component_function': {
       \   'cocstatus': 'coc#status',
@@ -239,6 +239,13 @@ nnoremap <silent> <Leader>g :Commits<CR>
 " SYNTAX HIGHLIGHTING COLORS
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" error messages in the command-line
+highlight ErrorMsg ctermfg=52 ctermbg=223
+" pop menu normal item
+highlight Pmenu ctermbg=255
+highlight PmenuSel ctermfg=88 ctermbg=253
+" prompt and yes/no questions
+highlight Question ctermfg=22
 " visual selection mode
 hi Visual ctermfg=none ctermbg=227
 " horizontal line at current cursor position
