@@ -90,18 +90,71 @@ call plug#end()
 " PLUGIN CONFIGURATION
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" install COC extensions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" COC language server
+
+" Install COC extensions
 let g:coc_global_extensions = [ 'coc-css', 'coc-html', 'coc-json', 'coc-git', 'coc-rust-analyzer' ]
 
-" Use tab for trigger COC completion with characters ahead and navigate.
+" Use TAB for trigger COC completion, and TAB and Shift-TAB to navigate
+" completion list 
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" select a custom theme
-let g:lightline = { 'colorscheme': 'ayu_light', }
+" keep normal tab functioning
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Make Enter auto-select the first completion item
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" color of the floating window
+:highlight CocFloating ctermbg=255
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Lightline
+
+" COC status line integration
+"   https://github.com/neoclide/coc.nvim/wiki/Statusline-integration
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
+" configuration
+let g:lightline = {
+      \ 'colorscheme': 'ayu_light',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
+      \ },
+      \ }
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Configure the vim-gitgutter plugin
 let g:gitgutter_terminal_reports_focus=0
