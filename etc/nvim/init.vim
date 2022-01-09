@@ -140,6 +140,22 @@ endfunction
 :highlight CocFloating ctermbg=255
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Syntastic Plugin Configuration
+"      :SyntaticInfo to check state
+
+" automatically run on file save
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" Ctrl-n for next error
+nnoremap <c-n> :lnext<CR>
+" Ctrl-m for previous error
+nnoremap <c-m> :lprev<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" Lightline
 
 " COC status line integration
@@ -153,13 +169,28 @@ let g:lightline = {
       \ 'colorscheme': 'ayu_light',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+      \             ['syntastic', 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
       \ },
       \ 'component_function': {
       \   'cocstatus': 'coc#status',
       \   'currentfunction': 'CocCurrentFunction'
       \ },
+      \ 'component_expand': {
+      \   'syntastic': 'SyntasticStatuslineFlag',
+      \ },
+      \ 'component_type': {
+      \   'syntastic': 'error',
+      \ },
       \ }
+
+augroup AutoSyntastic
+  autocmd!
+  autocmd BufWritePost *.c,*.cpp call s:syntastic()
+augroup END
+function! s:syntastic()
+  SyntasticCheck
+  call lightline#update()
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Configure the vim-gitgutter plugin
