@@ -193,3 +193,29 @@ d                delete
 o                toggle cursor to opposite corner
 ```
 
+## Plugins
+
+FZF fuzzy finder...
+
+```
+<C-f>            search file in git repo
+                 in insert mode search current file
+<leader> f       search content of file
+<leader> g       search git commit history
+``
+
+Syntactic run on save...
+
+```
+<C-n>            next error
+<C-p>            previous error
+```
+
+COC language server...
+
+```
+<TAB>          for completion
+<CR>           (enter) to select first completion item
+<TAB>, <S-TAB> to navigate completion
+K              show documentation for element under cursor
+```
