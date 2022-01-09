@@ -202,7 +202,7 @@ FZF fuzzy finder...
                  in insert mode search current file
 <leader> f       search content of file
 <leader> g       search git commit history
-``
+```
 
 Syntactic run on save...
 
