@@ -43,7 +43,7 @@ au FocusGained * :set rnu
 " special string "<leader>" can be used.  It is replaced with the
 " string value of "mapleader". If "mapleader" is not set or empty,
 " a backslash ('\') is used instead as default.
-let mapleader = ' '
+let mapleader = ' ' " space bar is map leader
 
 " highlight invisible characters
 "
@@ -54,8 +54,12 @@ set listchars=tab:▸␣,eol:¬,space:·,nbsp:␣,trail:•,precedes:«,extends:
 " Clearing highlighted searches
 nmap <silent> <leader>/ :nohlsearch<CR>
 
+
+
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" PLUGINS
+" PLUGINS INSTALLATION
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 call plug#begin('~/.config/nvim/autoload/plugged')
@@ -85,6 +89,11 @@ Plug 'junegunn/fzf.vim'
 "    :PlugClean        Remove unlisted plugins
 " Initialize plugin system
 call plug#end()
+
+
+
+
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGURATION
@@ -152,11 +161,9 @@ let g:lightline = {
       \ },
       \ }
 
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " Configure the vim-gitgutter plugin
+"
 let g:gitgutter_terminal_reports_focus=0
 set updatetime=100
 hi SignColumn      ctermbg=231
@@ -164,15 +171,23 @@ hi GitGutterAdd    ctermfg=22
 hi GitGutterChange ctermfg=21
 hi GitGutterDelete ctermfg=27
 
-" key mapping for fzf.vim
-" search all filenames in this git repository
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" FZF (Fuzzy Finder)
+
+" Normal mode Ctrl-f - search all filenames in this git repository
 nnoremap <silent> <C-f> :GFiles<CR>
-" search in current file wehn in insert mode
+" Insert mode Ctrl-f - search in current file
 inoremap <C-f> <Esc><Esc> :BLines<CR>
 " search content of files
 nnoremap <silent> <Leader>f :Rg<CR> 
 " search in git commit history
 nnoremap <silent> <Leader>g :Commits<CR>
+
+
+
+
+
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SYNTAX HIGHLIGHTING COLORS
