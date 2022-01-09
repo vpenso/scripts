@@ -1,9 +1,11 @@
 # Vim
 
+Mapleader  is spacebar:
+
 ```
-,c               edit ~/.vimrc
-,s               source ~/.vimrc
-,l               toggle invisible characters
+<leader> c       edit configuration file
+<leader> s       source configuration file
+<leader> l       toggle invisible characters
 gx               open URL under cursor in web browser
 K                open man page for command under cursor
 ```
@@ -21,9 +23,9 @@ p,P              paste after/below of before/above the cursor
 Spelling 
 
 ```
-,n               toggle line numbers
-,d               toggle german spelling
-,e               toggle english spelling
+<leader> n       toggle line numbers
+<leader> d       toggle german spelling
+<leader> e       toggle english spelling
 z=               list alternatives if word is incorrect
 zG               add the word to the spelling file
 :digraphs        list digraph characters

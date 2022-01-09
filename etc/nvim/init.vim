@@ -39,13 +39,21 @@ au InsertLeave * :set rnu
 au FocusLost * :set nu
 au FocusGained * :set rnu
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MAPLEADER
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " To define a mapping which uses the "mapleader" variable, the
 " special string "<leader>" can be used.  It is replaced with the
 " string value of "mapleader". If "mapleader" is not set or empty,
 " a backslash ('\') is used instead as default.
 let mapleader = ' ' " space bar is map leader
 
-" highlight invisible characters
+" edit/source configuration file
+nmap <leader>s :source $HOME/.config/nvim/init.vim
+nmap <leader>c :e $SCRIPTS/etc/nvim/init.vim
+
+" Highlight invisible characters
 "
 " shortcut to rapidly toggle `set list`
 nmap <leader>l :set list!<CR>
@@ -54,7 +62,14 @@ set listchars=tab:▸␣,eol:¬,space:·,nbsp:␣,trail:•,precedes:«,extends:
 " Clearing highlighted searches
 nmap <silent> <leader>/ :nohlsearch<CR>
 
+" Spelling
+"
+" switch between German and English spelling
+nnoremap <leader>d :setlocal spell! spelllang=de<CR>
+nnoremap <leader>e :setlocal spell! spelllang=en<CR>
 
+" toggle relative line numbers
+nnoremap <leader>n :set invnumber invrelativenumber<CR>
 
 
 
