@@ -58,7 +58,7 @@ export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 # TODO: specifically check for the plugin
 if [ -f ~/.zsh/antigen.zsh ]
 then
-        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code) $(git_super_status)\n>>> '
+        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code) $(git_super_status)\n\e[1;31m>\e[0m\e[1;33m>\e[0m\e[1;34m>\e[0m '
 else
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m\n>>> '
 fi
