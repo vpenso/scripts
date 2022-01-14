@@ -55,10 +55,11 @@ export ZSH_THEME_GIT_PROMPT_UNTRACKED="%{…%G%}"
 export ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
 export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 
+autoload -U colors && colors
 # TODO: specifically check for the plugin
 if [ -f ~/.zsh/antigen.zsh ]
 then
-        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code) $(git_super_status)\n\e[1;31m>\e[0m\e[1;33m>\e[0m\e[1;34m>\e[0m '
+        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code) $(git_super_status)\n%{$fg[red]%}>%{$reset_color%}%{$fg[black]%}>%{$reset_color%}%{$fg[blue]%}>%{$reset_color%} '
 else
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m\n>>> '
 fi
