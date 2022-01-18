@@ -292,7 +292,7 @@ hi shDerefSimple  ctermfg=34
 hi shCommandSub   ctermfg=31 ctermbg=none cterm=bold
 hi shSpecial      ctermfg=124
 
-# RPM spec files
+" RPM spec files
 hi specGlobalMacro ctermfg=97
 
 hi htmlTag                        ctermfg=241
