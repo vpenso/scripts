@@ -284,6 +284,7 @@ hi PreProc      ctermfg=33   cterm=bold
 hi Type         ctermfg=160
 hi Special      ctermfg=92
 hi Error        ctermfg=none ctermbg=none
+hi Define       ctermfg=58
 
 hi shQuote        ctermfg=241
 hi shOption       ctermfg=31
@@ -291,11 +292,15 @@ hi shDerefSimple  ctermfg=34
 hi shCommandSub   ctermfg=31 ctermbg=none cterm=bold
 hi shSpecial      ctermfg=124
 
+# RPM spec files
+hi specGlobalMacro ctermfg=97
+
 hi htmlTag                        ctermfg=241
 hi htmlEndTag                     ctermfg=241
 hi htmlH3                         ctermfg=243 cterm=bold
 hi htmlLink                       ctermfg=255 cterm=bold
 hi htmlSpecialChar                ctermfg=166
+
 hi cssStyle                       ctermfg=241
 hi cssDefinition                  ctermfg=248
 hi cssBraces                      ctermfg=241
