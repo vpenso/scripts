@@ -1,7 +1,7 @@
 export PANDOC_CSS=markdown
 export PANDOC_OPTS=
 
-function md2html() {
+function pandoc-md2html() {
         local file=${1:?Specify markdown input file}
         local ofile=${1%.*}.html
         pandoc --standalone \
