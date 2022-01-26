@@ -58,9 +58,11 @@ export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 
 
 prompt_additions() {
-
-	[[ -z "$PROMPT_ADDITIONS" || "PROMPT_ADDITIONS" = "" ]] && return;
-        echo " \e[38;5;233m\e[48;5;254m $PROMPT_ADDITIONS \e[0m"
+        local prompt_additions=""
+        # read environment variables prefixed with PROMPT_ADDITIONS and trim to a single line
+        prompt_additions=$(env | grep PROMPT_ADDITIONS | cut -d'=' -f2 | sort | tr '\n' ' ')
+	[[ "$prompt_additions" = "" ]] && return;
+        echo " \e[38;5;233m\e[48;5;254m $prompt_additions\e[0m"
 }
 
 autoload -U colors && colors
