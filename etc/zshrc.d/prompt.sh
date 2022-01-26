@@ -55,11 +55,19 @@ export ZSH_THEME_GIT_PROMPT_UNTRACKED="%{…%G%}"
 export ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
 export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 
+
+
+prompt_additions() {
+
+	[[ -z "$PROMPT_ADDITIONS" || "PROMPT_ADDITIONS" = "" ]] && return;
+        echo " \e[38;5;233m\e[48;5;254m $PROMPT_ADDITIONS \e[0m"
+}
+
 autoload -U colors && colors
 # TODO: specifically check for the plugin
 if [ -f ~/.zsh/antigen.zsh ]
 then
-        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code) $(git_super_status)\n%{$fg[red]%}>%{$reset_color%}%{$fg[black]%}>%{$reset_color%}%{$fg[blue]%}>%{$reset_color%} '
+        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code)$(git_super_status)$(prompt_additions)\n%{$fg[red]%}>%{$reset_color%}%{$fg[black]%}>%{$reset_color%}%{$fg[blue]%}>%{$reset_color%} '
 else
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m\n>>> '
 fi
