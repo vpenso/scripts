@@ -62,7 +62,7 @@ prompt_additions() {
         # read environment variables prefixed with PROMPT_ADDITIONS and trim to a single line
         prompt_additions=$(env | grep PROMPT_ADDITIONS | cut -d'=' -f2 | sort | tr '\n' ' ')
 	[[ "$prompt_additions" = "" ]] && return;
-        echo " \e[38;5;233m\e[48;5;254m $prompt_additions\e[0m"
+        echo " \e[38;5;23m$prompt_additions\e[0m"
 }
 
 autoload -U colors && colors
