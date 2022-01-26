@@ -66,11 +66,20 @@ sudo apt install -y libvirt-daemon-system vagrant vagrant-libvirt vagrant-mutate
 Install on Fedora...
 
 ```bash
-sudo dnf install -y @virtualization @vagrant
+>>> sudo dnf install -y @virtualization @vagrant
 # add yourself to the `libvirt` group
-sudo gpasswd -a ${USER} libvirt && newgrp libvirt
-# start the service
+>>> sudo gpasswd -a ${USER} libvirt && newgrp libvirt
+# configure the libvirt service to run with your user ID (here illustrated with ID jdow)
+>>> sudo grep -e '^user' -e '^group' /etc/libvirt/qemu.conf
+user = "jdow"
+group = "jdow"
+```
+
+Start the service, and make sure to use the `qemu:///system` instance:
+
+```
 sudo systemctl enable --now  libvirtd
+export LIBVIRT_DEFAULT_URI=qemu:///system
 ```
 
 Use...
