@@ -199,7 +199,7 @@ vagrant ssh ${name:-}
 Append commands to be executed:
 
 ```bash
-vagrand ssh ${name:-} -- ls -l
+vagrant ssh ${name:-} -- ls -l
 ```
 
 Use `ssh-config` to copy files from localhost with `scp`
