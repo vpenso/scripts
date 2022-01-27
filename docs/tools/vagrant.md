@@ -174,6 +174,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     name = nodes[num]
     config.vm.define "#{name}" do |node|
       node.vm.hostname = name
+      node.vm.box = "centos/7"
       node.vm.network "private_network", ip: "192.168.18.#{10+num}"
     end
   end
