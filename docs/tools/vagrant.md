@@ -202,7 +202,7 @@ Append commands to be executed:
 vagrant ssh ${name:-} -- ls -l
 ```
 
-Use `ssh-config` to copy files from localhost with `scp`
+Use `ssh-config` to copy files from localhost with `scp`:
 
 ```bash
 vagrant ssh-config > ssh-config
@@ -213,8 +213,8 @@ scp -F ssh-config vagrant@${name:-default}:/bin/bash /tmp
 
 Typically virtual machines are given a private network address:
 
-* Multiple machines can shared the same sub-network
-* Configuration of IP address can be static of via DHCP
+* Multiple machines can share the same sub-network
+* Configuration of IP addresses can be static or via DHCP
 
 ```ruby
 # automatic assignment of IP via DHCP
