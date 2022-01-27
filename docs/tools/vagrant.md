@@ -82,6 +82,9 @@ sudo systemctl enable --now  libvirtd
 export LIBVIRT_DEFAULT_URI=qemu:///system
 ```
 
+Ensure user is in the libvirt group, otherwise relogin or reboot:  
+`groups | grep libvirt`
+
 Use...
 
 ```bash
