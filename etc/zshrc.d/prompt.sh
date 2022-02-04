@@ -40,12 +40,12 @@ nice_exit_code() {
 		22)  sig_name=TTOU ;;
 	esac
 
-	echo "$ZSH_PROMPT_EXIT_SIGNAL_PREFIX${exit_status}|${sig_name:-$exit_status}$ZSH_PROMPT_EXIT_SIGNAL_SUFFIX";
+	echo "$ZSH_PROMPT_EXIT_SIGNAL_PREFIX${exit_status}:${sig_name:-$exit_status}$ZSH_PROMPT_EXIT_SIGNAL_SUFFIX ";
 }
 
 export ZSH_THEME_GIT_PROMPT_PREFIX=""
 export ZSH_THEME_GIT_PROMPT_SUFFIX=""
-export ZSH_THEME_GIT_PROMPT_SEPARATOR="|"
+export ZSH_THEME_GIT_PROMPT_SEPARATOR=":"
 export ZSH_THEME_GIT_PROMPT_CLEAN="-"
 export ZSH_THEME_GIT_PROMPT_STAGED="%F{32}*"
 export ZSH_THEME_GIT_PROMPT_CONFLICTS="%F{32}X"
