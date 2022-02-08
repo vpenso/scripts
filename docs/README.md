@@ -40,6 +40,32 @@ Allows you to create slides, and articles with less effort.
 
 ---
 
+## Human technology: Text files
+
+> It is a well-known engineering principle, that you should always use the
+> weakest technology capable of solving your problem - the weakest technology
+> is likely the cheapest, easiest to maintain, extend or replace and there are
+> no sane arguments for using anything else.
+
+> The main problem with this principle is marketing - few people would sell you
+> a 10$ product that can solve your problem for ever, when they can sell you a
+> 1000$ product, with 10$ per month maintenance cost, that will become obsolete
+> after 10 years. If you listen to the “experts” you would likely end up not
+> with the simplest, but with the most advanced technology.
+
+> And with software the situation is particularly bad, because the simplest
+> technologies often cost zero, and so they have zero marketing budget. And
+> since nobody would be benefiting from convincing you to use something that
+> does not cost anything, nobody is actively selling those. In this post, I
+> will try to fill that gap by reviewing some technologies for web publishing
+> that are based on plain text and putting forward their benefits. Read on to
+> understand why and how you should write everything you write in plain text
+> files and self-publish them on your own website.
+
+[aon]: https://boris-marinov.github.io/text/
+
+---
+
 ## Example:  Todo List
 
 [Todo.txt][tx] is a task list format in plain text:
@@ -83,17 +109,22 @@ Why use [Markdown][md] for plain text formating?
 
 **Alternatives are [ASCIIdoc][ad] or [Textile][tl]**
 
-**Markdown Ecosystem**
+Conversion to other formats:
 
-* Conversion to other formats: 
-  - [Pandoc](https://github.com/jgm/pandoc)  a universal document converter
-  - [mkdocs](https://github.com/mkdocs/mkdocs/) project documentation with Markdown
-  - [ReadTheDocs](https://github.com/rtfd/readthedocs.org) simplified software documentation
-  - [MarkText](https://github.com/marktext/marktext), [PanWriter](https://panwriter.com)
-  - [R Markdown: The Definitive Guide](https://github.com/rstudio/rmarkdown-book)
-  - [Jupyter Book](https://jupyterbook.org/intro.html) publication-quality books and documents from computational material
-  - [GitHub Flavored Markdown](https://github.github.com/gfm/),
-    [GitLab Markdown](https://docs.gitlab.com/ee/user/markdown.html)
+- [Pandoc](https://github.com/jgm/pandoc)  a universal document converter
+- [MarkText](https://github.com/marktext/marktext), [PanWriter](https://panwriter.com)
+- [GitHub Flavored Markdown](https://github.github.com/gfm/),
+  [GitLab Markdown](https://docs.gitlab.com/ee/user/markdown.html)
+
+Ecosystem for authoring documents:
+
+Tool                | Description
+--------------------|--------------------------------
+[Jupyter Book][jp]  | Books, articles [Jupyter Notebooks](https://jupyter.org/)
+[Livemark][lm]      | Books, blogs (background from data journalism)
+[R Markdown][rm]    | Books, articles, slides, blogs (originated from the R community)
+[MkDocs][mk]        | Software Documentation
+[ReadTheDocs][rdoc] | Software documentation
 
 [ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
 [cm]: https://commonmark.org/
@@ -101,6 +132,11 @@ Why use [Markdown][md] for plain text formating?
 [gm]: https://help.github.com/categories/writing-on-github/
 [md]: https://en.m.wikipedia.org/wiki/Markdown
 [tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
+[jp]: https://jupyterbook.org
+[lm]: https://livemark.frictionlessdata.io
+[mk]: https://github.com/mkdocs/mkdocs
+[rm]: https://github.com/rstudio/rmarkdown-book
+[rdoc]: https://github.com/rtfd/readthedocs.org
 
 ---
 
