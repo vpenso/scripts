@@ -38,6 +38,9 @@ Allows you to create slides, and articles with less effort.
 [wy]: https://en.wikipedia.org/wiki/WYSIWYG
 [cu]: https://www.gnu.org/software/coreutils/manual/coreutils.html
 
+There's no such thing as Plain Text, Dylan Beattie  
+<https://www.youtube.com/watch?v=oYd2KkuZLbE>
+
 ---
 
 ## Human technology: Text files
