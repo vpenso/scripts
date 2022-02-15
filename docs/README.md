@@ -123,19 +123,22 @@ Ecosystem for authoring documents:
 
 Tool                | Description
 --------------------|--------------------------------
-[Jupyter Book][jp]  | Books, articles [Jupyter Notebooks](https://jupyter.org/)
+[Jupyter Book][jp]  | Books, articles with [Jupyter Notebooks](https://jupyter.org/)
+[Jupytext][jupy]    | Jupyter notebooks were plain text documents
 [Livemark][lm]      | Books, blogs (background from data journalism)
 [R Markdown][rm]    | Books, articles, slides, blogs (originated from the R community)
 [MkDocs][mk]        | Software Documentation
 [ReadTheDocs][rdoc] | Software documentation
 
 [ad]: https://en.m.wikipedia.org/wiki/AsciiDoc
-[cm]: https://commonmark.org/
+[af]: https://asciiflow.com
+[cm]: https://commonmark.org
 [dc]: https://en.m.wikipedia.org/wiki/Document
 [gm]: https://help.github.com/categories/writing-on-github/
 [md]: https://en.m.wikipedia.org/wiki/Markdown
 [tl]: https://en.m.wikipedia.org/wiki/Textile_(markup_language)
 [jp]: https://jupyterbook.org
+[jupy]: https://jupytext.readthedocs.io
 [lm]: https://livemark.frictionlessdata.io
 [mk]: https://github.com/mkdocs/mkdocs
 [rm]: https://github.com/rstudio/rmarkdown-book
