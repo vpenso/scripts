@@ -40,10 +40,10 @@ nice_exit_code() {
 		22)  sig_name=TTOU ;;
 	esac
 
-	echo "$ZSH_PROMPT_EXIT_SIGNAL_PREFIX${exit_status}:${sig_name:-$exit_status}$ZSH_PROMPT_EXIT_SIGNAL_SUFFIX ";
+	echo "\e[38;5;23mexit\e[0m:${exit_status}:${sig_name:-$exit_status}$ZSH_PROMPT_EXIT_SIGNAL_SUFFIX ";
 }
 
-export ZSH_THEME_GIT_PROMPT_PREFIX=""
+export ZSH_THEME_GIT_PROMPT_PREFIX="\e[38;5;23mgit\e[0m:"
 export ZSH_THEME_GIT_PROMPT_SUFFIX=""
 export ZSH_THEME_GIT_PROMPT_SEPARATOR=":"
 export ZSH_THEME_GIT_PROMPT_CLEAN="-"
@@ -60,7 +60,7 @@ export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 prompt_additions() {
         local prompt_additions=""
         # read environment variables prefixed with PROMPT_ADDITIONS and trim to a single line
-        prompt_additions=$(env | grep PROMPT_ADDITIONS | cut -d'=' -f2 | sort | tr '\n' '·')
+        prompt_additions=$(env | grep PROMPT_ADDITIONS | cut -d'=' -f2 | sort | sed -z 's/\n/·/g' | sed 's/.$//')
 	[[ "$prompt_additions" = "" ]] && return;
         echo " \e[38;5;23menv\e[0m:$prompt_additions"
 }

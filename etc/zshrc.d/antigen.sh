@@ -21,7 +21,7 @@ then
         antigen bundle zsh-users/zsh-completions           # https://github.com/zsh-users/zsh-completions
         antigen bundle zsh-users/zsh-autosuggestions       # https://github.com/zsh-users/zsh-autosuggestions
         antigen bundle zsh-users/zsh-syntax-highlighting   # https://github.com/zsh-users/zsh-syntax-highlighting
-        antigen bundle olivierverdier/zsh-git-prompt
+        antigen bundle starcraftman/zsh-git-prompt
         # install packages
         antigen apply
 
