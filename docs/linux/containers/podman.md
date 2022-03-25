@@ -39,23 +39,70 @@ podman image ls $name
 podman run -dit -p 80:80 $name
 ```
 
-## Rootless
+## Container Images
 
-```bash
-dnf install slirp4netns fuse3-devel
-# check the storage driver
-grep "driver.*=.*overlay" /etc/containers/storage.conf
-# check the number of available user namespaces
-cat /proc/sys/user/max_user_namespaces
-# configure the ID space for a user
-usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $user
-grep $user /etc/sub{uid,gid}
+Search for images on remote registries with `search` sub-command:
+
+```shell
+# search with filter
+>>> podman search --filter=is-official rockylinux
+INDEX       NAME                          DESCRIPTION                         STARS       OFFICIAL    AUTOMATED
+docker.io   docker.io/library/rockylinux  The official build of Rocky Linux.  23          [OK]        
+# list tags of a specific image
+>>> podman search --list-tags quay.io/rockylinux/rockylinux
+NAME                           TAG
+quay.io/rockylinux/rockylinux  8.4-rc1
+quay.io/rockylinux/rockylinux  8.4
+quay.io/rockylinux/rockylinux  8.5
+quay.io/rockylinux/rockylinux  latest
+quay.io/rockylinux/rockylinux  8
 ```
+
+Download `pull` and container image:
+
+```shell
+>>> podman pull quay.io/rockylinux/rockylinux:8.5          
+Trying to pull quay.io/rockylinux/rockylinux:8.5...
+Getting image source signatures
+Copying blob 72a2451028f1 done  
+Copying config a1e37a3cce done  
+Writing manifest to image destination
+Storing signatures
+a1e37a3cce8f954b7a802d41974c7cd8dbe8c529c7d9a253fba1d6cd679230f1
+# list all images, present on your machine
+>>> podman images                                
+REPOSITORY                                 TAG         IMAGE ID      CREATED       SIZE
+quay.io/almalinux/almalinux                latest      6bfdc3e60b10  2 weeks ago   205 MB
+quay.io/almalinux/almalinux                8.5         6bfdc3e60b10  2 weeks ago   205 MB
+registry.fedoraproject.org/fedora-toolbox  35          09cc3fe0e1d0  2 weeks ago   497 MB
+quay.io/rockylinux/rockylinux              8.5         a1e37a3cce8f  4 months ago  211 MB
+```
+
+## Use Containers
+
+Sub-command      | Description
+-----------------|---------------------------
+`run`            | Run a process in a new container.
+`exec`           | Execute a command in a running container.
+
+Start a new container with `run` and attach to an interactive shell:
+
+```shell
+>>> podman run -ti --name rl8 quay.io/rockylinux/rockylinux:8.5 /bin/bash
+[root@819d84365f2c /]# exit
+exit
+# start the container and attach
+>>> podman start --attach rl8
+[root@4d5af1e0a044 /]# exit
+exit
+# remove the container
+>>> podman rm rl8            
+4d5af1e0a044acc7bb530776eb4319c77aa6a05921018f9f72a5be55d29a7653
+```
+
 
 ## References
 
-[podman] Podman - Library and tool for running OCI-based containers in Pods  
-https://github.com/containers/libpod
+[podman] Podman
+<https://podman.io/>
 
-[rootless] Basic Setup and Use of Podman in a Rootless environment  
-https://github.com/containers/libpod/blob/master/docs/tutorials/rootless_tutorial.md
