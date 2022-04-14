@@ -1,17 +1,59 @@
-html 
-    {
-    margin: 0 auto;
-    max-width: 900px;
-    }
 
-body 
-    {
-    padding: 2em; 
-    color: rgb(56, 58, 66); 
-    overflow: auto; 
-    font-family: 'Open Sans', Helvetica, Arial, freesans, sans-serif; 
-    line-height: 1.45;
+body {
+        margin: auto;
+        margin-left: 210px;
+        max-width: 700px;
+        padding: 2em; 
+        color: rgb(56, 58, 66); 
+        overflow: auto; 
+        font-family: 'Open Sans', Helvetica, Arial, freesans, sans-serif; 
+        line-height: 1.45;
+}
+
+nav#TOC {
+        position: fixed;
+        padding: .5em;
+        max-width: 210px;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        z-index: 999999;
+        background: whitesmoke;
+        border-right: 1px solid lightgray;
+        overflow: auto;
+}
+
+nav#TOC ul {
+        padding-left: 0;
+}
+
+nav#TOC ul li { 
+        list-style-type: none; 
+        padding: 0;
+        margin: 0; 
+}
+
+nav#TOC ul li a { 
+        color: #292929;
+}
+
+nav#TOC ul li a code{ 
+        color: #292929;
+        font-weight: bold;
+        font-size: 1em;
+}
+
+nav#TOC ul li li {
+        padding-left: 1em; 
+        margin: 0; 
+}
+
+@media print {
+    nav#TOC {
+        /* Don't display TOC in print */
+        display: none;
     }
+}
 
 @media all 
     {
@@ -25,26 +67,35 @@ body
     .page-break { display: block; page-break-before: always; }
     }
 
-h1 
-    { 
-    font-size: 2.2em;
-    font-weight: bold; 
-    border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-    }
+h1 { 
+        font-size: 2.2em;
+        font-weight: bold; 
+}
 
-h2  
-    { 
-    font-size: 2em;
-    font-weight: bold; 
-    border-bottom: 1px solid lightgray;
-    }
+h2  { 
+        font-size: 1.8em;
+        font-weight: bold; 
+}
 
-h3  
-    { 
-    font-size: 1.8em; 
-    font-weight: bold; 
-    }
+h3  { 
+        font-size: 1.4em; 
+        font-weight: bold; 
+}
+
+h1::before {
+        content:"# ";
+        color: lightgray;
+}
+
+h2::before {
+        content:"## ";
+        color: lightgray;
+}
+    
+h3::before {
+        content:"### ";
+        color: lightgray;
+}
 
 blockquote 
     {
@@ -122,63 +173,59 @@ a:focus
 
 
 a code {
-  color: #428bca;
-  background: none;
-  font-size:.8em;
-  padding:0;
+        color: #428bca;
+        background: none;
+        font-size:.8em;
+        padding:0;
 }
 
 /*
  Code snippets and blocks
 */
 
-code, tt, kbd 
-    {
-    font-family: Inconsolata, Consolas, "Liberation Mono", Courier, monospace;
-    padding: 0.3em;
-    margin: 0;
-    border-radius: 3px; 
-    white-space: nowrap;
-    background:#f8f8f8;
-    }
+code, tt, kbd  {
+        font-family: Inconsolata, Consolas, "Liberation Mono", Courier, monospace;
+        padding: 0.3em;
+        margin: 0;
+        border-radius: 3px; 
+        white-space: nowrap;
+        background:#f8f8f8;
+}
 
 td code 
     {
     background:none;
     }
 
-pre 
-    {
+pre {
     display: block;
     padding: 9.5px;
     line-height: 1;
     color: #333333;
     background:#f8f8f8;
-    border-radius: 3px;
+    border-radius: 5px;
     overflow:auto;
     width:auto;
     white-space: pre-wrap;
-    }
-
-pre code 
-    {
-    font-size: 1em;
-    color: inherit;
-    white-space: pre;
-    background-color: transparent;
-    border: 0;
-    padding:0;
 }
 
-table.sourceCode 
-    {
+pre code {
+        font-size: .9em;
+        color: inherit;
+        white-space: pre;
+        background-color: transparent;
+        border: 0;
+        padding:0;
+}
+
+table.sourceCode {
     margin: .5em 0 .5em 0;
     padding: 0; 
     border-radius: 3px;
     background-color: #f8f8f8;
     line-height: 1.45em; 
     width:100%;
-    }
+}
 
 table.sourceCode pre {
   background: none;
@@ -275,41 +322,11 @@ table tbody + tbody {
 }
 
 
-/* Pandoc table of contents DIV when using the --toc option.
-   NOTE: this doesn't support Pandoc's --id-prefix option for #TOC and #header. 
-   Probably would need to use div[id$='TOC'] and div[id$='header'] as selectors.
-*/
+section.footnotes hr {
+        margin-top: 2em;
+        border-top: 1px solid whitesmoke;
+}
 
-div#TOC, nav#TOC
-    {
-    background: #F5F5F5;
-    padding: 0.3em 1em 0.3em 1em;
-    margin-bottom: 2em;
-    }
-
-div#TOC ul, nav#TOC ul
-    {
-    padding-left: 0;
-    }
-
-div#TOC ul li, nav#TOC ul li 
-    { 
-    list-style-type: none; 
-    padding: 0;
-    margin: 0; 
-    }
-
-div#TOC ul li li, nav#TOC ul li li
-    {
-    padding-left: 1em; 
-    margin: 0; 
-    }
-
-@media print
-    {
-    div#TOC, nav#TOC
-        {
-        /* Don't display TOC in print */
-        display: none;
-        }
-    }
+section.footnotes ol {
+        list-style-type: decimal;
+        list-style-position: inside;
