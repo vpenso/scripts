@@ -147,7 +147,9 @@ au InsertEnter * :set nu
 au InsertLeave * :set rnu
 au FocusLost * :set nu
 au FocusGained * :set rnu
-                        \
+
+au BufNewFile,BufFilePre,BufRead *.txt set filetype=markdown
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGURATION
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

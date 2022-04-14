@@ -1,6 +1,4 @@
-# [Vagrant](https://www.vagrantup.com/docs)
-
-Command line utility for managing the life cycle of virtual machines.
+[Vagrant](https://www.vagrantup.com/docs) Command line utility for managing the life cycle of virtual machines.
 
 ```bash
 # install the packages

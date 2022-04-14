@@ -39,6 +39,9 @@ au InsertLeave * :set rnu
 au FocusLost * :set nu
 au FocusGained * :set rnu
 
+" use markdown syntax highlighting for text files
+au BufNewFile,BufFilePre,BufRead *.txt set filetype=markdown
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MAPLEADER
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
