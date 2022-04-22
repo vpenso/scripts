@@ -53,6 +53,7 @@ nav#TOC ul li a code{
 nav#TOC ul li li {
         padding-left: 1em; 
         margin: 0; 
+        font-size: .8em;
 }
 
 @media print {
