@@ -8,10 +8,19 @@ body {
         line-height: 1.45;
 }
 
+hr {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        margin-left: 2em;
+        margin-right: 2em;
+        border: 1px solid black;
+}
+
 nav#TOC {
         margin:0;
         padding: .5em;
         background: whitesmoke;
+        margin-bottom: 2em;
 }
 
 nav#TOC ul {
@@ -62,6 +71,11 @@ nav#TOC ul li li {
 h1 { 
         font-size: 2.2em;
         font-weight: bold; 
+        color: white;
+        background-color: black;
+        border-radius: .3em;
+        padding-left: .3em;
+        padding-right: .3em;
 }
 
 h2  { 
@@ -74,25 +88,9 @@ h3  {
         font-weight: bold; 
 }
 
-h1::before {
-        content:"# ";
-        color: lightgray;
-}
-
-h2::before {
-        content:"## ";
-        color: lightgray;
-}
-    
-h3::before {
-        content:"### ";
-        color: lightgray;
-}
-
-blockquote 
-    {
+blockquote {
         color: dimgray;
-    }
+}
 
 li { list-style: disc; }
 li li { list-style: circle; }
