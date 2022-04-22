@@ -17,10 +17,16 @@ hr {
 }
 
 nav#TOC {
-        margin:0;
+        position: fixed;
         padding: .5em;
+        max-width: 210px;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        z-index: 999999;
         background: whitesmoke;
-        margin-bottom: 2em;
+        border-right: 1px solid lightgray;
+        overflow: auto;
 }
 
 nav#TOC ul {
