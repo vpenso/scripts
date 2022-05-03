@@ -34,10 +34,19 @@ file -s <device>                               # read partition info from device
 dd if=/dev/zero bs=512 count=1 of=<device>     # wipe the bootsector of a devices
 ```
 
+Create a new "disk label" aka partition table
+
+```sh
+# GUID Partition Table default on all EFI systems
+parted $deviec mklabel gpt
+# denpricated MBR (master boot Record) or MS-DOS partition table
+parted $device mklabel msdos
+```
+
+Create partitions:
+
 ```bash
 parted -l                                      # list devices/partitons
-parted $device mklabel msdos                   # Master Boot Record/MS-DOS partition table
-parted $deviec mklabel gpt                     # GUID Partition Table
 parted $device print free                     # show free strorage on device
 # create single partiton using the entire device
 parted -a optimal $device mkpart primary 0% 100%
