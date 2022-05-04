@@ -13,7 +13,7 @@ done
 # install dependency programs in user local
 for file in \
         bookmarks \
-        wofi-bookmarks
+        bookmarks-gui
 do
         src=$SCRIPTS/bin/$file
         diffcp -rs $SCRIPTS/bin/$file /usr/local/bin/$file
