@@ -16,6 +16,7 @@ then
                 git-delta \
 		iwd \
 		neovim \
+                netcat \
                 openssl \
 		pmount \
                 psmisc \
