@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# on Debian
 if command -v apt >/dev/null
 then
 
@@ -11,4 +12,10 @@ then
         sudo apt update
         sudo apt install -y google-chrome-stable
 
+fi
+
+# on Fedora
+if command -v dnf >/dev/null
+then
+        sudo dnf install -y chromium
 fi
