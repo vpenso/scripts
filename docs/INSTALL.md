@@ -27,7 +27,7 @@ sudo ~/project/scripts/bin/apt-install-default
 sudo usermod -s /bin/zsh $USER
 # initialize my user environment
 source ~/projects/scripts/source_me.sh
-tmux-config
+tmux-config               # use Ctrl-I to install plugins
 font-install-nerdfonts    # configure font in terminal app
 vim-config                # run :PlugInstall
 source $SCRIPTS/bin/zsh-config

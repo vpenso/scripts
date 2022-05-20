@@ -24,7 +24,6 @@ then
 		sxiv \
 		terminator \
 		wdisplays \
-		wf-recorder \
 		wl-clipboard \
                 waybar \
 		wofi
