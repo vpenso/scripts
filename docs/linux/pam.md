@@ -69,7 +69,7 @@ authconfig --enablepamaccess --update
 - Three fields separated by a `:` (colon) character... `<permission> : <users/groups> : <origins>`
   - first... `+` access granted or `-` access denied
   - second... list of one or more login names, group names, or `ALL`
-  - third... list of host names, domain names (begin with `.)`, IP addresses, etc.
+  - third... list of host names, domain names (begin with `.`), IP addresses, etc.
 
 
 # References
