@@ -1,12 +1,12 @@
 # Toolbox
 
-Unprivileged fully mutable container environment for everyday software
-development and debugging. 
+Toolbx [^1] is an unprivileged fully mutable container environment for everyday
+software development and debugging. 
 
-* Front-end built on top of Podman and OCI standard container technologies.
-* Keeps the host system small and decoupled from development environments
+- Front-end built on top of Podman and OCI standard container technologies.
+- Keeps the host system small and decoupled from development environments
 
-From the Fedora documentation [tbxfd]:
+From the Fedora documentation [^3]:
 
 _Each toolbox container is an environment that you can enter from the command
 line. Inside each one, you will find:_
@@ -18,10 +18,10 @@ line. Inside each one, you will find:_
 
 _Toolbox customizes newly created containers in a certain way. This requires
 certain tools and paths to be present and have certain characteristics inside
-the OCI image. ... Toolbox enables sudo(8) access inside containers_ [tbxsc]
+the OCI image. ... Toolbox enables sudo(8) access inside containers_ [^2]
 
-Fedora images for toolbox [fedim] are available from the Fedora container
-registry [fedcr].
+Fedora images for toolbox [^4] are available from the Fedora container
+registry [^5].
 
 Create a toolbox container:
 
@@ -67,18 +67,21 @@ toolbox rmi -a            # remove all images
 
 ### References
 
-[tbxsc] Toolbox Source Code Repository, GitHub  
+[^1] Toolbx Project Page  
+<https://containertoolbx.org>
+
+[^2] Toolbox Source Code Repository, GitHub  
 <https://github.com/containers/toolbox>  
 <https://src.fedoraproject.org/rpms/toolbox>
 
-[tbxfd] Toolbox, Fedora Documentation  
+[^3] Toolbox, Fedora Documentation  
 <https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox/>
 
-[fedim] Fedora ToolBox Images, GitHub  
+[^4] Fedora ToolBox Images, GitHub  
 <https://github.com/containers/toolbox/tree/master/images/fedora>
 
-[fedcr] Fedora Container Registry  
+[^5] Fedora Container Registry  
 <https://registry.fedoraproject.org/>
 
-[tblxg] `tblx`, GitLab  
+[^6] `tblx`, GitLab  
 <https://gitlab.com/uppercat/tlbx>
