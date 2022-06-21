@@ -23,50 +23,51 @@
 	excludesfile = /home/vpenso/.gitignore_global
 
 [alias]
+	a = add
+	ac = apply --check
 	aliases = !git config -l | grep alias | cut -c 7-
-	r = remote -v
-	ri = repos init
-	rs = repos status
-	rls = ls-remote
-	rlst = ls-remote --tags
+	amend = commit --amend
+	ams = am --signoff
+	as = apply --stat
+	b = branch
+	ba = branch -a
+	bc = checkout -b
+	bd = branch -D
+	c = log --pretty=format:\"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)\" --decorate --numstat
+	ca = commit -a
+	ce = commit --allow-empty
+	ci = commit
+	co = checkout
+	dc = diff --cached
+	di = diff
+	gc-all = -c gc.reflogExpire=0 -c gc.reflogExpireUnreachable=0 -c gc.rerereresolved=0 -c gc.rerereunresolved=0 -c gc.pruneExpire=now gc
+	l = log --pretty=format:\"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset\"
+	last = log -1 --stat
+	lg = log --graph --all --color --numstat --decorate --pretty=format:\"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)\"	
+	ls = ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
+	ls-ignored = ls-files --exclude-standard --ignored --others
+	m = merge
+	ms = merge --squash
+	patches = git log -p --no-merges
 	pl = pull --ff-only
 	plr = pull --rebase
 	plt = pull --tags
-	s = status -sb
-	a = add
-	as = apply --stat
-	ac = apply --check
-	ams = am --signoff
-	di = diff
-	dc = diff --cached
-	co = checkout
-	ci = commit
-	ca = commit -a
-	ce = commit --allow-empty
-	b = branch
-	ba = branch -a
-	bd = branch -D
-	bc = checkout -b
-	m = merge
-	ms = merge --squash
+	pu = push
+	r = remote -v
 	rb = rebase
 	rbi = rebase --interactive
-	pu = push
-	l = log --pretty=format:\"%C(yellow dim)%h%Creset %C(white dim)%cr%Creset ─ %s %C(blue dim)(%cn)%Creset\"
-	c = log --pretty=format:\"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)\" --decorate --numstat
-	g = log --graph --all --color --numstat --decorate --pretty=format:\"%C(yellow)%h%Cred%d %Creset%s%Cblue (%cn)\"
-	last = log -1 --stat
-	ls = ls-files -t --exclude-per-directory=.gitignore --exclude-from=.git/info/exclude
-	patches = git log -p --no-merges
+	ri = repos init
+	rls = ls-remote
+	rlst = ls-remote --tags
+	rs = repos status
+	s = status -sb
 	tags = tag -n1 -l
-	amend = commit --amend
-	undo = reset --hard
 	uncommit = reset --soft HEAD^
-	unstage = reset HEAD --
+	undo = reset --hard
 	unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
+	unstage = reset HEAD --
 	what = whatchanged
 	who = shortlog -s --
-	ls-ignored = ls-files --exclude-standard --ignored --others
 [color]
 	branch = auto
 	interactive = auto
