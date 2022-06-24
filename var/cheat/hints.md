@@ -15,6 +15,7 @@ fe            ^^ open selection in $EDITOR
 g             Git version control
 l             list files
 m             music control
+s             source
 sd            scripts directory
 sr            ssh with root
 sx            image viewer

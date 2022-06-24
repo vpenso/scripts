@@ -4,6 +4,7 @@ alias a=alias
 alias g=git
 alias q=exit
 alias x=session
+alias s=source
 
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
