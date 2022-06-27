@@ -16,10 +16,13 @@ command -v tree >/dev/null && {
 }
 
 command -v exa >/dev/null && {
-        alias ls='exa -F'
-        alias l='exa -1'
-        alias ll='exa -alF'
-        alias lt='exa -lT --git --group-directories-first -@ -L 2'
+
+        # Specifies the number of spaces to print between an icon and its file name
+        export EXA_ICON_SPACING=2
+        alias ls="exa -F --icons"
+        alias l='exa -1 --icons'
+        alias ll='exa -alF --icons'
+        alias lt='exa --tree --level=2 --icons' 
 }
 
 command -v lsd >/dev/null && {
