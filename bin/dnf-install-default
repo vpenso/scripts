@@ -15,6 +15,7 @@ then
                 git \
                 git-delta \
 		iwd \
+                lsd \
 		neovim \
                 netcat \
                 openssl \
