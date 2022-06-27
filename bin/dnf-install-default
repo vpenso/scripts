@@ -10,12 +10,12 @@ then
                 curl \
                 dnsutils \
                 encfs \
+                exa \
                 fd-find \
                 fzf \
                 git \
                 git-delta \
 		iwd \
-                lsd \
 		neovim \
                 netcat \
                 openssl \
