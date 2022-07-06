@@ -7,6 +7,13 @@ command -v batcat >/dev/null && {
 }
 
 command -v bat >/dev/null && {
+
 	export BAT_THEME=OneHalfLight
+        alias cat=bat
         alias b='bat --plain'
+
+        if [[ $SHELL == *zsh ]] ; then
+                alias -s {js,json,env,md,html,css,toml}=bat
+        fi
+
 }

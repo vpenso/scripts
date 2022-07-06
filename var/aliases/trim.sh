@@ -6,7 +6,6 @@ trim_string() {
     printf '%s\n' "$_"
 }
 
-if [ "$SHELL" = "zsh" ]
-then
-	alias -g TBL='| crush'
+if [[ $SHELL == *zsh ]] ; then
+	alias -g T='| trim_string'
 fi
