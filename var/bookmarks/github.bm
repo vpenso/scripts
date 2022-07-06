@@ -1,7 +1,3 @@
-github/trending https://github.com/trending
-github/status https://www.githubstatus.com/
-github/vpenso/maker http://github.com/vpenso/maker
-github/vpenso/scripts https://github.com/vpenso/scripts
-github/vpenso/scripts/docs https://github.com/vpenso/scripts/tree/master/docs
-github/vpenso/rust-playground https://github.com/vpenso/rust-playground
-github/vpenso/vm-tools https://github.com/vpenso/vm-tools
+github/vpenso/scripts          https://github.com/vpenso/scripts
+github/vpenso/rust-playground  https://github.com/vpenso/rust-playground
+github/vpenso/pxesrv           https://github.com/vpenso/pxesrv
