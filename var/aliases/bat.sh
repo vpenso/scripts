@@ -9,11 +9,12 @@ command -v batcat >/dev/null && {
 command -v bat >/dev/null && {
 
 	export BAT_THEME=OneHalfLight
+        export BAT_STYLE=plain,header,grid
         alias cat=bat
-        alias b='bat --plain'
+        alias dat='bat --style=full'
 
         if [[ $SHELL == *zsh ]] ; then
-                alias -s {js,json,env,md,html,css,toml}=bat
+                alias -s {js,json,env,md,html,css,toml,yaml}=bat
         fi
 
 }
