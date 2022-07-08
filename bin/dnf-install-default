@@ -31,5 +31,7 @@ then
                 tree \
                 vim \
                 wget \
+                wl-clipboard \
+                wofi \
                 zsh
 fi
