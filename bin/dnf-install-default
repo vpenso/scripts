@@ -6,6 +6,7 @@ then
                 apg \
                 bat \
 		bc \
+                buildah \
                 ccrypt \
                 curl \
                 dnsutils \
@@ -21,6 +22,7 @@ then
                 openssl \
                 pandoc \
 		pmount \
+                podman \
                 psmisc \
                 python \
                 rsync \
