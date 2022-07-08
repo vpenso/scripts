@@ -19,6 +19,7 @@ then
 		neovim \
                 netcat \
                 openssl \
+                pandoc \
 		pmount \
                 psmisc \
                 python \
