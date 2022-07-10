@@ -7,5 +7,6 @@ else
         command -v vagrant >/dev/null && {
                 # ...assume that Libvirt is used as provider
                 export VAGRANT_DEFAULT_PROVIDER=libvirt
+                export LIBVIRT_DEFAULT_URI=qemu:///system
         }
 fi
