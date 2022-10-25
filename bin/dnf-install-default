@@ -32,7 +32,6 @@ then
                 tcpdump \
                 tmux \
                 tree \
-                vim \
                 wget \
                 wl-clipboard \
                 wofi \
