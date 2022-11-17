@@ -19,6 +19,7 @@ then
 		iwd \
 		neovim \
                 netcat \
+                nodejs \
                 openssl \
                 pandoc \
 		pmount \
