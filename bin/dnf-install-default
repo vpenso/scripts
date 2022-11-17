@@ -4,6 +4,7 @@ if command -v dnf >/dev/null
 then
         sudo dnf install -y \
                 apg \
+                apptainer \
                 bat \
 		bc \
                 buildah \
