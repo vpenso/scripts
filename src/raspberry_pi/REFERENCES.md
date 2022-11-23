@@ -32,3 +32,7 @@ https://raspberrypi.stackexchange.com/questions/88214/setting-up-a-raspberry-pi-
 
 [wirpi] Wiring Pi C GPIO Interface library for the Raspberry Pi  
 http://wiringpi.com/
+
+* Raspberry Pi Pico Lectures
+  - ECE 4760 (Digital Systems Design Using Microcontrollers)
+  - <https://www.youtube.com/playlist?list=PLDqMkB5cbBA5oDg8VXM110GKc-CmvUqEZ>
