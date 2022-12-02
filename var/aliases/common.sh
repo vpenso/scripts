@@ -4,7 +4,11 @@ alias a=alias
 alias g=git
 alias q=exit
 alias x=session
-alias s=source
+
+# alias for source ...defaults to source_me.sh
+s() {
+        source ${1:-source_me.sh}
+}
 
 alias a+x="chmod a+x"
 alias go-="chmod go-rwx"
