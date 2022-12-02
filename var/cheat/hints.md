@@ -6,7 +6,6 @@ __            Zsh noglob
 0             clear screen
 ?             history with time stamps
 ?5            history last five
-b             bat pager
 bm            bookmarks program
 bt            bluetooth control
 c             search & display cheat sheets from
@@ -15,7 +14,7 @@ fe            ^^ open selection in $EDITOR
 g             Git version control
 l             list files
 m             music control
-s             source
+s             source (defaults to source_me.sh file)
 sd            scripts directory
 sr            ssh with root
 sx            image viewer
