@@ -2,7 +2,7 @@
 
 test -d $HOME/bin || mkdir -v $HOME/bin
 
-version=${1:-0.5.0}
+version=${1:-0.8.0}
 target=$HOME/bin/nvim-$version-appimage
 url=https://github.com/neovim/neovim/releases/download/v$version/nvim.appimage
 test -f $target || {
