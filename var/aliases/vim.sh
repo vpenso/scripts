@@ -1,5 +1,6 @@
 # if NeoVim is installed
-command -v nvim >/dev/null && {
+if command -v nvim >/dev/null
+then
 
 	# create the configuration directory if missing
 	test -d ~/.config/nvim || mkdir -p ~/.config/nvim
@@ -26,4 +27,16 @@ command -v nvim >/dev/null && {
         alias v=nvim
         alias v0='nvim --clean'
 
-}
+elif command -v vim >/dev/null
+then
+
+        export EDITOR=nvim
+        alias v=vim
+        alias v0='vim --clean'
+
+else
+
+        export EDITOR=vi
+        alias v=vi
+
+fi
