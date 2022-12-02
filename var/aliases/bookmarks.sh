@@ -10,14 +10,14 @@ fi
 alias bm='bookmarks --open search'
 
 command -v brave-browser >/dev/null && \
-        alias bmb='bookmarks --open --browser brave-browser search'
+        alias bookmarks-brave='bookmarks --open --browser brave-browser search'
 
 command -v chromium >/dev/null && \
-        alias bmc='bookmarks --open --browser chromium search'
+        alias bookmarks-chrome='bookmarks --open --browser chromium search'
 command -v google-chrome >/dev/null && \
-        alias bmc='bookmarks --open --browser google-chrome search'
+        alias bookmarks-chrome='bookmarks --open --browser google-chrome search'
 
 command -v firefox-esr >/dev/null && \
-        alias bmf='bookmarks --open --browser firefox-esr search'
+        alias bookmarks-firefox='bookmarks --open --browser firefox-esr search'
 command -v firefox >/dev/null && \
-        alias bmf='bookmarks --open --browser firefox search'
+        alias bookmarks-firefox='bookmarks --open --browser firefox search'
