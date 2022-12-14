@@ -18,7 +18,7 @@ cat > $zshrc <<'EOF'
 # if the directory is not empty
 if ! [ -z "$(ls -A ~/.zshrc.d)" ]
 then
-	for file in `\ls ~/.zshrc.d/*`
+	for file in `\ls ~/.zshrc.d/*.sh`
 	do 
   		source $file
 	done

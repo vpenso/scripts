@@ -43,17 +43,6 @@ nice_exit_code() {
 	echo "\e[38;5;23mexit\e[0m:${exit_status}:${sig_name:-$exit_status}$ZSH_PROMPT_EXIT_SIGNAL_SUFFIX ";
 }
 
-export ZSH_THEME_GIT_PROMPT_PREFIX="\e[38;5;23mgit\e[0m:"
-export ZSH_THEME_GIT_PROMPT_SUFFIX=""
-export ZSH_THEME_GIT_PROMPT_SEPARATOR=":"
-export ZSH_THEME_GIT_PROMPT_CLEAN="-"
-export ZSH_THEME_GIT_PROMPT_STAGED="%F{32}*"
-export ZSH_THEME_GIT_PROMPT_CONFLICTS="%F{32}X"
-export ZSH_THEME_GIT_PROMPT_CHANGED="%F{31}+"
-export ZSH_THEME_GIT_PROMPT_BRANCH="%F{243}"
-export ZSH_THEME_GIT_PROMPT_UNTRACKED="%{…%G%}"
-export ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
-export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 
 
 
@@ -66,10 +55,47 @@ prompt_additions() {
 }
 
 autoload -U colors && colors
-# TODO: specifically check for the plugin
-if [ -f ~/.zsh/antigen.zsh ]
-then
+
+if [ -f ~/.zsh/antigen.zsh ] ; then
+
+        export ZSH_THEME_GIT_PROMPT_PREFIX="\e[38;5;23mgit\e[0m:"
+        export ZSH_THEME_GIT_PROMPT_SUFFIX=""
+        export ZSH_THEME_GIT_PROMPT_SEPARATOR=":"
+        export ZSH_THEME_GIT_PROMPT_CLEAN="-"
+        export ZSH_THEME_GIT_PROMPT_STAGED="%F{32}*"
+        export ZSH_THEME_GIT_PROMPT_CONFLICTS="%F{32}X"
+        export ZSH_THEME_GIT_PROMPT_CHANGED="%F{31}+"
+        export ZSH_THEME_GIT_PROMPT_BRANCH="%F{243}"
+        export ZSH_THEME_GIT_PROMPT_UNTRACKED="%{…%G%}"
+        export ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
+        export ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
+
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code)$(git_super_status)$(prompt_additions)\n%{$fg[red]%}>%{$reset_color%}%{$fg[black]%}>%{$reset_color%}%{$fg[blue]%}>%{$reset_color%} '
+
+elif [ -d ~/.zplug/repos/woefe/git-prompt.zsh ] ; then
+
+        source ~/.zplug/repos/woefe/git-prompt.zsh/git-prompt.zsh
+
+        ZSH_THEME_GIT_PROMPT_PREFIX="git:"
+        ZSH_THEME_GIT_PROMPT_SUFFIX=""
+        ZSH_THEME_GIT_PROMPT_SEPARATOR="·"
+        ZSH_THEME_GIT_PROMPT_DETACHED="%{$fg_bold[cyan]%}:"
+        ZSH_THEME_GIT_PROMPT_BRANCH="%F{250}"
+        ZSH_THEME_GIT_PROMPT_UPSTREAM_SYMBOL="%{$fg_bold[yellow]%}⟳ "
+        ZSH_THEME_GIT_PROMPT_UPSTREAM_PREFIX="%{$fg[red]%}(%{$fg[yellow]%}"
+        ZSH_THEME_GIT_PROMPT_UPSTREAM_SUFFIX="%{$fg[red]%})"
+        ZSH_THEME_GIT_PROMPT_BEHIND="↓"
+        ZSH_THEME_GIT_PROMPT_AHEAD="↑"
+        ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[red]%}x"
+        ZSH_THEME_GIT_PROMPT_STAGED="%F{22}*"
+        ZSH_THEME_GIT_PROMPT_UNSTAGED="%F{88}+"
+        ZSH_THEME_GIT_PROMPT_UNTRACKED="%F{166}…"
+        ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[blue]%}!"
+        ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✔"
+        
+        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code)$(gitprompt)$(prompt_additions)\n%{$fg[red]%}>%{$reset_color%}%{$fg[black]%}>%{$reset_color%}%{$fg[blue]%}>%{$reset_color%} '
+
 else
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m\n>>> '
 fi
+
