@@ -10,4 +10,6 @@ if command -v tmux >/dev/null ; then
         test -L ~/.tmux.conf \
                 || ln -s $SCRIPTS/etc/tmux/tmux.conf ~/.tmux.conf
 
+        alias t=tmux
+
 fi
