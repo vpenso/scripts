@@ -11,3 +11,9 @@ zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "woefe/git-prompt.zsh"
 
+if ! zplug check; then
+    zplug install
+fi
+
+zplug load
+
