@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright 2019 Victor Penso
+# Copyright 2019-2022 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,49 @@
 require 'ostruct'
 require 'getoptlong' 
 require 'logger'
+
+#
+# Interface to the command-line environment
+#
+module System
+
+  module_function
+
+  ##
+  # Execute a command passed as parameter an return the output
+  # on success. Otherwise the method returns Nil indicating
+  # a problem on execution.
+  def exec(command, file = '')
+    if file.empty?
+      command << ' 2>&1'
+    # Users can optionally provide a file to store the output into
+    #
+    else
+      # Avoid piping the content threw the Ruby process
+      #
+      command << " 1> #{file}"
+    end
+    command = command.delete("\n").squeeze(' ')
+    $logger.info "<#{self.class}##{__method__.to_s}> #{command}"
+    # Execute command as subprocess and return the exit code
+    pipe = IO.popen(command)
+    # Get the process ID from the child
+    pid = pipe.pid
+    # Read the output from the stream
+    output = pipe.read
+    # Wait for successful return and pass back the code to the caller
+    Process.wait(pid)
+    state=$?
+    $logger.debug "<#{self.class}##{__method__.to_s}> returned with #{state}"
+    if state == 0
+      return output
+    else
+      $logger.warn "<#{self.class}##{__method__.to_s}> failed to execute [#{command}]"
+      return nil
+    end
+  end
+
+end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
@@ -53,7 +96,11 @@ begin
   $options = OpenStruct.new
   $options.bookmark_files = []
   $options.bookmarks_path = [ "#{ENV['HOME']}/.bookmarks" ]
-  $options.browser = 'firefox'
+  if not ENV['BROWSER'].empty?
+    $options.browser = ENV['BROWSER']
+  else
+    $options.browser = 'firefox'
+  end
   $options.debug = false
   $options.keys = false
   $options.open = false
@@ -149,7 +196,7 @@ begin
   end
 
   def open(url)
-    Kernel.exec "#{$options.browser} '#{url}#{$options.append}' 1>&- 2>&- &"
+    System.exec "#{$options.browser} '#{url}#{$options.append}' 1>&- 2>&- &"
     exit 0
   end
 

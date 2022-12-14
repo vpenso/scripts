@@ -11,7 +11,7 @@ export BOOKMARKS_PATH=${BOOKMARKS_PATH:-~/projects/scripts/var/bookmarks:~/proje
 wd="$( cd "$(dirname "$0")" ; pwd -P )"
 
 case "$XDG_SESSION_TYPE" in
-        wayland) # this assumes wayland
+        wayland)
                 if command -v wofi >/dev/null
                 then
                         selection=$($wd/bookmarks list -k | wofi --show dmenu -p 'bookmarks')
