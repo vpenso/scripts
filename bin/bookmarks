@@ -65,13 +65,9 @@ end
 
 exec_name = File.split(__FILE__)[-1]
 HELP = <<EOF
-#{exec_name} [<options>] <command> [<arguments>]
+#{exec_name} [<options>] <pattern>
 
-Manages bookmark files in `~/.bookmarks/**/*.bm`
-
-<command>
-  list, l [<pattern>]                   List all links, or links matching a pattern
-  search, s <pattern>                   First link matching pattern
+Search bookmark files in `~/.bookmarks/**/*.bm` for pattern.
 
 <options>
   -a, --append <string>                 Append string to the referenced URL
@@ -79,6 +75,7 @@ Manages bookmark files in `~/.bookmarks/**/*.bm`
   -d, --debug                           Show stacktraces in case of errors
   -h, --help                            Show this help information
   -k, --keys                            Print only keys with list command
+  -l, --list <pattern>                  List all links, or links matching a pattern
   -o, --open                            Open in web browser
   -v, --version                         Print version number
 
@@ -103,6 +100,7 @@ begin
   end
   $options.debug = false
   $options.keys = false
+  $options.list = false
   $options.open = false
   $options.append = ''
 
@@ -123,6 +121,7 @@ begin
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--keys','-k',GetoptLong::NO_ARGUMENT],
+    ['--list','-l',GetoptLong::OPTIONAL_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
     ['--open','-o',GetoptLong::NO_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
@@ -142,6 +141,8 @@ begin
       exit 0
     when '--keys'
       $options.keys = true
+    when '--list'
+      $options.list = arg || true
     when '--log-level'
       $logger.level = case arg
       when 'warn'
@@ -156,7 +157,7 @@ begin
     when '--open'
       $options.open = true
     when '--version'
-      $stdout.puts 0.3
+      $stdout.puts 0.4
       exit 0
     end
   end
@@ -200,9 +201,8 @@ begin
     exit 0
   end
 
-  command = ARGV.shift || raise('No command argument!')
-  case command
-  when 'list','l'
+  if $options.list
+    pattern = $options.list unless $options.list == true
     # sort keys alphanumerical
     bookmarks.sort.to_h.each do |k,v|
       next unless k =~ %r[#{pattern}]
@@ -212,16 +212,15 @@ begin
         $stdout.puts "#{k} ⇒  #{v}"
       end
     end
-  when 'search','s'
-    raise('No search pattern argument') if ARGV.empty?
-    bookmarks.each do |k,url|
-      next unless k =~ %r[#{pattern}]
-      open(url) if $options.open
-      $stdout.puts url
-      break
-    end
-  else
-    raise("Command #{command} unknown")
+    exit 0
+  end
+
+  pattern = ARGV.shift || raise('No search pattern argument')
+  bookmarks.each do |k,url|
+    next unless k =~ %r[#{pattern}]
+    open(url) if $options.open
+    $stdout.puts url
+    break
   end
 
 rescue => exc

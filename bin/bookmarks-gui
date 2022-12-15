@@ -14,7 +14,7 @@ case "$XDG_SESSION_TYPE" in
         wayland)
                 if command -v wofi >/dev/null
                 then
-                        selection=$($wd/bookmarks list -k | wofi --show dmenu -p 'bookmarks')
+                        selection=$($wd/bookmarks -l -k | wofi --show dmenu -p 'bookmarks')
                 else
                         _error "Command wofi not in PATH"
                 fi
@@ -22,7 +22,7 @@ case "$XDG_SESSION_TYPE" in
         x11)
                 if command -v rofi >/dev/null
                 then
-                        selection=$($wd/bookmarks list -k | rofi -dmenu -p 'bookmarks' -theme white)
+                        selection=$($wd/bookmarks -l -k | rofi -dmenu -p 'bookmarks' -theme white)
                 else
                         _error "Command rofi not in PATH"
                 fi
@@ -35,5 +35,5 @@ esac
 if [ -n "$selection" ] # not empty
 then
         # open the selection in the default browser
-        $wd/bookmarks search -o $selection
+        $wd/bookmarks -o $selection
 fi
