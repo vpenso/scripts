@@ -7,17 +7,6 @@ then
 fi
 
 # open a bookmark in the default web-browser
-alias bm='bookmarks --open search'
+alias bl='bookmarks -l'
+alias bo='bookmarks -o'
 
-command -v brave-browser >/dev/null && \
-        alias bookmarks-brave='bookmarks --open --browser brave-browser search'
-
-command -v chromium >/dev/null && \
-        alias bookmarks-chrome='bookmarks --open --browser chromium search'
-command -v google-chrome >/dev/null && \
-        alias bookmarks-chrome='bookmarks --open --browser google-chrome search'
-
-command -v firefox-esr >/dev/null && \
-        alias bookmarks-firefox='bookmarks --open --browser firefox-esr search'
-command -v firefox >/dev/null && \
-        alias bookmarks-firefox='bookmarks --open --browser firefox search'
