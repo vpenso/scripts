@@ -91,12 +91,19 @@ done
 
 ### HERE COME THE APPLICATION FUNCTIONS
 
-# Read the command-line arguments
-_command=$1 ; shift
+# Require at least one sub-command
+if (( $# >= 1 ))
+then
+        _command=$1 ; shift
+else
+        _error "Required sub-command ...use --help option"
+fi
+
 case "$_command" in 
         # call functions for each command
         *)
                 echo "$HELP" 
+                exit 1
                 ;;
 esac
 
