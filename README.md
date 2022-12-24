@@ -10,25 +10,20 @@ source source_me.sh
 * Prepends `$SCRIPTS/bin` to the `$PATH` environment variable
 * Sources all scripts in `var/aliases/*.sh`
 
-## Structure
+Structure...
 
 Path                               | Description
 -----------------------------------|-----------------------------------
 `bin/`                             | Scripts for various purposes
-`docs/`                            | Notes on technologies
 `etc/`                             | Configuration files
-`src/`                             | Source code examples...
-`src/arduino`                      | Everything for **Arduino** (MCU)
-`src/raspberry_pi`                 | **Raspberry Pi** (SBC) coding...
 `var/`                             | Stuff not fitting above
 `var/aliases`                      | Helpful shell aliases
 `var/bookmarks`                    | Collection of personal bookmarks
-`var/circuits`                     | Some **electronics** toy projects
 
 
 ## License
 
-Copyright 2012-2021 Victor Penso
+Copyright 2012-2023 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public
