@@ -47,6 +47,7 @@ then
                 https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
         # ...package from RPM Fusion
         sudo dnf install -y \
+                mpc \
                 mpd
 
 fi
