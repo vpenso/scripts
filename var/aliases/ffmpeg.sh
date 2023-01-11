@@ -17,3 +17,18 @@ ffmpeg-screen-recording() {
                $output_file
         echo Recording stored to $output_file
 }
+
+##
+# Convert a video (e.g. a screen cap) to a gif
+#
+ffmpeg-video2gif() {
+        local input_video_path="$1"
+        local output_gif_path="$2"
+        local fps="${3:-10}"
+        local scale="${4:-1080}"
+        local loop="${5:-0}"
+
+        ffmpeg -i "${input_video_path}" \
+               -vf "setpts=PTS/1,fps=${fps},scale=${scale}:-2:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+               -loop $loop "${output_gif_path}"
+}
