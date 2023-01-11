@@ -51,3 +51,4 @@ play() {
 # Stop playing a song
 #
 stop() { killall -s KILL ffplay ; }
+
