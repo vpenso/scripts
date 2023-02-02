@@ -1,8 +1,12 @@
 { config, pkgs, ... }:
 
 {
+  home.stateVersion = "22.11";
+  programs.home-manager.enable = true;
+
   home.username = "vpenso";
   home.homeDirectory = "/home/vpenso";
+
   home.packages = [
     pkgs.git
     pkgs.zsh
@@ -10,9 +14,11 @@
     pkgs.neovim
     pkgs.ccrypt
     pkgs.wl-clipboard
+    pkgs.gnome.gnome-terminal
   ];
 
-  home.stateVersion = "22.11";
+  imports = [
+    ./home-manager/gnome-terminal.nix
+  ];
 
-  programs.home-manager.enable = true;
 }

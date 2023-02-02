@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-test -d ~/.config/nixpkgs || mkdir -v ~/.config/nixpkgs
-ln -fs $SCRIPTS/etc/nix/home-manager/home.nix ~/.config/nixpkgs/home.nix
+test -d ~/.config/nixpkgs && rm -rf ~/.config/nixpkgs
+ln -fs $SCRIPTS/etc/nix ~/.config/nixpkgs
