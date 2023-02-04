@@ -8,14 +8,14 @@
   home.homeDirectory = "/home/vpenso";
 
   home.packages = [
-    pkgs.git
-    pkgs.zsh
-    pkgs.direnv
-    pkgs.tmux
-    pkgs.neovim
     pkgs.ccrypt
-    pkgs.wl-clipboard
+    pkgs.git
     pkgs.gnome.gnome-terminal
+    pkgs.neovim
+    pkgs.pandoc
+    pkgs.tmux
+    pkgs.wl-clipboard
+    pkgs.zsh
   ];
 
   imports = [

@@ -1,16 +1,5 @@
 #!/usr/bin/env bash
 
-# Write a global Zsh configuration to make it POSIX shell compatible
-#
-profile=/etc/zsh/zprofile # used for executing commands at start for all users
-test -f /etc/zprofile && profile=/etc/zprofile
-config="emulate sh -c 'source /etc/profile'"
-if ! grep -q -F "$config" $profile 2>/dev/null
-then
-        echo -e "\n# POSIX sh-compatibility\n$config" |\
-                sudo tee -a $profile
-fi
-
 test -d ~/.zshrc.d || mkdir ~/.zshrc.d
 
 zshrc=$(mktemp)
@@ -34,3 +23,4 @@ for file in $SCRIPTS/etc/zshrc.d/*.sh
 do
         diffcp -r $file ~/.zshrc.d/$(basename $file)
 done
+
