@@ -10,6 +10,7 @@
   home.packages = [
     pkgs.git
     pkgs.zsh
+    pkgs.direnv
     pkgs.tmux
     pkgs.neovim
     pkgs.ccrypt
