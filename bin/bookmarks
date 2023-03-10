@@ -209,7 +209,7 @@ begin
       if $options.keys
         $stdout.puts k
       else
-        $stdout.puts "#{k} ⇒  #{v}"
+        $stdout.puts "#{k} #{v}"
       end
     end
     exit 0

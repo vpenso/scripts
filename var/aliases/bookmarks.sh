@@ -6,7 +6,7 @@ then
         export BOOKMARKS_PATH=$BOOKMARKS_PATH:$SCRIPTS/var/bookmarks
 fi
 
-# open a bookmark in the default web-browser
-alias bl='bookmarks -l'
-alias bo='bookmarks -o'
+bo() {
+        bookmarks -o $(bookmarks -l | cut -d' ' -f1 | fzf) 
+}
 
