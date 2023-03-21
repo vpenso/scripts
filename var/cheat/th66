@@ -1,3 +1,5 @@
+Rotary switch for volume control, press to mute
+
 Board functions (long press more then 3 sec)...
 
 Fn + Alt (right) + Space         ...enter/exit power saving mode
@@ -25,6 +27,7 @@ Fn + y                           ...check battery status
 
 Function keys:
 
+Fn + Page Down                   Delete
 Fn + 1                           Screen Brightness -
 Fn + 2                           Screen Brightness +
 Fn + 0                           Volume mute
