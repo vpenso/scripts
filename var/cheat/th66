@@ -1,31 +1,44 @@
+Board functions (long press more then 3 sec)...
+
+Fn + Alt (right) + Space         ...enter/exit power saving mode
+Fn + Esc                         Long press ...reset Keyboard       
+Fn + Alt (left)                  Long press ...toggle Window/Mac mode 
+Ctrl (left) + Alt (left) + Esc   ...reset keyboard to default settings
+
+Wireless mode... 
+
+Fn + Q/W/E                       Short press  ....switch to Bluetooth
+                                 Long press   ...pair device
+                                 Indicator flashes fast in blue
+                                   ...ready to pair
+                                   ...device "TH66 BT5.0" or "TH66 BT 3.0"
+                                   ...paired when flashing stops
+Fn + R                           Short press ...switch to 2.4G mode
+                                 Long press  ...pair device
+                                 Indicator flashes fast green
+                                   ...ready to pair
+                                   ...insert 2.4G dongle to host
+                                   ...paired when flashing stops
+Fn + T                           Short press ...switch wired mode 
+                                 ...indicator lights up in white
+Fn + y                           ...check battery status
+
 Function keys:
 
-    Fn + Esc          Reset Keyboard       
-    Fn + B            Battery check
-    Fn + 1            Screen Brightness -
-    Fn + 2            Screen Brightness +
-    Fn + 0            Volume mute
-    Fn + -            Volume -
-    Fn + =            Volume +
+Fn + 1                           Screen Brightness -
+Fn + 2                           Screen Brightness +
+Fn + 0                           Volume mute
+Fn + -                           Volume -
+Fn + =                           Volume +
+Fn + Shift + Esc                 ~
 
 Backlight control:
 
-    Fn + Backspace    Turn On/Off Backlight
-    Fn + \            Toggle RGB effects
-    Fn + p            Toggle RGB colors
-    Fn + Down         Backlight brightness -
-    Fn + Up           Backlight brightness +
-    Fn + Left         Backlight Speed -
-    Fn + Right        Backlight Speed +
+Fn + Backspace                   Turn On/Off Backlight
+Fn + \                           Toggle RGB effects
+Fn + p                           Toggle RGB colors
+Fn + Down                        Backlight brightness -
+Fn + Up                          Backlight brightness +
+Fn + Left                        Backlight Speed -
+Fn + Right                       Backlight Speed +
 
-Paring:
-
-    Fn + Q/W/E        Short press        ....switch to Bluetooth
-                      Long press (3 sec) ...pair device
-                      ...indicator flashes fast in blue ...ready to pair
-                      ...device "TH66 BT5.0" or "TH66 BT 3.0" ...stops flashing
-    Fn + R            Short press        ...switch to 2.4G mode
-                      Long press (3 sec) ...pair device
-                      ...indicator flashes fast green ...ready to pair
-                      ...insert 2.4G dongle to host ...stops flashing
-    Fn + T            Wired mode ...indicator lights up in white
