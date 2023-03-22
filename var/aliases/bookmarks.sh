@@ -7,6 +7,6 @@ then
 fi
 
 bo() {
-        bookmarks -o $(bookmarks -l | cut -d' ' -f1 | fzf --select-1 -q "$1") 
+        bookmarks -o $(bookmarks -l | cut -d' ' -f1 | fzf --exact --select-1 --query "$1") 
 }
 
