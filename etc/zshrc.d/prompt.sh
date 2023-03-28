@@ -51,14 +51,14 @@ prompt_additions() {
         # read environment variables prefixed with PROMPT_ADDITIONS and trim to a single line
         prompt_additions=$(env | grep PROMPT_ADDITIONS | cut -d'=' -f2 | sort | sed -z 's/\n/·/g' | sed 's/.$//')
 	[[ "$prompt_additions" = "" ]] && return;
-        echo " \e[38;5;23menv\e[0m:$prompt_additions"
+        echo " %F{252}env:%F{245}$prompt_additions%{$reset_color%}"
 }
 
 autoload -U colors && colors
 
 if [ -f ~/.zsh/antigen.zsh ] ; then
 
-        export ZSH_THEME_GIT_PROMPT_PREFIX="\e[38;5;23mgit\e[0m:"
+        export ZSH_THEME_GIT_PROMPT_PREFIX="git:"
         export ZSH_THEME_GIT_PROMPT_SUFFIX=""
         export ZSH_THEME_GIT_PROMPT_SEPARATOR=":"
         export ZSH_THEME_GIT_PROMPT_CLEAN="-"
@@ -93,7 +93,7 @@ elif [ -d ~/.zplug/repos/woefe/git-prompt.zsh ] ; then
         ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[blue]%}!"
         ZSH_THEME_GIT_PROMPT_CLEAN=""
         
-        export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m $(nice_exit_code)$(gitprompt)$(prompt_additions)\n%{$fg[red]%}>%{$reset_color%}%{$fg[black]%}>%{$reset_color%}%{$fg[blue]%}>%{$reset_color%} '
+        export PROMPT=$'\n\e%F{253}%~\e[0m $(nice_exit_code)$(gitprompt)$(prompt_additions)\n%F{253}>>>%{$reset_color%} '
 
 else
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m\n>>> '
