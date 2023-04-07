@@ -96,7 +96,7 @@ class GitRepos
   def initialize(config_file)
     config_file = File.expand_path(config_file)
     @config = Hash.new
-    if File.exists? config_file
+    if File.exist? config_file
       read_configuration(config_file)
     else 
       raise("Configuration not existing: #{config_file}")
@@ -108,7 +108,7 @@ class GitRepos
       FileUtils.mkdir_p(path)
       repos.each_pair do |name,uri|
         FileUtils.cd(path)
-        system('git init') unless File.exists? "#{path}/.git"
+        system('git init') unless File.exist? "#{path}/.git"
         system("git remote add #{name} #{uri} > /dev/null 2>&1")
         if $?.exitstatus.eql? 0
           $stdout.puts "Adding Git remote '#{name}' in #{path}"
@@ -213,9 +213,9 @@ begin
   command = ARGV[0] || raise('No command given!')
   if options.config.empty?
     config = "#{ENV['PWD']}/.gitrepos"
-    unless File.exists? config
+    unless File.exist? config
       config = "#{ENV['HOME']}/.gitrepos"
-      unless File.exists? config
+      unless File.exist? config
         raise('No configuration file defined!')
       end
     end
