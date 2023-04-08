@@ -3,7 +3,7 @@
 if command -v dnf >/dev/null
 then
 
-        sudo dnf install -y \
+        sudo dnf install -y  --skip-broken \
                 apg \
                 apptainer \
                 bat \
@@ -31,6 +31,7 @@ then
                 python \
                 rsync \
                 ruby \
+                ripgrep \
                 sshfs \
                 sshuttle \
                 tcpdump \
@@ -40,14 +41,5 @@ then
                 wl-clipboard \
                 wofi \
                 zsh
-        
-        # ...add RPM Fusion
-        sudo dnf install -y \
-                https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-                https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-        # ...package from RPM Fusion
-        sudo dnf install -y \
-                mpc \
-                mpd
 
 fi
