@@ -5,7 +5,6 @@ then
         export BOOKMARKS_PATH=$SCRIPTS/var/bookmarks
 elif ! $(echo $BOOKMARKS_PATH | grep -q '/scripts/')
 then
-echo $BOOKMARKS_PATH
         export BOOKMARKS_PATH=$BOOKMARKS_PATH:$SCRIPTS/var/bookmarks
 fi
 
