@@ -1,5 +1,3 @@
-echo $BOOKMARKS_PATH
-
 if test -z $BOOKMARKS_PATH
 then
         export BOOKMARKS_PATH=$SCRIPTS/var/bookmarks
