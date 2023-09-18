@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+
+# script exits on the first unset variable encountered
+#set -u    # nounset
+# script stops on first command failure
+set -e    # errexit
+# ensures that if any command in a set of piped commands failed, the overall
+# exit status is the status of the failed command
+set -o pipefail
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [<options>] index_file
+
+Add more text here
+
+  index_file           Path to the index file
+
+optional arguments:
+  -d, --debug          enable verbose output
+  -h, --height <size>  height of the HTML image
+  -H, --help           show this help message
+  --version            program version number "
+
+function _debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+function _error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+#
+# Defaults..
+# 
+output_file=/tmp/test.html
+video_height=320
+clip_gallery=${CLIP_GALLERY:-$PWD}
+
+# Parse the command line options
+ARGS=$(getopt -o dh:H -l "debug,height:,help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--height)
+                shift
+                video_height=$arg
+                shift
+                ;;
+        -H|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
+done
+
+loop_files() {
+        local directory=$1
+        # list all markdown files
+        for file in $(find $directory -name '*.md')
+        do
+                _debug "Process file $file"
+                # recursively call this scrip for each file
+                $0 $file
+        done
+        exit 0
+}
+
+# work on all files from the gallery input files
+if [[ $# -eq 0  ]] 
+then
+        loop_files $clip_gallery_input
+fi
+
+input=$1
+test -d "$input" && loop_files $input
+
+# look for the input file in the gallery/
+input_file=$input
+test -f $input_file || _error "$input_file input file missing"
+_debug "Read input from $input_file"
+
+# corresponding output file
+output_file=${input_file%.md}.html
+# create the output directory if missing
+output_dir=$(dirname $output_file)
+test -d $output_dir || mkdir -pv $output_dir
+echo "Writing to $output_file"
+
+##
+## HTML document beginning
+##
+cat > $output_file <<EOF
+<html>
+<head>
+<style>
+
+  h1 { 
+    width: 100%;
+  }
+
+  a { 
+    color: rgba(0, 27, 164, 0.8);
+    text-decoration: none;
+    font-size: 0.6em;
+  }
+
+  hr {
+    border-top: 3px solid whitesmoke;
+    border-bottom: 0px;
+  }
+
+  div.gallery {
+    width:100%;
+    display:flex;
+    flex-flow: row wrap;
+  }
+  div.box {
+    border-radius: 5px;
+    text-align: center;
+    flex-basis: 5%;
+  }
+  div.box video {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: none;
+    margin: 0.5em;
+    height: $video_height;
+  }
+  div.box div.text {
+    margin-bottom: 0.5em;
+  }
+</style>
+</head>
+<body>
+EOF
+
+div_open() {
+        if ! $div_gallery
+        then
+                echo "<div class=gallery>" >> $output_file
+                div_gallery=true
+        fi
+}
+
+div_close() {
+        if $div_gallery
+        then
+                echo "</div>" >> $output_file
+                div_gallery=false
+        fi
+}
+
+div_gallery=false
+# read the input_file line by line
+while read -r line
+do
+        if [[ "$line" =~ ^[[:space:]]*$ ]]
+        then
+                div_close
+        # first level headers
+        elif [[ "$line" =~ ^#\ .* ]]
+        then
+                div_close
+                header=$(echo "$line" | cut -d' ' -f2)
+                # include a link...
+                echo "<h1>$header</h1>" >> $output_file
+        elif [[ "$line" =~ ^##\ .* ]]
+        then
+                div_close
+                header=$(echo "$line" | cut -d' ' -f2)
+                echo "<h2>$header</h2>" >> $output_file
+        elif [[ "$line" =~ ^###\ .* ]]
+        then
+                div_close
+                header=$(echo "$line" | cut -d' ' -f2)
+                echo "<h3>$header</h3>" >> $output_file
+        else
+                div_open
+
+                # second column references an example image 
+                video=$(echo "$line" | cut -d' ' -f1)
+                video_path="$clip_gallery/$video"
+                _debug $video_path
+                video_dir=$(echo "$image" | cut -d'/' -f1)
+                video_name=$(echo "$image" | cut -d'/' -f2)
+                video_html="<video controls muted src=\"$video_path\" type=\"mp4\"></video>"
+                
+                # check for a second column behind an image
+                columns=$(echo "$line" | awk '{print NF}')
+
+                reference=
+                if [[ $columns -eq 2 ]]
+                then
+                        reference=$(echo "$line" | tr -s ' ' | cut -d' ' -f2)
+                        reference="<div class=text><a href=$reference.html>$reference</a></div>"
+                fi
+
+                # add the image and reference to the HTML document
+                echo -e "\t\t<div class=box>$video_html$reference</div>" >> $output_file
+        fi
+
+done < $input_file
+
+
+##
+## HTML document ending
+##
+cat >> $output_file <<EOF
+</body>
+</html>
+EOF
+
+exit 0
+
+
