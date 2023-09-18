@@ -42,7 +42,7 @@ function _error() {
 # Defaults..
 # 
 output_file=/tmp/test.html
-video_height=320
+video_height=420
 clip_gallery=${CLIP_GALLERY:-$PWD}
 
 # Parse the command line options
@@ -203,10 +203,9 @@ do
                 # second column references an example image 
                 video=$(echo "$line" | cut -d' ' -f1)
                 video_path="$clip_gallery/$video"
-                _debug $video_path
-                video_dir=$(echo "$image" | cut -d'/' -f1)
-                video_name=$(echo "$image" | cut -d'/' -f2)
-                video_html="<video controls muted src=\"$video_path\" type=\"mp4\"></video>"
+                video_ext=${video_path##*.}
+                _debug path:$video_path ext:$video_ext
+                video_html="<video controls muted src=\"$video_path\" type=\"video/$video_ext\"></video>"
                 
                 # check for a second column behind an image
                 columns=$(echo "$line" | awk '{print NF}')
