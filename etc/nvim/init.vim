@@ -9,8 +9,9 @@ set hlsearch        " highlight search terms
 " more powerful backspacing
 set backspace=indent,eol,start
 set wrap            " wrap lines
-set showbreak=…     " if line numbers are of indicate it
+"set showbreak=…     " if line numbers are of indicate it
 set expandtab       " no real tabs please!
+set linebreak       " breaks by word rather than character
 
 " disable recording
 map q <Nop>
@@ -25,7 +26,7 @@ noremap <Right> <nop>
 " highlight the current line & column
 set cursorline
 set cursorcolumn
-au WinLeave * set nocursorline nocursorcolumn
+au WinLeave * set nocursorline nocursor:wordcolumn
 au WinEnter * set cursorline cursorcolumn
 
 " enable relative line numbers
@@ -41,6 +42,7 @@ au FocusGained * :set rnu
 
 " use markdown syntax highlighting for text files
 au BufNewFile,BufFilePre,BufRead *.txt set filetype=markdown
+au BufNewFile,BufRead *.md set columns=80
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MAPLEADER
