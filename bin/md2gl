@@ -14,6 +14,8 @@ def gallery(images)
     width = 25
   when 5
     width = 20
+  when 6
+    width = 100/6
   else
     width = 100
   end
@@ -36,7 +38,16 @@ puts %q{
 <style>
   html { background-color: black; color: lightgray; }
   body { margin: 0; }   
-  p { margin: 1em; }
+  h1 { 
+    width: 100%;
+    float: left;
+    clear: float;
+    text-align:center; 
+    vertical-align: middle;
+    margin: 1em; 
+    padding: 0; 
+  }
+
 </style>
 </head>
 <body>
@@ -55,6 +66,8 @@ File.readlines(ARGV[0], chomp: true).each do |line|
     puts "<h2>#{header(line)}</h2>"
   when /### /
     puts "<h3>#{header(line)}</h3>"
+  when /\-\-\-/
+    next
   when /[0-9][0-9][0-9][0-9]\//
     images << "#{pwd}/#{line}"
   # paragraph
