@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+
+
+pwd = ENV['PWD']
+
+def gallery(images) 
+ 
+  case images.length
+  when 2
+    width = 50
+  when 3
+    width = 33.33
+  when 4
+    width = 25
+  when 5
+    widht = 20
+  else
+    width = 100
+  end
+
+  css = "width:#{width}%; float: left"
+  puts %Q{<img style="#{css}; clear: left" src="#{images.first}"}
+  images[1..-1].each do |image|
+    puts %Q{<img style="#{css}" src="#{image}"}
+  end
+
+end
+
+def header(line)
+  line.split(' ')[1..-1].join(' ')
+end
+
+images = []
+File.readlines(ARGV[0], chomp: true).each do |line|
+  case line
+  when /^$/ # empty lines
+    gallery(images)unless images.empty?
+    images = []
+    puts ' ' 
+  when /# /
+    puts "<h1>#{header(line)}</h1>"
+  when /## /
+    puts "<h2>#{header(line)}</h2>"
+  when /### /
+    puts "<h3>#{header(line)}</h3>"
+  when /[0-9][0-9][0-9][0-9]\//
+    images << "#{pwd}/#{line}"
+  else
+    puts "Could not interpret line: #{line}"
+  end
+end
+  
+gallery(images)unless images.empty?
+
+
