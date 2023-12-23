@@ -32,7 +32,14 @@ end
 
 puts %q{
 <html>
-<body style="margin:0;background-color: black;">
+<head>
+<style>
+  html { background-color: black; color: lightgray; }
+  body { margin: 0; }   
+  p { margin: 1em; }
+</style>
+</head>
+<body>
 }
 
 images = []
