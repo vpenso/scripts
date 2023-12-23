@@ -19,9 +19,9 @@ def gallery(images)
   end
 
   css = "width:#{width}%; float: left"
-  puts %Q{<img style="#{css}; clear: left" src="#{images.first}"}
+  puts %Q{<img style="#{css}; clear: left" src="#{images.first}">}
   images[1..-1].each do |image|
-    puts %Q{<img style="#{css}" src="#{image}"}
+    puts %Q{<img style="#{css}" src="#{image}">}
   end
 
 end
@@ -29,6 +29,11 @@ end
 def header(line)
   line.split(' ')[1..-1].join(' ')
 end
+
+puts %q{
+<html>
+<body style="margin:0;background-color: black;">
+}
 
 images = []
 File.readlines(ARGV[0], chomp: true).each do |line|
@@ -45,11 +50,15 @@ File.readlines(ARGV[0], chomp: true).each do |line|
     puts "<h3>#{header(line)}</h3>"
   when /[0-9][0-9][0-9][0-9]\//
     images << "#{pwd}/#{line}"
+  # paragraph
   else
-    puts "Could not interpret line: #{line}"
+    puts "<p>#{line}</p>"
   end
 end
   
 gallery(images)unless images.empty?
 
-
+puts "
+</body>
+</html>
+"
