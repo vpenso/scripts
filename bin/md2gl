@@ -33,9 +33,9 @@ def gallery(images)
   end
 
   css = "width:#{width}%; float: left"
-  puts %Q{<a href="#{images.first}"><img style="#{css}; clear: left" src="#{images.first}"></a>}
+  puts %Q{<a href="#{images.first}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{images.first}"></a>}
   images[1..-1].each do |image|
-    puts %Q{<a href="#{image}"><img style="#{css}" src="#{image}"></a>}
+    puts %Q{<a href="#{image}" target=_blank rel=noopener><img style="#{css}" src="#{image}"></a>}
   end
 
 end
