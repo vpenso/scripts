@@ -15,7 +15,19 @@ def gallery(images)
   when 5
     width = 20
   when 6
-    width = 100/6
+    width = 16.66
+  when 7
+    width = 14.28
+  when 8
+    width = 12.5
+  when 9
+    width = 11.11
+  when 10
+    width = 10
+  when 11
+    width = 9.09
+  when 12
+    width = 8.33
   else
     width = 100
   end
@@ -47,6 +59,14 @@ puts %q{
     margin: 1em; 
     padding: 0; 
   }
+  h3 { 
+    font-size: 1.5em;
+    width: 100%;
+    float: left;
+    clear: float;
+    text-align:center; 
+    vertical-align: middle;
+  }
 
 </style>
 </head>
@@ -60,12 +80,12 @@ File.readlines(ARGV[0], chomp: true).each do |line|
     gallery(images)unless images.empty?
     images = []
     puts ' ' 
-  when /# /
-    puts "<h1>#{header(line)}</h1>"
-  when /## /
-    puts "<h2>#{header(line)}</h2>"
-  when /### /
+  when /^###/
     puts "<h3>#{header(line)}</h3>"
+  when /^##/
+    puts "<h2>#{header(line)}</h2>"
+  when /^#/
+    puts "<h1>#{header(line)}</h1>"
   when /\-\-\-/
     next
   when /[0-9][0-9][0-9][0-9]\//
