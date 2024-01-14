@@ -49,6 +49,20 @@ $html = %q{
 <body>
 }
 
+def header(line)
+  line.split(' ')[1..-1].join(' ')
+end
+
+def html_image(image, css)
+  src = image[:image]
+  link = image[:link]
+  if link.nil?
+    $html << %Q{<a href="#{src}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{src}"></a>}
+  else
+    $html << %Q{<a href="#{link}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{src}"></a>}
+  end
+end
+
 def gallery(images) 
  
   case images.length
@@ -78,23 +92,14 @@ def gallery(images)
     width = 100
   end
 
-  css = "width:#{width}%; float: left"
-
-  src = images.first[:image]
-  href = images.first[:link] || src
-  $html << %Q{<a href="#{href}.html" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{src}"></a>}
+  html_image(images.first, "width:#{width}%; float: left")
 
   images[1..-1].each do |image|
-    src = image[:image]
-    href = image[:link] || src
-    $html << %Q{<a href="#{href}.html" target=_blank rel=noopener><img style="#{css}" src="#{src}"></a>}
+    html_image(image, "width:#{width}%")
   end
 
 end
 
-def header(line)
-  line.split(' ')[1..-1].join(' ')
-end
 
 
 begin
