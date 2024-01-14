@@ -1,7 +1,53 @@
 #!/usr/bin/env ruby
 
 
+require 'ostruct'
+require 'getoptlong' 
+require 'logger'
+
+exec_name = File.split(__FILE__)[-1]
+HELP = <<EOF
+#{exec_name} [<options>] <command> [<arguments>]
+
+<command>
+   List commands
+
+<options>
+  -d, --debug                           Show stacktraces in case of errors.
+  -h, --help                            Show this help information.
+  -v, --version                         Print version number.
+EOF
+
 pwd = ENV['PWD']
+
+$html = %q{
+<html>
+<head>
+<style>
+  html { background-color: black; color: lightgray; }
+  body { margin: 0; }   
+  h1 { 
+    width: 100%;
+    float: left;
+    clear: float;
+    text-align:center; 
+    vertical-align: middle;
+    margin: 1em; 
+    padding: 0; 
+  }
+  h3 { 
+    font-size: 1.5em;
+    width: 100%;
+    float: left;
+    clear: float;
+    text-align:center; 
+    vertical-align: middle;
+  }
+
+</style>
+</head>
+<body>
+}
 
 def gallery(images) 
  
@@ -33,9 +79,9 @@ def gallery(images)
   end
 
   css = "width:#{width}%; float: left"
-  puts %Q{<a href="#{images.first}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{images.first}"></a>}
+  $html << %Q{<a href="#{images.first}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{images.first}"></a>}
   images[1..-1].each do |image|
-    puts %Q{<a href="#{image}" target=_blank rel=noopener><img style="#{css}" src="#{image}"></a>}
+    $html << %Q{<a href="#{image}" target=_blank rel=noopener><img style="#{css}" src="#{image}"></a>}
   end
 
 end
@@ -44,61 +90,111 @@ def header(line)
   line.split(' ')[1..-1].join(' ')
 end
 
-puts %q{
-<html>
-<head>
-<style>
-  html { background-color: black; color: lightgray; }
-  body { margin: 0; }   
-  h1 { 
-    width: 100%;
-    float: left;
-    clear: float;
-    text-align:center; 
-    vertical-align: middle;
-    margin: 1em; 
-    padding: 0; 
-  }
-  h3 { 
-    font-size: 1.5em;
-    width: 100%;
-    float: left;
-    clear: float;
-    text-align:center; 
-    vertical-align: middle;
-  }
 
-</style>
-</head>
-<body>
-}
+begin
 
-images = []
-File.readlines(ARGV[0], chomp: true).each do |line|
-  case line
-  when /^$/ # empty lines
-    gallery(images)unless images.empty?
-    images = []
-    puts ' ' 
-  when /^###/
-    puts "<h3>#{header(line)}</h3>"
-  when /^##/
-    puts "<h2>#{header(line)}</h2>"
-  when /^#/
-    puts "<h1>#{header(line)}</h1>"
-  when /\-\-\-/
-    next
-  when /[0-9][0-9][0-9][0-9]\//
-    images << "#{pwd}/#{line}"
-  # paragraph
-  else
-    puts "<p>#{line}</p>"
+  stdin = $stdin.tty? ? String.new : $stdin.read
+
+  $options = OpenStruct.new
+  $options.debug = false
+  $options.output_to_file = false
+
+  $logger = Logger.new($stderr)
+  # Adjust the time format used for the logger
+  $logger.datetime_format = "%Y-%m-%dT%H:%M:%S"
+  $logger.formatter = proc do |severity, datetime, progname, message|
+    "[#{datetime.strftime($logger.datetime_format)}] #{severity} -- #{message}\n"
   end
-end
-  
-gallery(images)unless images.empty?
+  $logger.level = Logger::WARN
 
-puts "
-</body>
-</html>
-"
+  GetoptLong.new(
+    ['--debug','-d',GetoptLong::NO_ARGUMENT],
+    ['--help','-h',GetoptLong::NO_ARGUMENT],
+    ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
+    ['--output-to-file','-o',GetoptLong::NO_ARGUMENT],
+    ['--version','-v',GetoptLong::NO_ARGUMENT]
+  ).each do |opt,arg|
+    case opt
+    when '--debug'
+      $options.debug = true
+      $logger.level = Logger::DEBUG
+    when '--help'
+      $stdout.puts HELP
+      exit 0
+    when '--log-level'
+      $logger.level = case arg
+      when 'warn'
+        Logger::WARN
+      when 'debug'
+        Logger::DEBUG
+      when 'fatal'
+        Logger::FATAL
+      else
+        Logger::INFO
+       end
+    when '--output-to-file'
+      $options.output_to_file = true
+    when '--version'
+      $stdout.puts 0.1
+      exit 0
+    end
+  end
+
+  if File.exist? ARGV[0]
+    $options.source_file = ARGV[0] 
+  else
+    raise "File #{ARGV[0]} not existing!"
+  end
+
+  images = []
+  File.readlines($options.source_file, chomp: true).each do |line|
+    case line
+    when /^$/ # empty lines
+      gallery(images)unless images.empty?
+      images = []
+      $html << ' ' 
+    when /^###/
+      $html << "<h3>#{header(line)}</h3>"
+    when /^##/
+      $html << "<h2>#{header(line)}</h2>"
+    when /^#/
+      $html << "<h1>#{header(line)}</h1>"
+    when /\-\-\-/
+      next
+    when /[0-9][0-9][0-9][0-9]\//
+      images << "#{pwd}/#{line}"
+    # paragraph
+    else
+      $html << "<p>#{line}</p>"
+    end
+  end
+    
+  gallery(images)unless images.empty?
+  
+  $html << "</body></html>"
+
+  if $options.output_to_file
+    directory = File.dirname($options.source_file)
+    file = File.basename($options.source_file, '.md')
+    output = "#{directory}/#{file}.html"
+    File.open(output, 'w') do |file|
+      file.write($html)
+    end
+    puts "#{output}"
+  else
+    puts "#{$html}"
+  end
+
+rescue => exc
+  $stderr.puts "ERROR: #{exc.message}"
+  $stderr.puts " use -h for detailed instructions"
+  if $options.debug
+    $stderr.puts '-- Stack Trace --'
+    $stderr.puts exc.backtrace
+  else
+    $stderr.puts 'You may want run this in debug mode with \'-d\''
+  end
+  exit 1
+end
+
+exit 0
