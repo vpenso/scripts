@@ -18,36 +18,8 @@ HELP = <<EOF
   -v, --version                         Print version number.
 EOF
 
-pwd = ENV['PWD']
+$html = ""
 
-$html = %q{
-<html>
-<head>
-<style>
-  html { background-color: black; color: lightgray; }
-  body { margin: 0; }   
-  h1 { 
-    width: 100%;
-    float: left;
-    clear: float;
-    text-align:center; 
-    vertical-align: middle;
-    margin: 1em; 
-    padding: 0; 
-  }
-  h3 { 
-    font-size: 1.5em;
-    width: 100%;
-    float: left;
-    clear: float;
-    text-align:center; 
-    vertical-align: middle;
-  }
-
-</style>
-</head>
-<body>
-}
 
 def header(line)
   line.split(' ')[1..-1].join(' ')
@@ -102,7 +74,68 @@ def gallery(images)
 
 end
 
+def read_file(file)
 
+$html = %q{
+<html>
+<head>
+<style>
+  html { background-color: black; color: lightgray; }
+  body { margin: 0; }   
+  h1 { 
+    width: 100%;
+    float: left;
+    clear: float;
+    text-align:center; 
+    vertical-align: middle;
+    margin: 1em; 
+    padding: 0; 
+  }
+  h3 { 
+    font-size: 1.5em;
+    width: 100%;
+    float: left;
+    clear: float;
+    text-align:center; 
+    vertical-align: middle;
+  }
+
+</style>
+</head>
+<body>
+}
+  images = []
+  File.readlines(file, chomp: true).each do |line|
+    case line
+    when /^$/ # empty lines
+      gallery(images)unless images.empty?
+      images = []
+      $html << ' ' 
+    when /^###/
+      $html << "<h3>#{header(line)}</h3>"
+    when /^##/
+      $html << "<h2>#{header(line)}</h2>"
+    when /^#/
+      $html << "<h1>#{header(line)}</h1>"
+    when /\-\-\-/
+      next
+    when /[0-9][0-9][0-9][0-9]\//
+      line = line.gsub(/\s+/, " ")
+      $logger.debug "#{line}"
+      image, link = line.split(" ") 
+      image = "#{ENV['PWD']}/#{image}"
+      images << { image: image, link: link }
+    # paragraph
+    else
+      $html << "<p>#{line}</p>"
+    end
+  end
+
+  gallery(images)unless images.empty?
+
+  $html << "</body></html>"
+
+end
 
 begin
 
@@ -153,53 +186,31 @@ begin
     end
   end
 
-  if File.exist? ARGV[0]
-    $options.source_file = ARGV[0] 
+  files = []
+  if File.directory?(ARGV[0])
+    files = Dir.glob("#{ARGV[0]}/**/*.md")
+  elsif File.exist?(ARGV[0])
+    files << ARGV[0]
   else
-    raise "File #{ARGV[0]} not existing!"
+    raise "Path #{ARGV[0]} not existing!"
   end
 
-  images = []
-  File.readlines($options.source_file, chomp: true).each do |line|
-    case line
-    when /^$/ # empty lines
-      gallery(images)unless images.empty?
-      images = []
-      $html << ' ' 
-    when /^###/
-      $html << "<h3>#{header(line)}</h3>"
-    when /^##/
-      $html << "<h2>#{header(line)}</h2>"
-    when /^#/
-      $html << "<h1>#{header(line)}</h1>"
-    when /\-\-\-/
-      next
-    when /[0-9][0-9][0-9][0-9]\//
-      line = line.gsub(/\s+/, " ")
-      $logger.debug "#{line}"
-      image, link = line.split(" ") 
-      image = "#{pwd}/#{image}"
-      images << { image: image, link: link }
-    # paragraph
+  files.each do |file|
+
+    read_file(file)
+
+    if $options.output_to_file
+      directory = File.dirname(file)
+      name = File.basename(file, '.md')
+      output = "#{directory}/#{name}.html"
+      File.open(output, 'w') do |f|
+        f.write($html)
+      end
+      puts "#{output}"
     else
-      $html << "<p>#{line}</p>"
+      puts "#{$html}"
     end
-  end
-    
-  gallery(images)unless images.empty?
-  
-  $html << "</body></html>"
 
-  if $options.output_to_file
-    directory = File.dirname($options.source_file)
-    file = File.basename($options.source_file, '.md')
-    output = "#{directory}/#{file}.html"
-    File.open(output, 'w') do |file|
-      file.write($html)
-    end
-    puts "#{output}"
-  else
-    puts "#{$html}"
   end
 
 rescue => exc
