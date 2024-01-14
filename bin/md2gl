@@ -79,9 +79,15 @@ def gallery(images)
   end
 
   css = "width:#{width}%; float: left"
-  $html << %Q{<a href="#{images.first}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{images.first}"></a>}
+
+  src = images.first[:image]
+  href = images.first[:link] || src
+  $html << %Q{<a href="#{href}.html" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{src}"></a>}
+
   images[1..-1].each do |image|
-    $html << %Q{<a href="#{image}" target=_blank rel=noopener><img style="#{css}" src="#{image}"></a>}
+    src = image[:image]
+    href = image[:link] || src
+    $html << %Q{<a href="#{href}.html" target=_blank rel=noopener><img style="#{css}" src="#{src}"></a>}
   end
 
 end
@@ -162,7 +168,11 @@ begin
     when /\-\-\-/
       next
     when /[0-9][0-9][0-9][0-9]\//
-      images << "#{pwd}/#{line}"
+      line = line.gsub(/\s+/, " ")
+      $logger.debug "#{line}"
+      image, link = line.split(" ") 
+      image = "#{pwd}/#{image}"
+      images << { image: image, link: link }
     # paragraph
     else
       $html << "<p>#{line}</p>"
