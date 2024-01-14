@@ -56,11 +56,13 @@ end
 def html_image(image, css)
   src = image[:image]
   link = image[:link]
+  options = "target=_blank rel=noopener"
   if link.nil?
-    $html << %Q{<a href="#{src}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{src}"></a>}
+    link = src
   else
-    $html << %Q{<a href="#{link}" target=_blank rel=noopener><img style="#{css}; clear: left" src="#{src}"></a>}
+    options << %Q{ title="#{link}"}
   end
+  $html << %Q{<a href="#{link}" #{options}><img style="#{css}; clear: left" src="#{src}"></a>}
 end
 
 def gallery(images) 
