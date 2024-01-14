@@ -34,7 +34,7 @@ def html_image(image, css)
   else
     options << %Q{ title="#{link}"}
   end
-  $html << %Q{<a href="#{link}" #{options}><img style="#{css}; clear: left" src="#{src}"></a>}
+  $html << %Q{<a href="#{link}" #{options}><img style="#{css}" src="#{src}"></a>\n}
 end
 
 def gallery(images) 
@@ -66,10 +66,10 @@ def gallery(images)
     width = 100
   end
 
-  html_image(images.first, "width:#{width}%; float: left")
+  html_image(images.first, "width:#{width}%; clear:left; float: left")
 
   images[1..-1].each do |image|
-    html_image(image, "width:#{width}%")
+    html_image(image, "width:#{width}%; float:left ")
   end
 
 end
@@ -110,7 +110,7 @@ $html = %q{
     when /^$/ # empty lines
       gallery(images)unless images.empty?
       images = []
-      $html << ' ' 
+      $html << "\n" 
     when /^###/
       $html << "<h3>#{header(line)}</h3>"
     when /^##/
