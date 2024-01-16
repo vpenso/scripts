@@ -15,15 +15,15 @@ command -v tree >/dev/null && {
         alias tu='tree -pfughF --du'       # permissions, user, group, sizes
 }
 
-command -v exa >/dev/null && {
+command -v eza >/dev/null && {
 
         # Specifies the number of spaces to print between an icon and its file name
         export EXA_ICON_SPACING=2
         local opts="--icons --color=never"
-        alias ls="exa -F $opts"
-        alias l="exa -1 $opts"
-        alias ll="exa -alF $opts"
-        alias lt="exa --tree --level=2 $opts"
+        alias ls="eza -F $opts"
+        alias l="eza -1 $opts"
+        alias ll="eza -alF $opts"
+        alias lt="eza --tree --level=2 $opts"
 }
 
 command -v lsd >/dev/null && {
