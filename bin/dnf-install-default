@@ -13,7 +13,7 @@ then
                 curl \
                 dnsutils \
                 encfs \
-                exa \
+                eza \
                 fd-find \
                 fzf \
                 git \
