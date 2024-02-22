@@ -40,6 +40,7 @@ then
                 wget \
                 wl-clipboard \
                 wofi \
+                zoxide \
                 zsh
 
 fi
