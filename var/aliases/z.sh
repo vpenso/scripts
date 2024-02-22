@@ -1,3 +1,5 @@
 command -v zoxide >/dev/null && {
-        eval "$(zoxide init zsh)"
+      # work-around to enable tab-completion
+      function z () { __zoxide_z "$@" }
+      eval "$(zoxide init zsh --no-cmd)"
 }
