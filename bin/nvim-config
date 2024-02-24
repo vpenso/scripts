@@ -17,24 +17,24 @@
 
 function _error() {
         echo 1>&2 "Error: $@"
-	exit 1
+        exit 1
 }
 
-# path the this respository
-SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
+command -v nvim &>/dev/null || _error "Please install NeoVim"
 
-#
-# Install the vim-plug plugin manager
-#
-test -d ~/.vim/autoload || mkdir -vp ~/.vim/autoload
-test -f ~/.vim/autoload/plug.vim || {
-        command -v curl &>/dev/null || _error "curl program missing in \$PATH"
-        curl -fLo ~/.vim/autoload/plug.vim \
+# create the configuration directory if missing
+test -d ~/.config/nvim || mkdir -p ~/.config/nvim
+
+# install vim-plug if missing
+test -d ~/.config/nvim/autoload || {
+        mkdir -p ~/.config/nvim/autoload
+        curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
                 https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
-# run PlugInstall! and PlugUpdate!
 
-#
-# Link to the Vim configuration stored in this repository
-#
-test -L $HOME/.vimrc || ln -sf $SCRIPTS/etc/vimrc $HOME/.vimrc
+# link to the configuration within this repository
+test -L ~/.config/nvim/init.vim || \
+        ln -s $SCRIPTS/etc/nvim/init.vim ~/.config/nvim/init.vim
+#        test -L ~/.config/nvim/init.lua ||
+#                ln -s $SCRIPTS/etc/nvim/init.lua ~/.config/nvim/init.lua
+
