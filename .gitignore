@@ -3,6 +3,7 @@ etc/nnn/plugins
 etc/nnn/.history
 *.nfs*
 *.html
+*.bak
 .ipynb_checkpoints/
 aliases/unset.sh
 var/bookmarks/*
