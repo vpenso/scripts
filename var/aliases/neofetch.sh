@@ -5,8 +5,8 @@ command -v neofetch >/dev/null && {
         # link to this repository if missing
         test -L $config || ln -s $SCRIPTS/etc/neofetch/config.conf $config
 
-        # speed up neofetch by storing its output once per day
-        tmp=/tmp/$USER-neofetch.$(date +%Y%m%d)
+        # speed up neofetch by storing its output for one hour
+        tmp=/tmp/$USER-neofetch.$(date +%Y%m%dT%H)
         test -f $tmp && \cat $tmp || neofetch --off | tee $tmp
 
 }
