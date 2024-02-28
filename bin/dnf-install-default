@@ -8,6 +8,7 @@ then
                 apptainer \
                 bat \
 		bc \
+                btop \
                 buildah \
                 ccrypt \
                 curl \
@@ -20,6 +21,7 @@ then
                 git-delta \
 		iwd \
                 jpegoptim \
+                neofetch \
 		neovim \
                 netcat \
                 nodejs \
