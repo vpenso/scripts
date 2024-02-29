@@ -93,7 +93,7 @@ elif [ -d ~/.zplug/repos/woefe/git-prompt.zsh ] ; then
         ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[blue]%}!"
         ZSH_THEME_GIT_PROMPT_CLEAN=""
         
-        export PROMPT=$'\n%F{253}%~\e[0m $(nice_exit_code)$(gitprompt)$(prompt_additions)\n%F{253}>>>%{$reset_color%} '
+        export PROMPT=$'\n%F{245}%~\e[0m $(nice_exit_code)$(gitprompt)$(prompt_additions)\n%F{250}>>>%{$reset_color%} '
 
 else
         export PROMPT=$'\n\e[32m%n\e[0m@\e[34m%m\e[0m:\e[31m%~\e[0m\n>>> '
