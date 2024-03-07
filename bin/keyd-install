@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+command -v dnf >/dev/null && sudo dnf install -y gcc
+
+pushd $(mktemp -d /tmp/$USER-keyd-XXXXXX)
+git clone https://github.com/rvaiya/keyd && cd keyd
+make && sudo make install
+popd
+rm -rf /tmp/$USER-keyd-*
+
+source $SCRIPTS/var/aliases/keyd.sh
+
+sudo systemctl enable --now keyd
