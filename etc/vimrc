@@ -35,6 +35,10 @@ Plug 'tpope/vim-fugitive'
 "  https://github.com/airblade/vim-gitgutter/
 Plug 'airblade/vim-gitgutter/'
 
+" https://github.com/junegunn/fzf.vim
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 " Commands
 "    :PlugInstall      Install plugins
 "    :PlugClean        Remove unlisted plugins 
@@ -95,7 +99,6 @@ noremap <Up> <nop>
 noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
-
 
 " disable recording
 map q <Nop>
@@ -170,10 +173,14 @@ let g:markdown_minlines = 100
 let g:gitgutter_terminal_reports_focus=0
 set updatetime=100
 
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SYNTAX HIGLIGHTING
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 set t_Co=256
 set background=light
