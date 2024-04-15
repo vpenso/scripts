@@ -1,5 +1,5 @@
 alias _=" sudo"
-alias 0=clear
+alias 0=reset
 alias a=alias
 alias g=git
 alias q=exit
