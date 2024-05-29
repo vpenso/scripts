@@ -19,11 +19,10 @@ command -v eza >/dev/null && {
 
         # Specifies the number of spaces to print between an icon and its file name
         export EXA_ICON_SPACING=2
-        local opts="--icons --color=never"
-        alias ls="eza -F $opts"
-        alias l="eza -1 $opts"
-        alias ll="eza -alF $opts"
-        alias lt="eza --tree --level=2 $opts"
+        alias ls="eza -F --icons --color=never"
+        alias l="eza -1 --icons --color=never"
+        alias ll="eza -alF --icons --color=never"
+        alias lt="eza --tree --level=2 --icons --color=never"
 }
 
 command -v lsd >/dev/null && {
