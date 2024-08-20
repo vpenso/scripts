@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+#
+# Copyright 2024 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# script exits on the first unset variable encountered
+set -u    # nounset
+# script stops on first command failure
+set -e    # errexit
+# ensures that if any command in a set of piped commands failed, the overall
+# exit status is the status of the failed command
+set -o pipefail
+
+VERSION=0.1
+
+# Default configuration
+sshuttle_configs=${SSHUTTLE_CONFIGS:-~/.sshuttle/}
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [-h] [--version] [arg]
+
+This scripts uses Sshuttle configuration to manage multiple connections. 
+
+positional arguments:
+  list                 List short name for all available configurations
+  start <name>         Start a Sshuttle connection by specifying the short
+                       name of the configuration file
+  status               List all established Sshuttle connections
+  stop <name>          Stop a Sshuttle connection by specifying the short
+                       name of a connection file
+
+optional arguments:
+  -d, --debug          enable verbose output
+  -h, --help           show this help message
+  --version            program version number
+
+Environment variables
+
+  SSHUTTLE_CONFIGS     Path to the Sshuttle configuration files defaults to
+                       your home-directory ~/.sshuttle"
+
+_DEBUG=${_DEBUG:-false}
+_debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+_error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+# Parse the command line options
+ARGS=$(getopt -o dh -l "debug,help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
+done
+
+# check dependencies...
+for cmd in \
+        sshuttle
+do
+        command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
+done
+
+list() {
+        for file in $(ls -1 $sshuttle_configs/*.conf)
+        do
+                echo $(basename $file .conf)
+        done
+}
+
+start() {
+        if [ $# -eq 0 ]
+        then
+                _error "Argument to start a connection missing"
+        else
+                config_name=$1
+                config_path=$sshuttle_configs/$config_name.conf
+                test -f $config_path || _error "Missing sshuttle configuration file $config_path"
+
+                pid_file=/tmp/$USER-sshuttle-$config_name.pid
+                if sshuttle @$config_path --pidfile=$pid_file
+                then
+                        reset
+                        echo "Sshuttle started ($pid_file)"
+                        status
+                        exit 0
+                else
+                         _error "Sshuttle returns non zero exit code"
+                fi
+        fi
+}
+
+status() {
+        echo "Sshuttle connections..."
+        for pid_file in $(ls -1 /tmp/$USER-sshuttle-*.pid 2>/dev/null)
+        do
+                pgrep --list-full --pidfile $pid_file
+        done
+}
+
+stop() {
+        if [ $# -eq 0 ]
+        then
+                _error "Specify a Sshuttle connection to stop"
+        else
+                config_name=$1
+                pid_file=/tmp/$USER-sshuttle-$config_name.pid
+                test -f $pid_file || _error "$pid_file is missing"
+                pkill --pidfile $pid_file --signal TERM
+        fi
+}
+
+# Require at least one sub-command
+if (( $# >= 1 ))
+then
+        _command=$1 ; shift
+else
+        _error "Required sub-command ...use --help option"
+fi
+
+case "$_command" in 
+        list)
+                list
+                ;;
+        start)
+                start $@
+                ;;
+        status)
+                status
+                ;;
+        stop)
+                stop $@
+                ;;
+        *)
+                echo "$HELP" 
+                exit 1
+                ;;
+esac
+
+exit 0
+
+
