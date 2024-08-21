@@ -1,0 +1,14 @@
+#!/usr/bin/expect
+
+set timeout 20
+set password "$env(EXPECT_LOGIN_PASSWORD)"
+set user "$env(EXPECT_LOGIN_USER)"
+set src [lindex $argv 0]
+set dst [lindex $argv 1]
+set ssh_options "-o PreferredAuthentications=password -o PubkeyAuthentication=no"
+
+eval spawn scp $ssh_options $src $user@$dst
+
+expect "assword:"   # matches both 'Password' and 'password'
+send -- "$password\r";
+interact

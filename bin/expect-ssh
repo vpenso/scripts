@@ -1,0 +1,14 @@
+#!/usr/bin/expect
+
+set timeout 20
+set password "$env(EXPECT_LOGIN_PASSWORD)"
+set user "$env(EXPECT_LOGIN_USER)"
+set node [lindex $argv 0]
+set cmd [lrange $argv 1 end]
+set ssh_options "-o PreferredAuthentications=password -o PubkeyAuthentication=no"
+
+eval spawn ssh $ssh_options $user@$node $cmd
+
+expect "assword:"   # matches both 'Password' and 'password'
+send -- "$password\r";
+interact
