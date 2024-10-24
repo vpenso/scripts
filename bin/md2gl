@@ -15,6 +15,7 @@ HELP = <<EOF
 <options>
   -d, --debug                           Show stacktraces in case of errors.
   -h, --help                            Show this help information.
+  -O, --output-to-file                  Write output to HTML file
   -v, --version                         Print version number.
 EOF
 
@@ -157,7 +158,7 @@ begin
     ['--debug','-d',GetoptLong::NO_ARGUMENT],
     ['--help','-h',GetoptLong::NO_ARGUMENT],
     ['--log-level','-L',GetoptLong::REQUIRED_ARGUMENT],
-    ['--output-to-file','-o',GetoptLong::NO_ARGUMENT],
+    ['--output-to-file','-O',GetoptLong::NO_ARGUMENT],
     ['--version','-v',GetoptLong::NO_ARGUMENT]
   ).each do |opt,arg|
     case opt
