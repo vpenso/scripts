@@ -67,10 +67,12 @@ def gallery(images)
     width = 100
   end
 
-  html_image(images.first, "width:#{width}%; clear:left; float: left")
+  options = "width:#{width}%; float:left"
+
+  html_image(images.first, "#{options}; clear:left")
 
   images[1..-1].each do |image|
-    html_image(image, "width:#{width}%; float:left ")
+    html_image(image, "#{options}; float:left ")
   end
 
 end
@@ -99,6 +101,9 @@ $html = %q{
     clear: float;
     text-align:center; 
     vertical-align: middle;
+  }
+  img {
+    padding-bottom: 0.1em;
   }
 
 </style>
