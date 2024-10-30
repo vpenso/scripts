@@ -75,12 +75,12 @@ set wrap            " wrap lines
 set linebreak       " break at a word boundary
 set showbreak=…     " if line numbers are of indicate it
 set textwidth=80
-set colorcolumn=+1  " highlight column after 'textwidth'
+"set colorcolumn=+1  " highlight column after 'textwidth'
 set expandtab       " no real tabs please!
 
 " highlight the current line & column
 set cursorline
-set cursorcolumn
+"set cursorcolumn
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline cursorcolumn
 
@@ -172,11 +172,14 @@ let g:markdown_minlines = 100
 " Configure the vim-gitgutter plugin, cf. https://github.com/airblade/vim-gitgutter/
 let g:gitgutter_terminal_reports_focus=0
 set updatetime=100
+" ...put the signs into the number column
+set signcolumn=number
 
 " Insert mode completion
 imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SYNTAX HIGLIGHTING
@@ -192,13 +195,13 @@ endif
 " visual selection mode
 hi Visual ctermfg=none ctermbg=227
 " horizontal line at current cursor position
-hi CursorLine ctermbg=230 cterm=none
+"hi CursorLine ctermbg=223 cterm=none
 " vertical line at current cursor position
-hi CursorColumn ctermfg=none ctermbg=230
+hi CursorColumn ctermfg=none ctermbg=none
 " text width indicator column
-hi ColorColumn ctermfg=none ctermbg=254
+hi ColorColumn ctermfg=none ctermbg=none
 " line numbering on the left
-hi LineNr ctermfg=250 ctermbg=254
+hi LineNr ctermfg=187
 " line numbering in cursor line
 hi CursorLineNR ctermfg=232 ctermbg=252 cterm=bold
 
@@ -208,7 +211,7 @@ hi NonText      ctermfg=253
 " nbsp, tab and trail
 hi SpecialKey   ctermfg=253 cterm=bold
 
-hi Comment      ctermfg=247 ctermbg=255
+hi Comment      ctermfg=247
 hi Number       ctermfg=166
 hi String       ctermfg=74
 hi Boolean      ctermfg=39
