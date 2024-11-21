@@ -24,7 +24,7 @@ set -e    # errexit
 # exit status is the status of the failed command
 set -o pipefail
 
-VERSION=0.1
+VERSION=0.14
 
 # Default configuration
 sshuttle_configs=${SSHUTTLE_CONFIGS:-~/.sshuttle/}
@@ -37,6 +37,7 @@ HELP=\
 "usage: $SCRIPT [-h] [--version] [arg]
 
 This scripts uses Sshuttle configuration to manage multiple connections. 
+Connection configuration defaults to your home-directory ~/.sshuttle.
 
 positional arguments:
   list                 List short name for all available configurations
@@ -53,8 +54,8 @@ optional arguments:
 
 Environment variables
 
-  SSHUTTLE_CONFIGS     Path to the Sshuttle configuration files defaults to
-                       your home-directory ~/.sshuttle"
+  SSHUTTLE_CONFIGS     Overwrite the path to the Sshuttle configuration files.
+"
 
 _DEBUG=${_DEBUG:-false}
 _debug() {
@@ -103,7 +104,9 @@ do
 done
 
 list() {
-        for file in $(ls -1 $sshuttle_configs/*.conf)
+        local config_path=$sshuttle_configs/*.conf
+        _debug "Configuration in $config_path"        
+        for file in $(ls -1 $config_path)
         do
                 echo $(basename $file .conf)
         done
@@ -151,26 +154,19 @@ stop() {
         fi
 }
 
-# Require at least one sub-command
-if (( $# >= 1 ))
-then
-        _command=$1 ; shift
-else
-        _error "Required sub-command ...use --help option"
-fi
-
+_command=${1:-status}
 case "$_command" in 
         list)
                 list
                 ;;
         start)
-                start $@
+                start "$2"
                 ;;
         status)
                 status
                 ;;
         stop)
-                stop $@
+                stop "$2"
                 ;;
         *)
                 echo "$HELP" 
