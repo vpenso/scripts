@@ -24,7 +24,7 @@ set -e    # errexit
 # exit status is the status of the failed command
 set -o pipefail
 
-VERSION=0.14
+VERSION=0.15
 
 # Default configuration
 sshuttle_configs=${SSHUTTLE_CONFIGS:-~/.sshuttle/}
@@ -122,6 +122,16 @@ start() {
                 test -f $config_path || _error "Missing sshuttle configuration file $config_path"
 
                 pid_file=/tmp/$USER-sshuttle-$config_name.pid
+
+                # if a process ID is available
+                if test -f $pid_file
+                then
+                        echo "$pid_file exists"
+                        status
+                        exit 0
+                fi
+
+                # if sshuttle can setup a connection
                 if sshuttle @$config_path --pidfile=$pid_file
                 then
                         reset
