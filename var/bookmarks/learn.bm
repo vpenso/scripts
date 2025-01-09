@@ -1,5 +1,3 @@
-blog/brendongregg                          https://brendangregg.com/blog
-blog/redhat/sysadmin                       https://www.redhat.com/sysadmin
 learn/pagedout                             https://pagedout.institute
 learn/project-based-learning               https://github.com/tuvtran/project-based-learning
 learn/selfie                               https://github.com/cksystemsteaching/selfie
@@ -12,7 +10,7 @@ lecture/toronto/scinetific-computing       https://support.scinet.utoronto.ca/ed
 lecture/ossue/computer-science             https://github.com/ossu/computer-science
 lecture/microsoft/iot-for-beginner         https://github.com/microsoft/IoT-For-Beginners
 lecture/aklecture                          https://aklectures.com/
-lecture/neural-netowrk/zero-to-hero        https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ
+lecture/neural-network/zero-to-hero        https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ
 lecture/mit/distributed-systems            https://www.youtube.com/watch?v=cQP8WApzIQQ&list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB
 lecture/mit/solid_state_chemistry          https://www.youtube.com/playlist?list=PLUl4u3cNGP63z5HAguqleEbsICfHgDPaG
 lecture/stanford/susskind/physics          https://www.youtube.com/playlist?list=PL6i60qoDQhQGaGbbg-4aSwXJvxOqO6o5e
@@ -21,3 +19,7 @@ book/standardebooks                        https://standardebooks.org/ebooks
 book/computer-security/tools-jewels        https://people.scs.carleton.ca/~paulv/toolsjewels.html
 book/data-centric_introducton              https://dcic-world.org/
 book/os/three-easy-pieces                  https://pages.cs.wisc.edu/~remzi/OSTEP
+
+blog/brendongregg                          https://brendangregg.com/blog
+blog/computer.rip                          https://computer.rip
+blog/redhat/sysadmin                       https://www.redhat.com/sysadmin
