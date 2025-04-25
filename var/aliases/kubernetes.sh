@@ -1,13 +1,12 @@
 command -v kubectl >/dev/null && {
 
         # load command completion
-	if [ "$shell" = "bash" ] ; then
-		source <(kubectl completion bash)
-	elif [ "$shell" = "zsh" ] ; then
-		source <(kubectl completion zsh)
-	fi
+	case "$SHELL" in
+        /bin/bash) source <(kubectl completion bash) ;;
+        /bin/zsh) source <(kubectl completion zsh) ;;
+        esac
 
-        # load the kubeclt Krew plugin manager if available
+        # load Krew plugin manager if available
         test -d $HOME/.krew \
                 && export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 

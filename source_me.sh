@@ -21,37 +21,8 @@ function _debug() {
         fi
 }
 
-## Repository Environment Variable ##
-
 # default location
-__source=$HOME/projects/scripts/source_me.sh
-# try to determine the source_me.sh file location
-shell=$(ps -p $$ | tail -n1 | tr -s ' ' | sed -e 's/^[ \t]*//' | cut -d' ' -f4)
-# in Bash shells
-if [ "$shell" = "bash" ]
-then
-	__source=$BASH_SOURCE[0]
-# in Zsh shells
-elif [ "$shell" = "zsh" ]
-then
-	__source="${(%):-%x}"
-else
-	echo \[W\] Using default: \"$__source\" 
-fi
-
-__dir="$( dirname $__source )"
-while [ -h $__source ]
-do
-  __source="$( readlink "$__source" )"
-  [[ $__source != /* ]] && __source="$__dir/$__source"
-  __dir="$( cd -P "$( dirname "$__source" )" && pwd )"
-done
-__dir="$( cd -P "$( dirname "$__source" )" && pwd )"
-
-export SCRIPTS=$__dir
-
-unset __dir
-unset __source
+export SCRIPTS=$HOME/projects/scripts
 
 ## Load Scripts, Configuration and Aliases ##
 
