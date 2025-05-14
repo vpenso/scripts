@@ -23,7 +23,7 @@ $html = ""
 
 
 def header(line)
-  line.split(' ')[1..-1].join(' ')
+  line.delete('#')
 end
 
 def html_image(image, css)
@@ -89,21 +89,28 @@ $html = %q{
     width: 100%;
     float: left;
     clear: float;
-    text-align:center; 
     vertical-align: middle;
-    margin: 1em; 
+    margin-left: 40px; 
     padding: 0; 
+  }
+  h2 { 
+    font-size: 1.7em;
+    width: 100%;
+    float: left;
+    clear: float;
+    vertical-align: middle;
+    margin-left: 40px; 
   }
   h3 { 
     font-size: 1.5em;
     width: 100%;
     float: left;
     clear: float;
-    text-align:center; 
     vertical-align: middle;
+    margin-left: 3em; 
   }
   img {
-    padding-bottom: 0.1em;
+    padding: 0em;
   }
 
 </style>
