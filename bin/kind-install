@@ -100,9 +100,9 @@ echo -n "Kind $version: "
 
 cd /tmp
 curl -s -L https://kind.sigs.k8s.io/dl/$version/kind-linux-amd64 -o kind-linux-amd64
-test -f kind-linux-amd64 || _error " download of binary unsuccessful"
+test -f kind-linux-amd64 || _error "download of binary unsuccessful"
 curl -s -L https://kind.sigs.k8s.io/dl/$version/kind-linux-amd64.sha256sum -o kind-linux-amd64.sha256sum
-test -f kind-linux-amd64.sha256sum || _error " download of checksum unsuccessful"
+test -f kind-linux-amd64.sha256sum || _error "download of checksum unsuccessful"
 
 if sha256sum --status -c kind-linux-amd64.sha256sum
 then
@@ -111,7 +111,7 @@ then
         chmod +x ~/bin/kind
         echo "downloaded to ~/bin/kind" 
 else
-        _error "Checksum verification unsuccessful"
+        _error "checksum verification unsuccessful"
 fi
 
 exit 0
