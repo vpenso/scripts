@@ -92,20 +92,24 @@ do
         command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
 done
 
+# make sure to download the latest version of Kind
 version=$(
         curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest \
                 | grep -oP '"tag_name": "\K(.*)(?=")'
         )
 echo -n "Kind $version: "
 
+# download Kind CLI and its checksum to /tmp
 cd /tmp
 curl -s -L https://kind.sigs.k8s.io/dl/$version/kind-linux-amd64 -o kind-linux-amd64
 test -f kind-linux-amd64 || _error "download of binary unsuccessful"
 curl -s -L https://kind.sigs.k8s.io/dl/$version/kind-linux-amd64.sha256sum -o kind-linux-amd64.sha256sum
 test -f kind-linux-amd64.sha256sum || _error "download of checksum unsuccessful"
 
+# verify the checksum of the Kind binary
 if sha256sum --status -c kind-linux-amd64.sha256sum
 then
+        # install the Kind binary to the user home-directory
         test -d ~/bin || mkdir ~/bin
         cp kind-linux-amd64 ~/bin/kind
         chmod +x ~/bin/kind
