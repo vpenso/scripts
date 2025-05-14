@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+#
+# Copyright 2025 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# script exits on the first unset variable encountered
+set -u    # nounset
+# script stops on first command failure
+set -e    # errexit
+# ensures that if any command in a set of piped commands failed, the overall
+# exit status is the status of the failed command
+set -o pipefail
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [-dh] [--version]
+
+Download kubectl binary release from...
+
+https://dl.k8s.io/release
+
+...to a ~/bin directory in the user home-directory
+
+optional arguments:
+  -d, --debug          enable verbose output
+  -h, --help           show this help message
+  --version            program version number "
+
+_DEBUG=${_DEBUG:-false}
+_debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+_error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+# Parse the command line options
+ARGS=$(getopt -o dh -l "debug,help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
+done
+
+# check dependencies...
+for cmd in \
+        curl \
+        sha256sum
+do
+        command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
+done
+
+# make sure to download the latest version of Kind
+version=$(curl -sL curl -L -s https://dl.k8s.io/release/stable.txt)
+echo -n "kubectl $version: "
+
+# download Kind CLI and its checksum to /tmp
+cd /tmp
+curl -s -L "https://dl.k8s.io/release/$version/bin/linux/amd64/kubectl" -o kubectl
+test -f kubectl || _error "download of binary unsuccessful"
+curl -s -L "https://dl.k8s.io/release/$version/bin/linux/amd64/kubectl.sha256" -o kubectl.sha256
+test -f kubectl.sha256 || _error "download of checksum unsuccessful"
+
+# verify the checksum of the Kind binary
+checksum=$(cat kubectl.sha256)
+if $(echo "$checksum" kubectl | sha256sum --status --check)
+then
+        # install the Kind binary to the user home-directory
+        test -d ~/bin || mkdir ~/bin
+        cp kubectl ~/bin/
+        chmod +x ~/bin/kubectl
+        echo "downloaded to ~/bin/kubectl" 
+else
+        _error "checksum verification unsuccessful"
+fi
+
+exit 0
+
+
