@@ -8,7 +8,10 @@ command -v kubectl >/dev/null && {
                 source <(kubectl completion bash) 
                 complete -o default -f __start_kubectl k
                 ;;
-        /bin/zsh) source <(kubectl completion zsh) ;;
+        /bin/zsh) 
+                autoload -U +X compinit && compinit
+                source <(kubectl completion zsh)
+                ;;
         esac
 
         # load Krew plugin manager if available
