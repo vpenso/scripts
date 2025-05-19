@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+#
+# Copyright 2025 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# script exits on the first unset variable encountered
+set -u    # nounset
+# script stops on first command failure
+set -e    # errexit
+# ensures that if any command in a set of piped commands failed, the overall
+# exit status is the status of the failed command
+set -o pipefail
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [-dh] [--version]
+
+Download Helm binary release from...
+
+https://github.com/helm/helm/releases
+
+...to a ~/bin directory in the user home-directory
+
+optional arguments:
+  -d, --debug          enable verbose output
+  -h, --help           show this help message
+  --version            program version number "
+
+_DEBUG=${_DEBUG:-false}
+_debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+_error() {
+        echo 1>&2 "Error: $@"
+	exit 1
+}
+
+# Parse the command line options
+ARGS=$(getopt -o dh -l "debug,help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break 
+                ;;
+        *) 
+                break 
+                ;;
+        esac
+done
+
+# check dependencies...
+for cmd in \
+        curl \
+        sha256sum \
+        kubectl
+do
+        command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
+done
+
+# make sure to download the latest version of Kind
+version=$(
+                curl -s https://api.github.com/repos/helm/helm/releases/latest \
+                        | grep -oP '"tag_name": "\K(.*)(?=")'
+        )
+echo -n "Helm $version: "
+
+# download Kind CLI and its checksum to /tmp
+cd /tmp
+curl -s -L https://get.helm.sh/helm-$version-linux-amd64.tar.gz -o helm-$version-linux-amd64.tar.gz
+test -f helm-$version-linux-amd64.tar.gz || _error "download of archive unsuccessful"
+curl -s -L https://get.helm.sh/helm-$version-linux-amd64.tar.gz.sha256sum -o helm-$version-linux-amd64.tar.gz.sha256sum
+test -f helm-$version-linux-amd64.tar.gz.sha256sum || _error "download of checksum unsuccessful"
+
+# verify the checksum of the Kind binary
+if sha256sum --status -c helm-$version-linux-amd64.tar.gz.sha256sum
+then
+        tar -xf helm-$version-linux-amd64.tar.gz
+        # install the Kind binary to the user home-directory
+        test -d ~/bin || mkdir ~/bin
+        cp linux-amd64/helm ~/bin/helm
+        chmod +x ~/bin/helm
+        echo "downloaded to ~/bin/helm" 
+else
+        _error "checksum verification unsuccessful"
+fi
+
+exit 0
+
+
