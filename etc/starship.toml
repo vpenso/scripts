@@ -1,0 +1,40 @@
+add_newline = true
+
+[character]
+format = "$symbol  "
+success_symbol = "[◎](22)"
+error_symbol = "[○](196)"
+
+[directory]
+style = 'fg:249 dimmed'
+truncate_to_repo = false
+truncation_symbol = "…/"
+
+[cmd_duration]
+show_milliseconds = true
+format = " $duration "
+style = "bg:lavender"
+disabled = false
+show_notifications = true
+min_time_to_notify = 45000
+
+[git_branch]
+style = "226 dimmed"
+symbol = ""
+format = '$symbol $branch '
+
+[git_metrics]
+format = '([▴$added]($added_style))([▿$deleted]($deleted_style))'
+added_style = 'dimmed green'
+deleted_style = 'dimmed red'
+ignore_submodules = true
+disabled = false
+
+[git_status]
+modified = "[+](red)"
+untracked = "[?](252)"
+
+[quarto]
+style = '210 bold'
+
+
