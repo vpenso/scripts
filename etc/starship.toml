@@ -2,8 +2,8 @@ add_newline = true
 
 [character]
 format = "$symbol  "
-success_symbol = "[󰬫](22)"
-error_symbol = "[](196)"
+success_symbol = "[󰬫](239)"
+error_symbol = "[](196)"
 vimcmd_symbol = ''
 
 [directory]
@@ -38,12 +38,12 @@ disabled = false
 
 [git_status]
 format = '($all_status$ahead_behind($style)) '
-modified = "[󰣕](214)"
-untracked = "[](240)"
-staged = "[󱆭${count}](40)"
-ahead = "[${count}](34)"
-behind = "[${count}](203)"
-conflicted = "[󰠠${count}]"
+modified = "[${count}󰣕 ](210)"
+untracked = "[${count} ](240)"
+staged = "[${count}󱆭 ](157)"
+ahead = "[${count} ](34)"
+behind = "[${count} ](203)"
+conflicted = "[${count}󰠠 ](196)"
 diverged = '⇕⇡${ahead_count}⇣${behind_count}'
 
 
