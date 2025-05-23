@@ -1,6 +1,11 @@
+command -v git >/dev/null && {
 
-test -L ~/.gitconfig || \
-        ln -s $SCRIPTS/etc/git/gitconfig ~/.gitconfig
+    alias g=git
 
-test -L ~/.gitignore_global || \
-        ln -s $SCRIPTS/etc/git/gitignore_global ~/.gitignore_global
+    test -L ~/.gitconfig \
+        || ln -s $SCRIPTS/etc/git/gitconfig ~/.gitconfig
+
+    test -L ~/.gitignore_global \
+        || ln -s $SCRIPTS/etc/git/gitignore_global ~/.gitignore_global
+
+}

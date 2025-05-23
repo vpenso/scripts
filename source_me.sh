@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+export _DEBUG=true
 function _debug() {
         if [ "$_DEBUG" = "true" ]; then
                 echo 1>&2 "Debug: $@"
@@ -23,18 +24,19 @@ function _debug() {
 
 # default location
 export SCRIPTS=$HOME/projects/scripts
-
-## Load Scripts, Configuration and Aliases ##
-
-export PATH=$PATH:$SCRIPTS/bin
-PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+_debug SCRIPTS=$SCRIPTS
+export PATH=$SCRIPTS/bin:$PATH
 
 # add executables in home-directory if present 
 test -d ~/bin && export PATH=~/bin:$PATH
 test -d ~/.local/bin && export PATH=~/.local/bin:$PATH
 
-for file in `\ls $SCRIPTS/var/aliases/*.sh`
+for file in \
+	$SCRIPTS/var/aliases/password.sh \
+	$SCRIPTS/var/aliases/nix.sh \
+	$SCRIPTS/var/aliases/git.sh
 do
+
 	_debug source $file
   	source $file
 done
