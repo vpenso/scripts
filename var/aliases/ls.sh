@@ -30,6 +30,9 @@ command -v lsd >/dev/null && {
         alias l='lsd -1F --group-dirs=first'
         alias l.='lsd -1 --all --group-dirs=first'
         alias lt='lsd -F --tree'
+        # link to configuration in this repository
+        test -d ~/.config/lsd \
+            || ln -s $SCRIPTS/etc/lsd ~/.config/lsd
 }
 
 function dir-files() {
