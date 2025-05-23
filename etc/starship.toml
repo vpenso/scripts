@@ -24,15 +24,18 @@ symbol = ""
 format = '$symbol $branch '
 
 [git_metrics]
-format = '([▴$added]($added_style))([▿$deleted]($deleted_style))'
-added_style = 'dimmed green'
-deleted_style = 'dimmed red'
+format = '([+$added]($added_style))([-$deleted]($deleted_style)) '
+added_style = 'dimmed 78'
+deleted_style = 'dimmed 217'
 ignore_submodules = true
 disabled = false
 
 [git_status]
-modified = "[+](red)"
+format = '($all_status$ahead_behind($style)) '
+modified = "[!](red)"
 untracked = "[?](252)"
+ahead = "[⇡${count}](34)"
+behind = "[⇣${count}](203)"
 
 [quarto]
 style = '210 bold'
