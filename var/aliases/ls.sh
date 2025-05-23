@@ -10,9 +10,9 @@ alias ll='ls -l'                   # long format
 alias lS='ls -lS'                  # displays file size in order
 
 command -v tree >/dev/null && {
-        alias td='tree -d'                 # list only directories
-        alias t2='tree -L 2'               # max recursive depth of 2 levels
-        alias tu='tree -pfughF --du'       # permissions, user, group, sizes
+        alias td='tree -d'           # list only directories
+        alias t2='tree -L 2'         # max recursive depth of 2 levels
+        alias tu='tree -pfughF --du' # permissions, user, group, sizes
 }
 
 command -v eza >/dev/null && {

@@ -1,9 +1,3 @@
-
-# Firefox typically installed by default
-export BROWSER=${BROWSER:-firefox}
-
-if command -v brave-browser >/dev/null ; then
-        alias brave=brave-browser
-#        export BROWSER=${BROWSER:-brave-browser}
-fi
-
+command -v firefox >/dev/null \
+    && export BROWSER=${BROWSER:-firefox} \
+    || echo 'warn: $BROWSER not set'

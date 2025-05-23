@@ -3,32 +3,22 @@
 if command -v dnf >/dev/null
 then
 
-        sudo dnf install -y  --skip-broken \
-                apg \
-                apptainer \
+        sudo dnf install -y \
                 bat \
-		bc \
+	            bc \
                 btop \
-                buildah \
-                ccrypt \
                 curl \
                 dnsutils \
-                encfs \
-                eza \
                 fd-find \
                 fzf \
                 git \
                 git-delta \
-		iwd \
                 jpegoptim \
-                neofetch \
-		neovim \
+                lsd \
                 netcat \
-                nodejs \
                 openssl \
                 pandoc \
-		pmount \
-                podman \
+		        pmount \
                 psmisc \
                 python \
                 rsync \
@@ -37,12 +27,7 @@ then
                 sshfs \
                 sshuttle \
                 tcpdump \
-                tmux \
                 tree \
                 wget \
-                wl-clipboard \
-                wofi \
-                zoxide \
-                zsh
-
+                wl-clipboard 
 fi
