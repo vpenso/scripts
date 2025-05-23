@@ -11,6 +11,8 @@ style = 'fg:249 dimmed'
 truncate_to_repo = false
 truncation_symbol = "…/"
 home_symbol = '~'
+read_only = " 󰌾"
+
 
 [shell]
 disabled = false
