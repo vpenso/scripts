@@ -20,6 +20,7 @@ then
                 pandoc \
 		        pmount \
                 psmisc \
+                ptyxis \
                 python \
                 rsync \
                 ruby \
