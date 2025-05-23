@@ -41,7 +41,10 @@ for file in \
 	$SCRIPTS/var/aliases/ls.sh \
 	$SCRIPTS/var/aliases/browser.sh \
 	$SCRIPTS/var/aliases/git.sh \
+	$SCRIPTS/var/aliases/bookmarks.sh \
+	$SCRIPTS/var/aliases/fzf.sh \
 	$SCRIPTS/var/aliases/bat.sh
+
 do
 	_debug source $file
   	source $file
