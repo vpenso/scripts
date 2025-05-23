@@ -2,7 +2,7 @@ add_newline = true
 
 [character]
 format = "$symbol  "
-success_symbol = "[󰬫](239)"
+success_symbol = "[󰜴](252)"
 error_symbol = "[](196)"
 vimcmd_symbol = ''
 

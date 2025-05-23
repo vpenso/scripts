@@ -27,12 +27,12 @@ links:
 tree-edge: 245
 git-status:
   default: 245
-  unmodified: 245
-  ignored: 245
-  new-in-index: dark_green
+  unmodified: 240
+  ignored: 240
+  new-in-index: 157
   new-in-workdir: dark_green
   typechange: dark_yellow
   deleted: dark_red
   renamed: dark_green
-  modified: dark_yellow
-  conflicted: dark_red
+  modified: 210
+  conflicted: 196

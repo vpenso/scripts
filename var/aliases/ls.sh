@@ -28,8 +28,11 @@ command -v eza >/dev/null && {
 command -v lsd >/dev/null && {
         alias ls=lsd
         alias l='lsd -1F --group-dirs=first'
-        alias l.='lsd -1 --all --group-dirs=first'
-        alias lt='lsd -F --tree'
+        alias l.='lsd -lg1 --all --group-dirs=first'
+        alias lt='lsd -gF --tree'
+        alias ll='lsd -lg'
+        alias tree='lsd --tree'
+        alias lg='lsd -lrG --git'
         # link to configuration in this repository
         test -d ~/.config/lsd \
             || ln -s $SCRIPTS/etc/lsd ~/.config/lsd
