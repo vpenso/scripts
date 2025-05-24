@@ -51,6 +51,7 @@ diverged = '⇕⇡${ahead_count}⇣${behind_count}'
 
 [quarto]
 style = '210 bold'
+symbol = " "
 
 [kubernetes]
 disabled = false
