@@ -33,8 +33,8 @@ format = '$symbol $branch '
 
 [git_metrics]
 format = '([+$added]($added_style))([-$deleted]($deleted_style)) '
-added_style = 'dimmed 78'
-deleted_style = 'dimmed 217'
+added_style = 'dimmed 28'
+deleted_style = 'dimmed 196'
 ignore_submodules = true
 disabled = false
 
@@ -47,6 +47,7 @@ ahead = "[${count} ](34)"
 behind = "[${count} ](203)"
 conflicted = "[${count}󰠠 ](196)"
 diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+deleted = '[${count}󰮈 ](245)'
 
 
 [quarto]

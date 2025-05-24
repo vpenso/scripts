@@ -7,15 +7,13 @@ cd $(mktemp -d)
 ##
 # Look for available fonts at https://www.nerdfonts.com/font-downloads
 #
-version=${1:-v2.3.3}
+version=${1:-v3.4.0}
 for zip in Inconsolata.zip \
-           InconsolataGo.zip \
-           Hack.zip
-do
-        curl -Lf https://github.com/ryanoasis/nerd-fonts/releases/download/$version/$zip -o $zip
-        unzip $zip
+  InconsolataGo.zip \
+  Hack.zip; do
+  curl -Lf https://github.com/ryanoasis/nerd-fonts/releases/download/$version/$zip -o $zip
+  unzip -o $zip
 done
 cp -v *.{ttf,otf} ~/.fonts
 
 fc-cache -f -v
-
