@@ -17,9 +17,9 @@
 
 #export _DEBUG=true
 function _debug() {
-        if [ "$_DEBUG" = "true" ]; then
-                echo 1>&2 "Debug: $@"
-        fi
+  if [ "$_DEBUG" = "true" ]; then
+    echo 1>&2 "Debug: $@"
+  fi
 }
 
 # default location
@@ -27,27 +27,28 @@ export SCRIPTS=$HOME/projects/scripts
 _debug SCRIPTS=$SCRIPTS
 export PATH=$SCRIPTS/bin:$PATH
 
-# add executables in home-directory if present 
-test -d ~/bin \
-    && export PATH=~/bin:$PATH
-test -d ~/.local/bin \
-    && export PATH=~/.local/bin:$PATH
+# add executables in home-directory if present
+test -d ~/bin &&
+  export PATH=~/bin:$PATH
+test -d ~/.local/bin &&
+  export PATH=~/.local/bin:$PATH
 
 for file in \
-	$SCRIPTS/var/aliases/nix.sh \
-	$SCRIPTS/var/aliases/password.sh \
-	$SCRIPTS/var/aliases/common.sh \
-	$SCRIPTS/var/aliases/cd.sh \
-	$SCRIPTS/var/aliases/ls.sh \
-	$SCRIPTS/var/aliases/browser.sh \
-	$SCRIPTS/var/aliases/git.sh \
-	$SCRIPTS/var/aliases/bookmarks.sh \
-	$SCRIPTS/var/aliases/fzf.sh \
-    $SCRIPTS/var/aliases/starship.sh \
-	$SCRIPTS/var/aliases/quarto.sh \
-	$SCRIPTS/var/aliases/btop.sh \
-	$SCRIPTS/var/aliases/bat.sh
-do
-	_debug source $file
-  	source $file
+  $SCRIPTS/var/aliases/nix.sh \
+  $SCRIPTS/var/aliases/password.sh \
+  $SCRIPTS/var/aliases/common.sh \
+  $SCRIPTS/var/aliases/cd.sh \
+  $SCRIPTS/var/aliases/ls.sh \
+  $SCRIPTS/var/aliases/vim.sh \
+  $SCRIPTS/var/aliases/tmux.sh \
+  $SCRIPTS/var/aliases/browser.sh \
+  $SCRIPTS/var/aliases/git.sh \
+  $SCRIPTS/var/aliases/bookmarks.sh \
+  $SCRIPTS/var/aliases/fzf.sh \
+  $SCRIPTS/var/aliases/starship.sh \
+  $SCRIPTS/var/aliases/quarto.sh \
+  $SCRIPTS/var/aliases/btop.sh \
+  $SCRIPTS/var/aliases/bat.sh; do
+  _debug source $file
+  source $file
 done
