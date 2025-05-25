@@ -54,6 +54,7 @@ set cursorline
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline cursorcolumn
 
+set paste
 
 "no backup files at all
 set nobackup
@@ -131,7 +132,27 @@ nnoremap <leader>n :set invnumber invrelativenumber<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " select a custom theme
-let g:airline_theme='minimalist'
+let g:airline_theme = 'minimalist'
+
+let g:airline_mode_map = {
+    \ '__' : '-',
+    \ 'n'  : '󰬕 ',
+    \ 'i'  : '󰬐 ',
+    \ 'R'  : '󰬙 ',
+    \ 'c'  : '󰬊 ',
+    \ 'v'  : '󰬝 ',
+    \ 'V'  : '󰬝 ',
+    \ '␖' : '󰬝 ',
+    \ 's'  : '󰬚 ',
+    \ 'S'  : '󰬚 ',
+    \ '␓' : '󰬚 ',
+    \ }
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_symbols.paste = ' '
+let g:airline_symbols.spell = ' '
 
 " Configure the vim-markdown plugin, cf https://github.com/tpope/vim-markdown
 "
