@@ -8,36 +8,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " https://github.com/ryanoasis/vim-devicons
 Plug 'ryanoasis/vim-devicons'
-" i3 configuration syntax highlighting
-"   https://github.com/mboughaba/i3config.vim
-Plug 'mboughaba/i3config.vim'
-" Auto-close inserts matching close pairs
-Plug 'Townk/vim-autoclose'
-
-" SnipMate inserts text snippets
-"  cf. https://github.com/garbas/vim-snipmate
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'tomtom/tlib_vim'
-Plug 'honza/vim-snippets'
-"Plug 'garbas/vim-snipmate'
-" Supertab insert mode completions with Tab
-"  https://github.com/ervandew/supertab
-Plug 'ervandew/supertab'
-
-" Buffergator is a plugin for listing, navigating between, and selecting
-" buffers to edit
-" Cf. https://github.com/jeetsukumaran/vim-buffergator 
-Plug 'jeetsukumaran/vim-buffergator'
-
-" Git command wrapper cf. https://github.com/tpope/vim-fugitive
-Plug 'tpope/vim-fugitive'
-" Shows git diff markers in the sign column
-"  https://github.com/airblade/vim-gitgutter/
-Plug 'airblade/vim-gitgutter/'
-
-" https://github.com/junegunn/fzf.vim
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 
 " Commands
 "    :PlugInstall      Install plugins
@@ -169,20 +139,8 @@ let g:airline_theme='minimalist'
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
 let g:markdown_minlines = 100
 
-" Configure the vim-gitgutter plugin, cf. https://github.com/airblade/vim-gitgutter/
-let g:gitgutter_terminal_reports_focus=0
-set updatetime=100
-" ...put the signs into the number column
-set signcolumn=number
-
-" Insert mode completion
-imap <c-x><c-k> <plug>(fzf-complete-word)
-imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-l> <plug>(fzf-complete-line)
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" SYNTAX HIGLIGHTING
+" SYNTAX HIGHLIGHTING
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set t_Co=256
