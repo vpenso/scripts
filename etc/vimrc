@@ -8,6 +8,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " https://github.com/ryanoasis/vim-devicons
 Plug 'ryanoasis/vim-devicons'
+" https://github.com/shushcat/vim-minimd
+Plug 'shushcat/vim-minimd'
 
 " Commands
 "    :PlugInstall      Install plugins
@@ -154,8 +156,6 @@ endif
 let g:airline_symbols.paste = ' '
 let g:airline_symbols.spell = ' '
 
-" Configure the vim-markdown plugin, cf https://github.com/tpope/vim-markdown
-"
 " enable fenced code block syntax highlighting in your markdown documents
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
 let g:markdown_minlines = 100
