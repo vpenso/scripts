@@ -13,6 +13,13 @@ truncation_symbol = "…/"
 home_symbol = '~'
 read_only = " 󰌾"
 
+[[battery.display]]
+threshold = 10
+style = 'bold 196'
+
+[[battery.display]]
+threshold = 20
+style = 'bold 166'
 
 [shell]
 disabled = false
