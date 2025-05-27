@@ -5,11 +5,12 @@ alias v=vi
 # …if Vim is installed us it instead of classic Vi
 command -v vim >/dev/null && {
   export EDITOR=vim
+  alias v=vim
   alias v0='vim --clean'
 }
 
 # if NeoVim is installed
 command -v nvim &>/dev/null && {
   export EDITOR=nvim
-  alias v=nvim
+  alias nv=nvim
 }
