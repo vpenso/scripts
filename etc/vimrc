@@ -11,6 +11,13 @@ Plug 'ryanoasis/vim-devicons'
 " https://github.com/shushcat/vim-minimd
 Plug 'shushcat/vim-minimd'
 
+" Enables transparent pasting into vim …(i.e. no more :set paste!)
+" - …terminal needs to support: bracketed paste mode
+" - Whenever you are in the insert mode and paste into your 
+" - …terminal emulator using ctrl+v
+" - vim will automatically `:set paste` for you
+Plug 'ConradIrwin/vim-bracketed-paste'
+
 " Commands
 "    :PlugInstall      Install plugins
 "    :PlugClean        Remove unlisted plugins 
@@ -56,7 +63,6 @@ set cursorline
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline cursorcolumn
 
-set paste
 
 "no backup files at all
 set nobackup
