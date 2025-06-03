@@ -5,7 +5,7 @@ then
     eval "$(starship init bash)"
 else
     # simple default shell prompt
-    export PS1="\n\e[32m\u\e[0m@\e[34m\h\e[0m:\e[31m\w\e[0m \n󱆃 󰜴 "
+    export PS1="\n\e[38;5;243m\u\e[0m@\e[38;5;233m\h\e[0m:\e[38;5;250m\w\e[0m \n\e[38;5;254m󱆃 󰜴\e[0m "
     # \e[<num>m     ASCI escape ANSI code
     # \u            user name
     # \h            hostname
