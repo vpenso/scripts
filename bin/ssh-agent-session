@@ -25,10 +25,16 @@ export SSH_ENV=$HOME/.ssh/agent-session
 
 # check if an SSH agent is running
 function __ssh_agent_running() {
+  # check if the session file exists
   if [ -f $SSH_ENV ]; then
-    source $SSH_ENV
-    ps $SSH_AGENT_PID > /dev/null
-    return $?
+    # check if the session file is not empty
+    if [ ! -z $SSH_ENV ]; then
+      source $SSH_ENV
+      ps $SSH_AGENT_PID > /dev/null
+      return $?
+    else
+      return 1
+    fi
   else
     return 1
   fi
