@@ -1,2 +1,12 @@
 # https://helix-editor.vercel.app/reference/list-of-themes
 theme = "ayu_light"
+
+[editor]
+line-number = "absolute"
+bufferline = "multiple"
+
+[editor.statusline]
+mode.normal = "󰬕 "
+mode.insert = "󰬐 "
+mode.select = "󰬚 "
+left = ["mode", "spinner", "file-name"]

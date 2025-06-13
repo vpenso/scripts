@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+command -v hx >/dev/null || sudo dnf install -y helix
