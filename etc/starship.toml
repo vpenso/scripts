@@ -55,6 +55,7 @@ behind = "[${count} ](203)"
 conflicted = "[${count}󰠠 ](196)"
 diverged = '⇕⇡${ahead_count}⇣${behind_count}'
 deleted = '[${count}󰮈 ](245)'
+renamed = "[${count}󱄍 ](202)"
 
 
 [quarto]
@@ -64,3 +65,6 @@ symbol = " "
 [kubernetes]
 disabled = false
 style = '21'
+
+[golang]
+symbol = '󰟓  '
