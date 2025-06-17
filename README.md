@@ -23,7 +23,7 @@ Path                               | Description
 
 ## License
 
-Copyright 2012-2023 Victor Penso
+Copyright 2012-2025 Victor Penso
 
 This is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public
