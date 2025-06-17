@@ -92,20 +92,11 @@ done
 command -v nvim >/dev/null \
         || sudo dnf install -y nvim
 
-# backup Nvim configuration if existing
-test -d ~/.config/nvim \
-       && mv ~/.config/nvim ~/.config/nvim.bak
-
-rm -rf ~/.local/share/nvim
-rm -rf ~/.local/state/nvim
-rm -rf ~/.cache/nvim
-
-# clone the AstroNvim configuration from GitHub
-git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
-rm -rf ~/.config/nvim/.git
+test -L ~/.config/astronvim \
+        || ln -s $SCRIPTS/etc/astronvim ~/.config/astronvim
 
 # initialize AstroNvim
-nvim --headless -c 'quitall'
+NVIM_APPNAME=astronvim nvim --headless -c 'quitall'
 
 exit 0
 

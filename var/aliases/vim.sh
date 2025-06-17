@@ -13,4 +13,9 @@ command -v vim >/dev/null && {
 command -v nvim &>/dev/null && {
   export EDITOR=nvim
   alias nv=nvim
+
+  test -d ~/.config/astronvim && {
+    alias astronvim="NVIM_APPNAME=astronvim nvim"
+    alias avim=astronvim
+  }
 }
