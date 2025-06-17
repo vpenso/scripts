@@ -88,6 +88,10 @@ do
         command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
 done
 
+# install nvim via package if missing
+command -v nvim >/dev/null \
+        || sudo dnf install -y nvim
+
 # backup Nvim configuration if existing
 test -d ~/.config/nvim \
        && mv ~/.config/nvim ~/.config/nvim.bak
@@ -96,8 +100,12 @@ rm -rf ~/.local/share/nvim
 rm -rf ~/.local/state/nvim
 rm -rf ~/.cache/nvim
 
+# clone the AstroNvim configuration from GitHub
 git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
 rm -rf ~/.config/nvim/.git
+
+# initialize AstroNvim
+nvim --headless -c 'quitall'
 
 exit 0
 
