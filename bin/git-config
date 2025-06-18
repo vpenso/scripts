@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2012-2018 Victor Penso
+# Copyright 2012-2025 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -141,6 +141,9 @@ git config --global apply.whitespace nowarn
 
 # Files generally to ignore
 git config --global core.excludesfile ~/.gitignore_global
+
+# use SSH key for signing
+git config --global gpg.format ssh
 
 _gitignore_global="
 # Other VCS #

@@ -42,7 +42,6 @@ for file in \
   $SCRIPTS/var/aliases/vim.sh \
   $SCRIPTS/var/aliases/tmux.sh \
   $SCRIPTS/var/aliases/browser.sh \
-  $SCRIPTS/var/aliases/git.sh \
   $SCRIPTS/var/aliases/bookmarks.sh \
   $SCRIPTS/var/aliases/fzf.sh \
   $SCRIPTS/var/aliases/starship.sh \
