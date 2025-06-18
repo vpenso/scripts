@@ -1,6 +1,7 @@
 gitproxy
 etc/nnn/plugins
 etc/nnn/.history
+etc/astronvim/lazy-lock.json
 *.nfs*
 *.html
 *.bak
