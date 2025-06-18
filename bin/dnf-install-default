@@ -5,7 +5,7 @@ then
 
         sudo dnf install -y \
                 bat \
-	            bc \
+                bc \
                 btop \
                 curl \
                 dnsutils \
@@ -18,7 +18,7 @@ then
                 netcat \
                 openssl \
                 pandoc \
-		        pmount \
+                pmount \
                 psmisc \
                 ptyxis \
                 python \
