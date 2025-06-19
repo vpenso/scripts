@@ -30,9 +30,6 @@ alias stamp="date +%Y/%m/%dT%R:%S"
 # Download a file
 alias get="curl -C - -O"
 alias usage="du -k * | sort -nr | cut -f2 | xargs -d '\n' du -sh"
-alias ascii="man ascii"
-alias suspend="sudo true ; xscreensaver-command -lock ; sudo pm-suspend"
-
 
 ##
 # pagers

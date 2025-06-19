@@ -11,11 +11,15 @@ command -v vim >/dev/null && {
 
 # if NeoVim is installed
 command -v nvim &>/dev/null && {
-  export EDITOR=nvim
-  alias nv=nvim
 
+  # prefer NeoVim of classic Vim
+  alias v=nvim
+  export EDITOR=nvim
+
+  # check for the NeoVim distributions
   test -d ~/.config/astronvim && {
     alias astronvim="NVIM_APPNAME=astronvim nvim"
-    alias avim=astronvim
+    alias v=astronvim
+    export EDITOR=astrovim
   }
 }

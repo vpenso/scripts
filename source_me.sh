@@ -39,6 +39,7 @@ for file in \
   $SCRIPTS/var/aliases/common.sh \
   $SCRIPTS/var/aliases/cd.sh \
   $SCRIPTS/var/aliases/ls.sh \
+  $SCRIPTS/var/aliases/git.sh \
   $SCRIPTS/var/aliases/vim.sh \
   $SCRIPTS/var/aliases/tmux.sh \
   $SCRIPTS/var/aliases/browser.sh \
