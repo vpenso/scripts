@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+bmc_fqdn=${1:?URI missing as argument...}
+bmc_user=${BMC_USER:?User not set... export BMC_USER}
+bmc_password=${BMC_PASSWORD:?Password not set... export BMC_PASSWORD}
+
+payload="{\"UserName\" : \"$bmc_user\", \"Password\" : \"$bmc_password\"}"
+tmp_file=$(mktemp)
+# get the security token and store it to a file
+curl -s -k -H "Content-Type: application/json" -d "$payload" -D $tmp_file \
+     -X POST https://${bmc_fqdn}/redfish/v1/SessionService/Sessions >/dev/null
+
+echo $(grep X-Auth-Token $tmp_file |cut -d ':' -f 2) > token.txt
+echo "Security token stored to token.txt"
+
