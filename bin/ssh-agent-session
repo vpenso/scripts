@@ -30,14 +30,17 @@ function __ssh_agent_running() {
     # check if the session file is not empty
     if [ ! -z $SSH_ENV ]; then
       source $SSH_ENV
-      ps $SSH_AGENT_PID > /dev/null
-      return $?
-    else
-      return 1
+      if ps $SSH_AGENT_PID > /dev/null
+      then
+        local name=$(ps -p $SSH_AGENT_PID -o comm=)
+        if [[ "$name" =~ ^ssh ]]
+        then
+          return $?
+        fi
+      fi
     fi
-  else
-    return 1
   fi
+  return 1
 }
 
 # If an SSH agent is running attach new shells
