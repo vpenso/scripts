@@ -68,3 +68,6 @@ style = '21'
 
 [golang]
 symbol = '󰟓  '
+
+[ruby]
+symbol = ' '
