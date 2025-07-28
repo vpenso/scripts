@@ -30,5 +30,8 @@ then
                 tcpdump \
                 tree \
                 wget \
-                wl-clipboard 
+                wl-clipboard
+        # clean up packages installed by default
+        sudo dnf remove -y \
+                thunderbird
 fi
