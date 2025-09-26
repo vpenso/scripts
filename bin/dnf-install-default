@@ -15,6 +15,7 @@ then
                 git-delta \
                 jpegoptim \
                 lsd \
+                make \
                 netcat \
                 openssl \
                 pandoc \
