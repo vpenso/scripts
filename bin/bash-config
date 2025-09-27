@@ -23,13 +23,6 @@ function _error() {
 
 SCRIPTS=${SCRIPTS:?Set the SCRIPTS environment variable}
 
-for cmd in \
-        diffcp
-do
-        command -v $cmd &>/dev/null || _error "$cmd program missing"
-done
-
-
 test -d ~/.bashrc.d || mkdir ~/.bashrc.d
 
 bashrc=$(mktemp)
@@ -44,10 +37,10 @@ then
 fi
 EOF
 
-diffcp -b $bashrc ~/.bashrc
+cp -b $bashrc ~/.bashrc
 
 # deploy the basic Zsh configuration
 for file in $SCRIPTS/etc/bashrc.d/*.sh
 do
-        diffcp -r $file ~/.bashrc.d/$(basename $file)
+        cp $file ~/.bashrc.d/$(basename $file)
 done
