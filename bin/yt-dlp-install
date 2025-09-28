@@ -5,3 +5,9 @@ command -v yt-dlp >/dev/null || {
         pip install --upgrade yt-dlp
 }
 yt-dlp --version
+
+cat > $HOME/.bashrc.d/yt-dlp.sh <<EOF
+alias youtube='yt-dlp -f "bv*+ba/b"'
+alias yt2mp3='yt-dlp --extract-audio --audio-format mp3 --embed-thumbnail -f bestaudio'
+EOF
+
