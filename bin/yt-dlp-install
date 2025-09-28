@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+command -v yt-dlp >/dev/null || {
+	sudo dnf install -y ffmpeg-free python3-pip
+        pip install --upgrade yt-dlp
+}
+yt-dlp --version
