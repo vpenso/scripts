@@ -23,7 +23,7 @@ function _debug() {
 }
 
 # default location
-export SCRIPTS=${SCRIPTS:-HOME/projects/scripts}
+export SCRIPTS=~/projects/scripts
 _debug SCRIPTS=$SCRIPTS
 export PATH=$SCRIPTS/bin:$PATH
 
