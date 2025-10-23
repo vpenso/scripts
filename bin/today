@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+set -u
+
+cal | grep -E "\b$(date '+%e')\b| "
+date "+%y/%m/%d %H:%M"
+
