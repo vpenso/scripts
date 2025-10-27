@@ -5,6 +5,7 @@ then
 
         sudo dnf install -y \
                 age \
+                apg \
                 bat \
                 bc \
                 btop \
