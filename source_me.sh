@@ -48,6 +48,7 @@ for file in \
   $SCRIPTS/var/aliases/starship.sh \
   $SCRIPTS/var/aliases/quarto.sh \
   $SCRIPTS/var/aliases/btop.sh \
+  $SCRIPTS/var/aliases/ssh.sh \
   $SCRIPTS/var/aliases/bat.sh; do
   _debug source $file
   source $file
