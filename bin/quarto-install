@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# Copyright 2020-2025 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# work in a disposable directory
+pushd $(mktemp -d /tmp/quarto-install-XXXXX) 
+
+# required version can be passed as first argument
+version=${1:-1.8.26}
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v${version}/quarto-${version}-linux-amd64.tar.gz
+
+# install quarto
+mkdir ~/opt ~/bin
+tar -C ~/opt -xvzf quarto-${version}-linux-amd64.tar.gz
+ln -s ~/opt/quarto-${version}/bin/quarto ~/bin/quarto
+
+popd
+rm -rf /tmp/quarto-install*
+
+quarto check
