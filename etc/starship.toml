@@ -1,8 +1,26 @@
 add_newline = true
-
+format = """
+$directory\
+$custom\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$kubernetes\
+$quarto\
+$ruby\
+$golang\
+$rust\
+$spack\
+$cmd_duration\
+$line_break\
+$battery\
+$shell\
+$character"""
 
 [character]
-format = "$symbol  "
+format = "$symbol "
 success_symbol = "[󰜴](252)"
 error_symbol = "[](196)"
 vimcmd_symbol = ''
@@ -12,7 +30,8 @@ style = 'fg:249 dimmed'
 truncate_to_repo = false
 truncation_symbol = "…/"
 home_symbol = '~'
-read_only = " 󰌾"
+read_only = "󰌾 "
+format = '[$read_only]($read_only_style)[$path]($style) '
 
 [[battery.display]]
 threshold = 10
@@ -36,19 +55,19 @@ min_time_to_notify = 45000
 
 
 [git_branch]
-style = "226 dimmed"
-symbol = ""
-format = '$symbol $branch '
+style = "250"
+symbol = " "
+format = '[$symbol($branch)]($style) '
 
 [git_metrics]
-format = '([+$added]($added_style))([-$deleted]($deleted_style)) '
+format = '([$added+]($added_style))([$deleted-]($deleted_style))'
 added_style = 'dimmed 28'
 deleted_style = 'dimmed 196'
 ignore_submodules = true
 disabled = false
 
 [git_status]
-format = '($all_status$ahead_behind($style)) '
+format = '($all_status$ahead_behind($style))'
 modified = "[${count}󰣕 ](210)"
 untracked = "[${count} ](240)"
 staged = "[${count}󱆭 ](157)"
@@ -58,7 +77,6 @@ conflicted = "[${count}󰠠 ](196)"
 diverged = '⇕⇡${ahead_count}⇣${behind_count}'
 deleted = '[${count}󰮈 ](245)'
 renamed = "[${count}󱄍 ](202)"
-
 
 [quarto]
 style = '210 bold'
@@ -80,7 +98,7 @@ when = "ssh-add -l | grep -v -q 'no identities'"
 command = "ssh-add -l | grep -v 'no identities' | wc -l"
 symbol = " "
 style = "250"
-format = "[($output)$symbol]($style) "
+format = "[$symbol($output)]($style) "
 
 [custom.prompt_addition]
 description = 'add the content of a PROMPT_ADDITION environment variable'
@@ -88,5 +106,5 @@ description = 'add the content of a PROMPT_ADDITION environment variable'
 when = """ test -n "${PROMPT_ADDITION}" """
 command = 'echo $PROMPT_ADDITION'
 symbol = '󰴽 '
-style = '196'
+style = '19'
 
