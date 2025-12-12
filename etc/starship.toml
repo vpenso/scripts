@@ -1,5 +1,6 @@
 add_newline = true
 
+
 [character]
 format = "$symbol  "
 success_symbol = "[󰜴](252)"
@@ -32,6 +33,7 @@ style = "bg:lavender"
 disabled = false
 show_notifications = true
 min_time_to_notify = 45000
+
 
 [git_branch]
 style = "226 dimmed"
@@ -71,3 +73,20 @@ symbol = '󰟓  '
 
 [ruby]
 symbol = ' '
+
+[custom.ssh_keys]
+description = "show the number of keys loaded in the SSH agent"
+when = "ssh-add -l | grep -v -q 'no identities'"
+command = "ssh-add -l | grep -v 'no identities' | wc -l"
+symbol = " "
+style = "250"
+format = "[($output)$symbol]($style) "
+
+[custom.prompt_addition]
+description = 'add the content of a PROMPT_ADDITION environment variable'
+# if the environment variable is set
+when = """ test -n "${PROMPT_ADDITION}" """
+command = 'echo $PROMPT_ADDITION'
+symbol = '󰴽 '
+style = '196'
+
