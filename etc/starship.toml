@@ -108,3 +108,10 @@ command = 'echo $PROMPT_ADDITION'
 symbol = '󰴽 '
 style = '19'
 
+[custom.sshuttles]
+description = 'list the nummber of sshuttle connection'
+when = 'ls /tmp/$USER-sshuttle*.pid &>/dev/null'
+command = 'ls /tmp/$USER-sshuttle*.pid | wc -l'
+symbol = '󰌘 '
+style = "250"
+format = "[$symbol($output)]($style) "
