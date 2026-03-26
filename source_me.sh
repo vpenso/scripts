@@ -36,6 +36,7 @@ test -d ~/.local/bin &&
 for file in \
   $SCRIPTS/var/aliases/nix.sh \
   $SCRIPTS/var/aliases/password.sh \
+  $SCRIPTS/var/aliases/cliamp.sh \
   $SCRIPTS/var/aliases/common.sh \
   $SCRIPTS/var/aliases/cd.sh \
   $SCRIPTS/var/aliases/ls.sh \
