@@ -34,24 +34,25 @@ test -d ~/.local/bin &&
   export PATH=~/.local/bin:$PATH
 
 for file in \
-  $SCRIPTS/var/aliases/nix.sh \
-  $SCRIPTS/var/aliases/password.sh \
+  $SCRIPTS/var/aliases/bat.sh \
+  $SCRIPTS/var/aliases/bookmarks.sh \
+  $SCRIPTS/var/aliases/browser.sh \
+  $SCRIPTS/var/aliases/btop.sh \
+  $SCRIPTS/var/aliases/cd.sh \
   $SCRIPTS/var/aliases/cliamp.sh \
   $SCRIPTS/var/aliases/common.sh \
-  $SCRIPTS/var/aliases/cd.sh \
-  $SCRIPTS/var/aliases/ls.sh \
-  $SCRIPTS/var/aliases/git.sh \
-  $SCRIPTS/var/aliases/vim.sh \
-  $SCRIPTS/var/aliases/tmux.sh \
-  $SCRIPTS/var/aliases/browser.sh \
-  $SCRIPTS/var/aliases/bookmarks.sh \
   $SCRIPTS/var/aliases/fzf.sh \
-  $SCRIPTS/var/aliases/starship.sh \
-  $SCRIPTS/var/aliases/quarto.sh \
-  $SCRIPTS/var/aliases/btop.sh \
+  $SCRIPTS/var/aliases/git.sh \
+  $SCRIPTS/var/aliases/ls.sh \
+  $SCRIPTS/var/aliases/nix.sh \
   $SCRIPTS/var/aliases/npm.sh \
+  $SCRIPTS/var/aliases/password.sh \
+  $SCRIPTS/var/aliases/quarto.sh \
+  $SCRIPTS/var/aliases/starship.sh \
+  $SCRIPTS/var/aliases/sind.sh \
   $SCRIPTS/var/aliases/ssh.sh \
-  $SCRIPTS/var/aliases/bat.sh; do
+  $SCRIPTS/var/aliases/tmux.sh \
+  $SCRIPTS/var/aliases/vim.sh; do
   _debug source $file
   source $file
 done
