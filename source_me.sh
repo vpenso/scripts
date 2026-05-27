@@ -46,6 +46,7 @@ for file in \
   $SCRIPTS/var/aliases/ls.sh \
   $SCRIPTS/var/aliases/nix.sh \
   $SCRIPTS/var/aliases/npm.sh \
+  $SCRIPTS/var/aliases/opencode.sh \
   $SCRIPTS/var/aliases/password.sh \
   $SCRIPTS/var/aliases/quarto.sh \
   $SCRIPTS/var/aliases/starship.sh \
