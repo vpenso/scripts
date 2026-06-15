@@ -119,7 +119,6 @@ dbus-system none # No system D-Bus access
 # MISC HARDENING
 ###############################################################################
 disable-mnt                    # Block /mnt, /media, /run/mount
-noexec ${HOME}/bin
 noexec ${HOME}/.cache
 noexec ${HOME}/.config
 noexec ${HOME}/.local/share

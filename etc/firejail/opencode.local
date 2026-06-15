@@ -38,5 +38,5 @@ whitelist ${HOME}/.bashrc.d/*.sh
 
 whitelist ${HOME}/.npm*
 whitelist ${HOME}/.pip
-whitelist ${HOME}/project/scripts
-whitelist ${HOME}/project/agent-skills
+whitelist ${HOME}/bin
+whitelist ${HOME}/project
