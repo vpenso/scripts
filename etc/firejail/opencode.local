@@ -39,4 +39,4 @@ whitelist ${HOME}/.bashrc.d/*.sh
 whitelist ${HOME}/.npm*
 whitelist ${HOME}/.pip
 whitelist ${HOME}/bin
-whitelist ${HOME}/project
+whitelist ${HOME}/projects
