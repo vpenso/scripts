@@ -1,0 +1,48 @@
+# vi: nospell
+#
+# Survives firejail package updates
+# Place in ~/.config/firejail/opencode.local
+
+###############################################################################
+# WHITELIST — Add project directories you want opencode to access
+###############################################################################
+# Example: whitelist ${HOME}/projects
+# Add your own project paths below:
+
+###############################################################################
+# GIT CONFIG — Needed for git operations inside the sandbox
+###############################################################################
+whitelist ${HOME}/.gitconfig
+#whitelist ${HOME}/.config/git
+
+###############################################################################
+# SKILLS — Opencode agent skills directory
+###############################################################################
+whitelist ${HOME}/.agents
+
+###############################################################################
+# SSH — Uncomment if you need git over SSH (reduces security significantly)
+###############################################################################
+# whitelist ${HOME}/.ssh/config
+# whitelist ${HOME}/.ssh/id_ed25519
+# whitelist ${HOME}/.ssh/id_ed25519.pub
+
+###############################################################################
+# ADDITIONAL TOOLS — Uncomment as needed
+###############################################################################
+# Shell config for terminal operations:
+whitelist ${HOME}/.bashrc
+whitelist ${HOME}/.bashrc.d/*.sh
+# whitelist ${HOME}/.zshrc
+# whitelist ${HOME}/.profile
+
+# Node.js / npm:
+whitelist ${HOME}/.npm*
+# whitelist ${HOME}/.nvm
+
+# Python:
+# whitelist ${HOME}/.local/lib/python3*
+# whitelist ${HOME}/.pip
+
+# GPG (for commit signing):
+# whitelist ${HOME}/.gnupg
