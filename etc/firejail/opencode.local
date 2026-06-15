@@ -36,13 +36,7 @@ whitelist ${HOME}/.bashrc.d/*.sh
 # whitelist ${HOME}/.zshrc
 # whitelist ${HOME}/.profile
 
-# Node.js / npm:
 whitelist ${HOME}/.npm*
-# whitelist ${HOME}/.nvm
-
-# Python:
-# whitelist ${HOME}/.local/lib/python3*
-# whitelist ${HOME}/.pip
-
-# GPG (for commit signing):
-# whitelist ${HOME}/.gnupg
+whitelist ${HOME}/.pip
+whitelist ${HOME}/project/scripts
+whitelist ${HOME}/project/agent-skills

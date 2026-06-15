@@ -7,5 +7,7 @@ then
         # Launch from your project directory
         function opencode-firejail() {
                 firejail --profile=opencode --whitelist=$(pwd) opencode
-        }        
+        }
+
+        alias oc=opencode-firejail
 fi

@@ -41,6 +41,7 @@ for file in \
   $SCRIPTS/var/aliases/cd.sh \
   $SCRIPTS/var/aliases/cliamp.sh \
   $SCRIPTS/var/aliases/common.sh \
+  $SCRIPTS/var/aliases/firejail.sh \
   $SCRIPTS/var/aliases/fzf.sh \
   $SCRIPTS/var/aliases/git.sh \
   $SCRIPTS/var/aliases/ls.sh \
