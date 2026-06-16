@@ -1,106 +1,144 @@
 # vi: nospell
 #
-# This file is overwritten after every install/update
-quiet
+# Firejail security profile for opencode
+# Description: CLI AI coding assistant — sandboxed with minimal privileges
 
-# Persistent local customizations (survives updates)
+# For persistent customizations, edit opencode.local instead
+quiet          # Suppress Firejail startup messages (parent/child PID output)
+
+# Persistent local customizations (survives firejail package updates)
+# Searched in ~/.config/firejail/ first, then /etc/firejail/
 include opencode.local
 
-# Persistent global definitions
+# Persistent global definitions applied to all profiles
+# Useful for system-wide overrides (e.g., shared whitelist paths)
 include globals.local
 
 ###############################################################################
 # NOBLACKLIST — Prevent disable-programs.inc from blocking opencode dirs
 ###############################################################################
-noblacklist ${HOME}/.cache/opencode
-noblacklist ${HOME}/.config/opencode
-noblacklist ${HOME}/.local/share/opencode
-noblacklist ${HOME}/.local/state/opencode
+# These directories are listed in disable-programs.inc by default. The
+# noblacklist directives override that blacklist so they remain accessible
+# when combined with the whitelist section below.
+noblacklist ${HOME}/.cache/opencode       # Token caches, API response cache
+noblacklist ${HOME}/.config/opencode      # Main config (opencode.json, agents)
+noblacklist ${HOME}/.local/share/opencode # Shared data (skills, plugins)
+noblacklist ${HOME}/.local/state/opencode # Session state, conversation history
 
 ###############################################################################
 # SECCOMP — Block dangerous system calls at kernel level
 ###############################################################################
+# Installs an eBPF seccomp filter that blocks a default list of dangerous
+# syscalls including: mount, umount2, ptrace, kexec_load, init_module,
+# delete_module, iopl, ioperm, swapon, swapoff, syslog, reboot, pivot_root,
+# perf_event_open, fanotify_init, uselib, acct, modify_ldt, and others.
 seccomp
 
 ###############################################################################
 # CAPABILITIES — Drop all Linux capabilities
 ###############################################################################
+# Removes all 40+ Linux capabilities (CAP_NET_RAW, CAP_SYS_ADMIN, etc.)
+# so the sandboxed process cannot perform privileged operations like
+# packet sniffing, mounting filesystems, or modifying kernel parameters.
 caps.drop all
 
 ###############################################################################
 # PRIVILEGE ESCALATION PREVENTION
 ###############################################################################
-nonewprivs       # Child processes can't gain new privileges via execve
-noroot           # Enable user namespace with no root (uid 0) account
-nogroups         # Disable supplementary user groups
-restrict-namespaces  # Block creation of new cgroup, ipc, net, mount, pid,
-                     # time, user, or uts namespaces by the sandboxed process
+nonewprivs             # Set NO_NEW_PRIVS prctl; child processes can't gain new
+                       # privileges via execve (blocks SUID/SGID binaries)
+noroot                 # Enable user namespace with no root (uid 0) account;
+                       # even if the process escapes, it has no root mapping
+nogroups               # Disable supplementary user groups; prevents accessing
+                       # files/group resources outside the primary group
+restrict-namespaces    # Install seccomp filter blocking creation of new cgroup,
+                       # ipc, net, mount, pid, time, user, or uts namespaces;
+                       # prevents the sandboxed process from creating sub-sandboxes
 
 ###############################################################################
 # FILESYSTEM ISOLATION — Private (tmpfs-backed) directories
 ###############################################################################
-private-tmp          # Empty tmpfs on /tmp
-private-cache        # Empty tmpfs on ~/.cache (opencode cache re-added below)
-private-dev          # New minimal /dev (only safe devices)
-private-etc alternatives
-private-etc ca-certificates
-private-etc crypto-policies
-private-etc dconf
-private-etc fonts
-private-etc ld.so.cache
-private-etc ld.so.preload
-private-etc machine-id
-private-etc pki
-private-etc resolv.conf
-private-etc ssl
+private-tmp            # Mount empty tmpfs on /tmp; prevents cross-sandbox file
+                       # sharing and temp-file-based attacks
+private-cache          # Mount empty tmpfs on ~/.cache; the opencode-specific
+                       # subdirectory is re-added persistently below via mkdir+whitelist
+private-dev            # Create minimal /dev with only safe devices (null, zero,
+                       # random, urandom, tty, pts, log, shm); further restricted
+                       # by the no3d/nosound/novideo/etc. directives below
 
-# private-etc explanation: Builds a new /etc in a tmpfs and only copies the
-# listed files/dirs. The sandbox cannot see passwords (/etc/shadow), SSH
-# configs, crontabs, or any other system configuration.
+# How private-etc works: Builds a new /etc in a tmpfs and copies only the
+# listed files/directories. The sandbox cannot see /etc/shadow, SSH configs,
+# crontabs, fstab, or any other system configuration not explicitly listed.
+# All modifications to /etc inside the sandbox are discarded on exit.
+
+private-etc alternatives           # System alternative symlinks (/usr/bin/env, etc.)
+private-etc ca-certificates        # CA bundle for TLS verification during API calls
+private-etc crypto-policies        # Crypto policy configs needed by OpenSSL/LibreSSL
+private-etc fonts                  # Font configs for any terminal rendering
+private-etc ld.so.cache            # Dynamic linker cache for faster library resolution
+private-etc ld.so.preload          # Preload library config (kept empty for safety)
+private-etc machine-id             # Machine ID (spoofed separately via machine-id dir)
+private-etc pki                    # Platform trust store (RHEL/Fedora CA certificates)
+private-etc resolv.conf            # DNS resolver config for API endpoint resolution
+private-etc ssl                    # SSL certificate configs and cipher defaults
+
 
 ###############################################################################
 # WHITELIST — Default-deny: only these paths are accessible in $HOME
 ###############################################################################
+# Each pair creates the directory (if missing) and bind-mounts it into the
+# tmpfs-backed home. Without mkdir, the directory would be ephemeral and
+# deleted when the sandbox closes.
+
 mkdir ${HOME}/.cache/opencode
-whitelist ${HOME}/.cache/opencode
+whitelist ${HOME}/.cache/opencode         # Persist API response and token caches
 
 mkdir ${HOME}/.config/opencode
-whitelist ${HOME}/.config/opencode
+whitelist ${HOME}/.config/opencode        # Persist main config, agent rules, keybindings
 
 mkdir ${HOME}/.local/share/opencode
-whitelist ${HOME}/.local/share/opencode
+whitelist ${HOME}/.local/share/opencode   # Persist installed skills and plugin data
 
 mkdir ${HOME}/.local/state/opencode
-whitelist ${HOME}/.local/state/opencode
+whitelist ${HOME}/.local/state/opencode   # Persist conversation history and session state
 
-# Whitelist explanation: A tmpfs is mounted on $HOME. Only the explicitly
+# How whitelist works: A tmpfs is mounted on $HOME. Only the explicitly
 # whitelisted directories are bind-mounted back inside. Everything else
-# (.ssh, .gnupg, Documents, Desktop, etc.) becomes invisible.
+# (.ssh, .gnupg, Documents, Desktop, Downloads, etc.) becomes invisible.
 
 ###############################################################################
 # HARDCODED BLACKLISTS — Explicitly block sensitive paths
 ###############################################################################
-blacklist ${HOME}/.ssh
-blacklist ${HOME}/.gnupg
-blacklist ${RUNUSER}/wayland-*      # Disable Wayland (CLI-only tool)
-blacklist ${RUNUSER}                # Block all of /run/user/$UID (CLI-only)
-blacklist /usr/libexec              # Remove system helper binaries
+# These provide a failsafe: even if the whitelist above is disabled via a
+# .local override, these paths remain inaccessible.
+
+blacklist ${HOME}/.ssh                    # SSH keys, known_hosts, config
+blacklist ${HOME}/.gnupg                  # GPG keys and trust database
+blacklist ${RUNUSER}/wayland-*            # Wayland display sockets (CLI-only tool)
+blacklist ${RUNUSER}                      # Block all of /run/user/$UID (XDG runtime dir);
+                                          # prevents access to D-Bus sockets, flatpak, etc.
+blacklist /usr/libexec                    # System helper binaries (package managers, polkit, etc.)
 
 ###############################################################################
 # DISABLED RESOURCES
 ###############################################################################
-no3d           # No 3D hardware acceleration
-nodvd          # No DVD/audio CD devices
-noinput        # No input device access
-nosound        # No sound system
-notv           # No DVB TV devices
-nou2f          # No U2F security keys
-novideo        # No video capture devices
-noprinters     # No printer access
+no3d           # Disable 3D hardware acceleration (OpenGL/EGL/Vulkan devices)
+nodvd          # Disable DVD and audio CD devices (/dev/cdrom, /dev/sr*)
+noinput        # Disable input devices (keyboard, mouse, touchpad — /dev/input/*)
+nosound        # Disable sound system (/dev/snd*, PulseAudio, PipeWire audio)
+notv           # Disable DVB TV capture devices (/dev/dvb/*)
+nou2f          # Disable U2F security key devices (FIDO2/WebAuthn hardware keys)
+novideo        # Disable video capture devices (/dev/video*, V4L2 webcams)
+noprinters     # Disable CUPS printer access and lp device nodes
 
 ###############################################################################
 # NETWORK — Allow only what's needed for API calls
 ###############################################################################
+# Restricts socket() syscalls via seccomp to only the listed protocols.
+# unix = local Unix domain sockets (needed for DNS resolver, localhost)
+# inet = IPv4 TCP/UDP (API endpoints)
+# inet6 = IPv6 TCP/UDP (API endpoints over IPv6)
+# Blocked: netlink (routing/netconfig), packet (raw packets/sniffing), bluetooth
 protocol unix,inet,inet6
 
 # For a fully offline setup (local LLM, no API):
@@ -110,18 +148,25 @@ protocol unix,inet,inet6
 ###############################################################################
 # IPC & DBUS ISOLATION
 ###############################################################################
-ipc-namespace    # Isolate System V and POSIX IPC
-machine-id       # Spoof /etc/machine-id with random value
-dbus-user none   # No session D-Bus access
-dbus-system none # No system D-Bus access
+ipc-namespace    # Create a new IPC namespace; isolates System V semaphores,
+                 # shared memory segments, and POSIX message queues from other
+                 # sandboxes and the host
+machine-id       # Spoof /etc/machine-id with a random value; prevents fingerprinting
+                 # and breaks services that rely on the real machine ID
+dbus-user none   # Block session D-Bus entirely; no access to desktop bus services
+dbus-system none # Block system D-Bus entirely; no access to systemd, NetworkManager, etc.
 
 ###############################################################################
 # MISC HARDENING
 ###############################################################################
-disable-mnt                    # Block /mnt, /media, /run/mount
-noexec ${HOME}/.cache
-noexec ${HOME}/.config
-noexec ${HOME}/.local/share
-env NO_BROWSER=true            # Opencode won't try to launch a browser
-apparmor                       # Enable AppArmor "firejail-default" profile
+disable-mnt                    # Blacklist /mnt, /media, /run/mount, /run/media;
+                               # prevents access to removable media and mount points
+noexec ${HOME}/.cache          # Remount noexec/nodev/nosuid; prevent executing code
+                               # from cache directories (supply chain attack mitigation)
+noexec ${HOME}/.config         # Same protection for config directory
+noexec ${HOME}/.local/share    # Same protection for shared data directory
+env NO_BROWSER=true            # Set environment variable so opencode skips browser launch
+                               # (useful for OAuth flows that should fail gracefully in sandbox)
+apparmor                       # Enable AppArmor "firejail-default" mandatory access control
+                               # profile as an additional defense-in-depth layer
 
