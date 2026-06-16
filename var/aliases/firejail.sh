@@ -1,13 +1,18 @@
 if command -v firejail >/dev/null
 then
-        # reference to the configuration in this repository
-        test -L ~/.config/firejail \
-                || ln -s $SCRIPTS/etc/firejail ~/.config/firejail
-        
-        # Launch from your project directory
+        # Install configuration files from this repository
+        for file in \
+                $SCRIPTS/etc/firejail/*.local \
+                $SCRIPTS/etc/firejail/*.profile
+        do
+                diffcp -r $file ~/.config/firejail/$(basename $file)
+        done
+       
+        #################################
+        # Which applications to launch with firejail
+
         function opencode-firejail() {
                 firejail --profile=opencode --whitelist=$(pwd) opencode
         }
-
-        alias oc=opencode-firejail
+        alias opencode=opencode-firejail
 fi
