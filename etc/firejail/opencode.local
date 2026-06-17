@@ -48,8 +48,9 @@ whitelist ${HOME}/.bashrc.d/*.sh          # Modular bash snippets (glob pattern)
 
 # Package manager caches and global installs:
 whitelist ${HOME}/.npm*                   # npm cache, global packages, config
-whitelist ${HOME}/.pip                    # pip cache and globally installed Python pkgs
 
 # User-local binaries and project workspace:
 whitelist ${HOME}/bin                     # User-installed scripts and binaries
+whitelist ${HOME}/.local/bin/             # Additonal executables (for example 
+                                          # installed with pip3)
 whitelist ${HOME}/projects                # Default project workspace directory
