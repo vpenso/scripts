@@ -51,6 +51,4 @@ whitelist ${HOME}/.npm*                   # npm cache, global packages, config
 
 # User-local binaries and project workspace:
 whitelist ${HOME}/bin                     # User-installed scripts and binaries
-whitelist ${HOME}/.local/bin/             # Additonal executables (for example 
-                                          # installed with pip3)
 whitelist ${HOME}/projects                # Default project workspace directory
