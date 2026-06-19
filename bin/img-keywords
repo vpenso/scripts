@@ -1,0 +1,614 @@
+#!/usr/bin/env python3
+import subprocess, glob, os, sys, re, argparse, io, signal
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
+                             QHBoxLayout, QTreeWidget, QTreeWidgetItem, QLabel,
+                             QTextEdit, QScrollArea, QPushButton, QFrame,
+                             QSplitter)
+from PyQt6.QtCore import Qt, QTimer, QThread, pyqtSignal
+from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter
+from PIL import Image
+
+Image.MAX_IMAGE_PIXELS = None
+
+DEBUG = False
+
+def dbg(msg):
+    if DEBUG:
+        print(f"[DEBUG] {msg}", flush=True)
+
+def load_keywords(path="keywords.txt"):
+    try:
+        with open(path) as f:
+            kws = [l for l in (line.strip() for line in f) if l and not l.startswith("#")]
+            dbg(f"Loaded {len(kws)} keywords from {path}")
+            return kws
+    except FileNotFoundError:
+        print(f"No {path} found. Create one with a keyword per line.")
+        sys.exit(1)
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Interactive photo keyword tagger. Displays images in a GUI, lets you assign keywords, and writes them to EXIF metadata.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""\
+examples:
+  %(prog)s -k my_tags.txt          Use a custom keywords file
+  %(prog)s --keep-exif             Preserve all existing EXIF data
+  %(prog)s -k tags.txt --keep-exif  Combine options
+
+keyboard shortcuts:
+  Right / Space   Save keywords and move to next image
+  Left            Save keywords and go back to previous image
+  Escape          Quit application
+
+keywords file format:
+  One keyword per line. Lines starting with '#' are comments.
+  Use 'Category/Item' syntax to group keywords into expandable categories.
+"""
+    )
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug output to stdout")
+    parser.add_argument("-k", "--keywords", default="keywords.txt", help="Path to keywords text file (default: keywords.txt)")
+    parser.add_argument("--keep-exif", action="store_true", help="Preserve existing EXIF metadata; only Keywords are modified (default: strip all EXIF)")
+    return parser.parse_args()
+
+args = parse_args()
+DEBUG = args.debug
+STRIP_EXIF = not args.keep_exif
+
+KEYWORDS = load_keywords(args.keywords)
+dbg(f"Keywords: {KEYWORDS}")
+
+images = sorted(glob.glob("*.jpg") + glob.glob("*.jpeg") + glob.glob("*.png"))
+
+if not images:
+    print("No images found in current directory.")
+    sys.exit(1)
+
+dbg(f"Found {len(images)} images")
+
+file_keywords = set(KEYWORDS)
+all_known_keywords = set(KEYWORDS)
+
+
+class ExifPanel(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFixedWidth(140)
+        self.setStyleSheet("""
+            QFrame { background-color: #111; }
+            QLabel { color: #ccc; font-weight: bold; font-size: 12px; }
+            QTextEdit {
+                background-color: #1a1a1a; color: #ccc;
+                border: none; font-family: Courier; font-size: 13px;
+                selection-background-color: #444;
+            }
+            QScrollBar:vertical {
+                background-color: #111; width: 8px;
+            }
+            QScrollBar::handle:vertical {
+                background-color: #444; min-height: 20px;
+            }
+        """)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(5, 10, 5, 10)
+        layout.addWidget(QLabel("EXIF Info:"))
+        self.text = QTextEdit()
+        self.text.setReadOnly(True)
+        layout.addWidget(self.text)
+
+    def set_exif(self, info):
+        self.text.clear()
+        lines = []
+        for key, val in info.items():
+            if key == "Keywords" and "," in val:
+                lines.append(f"{key}:")
+                for kw in sorted(k.strip() for k in val.split(",")):
+                    lines.append(f"  - {kw}")
+            else:
+                lines.append(f"{key}: {val}")
+
+        fm = self.text.fontMetrics()
+        max_width = max(fm.horizontalAdvance(line) for line in lines) if lines else 0
+        needed = int(max_width) + 30
+        self.setFixedWidth(max(needed, 120))
+
+        for line in lines:
+            self.text.append(line)
+
+
+class KeywordPanel(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFixedWidth(140)
+        self.tree_items = {}
+        self.cat_items = {}
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(3, 3, 3, 3)
+
+        self.setStyleSheet("""
+            QFrame { background-color: #111; }
+            QTreeWidget {
+                background-color: #111; color: #eee;
+                border: none; font-size: 12px;
+                selection-background-color: #333;
+            }
+            QTreeWidget::item { padding: 2px; }
+            QTreeWidget::item:selected { color: #eee; }
+            QTreeWidget::indicator { width: 16px; height: 16px; border-radius: 2px; }
+            QTreeWidget::indicator:unchecked {
+                background-color: #333; border: 1px solid #666;
+            }
+            QTreeWidget::indicator:checked {
+                background-color: #8b0000; border: 1px solid #a00;
+            }
+            QPushButton {
+                background-color: #2a2a2a; color: #eee;
+                border: none; padding: 6px; font-size: 12px;
+            }
+            QPushButton:hover { background-color: #444; }
+        """)
+
+        kw_label = QLabel("Keywords:")
+        kw_label.setStyleSheet("color: #eee; font-weight: bold; font-size: 12px;")
+        layout.addWidget(kw_label)
+
+        self.tree = QTreeWidget()
+        self.tree.setHeaderHidden(True)
+        self.tree.setItemsExpandable(True)
+        self.tree.setAnimated(True)
+        self.tree.setIndentation(16)
+        self.tree.itemChanged.connect(self._on_item_changed)
+        layout.addWidget(self.tree)
+
+        self.back_btn = QPushButton("Back")
+        self.next_btn = QPushButton("Next")
+        btn_layout = QVBoxLayout()
+        btn_layout.addWidget(self.back_btn)
+        btn_layout.addWidget(self.next_btn)
+        layout.addLayout(btn_layout)
+
+    def group_keywords(self, keywords):
+        parents = {}
+        orphans = []
+        for kw in sorted(keywords):
+            if "/" in kw:
+                p, _, c = kw.partition("/")
+                parents.setdefault(p, []).append(c)
+            else:
+                orphans.append(kw)
+        return parents, orphans
+
+    def _update_cat_label(self, cat_name):
+        if cat_name not in self.cat_items:
+            return
+        cat_item = self.cat_items[cat_name]
+        total = cat_item.childCount()
+        checked = sum(
+            1 for i in range(total)
+            if cat_item.child(i).checkState(0) == Qt.CheckState.Checked
+        )
+        self.cat_items[cat_name].setText(0, f"{cat_name} ({checked}/{total})")
+
+    def _on_item_changed(self, item, column):
+        parent = item.parent()
+        if parent and parent.text(0) in self.cat_items:
+            cat_name = parent.text(0).partition(" (")[0]
+            self._update_cat_label(cat_name)
+
+    def rebuild_tree(self):
+        old_states = {}
+        for item in self.tree_items.values():
+            state = item.checkState(0)
+            old_states[item.data(0, Qt.ItemDataRole.UserRole)] = state == Qt.CheckState.Checked
+
+        self.tree.clear()
+        self.tree_items.clear()
+        self.cat_items.clear()
+
+        parents, orphans = self.group_keywords(all_known_keywords)
+
+        all_top = sorted(set(orphans) | set(parents.keys()))
+
+        for entry in all_top:
+            if entry in parents:
+                cat_item = QTreeWidgetItem(self.tree, [f"{entry}"])
+                cat_item.setData(0, Qt.ItemDataRole.UserRole, entry)
+                cat_item.setFont(0, QFont("Arial", 12, QFont.Weight.Bold))
+                self.tree.addTopLevelItem(cat_item)
+                self.cat_items[entry] = cat_item
+
+                for child in parents[entry]:
+                    full_kw = f"{entry}/{child}"
+                    is_file = full_kw in file_keywords
+                    child_item = QTreeWidgetItem(cat_item, [child])
+                    child_item.setFlags(
+                        Qt.ItemFlag.ItemIsEnabled
+                        | Qt.ItemFlag.ItemIsSelectable
+                        | Qt.ItemFlag.ItemIsUserCheckable
+                    )
+                    state = old_states.get(full_kw, False)
+                    child_item.setCheckState(0, Qt.CheckState.Checked if state else Qt.CheckState.Unchecked)
+                    child_item.setData(0, Qt.ItemDataRole.UserRole, full_kw)
+                    if is_file:
+                        child_item.setFont(0, QFont("Arial", 12, QFont.Weight.Bold))
+                        child_item.setForeground(0, QColor("#eee"))
+                    else:
+                        child_item.setFont(0, QFont("Arial", 12, QFont.Weight.Normal))
+                        child_item.setForeground(0, QColor("#888"))
+                    self.tree_items[full_kw] = child_item
+
+                self._update_cat_label(entry)
+                cat_item.setExpanded(True)
+            else:
+                item = QTreeWidgetItem(self.tree, [entry])
+                item.setFlags(
+                    Qt.ItemFlag.ItemIsEnabled
+                    | Qt.ItemFlag.ItemIsSelectable
+                    | Qt.ItemFlag.ItemIsUserCheckable
+                )
+                state = old_states.get(entry, False)
+                item.setCheckState(0, Qt.CheckState.Checked if state else Qt.CheckState.Unchecked)
+                item.setData(0, Qt.ItemDataRole.UserRole, entry)
+                is_file = entry in file_keywords
+                if is_file:
+                    item.setFont(0, QFont("Arial", 12, QFont.Weight.Bold))
+                    item.setForeground(0, QColor("#eee"))
+                else:
+                    item.setFont(0, QFont("Arial", 12, QFont.Weight.Normal))
+                    item.setForeground(0, QColor("#888"))
+                self.tree_items[entry] = item
+
+        self.tree.resizeColumnToContents(0)
+        needed = self.tree.columnWidth(0) + 40
+        self.setFixedWidth(max(needed, 120))
+
+    def set_keywords(self, existing):
+        for kw, item in self.tree_items.items():
+            item.setCheckState(0,
+                Qt.CheckState.Checked if kw in existing else Qt.CheckState.Unchecked)
+        for cat_name in self.cat_items:
+            self._update_cat_label(cat_name)
+
+    def get_selected(self):
+        return {kw for kw, item in self.tree_items.items()
+                if item.checkState(0) == Qt.CheckState.Checked}
+
+    def ensure_widgets(self):
+        leaves = set()
+        parents, orphans = self.group_keywords(all_known_keywords)
+        leaves.update(orphans)
+        for p, children in parents.items():
+            for c in children:
+                leaves.add(f"{p}/{c}")
+        if leaves <= set(self.tree_items.keys()):
+            return
+        self.rebuild_tree()
+
+
+class ThumbStrip(QScrollArea):
+    def __init__(self, image_list, height=108, parent=None):
+        super().__init__(parent)
+        self.image_list = image_list
+        self.setFixedHeight(height)
+        self.setWidgetResizable(True)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setStyleSheet("""
+            QScrollArea { background-color: #000; border: none; }
+            QScrollBar:horizontal {
+                background-color: #111; height: 8px;
+            }
+            QScrollBar::handle:horizontal {
+                background-color: #444; min-width: 20px;
+            }
+        """)
+
+        self.container = QWidget()
+        self.layout = QHBoxLayout(self.container)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
+        self.setWidget(self.container)
+        self.thumb_labels = []
+        self.thumb_cache = {}
+        self._click_handler_ref = self._on_thumb_click
+
+    def _on_thumb_click(self, idx):
+        raise NotImplementedError
+
+    def _get_thumb(self, path):
+        if path not in self.thumb_cache:
+            img = Image.open(path)
+            img.thumbnail((100, 100), Image.LANCZOS)
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=70)
+            buf.seek(0)
+            src = QPixmap()
+            src.loadFromData(buf.getvalue())
+            canvas = QPixmap(100, 100)
+            canvas.fill(QColor("#000"))
+            painter = QPainter(canvas)
+            painter.drawPixmap((100 - src.width()) // 2, (100 - src.height()) // 2, src)
+            painter.end()
+            self.thumb_cache[path] = canvas
+        return self.thumb_cache[path]
+
+    def populate(self):
+        for lbl in self.thumb_labels:
+            lbl.deleteLater()
+        self.thumb_labels.clear()
+
+        for i, path in enumerate(self.image_list):
+            pix = self._get_thumb(path)
+            lbl = QLabel()
+            lbl.setPixmap(pix)
+            lbl.setFixedSize(100, 100)
+            lbl.setCursor(Qt.CursorShape.PointingHandCursor)
+            lbl.setProperty("index", i)
+            lbl.setStyleSheet("background-color: transparent; border: none;")
+            handler = lambda e, idx=i: self._on_thumb_click(idx)
+            lbl.mousePressEvent = handler
+            self.layout.addWidget(lbl)
+            self.thumb_labels.append(lbl)
+
+    def highlight(self, idx):
+        for i, lbl in enumerate(self.thumb_labels):
+            lbl.setStyleSheet(f"background-color: {'#ff0' if i == idx else 'transparent'};")
+        if idx < len(self.thumb_labels):
+            target_x = idx * 100 - self.viewport().width() // 2
+            self.horizontalScrollBar().setValue(max(0, target_x))
+
+
+class ImageLoaderThread(QThread):
+    """Loads a resized image in a background thread."""
+    finished = pyqtSignal(QPixmap)
+    exif_done = pyqtSignal(object, object)
+
+    def __init__(self, path, max_w, max_h):
+        super().__init__()
+        self.path = path
+        self.max_w = max_w
+        self.max_h = max_h
+
+    def run(self):
+        # Load exif data
+        tags = [
+            "-FileName", "-ImageWidth", "-ImageHeight", "-DateTimeOriginal",
+            "-ExposureTime", "-FNumber", "-ISO", "-FocalLength",
+            "-LensModel", "-Make", "-Model", "-Keywords"
+        ]
+        result = subprocess.run(
+            ["exiftool"] + tags + ["-s1", self.path],
+            capture_output=True, text=True
+        )
+        lines = [l.strip() for l in result.stdout.strip().split("\n") if l.strip()]
+        info = {}
+        for line in lines:
+            if ":" in line:
+                key, _, val = line.partition(":")
+                key = key.strip()
+                val = val.strip()
+                if not val or val == "000":
+                    continue
+                if key == "Keywords" and key in info:
+                    info[key] = f"{info[key]}, {val}"
+                else:
+                    info[key] = val
+
+        # Load keywords
+        kw_result = subprocess.run(
+            ["exiftool", "-Keywords", "-s2", self.path],
+            capture_output=True, text=True
+        )
+        existing_kws = set()
+        if kw_result.stdout.strip():
+            raw = kw_result.stdout.split(":", 1)[1].strip()
+            existing_kws = set(k.strip() for k in re.split(r"[\t,\n]", raw) if k.strip())
+
+        self.exif_done.emit(info, existing_kws)
+
+        # Resize image
+        img = Image.open(self.path)
+        if self.max_w > 0 and self.max_h > 0:
+            if img.width > self.max_w or img.height > self.max_h:
+                ratio = min(self.max_w / img.width, self.max_h / img.height)
+                img = img.resize((int(img.width * ratio), int(img.height * ratio)), Image.LANCZOS)
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=85)
+        buf.seek(0)
+        pix = QPixmap()
+        pix.loadFromData(buf.getvalue())
+        self.finished.emit(pix)
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.idx = 0
+        self.current_img_path = ""
+        self.pixmap = None
+        self._loader = None
+        self._pending_exif = None
+        self._pending_keywords = None
+
+        title = "Keyword Tagger" + (" [KEEP EXIF]" if not STRIP_EXIF else "")
+        self.setWindowTitle(title)
+        self.resize(1100, 750)
+        self.setStyleSheet("QMainWindow { background-color: #111; }")
+
+        central = QWidget()
+        self.setCentralWidget(central)
+        main_layout = QVBoxLayout(central)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        # Header
+        self.header = QLabel("Loading...")
+        self.header.setStyleSheet("""
+            QLabel {
+                background-color: #111; color: #eee;
+                font-size: 14px; padding: 5px;
+            }
+        """)
+        main_layout.addWidget(self.header)
+
+        # Splitter for main content
+        splitter = QSplitter(Qt.Orientation.Horizontal)
+
+        # Left: EXIF
+        self.exif_panel = ExifPanel()
+        splitter.addWidget(self.exif_panel)
+
+        # Center: Image canvas
+        self.image_label = QLabel("Loading...")
+        self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.image_label.setStyleSheet("background-color: #111; color: #666; font-size: 16px;")
+        splitter.addWidget(self.image_label)
+
+        # Right: Keywords
+        self.kw_panel = KeywordPanel()
+        self.kw_panel.back_btn.clicked.connect(self.go_back)
+        self.kw_panel.next_btn.clicked.connect(self.save_and_next)
+        splitter.addWidget(self.kw_panel)
+
+        splitter.setSizes([140, 700, 140])
+
+        main_layout.addWidget(splitter, 1)
+
+        # Bottom: Thumbnails
+        self.thumb_strip = ThumbStrip(images, height=108)
+        self.thumb_strip._on_thumb_click = self.jump_to_thumb
+        main_layout.addWidget(self.thumb_strip)
+
+        # Keyboard shortcuts
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+        # Show window FIRST, then load async
+        self.show()
+        QTimer.singleShot(50, self._load_first_image)
+        QTimer.singleShot(500, self._init_thumbs)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._display_scaled_pixmap()
+
+    def _load_first_image(self):
+        self.show_image()
+
+    def _init_thumbs(self):
+        self.thumb_strip.populate()
+
+    def jump_to_thumb(self, n):
+        self.save_current()
+        self.idx = n
+        self.show_image()
+
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key.Key_Right, Qt.Key.Key_Space):
+            self.save_and_next()
+        elif event.key() == Qt.Key.Key_Left:
+            self.go_back()
+        elif event.key() == Qt.Key.Key_Escape:
+            self.close()
+        else:
+            super().keyPressEvent(event)
+
+    def _on_exif_loaded(self, info, existing_kws):
+        self._pending_exif = info
+        self._pending_keywords = existing_kws
+
+    def _on_image_loaded(self, pix):
+        self.pixmap = pix
+        self._display_scaled_pixmap()
+
+        if self._pending_exif is not None:
+            self.exif_panel.set_exif(self._pending_exif)
+            self._pending_exif = None
+
+        if self._pending_keywords is not None:
+            existing = self._pending_keywords
+            all_known_keywords.update(existing)
+            self.kw_panel.ensure_widgets()
+            self.kw_panel.set_keywords(existing)
+            self._pending_keywords = None
+
+        self.thumb_strip.highlight(self.idx)
+
+    def _display_scaled_pixmap(self):
+        if not self.pixmap:
+            return
+        cw = max(self.image_label.width() - 30, 100)
+        ch = max(self.image_label.height() - 30, 100)
+        scaled = self.pixmap.scaled(cw, ch,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation)
+        self.image_label.setPixmap(scaled)
+
+    def show_image(self):
+        if self._loader and self._loader.isRunning():
+            self._loader.terminate()
+            self._loader.wait()
+        self._pending_exif = None
+        self._pending_keywords = None
+
+        self.current_img_path = images[self.idx]
+        self.header.setText(f"{self.idx+1}/{len(images)}: {os.path.basename(self.current_img_path)}")
+        self.image_label.clear()
+        self.image_label.setText("Loading...")
+        self.image_label.setStyleSheet("background-color: #111; color: #666; font-size: 16px;")
+
+        cw = max(self.image_label.width(), 1920)
+        ch = max(self.image_label.height(), 1080)
+        self._loader = ImageLoaderThread(self.current_img_path, cw, ch)
+        self._loader.exif_done.connect(self._on_exif_loaded)
+        self._loader.finished.connect(self._on_image_loaded)
+        self._loader.start()
+
+    def save_current(self):
+        chosen = self.kw_panel.get_selected()
+        dbg(f"Saving {len(chosen)} keywords to {os.path.basename(self.current_img_path)}: {chosen}")
+        if STRIP_EXIF:
+            subprocess.run(
+                ["exiftool", "-all=", "-overwrite_original", self.current_img_path],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            if chosen:
+                kw_args = ["-Keywords+=" + k for k in sorted(chosen)]
+                subprocess.run(
+                    ["exiftool", "-overwrite_original"] + kw_args + [self.current_img_path],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+            dbg("Stripped all metadata")
+        else:
+            subprocess.run(
+                ["exiftool", "-overwrite_original", "-Keywords=", self.current_img_path],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            if chosen:
+                kw_args = ["-Keywords+=" + k for k in sorted(chosen)]
+                subprocess.run(
+                    ["exiftool", "-overwrite_original"] + kw_args + [self.current_img_path],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+
+    def save_and_next(self):
+        self.save_current()
+        self.idx = (self.idx + 1) % len(images)
+        self.show_image()
+
+    def go_back(self):
+        self.save_current()
+        if self.idx > 0:
+            self.idx -= 1
+            self.show_image()
+
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, lambda s, f: sys.exit(0))
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+    win = MainWindow()
+    sys.exit(app.exec())

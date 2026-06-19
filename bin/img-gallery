@@ -1,0 +1,845 @@
+#!/usr/bin/env python3
+"""img-gallery: Browse images with EXIF keyword badges."""
+import sys, os, io, argparse, signal, subprocess
+from PIL import Image
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
+                              QHBoxLayout, QLabel, QScrollArea, QFrame,
+                              QScrollBar, QTreeWidget, QTreeWidgetItem)
+from PyQt6.QtCore import Qt, QTimer, QThread, pyqtSignal, QEvent, QSize
+from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter, QImageReader, QIcon
+
+Image.MAX_IMAGE_PIXELS = None
+
+DEBUG = False
+
+def dbg(msg):
+    if DEBUG:
+        print(f"[DEBUG] {msg}", flush=True)
+
+IMAGE_EXTS = {".jpg", ".jpeg", ".png"}
+
+BG = "#111"
+TXT = "#eee"
+
+STYLESHEET_MAIN = f"background-color: {BG};"
+STYLESHEET_SCROLL = f"""
+    QScrollArea {{ background-color: {BG}; border: none; }}
+    QScrollBar:vertical, QScrollBar:horizontal {{
+        background-color: {BG}; width: 10px; height: 10px;
+    }}
+    QScrollBar::handle:vertical, QScrollBar::handle:horizontal {{
+        background-color: #333; min-height: 20px; min-width: 20px;
+    }}
+"""
+
+
+
+def collect_images(path):
+    results = []
+    for root, _dirs, files in os.walk(path):
+        for f in files:
+            if os.path.splitext(f.lower())[1] in IMAGE_EXTS:
+                results.append(os.path.join(root, f))
+    return sorted(results)
+
+
+class ThumbWorker(QThread):
+    ready = pyqtSignal(str, QPixmap)
+    done = pyqtSignal()
+
+    def __init__(self, paths, size=400):
+        super().__init__()
+        self.paths = paths
+        self.size = size
+        self._cancelled = False
+
+    def run(self):
+        for path in self.paths:
+            if self._cancelled:
+                break
+            try:
+                img = Image.open(path)
+                img.thumbnail((self.size, self.size), Image.LANCZOS)
+                buf = io.BytesIO()
+                img.save(buf, format="JPEG", quality=75)
+                buf.seek(0)
+                pix = QPixmap()
+                pix.loadFromData(buf.getvalue())
+                self.ready.emit(path, pix)
+            except Exception as e:
+                dbg(f"Failed to load {path}: {e}")
+        self.done.emit()
+
+    def cancel(self):
+        self._cancelled = True
+
+
+class ThumbLabel(QLabel):
+    STYLE_NORMAL = """
+        ThumbLabel { background-color: #111; border: 2px solid transparent; }
+        ThumbLabel:hover { border: 2px solid #666; }
+    """
+    STYLE_SELECTED = """
+        ThumbLabel { background-color: #111; border: 2px solid #ff0; }
+        ThumbLabel:hover { border: 2px solid #ff0; }
+    """
+
+    def __init__(self, path, parent=None):
+        super().__init__(parent)
+        self.path = path
+        self.setMinimumSize(80, 80)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setStyleSheet(self.STYLE_NORMAL)
+        self.setToolTip(path)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self._kw_count = 0
+
+    def highlight(self, on):
+        self.setStyleSheet(self.STYLE_SELECTED if on else self.STYLE_NORMAL)
+
+    def set_keyword_count(self, count):
+        self._kw_count = count
+
+
+class KwTreeWidget(QTreeWidget):
+    toggled = pyqtSignal(str, bool)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._icon_checked = self._make_icon(True)
+        self._icon_unchecked = self._make_icon(False)
+
+    @staticmethod
+    def _make_icon(checked):
+        sz = 16
+        pm = QPixmap(sz, sz)
+        pm.fill(Qt.GlobalColor.transparent)
+        p = QPainter(pm)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        if checked:
+            p.setPen(QColor("#fff"))
+            p.setBrush(QColor("#4a90d9"))
+            p.drawRoundedRect(1, 1, sz - 3, sz - 3, 2, 2)
+            p.setPen(QColor("#fff"))
+            p.setBrush(Qt.GlobalColor.transparent)
+            p.drawLine(4, 8, 7, 11)
+            p.drawLine(7, 11, 12, 5)
+        else:
+            p.setPen(QColor("#888"))
+            p.setBrush(Qt.GlobalColor.transparent)
+            p.drawRect(1, 1, sz - 3, sz - 3)
+        p.end()
+        return QIcon(pm)
+
+    def _keyword_from_item(self, item):
+        parent = item.parent()
+        if parent is not None:
+            return f"{parent.text(0).partition(' ')[0]}/{item.text(0)}"
+        return item.text(0)
+
+    def mousePressEvent(self, event):
+        item = self.itemAt(event.position().toPoint())
+        if item and item.icon(0) is not None:
+            checked = item.data(0, Qt.ItemDataRole.UserRole)
+            new_state = not checked
+            if new_state:
+                item.setIcon(0, self._icon_checked)
+                item.setData(0, Qt.ItemDataRole.UserRole, True)
+            else:
+                item.setIcon(0, self._icon_unchecked)
+                item.setData(0, Qt.ItemDataRole.UserRole, False)
+            kw = self._keyword_from_item(item)
+            self.toggled.emit(kw, new_state)
+        super().mousePressEvent(event)
+
+
+class MainWindow(QMainWindow):
+    def __init__(self, directory):
+        super().__init__()
+        self.directory = directory
+        self.images = collect_images(directory)
+        self.thumbs = {}
+        self.originals = {}
+        self.loaded_count = 0
+        self.worker = None
+        self.kw_thread = None
+        self.selected_idx = -1
+        self.current_size = 150
+        self.target_cols = 8
+        self.fullscreen_mode = False
+        self.active_filters = set()
+        self.filtered_images = None
+
+        dbg(f"Found {len(self.images)} images in {directory}")
+        self.setWindowTitle(f"img-gallery — {os.path.basename(os.path.abspath(directory))}")
+        self.setStyleSheet(STYLESHEET_MAIN)
+
+        central = QWidget()
+        central.setStyleSheet(STYLESHEET_MAIN)
+        self.setCentralWidget(central)
+        self.main_layout = QVBoxLayout(central)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
+
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll.viewport().setStyleSheet(STYLESHEET_MAIN)
+        self.scroll.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.scroll.viewport().setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.scroll.installEventFilter(self)
+        self.scroll.setStyleSheet(STYLESHEET_SCROLL)
+
+        self.grid_widget = QWidget()
+        self.grid_widget.setStyleSheet(STYLESHEET_MAIN)
+        self.grid = QVBoxLayout(self.grid_widget)
+        self.grid.setContentsMargins(4, 4, 4, 4)
+        self.grid.setSpacing(2)
+        self.scroll.setWidget(self.grid_widget)
+        self.main_layout.addWidget(self.scroll, 1)
+
+        self.detail_label = QLabel()
+        self.detail_label.setStyleSheet(STYLESHEET_MAIN)
+        self.detail_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.detail_label.setScaledContents(False)
+        self.detail_label.hide()
+        self.main_layout.addWidget(self.detail_label, 1)
+
+        self.detail_mode = False
+
+        # Keywords overlay — small floating card
+        self.backdrop = QWidget(central)
+        self.backdrop.setStyleSheet("background-color: rgba(0, 0, 0, 180);")
+        self.backdrop.hide()
+
+        self.overlay_widget = QWidget(central)
+        self.overlay_widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
+        self.overlay_widget.hide()
+
+        self.overlay_layout = QVBoxLayout(self.overlay_widget)
+        self.overlay_layout.setContentsMargins(0, 0, 0, 0)
+        self.overlay_layout.setSpacing(0)
+
+        self.card = QFrame()
+        self.card.setObjectName("kwcard")
+        self.card.setStyleSheet(f"""
+            #kwcard {{
+                background-color: #1a1a1a;
+                border: 1px solid #333;
+                border-radius: 4px;
+            }}
+            #kwcard QScrollBar:vertical {{
+                background-color: #1a1a1a; width: 6px;
+            }}
+            #kwcard QScrollBar::handle:vertical {{
+                background-color: #444; min-height: 15px; border-radius: 3px;
+            }}
+            #kwcard QScrollBar:horizontal {{
+                background-color: #1a1a1a; height: 6px;
+            }}
+            #kwcard QScrollBar::handle:horizontal {{
+                background-color: #444; min-width: 15px; border-radius: 3px;
+            }}
+        """)
+        card_inner = QVBoxLayout(self.card)
+        card_inner.setContentsMargins(6, 4, 6, 4)
+        card_inner.setSpacing(2)
+
+        self.card_title = QLabel()
+        self.card_title.setStyleSheet(f"color: {TXT}; font-weight: bold; font-size: 11px;")
+        self.card_title.setWordWrap(True)
+        card_inner.addWidget(self.card_title)
+
+        self.card_sep = QFrame()
+        self.card_sep.setFrameShape(QFrame.Shape.HLine)
+        self.card_sep.setFrameShadow(QFrame.Shadow.Sunken)
+        self.card_sep.setStyleSheet("color: #333;")
+        self.card_sep.hide()
+        card_inner.addWidget(self.card_sep)
+
+        kw_tree = KwTreeWidget()
+        kw_tree.setColumnCount(1)
+        kw_tree.setMinimumHeight(20)
+        kw_tree.setHeaderHidden(True)
+        kw_tree.setStyleSheet("""
+            QTreeWidget {
+                background: transparent;
+                border: none;
+                color: #ccc;
+                font-size: 13px;
+                padding: 4px 4px;
+            }
+            QTreeWidget::item {
+                padding: 3px 4px;
+            }
+            QTreeWidget QScrollBar:vertical {
+                background-color: #1a1a1a; width: 6px;
+            }
+            QTreeWidget QScrollBar::handle:vertical {
+                background-color: #444; min-height: 15px; border-radius: 3px;
+            }
+        """)
+        self.kw_tree_widget = kw_tree
+        kw_tree.hide()
+        card_inner.addWidget(kw_tree, 1)
+
+        self.overlay_layout.addWidget(self.card)
+        self.backdrop.mousePressEvent = lambda e: self._hide_keywords_overlay()
+
+        self.installEventFilter(self)
+        central.installEventFilter(self)
+        self.scroll.viewport().installEventFilter(self)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self._resize_timer = QTimer(self, singleShot=True, timeout=self._resize_thumbs)
+
+        self.resize(1200, 800)
+        self.show()
+        self._start_loading()
+        QTimer.singleShot(200, self._resize_thumbs)
+
+    def _clear_grid(self):
+        while self.grid.count():
+            item = self.grid.takeAt(0)
+            if item.layout():
+                self._clear_sub_layout(item.layout())
+            elif item.widget():
+                item.widget().setParent(None)
+
+    def _clear_sub_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            if item.widget():
+                item.widget().setParent(None)
+
+    def _build_grid(self):
+        self._clear_grid()
+        visible = self.get_visible_images()
+        cols = self.target_cols
+        row = None
+        for i, path in enumerate(visible):
+            lbl = self.thumbs[path]
+            if i % cols == 0:
+                if row is not None:
+                    row.addStretch()
+                row = QHBoxLayout()
+                row.setContentsMargins(0, 0, 0, 0)
+                row.setSpacing(2)
+                self.grid.addLayout(row)
+            row.addWidget(lbl)
+        if row is not None:
+            row.addStretch()
+
+    def _compute_size(self, cols):
+        margin = self.grid.contentsMargins().left() + self.grid.contentsMargins().right()
+        spacing = self.grid.spacing() * (cols - 1)
+        avail = self.scroll.viewport().width() - margin - spacing
+        return max(80, avail // cols)
+
+    def _start_loading(self):
+        if not self.images:
+            return
+
+        self.keywords_cache = {}
+        self.kw_thread = KwargsWorker(self.images)
+        self.kw_thread.ready.connect(self._on_keywords_ready)
+        self.kw_thread.start()
+
+        for path in self.images:
+            lbl = ThumbLabel(path)
+            lbl.mousePressEvent = lambda e, p=path: self._select_by_path(p)
+            lbl.mouseDoubleClickEvent = lambda e, p=path: self._double_click(0, p)
+            self.thumbs[path] = lbl
+
+        self._build_grid()
+
+        self.worker = ThumbWorker(self.images, 400)
+        self.worker.ready.connect(self._on_thumb_ready)
+        self.worker.done.connect(self._resize_thumbs)
+        self.worker.start()
+
+    def _on_keywords_ready(self, path, keywords):
+        self.keywords_cache[path] = keywords
+        dbg(f"_on_keywords_ready: {path!r} -> {keywords}")
+        lbl = self.thumbs.get(path)
+        if lbl:
+            lbl.set_keyword_count(len(keywords))
+            self._update_thumb_badge(path)
+
+    def _on_thumb_ready(self, path, pixmap):
+        self.originals[path] = pixmap
+        self._update_thumb(path)
+        self.loaded_count += 1
+        if self.selected_idx < 0 and self.get_visible_images():
+            self._select(0)
+
+    def _update_thumb(self, path):
+        orig = self.originals.get(path)
+        lbl = self.thumbs.get(path)
+        if not orig or not lbl:
+            return
+        size = self.current_size
+        canvas = QPixmap(size, size)
+        canvas.fill(QColor(BG))
+        painter = QPainter(canvas)
+        scaled = orig.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatio,
+                             Qt.TransformationMode.SmoothTransformation)
+        painter.drawPixmap((size - scaled.width()) // 2,
+                           (size - scaled.height()) // 2, scaled)
+        self._draw_badge(painter, canvas, scaled, lbl._kw_count)
+        painter.end()
+        lbl.setPixmap(canvas)
+        lbl.setFixedSize(size, size)
+
+    def _update_thumb_badge(self, path):
+        if path in self.originals:
+            self._update_thumb(path)
+
+    @staticmethod
+    def _draw_badge(painter, canvas, scaled, kw_count):
+        if kw_count <= 0:
+            return
+        painter.save()
+        painter.setFont(QFont("Arial", 8))
+        text = str(kw_count)
+        fm = painter.fontMetrics()
+        tw = fm.horizontalAdvance(text) + 6
+        th = fm.height() + 3
+        bx = canvas.width() - tw - 3
+        by = canvas.height() - th - 3
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setBrush(QColor(60, 60, 60, 120))
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawRoundedRect(bx, by, tw, th, th // 2, th // 2)
+        painter.setPen(QColor("#aaa"))
+        painter.drawText(bx + 3, by + fm.height(), text)
+        painter.restore()
+
+    def _update_all_thumbs(self):
+        for path in self.images:
+            self._update_thumb(path)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.overlay_widget.isVisible():
+            central = self.centralWidget()
+            cx = (central.width() - self.overlay_widget.width()) // 2
+            cy = (central.height() - self.overlay_widget.height()) // 2
+            self.overlay_widget.move(cx, cy)
+        if self.detail_mode:
+            if self.selected_idx >= 0:
+                visible = self.get_visible_images()
+                self._show_detail_image(visible[self.selected_idx])
+            return
+        self._resize_timer.stop()
+        self._resize_timer.start(400)
+
+    def _resize_thumbs(self):
+        if self.detail_mode:
+            return
+        vp = self.scroll.viewport()
+        if not vp.width():
+            return
+        ideal = max(80, min(400, (vp.width() - 10) // 8))
+        new_cols = max(4, min(20, round((vp.width() - 10) / ideal)))
+        new_size = self._compute_size(new_cols)
+        if new_size == self.current_size and new_cols == self.target_cols:
+            return
+        if new_cols != self.target_cols:
+            self.target_cols = new_cols
+            self._build_grid()
+        self.current_size = new_size
+        self._update_all_thumbs()
+
+    def _select(self, idx):
+        visible = self.get_visible_images()
+        if self.selected_idx >= 0:
+            old_path = visible[self.selected_idx]
+            if old_path in self.thumbs:
+                self.thumbs[old_path].highlight(False)
+        self.selected_idx = idx
+        path = visible[idx]
+        self.thumbs[path].highlight(True)
+        self.scroll.ensureWidgetVisible(self.thumbs[path], 0, 40)
+
+    def _select_by_path(self, path):
+        visible = self.get_visible_images()
+        if path in visible:
+            self._select(visible.index(path))
+
+    def _toggle_fullscreen(self):
+        if self.fullscreen_mode:
+            self.setWindowFlag(Qt.WindowType.FramelessWindowHint, False)
+            self.showNormal()
+            self.fullscreen_mode = False
+            self.setFocus()
+        else:
+            self.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
+            self.showFullScreen()
+            self.fullscreen_mode = True
+            self.setFocus()
+        self._resize_thumbs()
+        if self.detail_mode and self.selected_idx >= 0:
+            visible = self.get_visible_images()
+            self._show_detail_image(visible[self.selected_idx])
+
+    def _double_click(self, idx, path):
+        self._select(idx)
+        self._enter_detail(path)
+
+    def _enter_detail(self, path):
+        if self.detail_mode:
+            return
+        self.detail_mode = True
+        self.scroll.hide()
+        self.detail_label.show()
+        self.overlay_widget.hide()
+        self._show_detail_image(path)
+        self.setFocus()
+
+    def _exit_detail(self):
+        if not self.detail_mode:
+            return
+        self.detail_mode = False
+        self.detail_label.hide()
+        self.scroll.show()
+        self._resize_thumbs()
+        self.setFocus()
+
+    def _center_overlay(self):
+        tree = self.kw_tree_widget
+        row_height = tree.fontMetrics().height() + 7
+        total_items = 0
+        for i in range(tree.topLevelItemCount()):
+            parent = tree.topLevelItem(i)
+            if parent.childCount():
+                total_items += 1 + parent.childCount()
+            else:
+                total_items += 1
+        card_layout = self.card.layout()
+        card_margins = card_layout.contentsMargins()
+        card_spacing = card_layout.spacing()
+        title_h = self.card_title.sizeHint().height()
+        sep_h = self.card_sep.sizeHint().height() if self.card_sep.isVisible() else 0
+        overhead = (card_margins.top() + card_margins.bottom()
+                    + title_h + card_spacing
+                    + sep_h + (card_spacing if sep_h else 0))
+        tree_needed = total_items * row_height + 2
+        content_h = overhead + tree_needed
+        max_h = int(self.height() * 0.8)
+        max_w = int(self.width() * 0.4)
+        desired_h = min(content_h, max_h)
+        tree_max_h = max(20, desired_h - overhead)
+
+        tree.setFixedHeight(tree_max_h)
+        desired_w = min(max(280, self.card_title.sizeHint().width() + 20), max_w)
+        self.card.setFixedSize(desired_w, desired_h)
+        self.overlay_widget.setFixedSize(desired_w, desired_h)
+        dbg(f"_center_overlay: final requested={desired_w}x{desired_h}, "
+            f"card actual={self.card.size()}, tree actual={tree.size()}, "
+            f"overlay actual={self.overlay_widget.size()}")
+        central = self.centralWidget()
+        cx = (central.width() - desired_w) // 2
+        cy = (central.height() - desired_h) // 2
+        self.overlay_widget.move(cx, cy)
+
+    def _show_keywords_overlay(self):
+        if self.selected_idx < 0:
+            return
+        visible = self.get_visible_images()
+        path = visible[self.selected_idx]
+        self.card_title.setText(os.path.basename(path))
+        self.card_sep.hide()
+        self.kw_tree_widget.hide()
+        self.kw_tree_widget.clear()
+
+        cached_kws = self.keywords_cache.get(path, [])
+        dbg(f"_show_keywords_overlay cache lookup: {path!r} -> {cached_kws}")
+        if cached_kws:
+            self._populate_kw_list(cached_kws)
+            self.card_sep.show()
+            self.kw_tree_widget.show()
+
+        self.card.setMinimumWidth(280)
+        self.card.setMaximumWidth(max(280, int(self.width() * 0.4)))
+
+        self.kw_tree_widget.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.backdrop.show()
+        self.overlay_widget.show()
+        self.backdrop.raise_()
+        self.overlay_widget.raise_()
+        QTimer.singleShot(10, self._center_overlay)
+
+    def _populate_kw_list(self, keywords):
+        parents, orphans = group_keywords(keywords)
+        tree = self.kw_tree_widget
+        try:
+            tree.toggled.disconnect()
+        except TypeError:
+            pass
+        tree.toggled.connect(self._on_keyword_toggled)
+        unchecked_icon = tree._icon_unchecked
+        for cat in sorted(parents):
+            parent = QTreeWidgetItem([f"{cat} ({len(parents[cat])})"])
+            parent.setFont(0, QFont("Arial", 13, QFont.Weight.Bold))
+            parent.setForeground(0, QColor("#999"))
+            for child_name in sorted(parents[cat]):
+                child = QTreeWidgetItem([child_name])
+                child.setFont(0, QFont("Arial", 14))
+                child.setIcon(0, unchecked_icon)
+                parent.addChild(child)
+            tree.addTopLevelItem(parent)
+            parent.setExpanded(True)
+        for kw in sorted(orphans):
+            item = QTreeWidgetItem([kw])
+            item.setFont(0, QFont("Arial", 14))
+            item.setIcon(0, unchecked_icon)
+            tree.addTopLevelItem(item)
+        tree.expandAll()
+        tree.resizeColumnToContents(0)
+
+    def _hide_keywords_overlay(self):
+        self.overlay_widget.hide()
+        self.backdrop.hide()
+
+    def _on_keyword_toggled(self, keyword, checked):
+        if checked:
+            self.active_filters.add(keyword)
+        else:
+            self.active_filters.discard(keyword)
+        self._apply_filter()
+
+    def _apply_filter(self):
+        if not self.active_filters:
+            self.filtered_images = None
+        else:
+            self.filtered_images = [
+                path for path in self.images
+                if all(f in self.keywords_cache.get(path, []) for f in self.active_filters)
+            ]
+        self.selected_idx = -1
+        self._build_grid()
+        suffix = f" (filtered: {len(self.filtered_images)})" if self.filtered_images is not None else ""
+        if self.filtered_images is not None and len(self.filtered_images) == 0:
+            suffix = " (no matches)"
+        self.setWindowTitle(f"img-gallery — {os.path.basename(os.path.abspath(self.directory))}{suffix}")
+
+    def get_visible_images(self):
+        return self.filtered_images if self.filtered_images is not None else self.images
+
+    def _show_detail_image(self, path):
+        vp_w = self.width()
+        vp_h = self.height()
+        reader = QImageReader(path)
+        orig = reader.size()
+        if orig.isEmpty():
+            return
+        scale = min(vp_w / orig.width(), vp_h / orig.height())
+        reader.setScaledSize(orig * scale)
+        img = reader.read()
+        if img.isNull():
+            return
+        self.detail_label.setPixmap(QPixmap.fromImage(img))
+
+    def closeEvent(self, event):
+        if self.worker and self.worker.isRunning():
+            self.worker.cancel()
+            self.worker.wait(2000)
+        if self.kw_thread and self.kw_thread.isRunning():
+            self.kw_thread.wait(2000)
+        event.accept()
+
+    def focusEvent(self, event):
+        super().focusEvent(event)
+        if event.type() == QEvent.Type.FocusIn:
+            return
+        if self.isVisible():
+            self.setFocus()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Type.KeyPress:
+            self.setFocus()
+            self.keyPressEvent(event)
+            return True
+        return super().eventFilter(obj, event)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Q and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self.close()
+            return
+        if event.key() == Qt.Key.Key_F:
+            self._toggle_fullscreen()
+            return
+        if event.key() == Qt.Key.Key_Escape:
+            if self.detail_mode:
+                self._exit_detail()
+            elif self.overlay_widget.isVisible():
+                self._hide_keywords_overlay()
+            elif self.fullscreen_mode:
+                self._toggle_fullscreen()
+            return
+        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+            if not self.detail_mode and self.selected_idx >= 0:
+                visible = self.get_visible_images()
+                self._enter_detail(visible[self.selected_idx])
+            return
+        if self.detail_mode:
+            if event.key() in (Qt.Key.Key_Right, Qt.Key.Key_Space):
+                self._navigate_next()
+                visible = self.get_visible_images()
+                self._show_detail_image(visible[self.selected_idx])
+                return
+            if event.key() == Qt.Key.Key_Left:
+                self._navigate_prev()
+                visible = self.get_visible_images()
+                self._show_detail_image(visible[self.selected_idx])
+                return
+        if event.key() in (Qt.Key.Key_Right, Qt.Key.Key_Space):
+            self._navigate_next()
+            return
+        if event.key() == Qt.Key.Key_Left:
+            self._navigate_prev()
+            return
+        if event.key() == Qt.Key.Key_Down:
+            self._navigate_down()
+            return
+        if event.key() == Qt.Key.Key_Up:
+            self._navigate_up()
+            return
+        if event.key() == Qt.Key.Key_K:
+            if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
+                if self.active_filters:
+                    self.active_filters.clear()
+                    self._apply_filter()
+            elif self.overlay_widget.isVisible():
+                self._hide_keywords_overlay()
+            else:
+                self._show_keywords_overlay()
+            return
+        super().keyPressEvent(event)
+
+    def _row_col(self, idx):
+        return divmod(idx, self.target_cols)
+
+    def _idx(self, row, col):
+        return row * self.target_cols + col
+
+    def _navigate_next(self):
+        visible = self.get_visible_images()
+        if not visible:
+            return
+        self._select((self.selected_idx + 1) % len(visible))
+
+    def _navigate_prev(self):
+        visible = self.get_visible_images()
+        if not visible:
+            return
+        self._select((self.selected_idx - 1) % len(visible))
+
+    def _navigate_down(self):
+        visible = self.get_visible_images()
+        if not visible:
+            return
+        row, col = self._row_col(self.selected_idx)
+        row += 1
+        n_rows = (len(visible) + self.target_cols - 1) // self.target_cols
+        if row >= n_rows:
+            return
+        idx = self._idx(row, col)
+        if idx < len(visible):
+            self._select(idx)
+
+    def _navigate_up(self):
+        visible = self.get_visible_images()
+        if not visible:
+            return
+        row, col = self._row_col(self.selected_idx)
+        row -= 1
+        if row < 0:
+            return
+        self._select(self._idx(row, col))
+
+
+def group_keywords(keywords):
+    parents = {}
+    orphans = []
+    for kw in sorted(keywords):
+        if "/" in kw:
+            p, _, c = kw.partition("/")
+            parents.setdefault(p, []).append(c)
+        else:
+            orphans.append(kw)
+    return parents, orphans
+
+
+class KwargsWorker(QThread):
+    ready = pyqtSignal(str, list)
+
+    def __init__(self, paths):
+        super().__init__()
+        self.paths = paths
+
+    def run(self):
+        if not self.paths:
+            return
+        name_to_path = {}
+        for p in self.paths:
+            name_to_path.setdefault(os.path.basename(p), p)
+        try:
+            cmd = ["exiftool", "-Keywords", "-FileName", "-s1"] + self.paths
+            dbg(f"KwargsWorker cmd: {cmd}")
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            dbg(f"KwargsWorker stdout (first 500 chars):\n{result.stdout[:500]}")
+            dbg(f"KwargsWorker stderr: {result.stderr}")
+            if result.returncode != 0:
+                dbg(f"KwargsWorker exiftool error: {result.stderr.strip()}")
+                return
+        except Exception as e:
+            dbg(f"KwargsWorker failed: {e}")
+            return
+        current_path = None
+        kw_buffer = []
+        for line in result.stdout.split("\n"):
+            line = line.strip()
+            if line.startswith("========"):
+                if current_path is not None and kw_buffer:
+                    dbg(f"KwargsWorker emit: {current_path!r} -> {kw_buffer}")
+                    self.ready.emit(current_path, kw_buffer)
+                kw_buffer = []
+                continue
+            if not line:
+                continue
+            key, _, val = line.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if key == "FileName":
+                current_path = name_to_path.get(val, val)
+                dbg(f"KwargsWorker new file: name={val!r} -> path={current_path!r}")
+            elif key == "Keywords":
+                for kw in val.split(","):
+                    kw = kw.strip()
+                    if kw:
+                        kw_buffer.append(kw)
+        if current_path is not None and kw_buffer:
+            dbg(f"KwargsWorker emit: {current_path!r} -> {kw_buffer}")
+            self.ready.emit(current_path, kw_buffer)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="img-gallery: Browse images with EXIF keyword badges.")
+    parser.add_argument("directory", nargs="?", default=".", help="Directory to scan (default: current)")
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug output")
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    DEBUG = args.debug
+    if not os.path.isdir(args.directory):
+        print(f"Not a directory: {args.directory}")
+        sys.exit(1)
+    signal.signal(signal.SIGINT, lambda s, f: sys.exit(0))
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+    win = MainWindow(args.directory)
+    sys.exit(app.exec())
