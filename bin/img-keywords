@@ -4,8 +4,8 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QTreeWidget, QTreeWidgetItem, QLabel,
                              QTextEdit, QScrollArea, QPushButton, QFrame,
                              QSplitter)
-from PyQt6.QtCore import Qt, QTimer, QThread, pyqtSignal
-from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter
+from PyQt6.QtCore import Qt, QTimer, QThread, pyqtSignal, QPoint
+from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter, QPainterPath, QPen
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = None
@@ -338,6 +338,8 @@ class ThumbStrip(QScrollArea):
         self.setWidget(self.container)
         self.thumb_labels = []
         self.thumb_cache = {}
+        self.no_keywords = set()
+        self.unknown_keywords = set()
         self._click_handler_ref = self._on_thumb_click
 
     def _on_thumb_click(self, idx):
@@ -378,12 +380,94 @@ class ThumbStrip(QScrollArea):
             self.layout.addWidget(lbl)
             self.thumb_labels.append(lbl)
 
+    def set_no_keywords(self, idx):
+        self.no_keywords.add(idx)
+
+    def clear_no_keywords(self, idx):
+        self.no_keywords.discard(idx)
+
+    def set_unknown_keywords(self, idx):
+        self.unknown_keywords.add(idx)
+
+    def clear_unknown_keywords(self, idx):
+        self.unknown_keywords.discard(idx)
+
+    def _draw_yellow_border(self, pix):
+        painter = QPainter(pix)
+        painter.setPen(QPen(QColor("#ff0"), 1))
+        painter.drawRect(0, 0, pix.width() - 1, pix.height() - 1)
+        painter.end()
+
+    def _draw_no_kw_triangle(self, pix):
+        painter = QPainter(pix)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QColor("#f44"))
+        h = pix.height()
+        path = QPainterPath()
+        path.moveTo(0, h)
+        path.lineTo(0, h - 16)
+        path.lineTo(16, h)
+        path.closeSubpath()
+        painter.drawPath(path)
+        painter.end()
+
+    def _draw_unknown_kw_triangle(self, pix):
+        painter = QPainter(pix)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QColor("#48f"))
+        w = pix.width()
+        path = QPainterPath()
+        path.moveTo(w, 0)
+        path.lineTo(w, 16)
+        path.lineTo(w - 16, 0)
+        path.closeSubpath()
+        painter.drawPath(path)
+        painter.end()
+
     def highlight(self, idx):
         for i, lbl in enumerate(self.thumb_labels):
-            lbl.setStyleSheet(f"background-color: {'#ff0' if i == idx else 'transparent'};")
+            pix = QPixmap(self.thumb_cache[self.image_list[i]])
+            if i == idx:
+                self._draw_yellow_border(pix)
+            elif i in self.no_keywords:
+                self._draw_no_kw_triangle(pix)
+            if i in self.unknown_keywords:
+                self._draw_unknown_kw_triangle(pix)
+            lbl.setPixmap(pix)
         if idx < len(self.thumb_labels):
             target_x = idx * 100 - self.viewport().width() // 2
             self.horizontalScrollBar().setValue(max(0, target_x))
+
+
+class KeywordScanThread(QThread):
+    """Scans all images for keywords in a background thread."""
+    done = pyqtSignal(set, set)
+
+    def __init__(self, image_list, keyword_set):
+        super().__init__()
+        self.image_list = image_list
+        self.keyword_set = keyword_set
+
+    def run(self):
+        no_kw = set()
+        unknown_kw = set()
+        for i, path in enumerate(self.image_list):
+            result = subprocess.run(
+                ["exiftool", "-Keywords", "-s2", path],
+                capture_output=True, text=True
+            )
+            raw = result.stdout.strip()
+            if not raw or ":" not in raw:
+                no_kw.add(i)
+            else:
+                kw_str = raw.split(":", 1)[1].strip()
+                if not kw_str:
+                    no_kw.add(i)
+                else:
+                    kws = {k.strip() for k in re.split(r"[\t,\n]", kw_str) if k.strip()}
+                    if kws - self.keyword_set:
+                        unknown_kw.add(i)
+        self.done.emit(no_kw, unknown_kw)
 
 
 class ImageLoaderThread(QThread):
@@ -509,6 +593,11 @@ class MainWindow(QMainWindow):
         self.thumb_strip._on_thumb_click = self.jump_to_thumb
         main_layout.addWidget(self.thumb_strip)
 
+        # Scan all images for missing/unknown keywords
+        self._scan_thread = KeywordScanThread(images, set(KEYWORDS))
+        self._scan_thread.done.connect(self._on_scan_done)
+        self._scan_thread.start()
+
         # Keyboard shortcuts
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
@@ -527,11 +616,20 @@ class MainWindow(QMainWindow):
         super().resizeEvent(event)
         self._display_scaled_pixmap()
 
+    def _on_scan_done(self, no_kw_indices, unknown_kw_indices):
+        self.thumb_strip.no_keywords = no_kw_indices
+        self.thumb_strip.unknown_keywords = unknown_kw_indices
+        if self.thumb_strip.thumb_labels:
+            self.thumb_strip.highlight(self.idx)
+        if hasattr(self, '_scan_thread'):
+            self._scan_thread.deleteLater()
+
     def _load_first_image(self):
         self.show_image()
 
     def _init_thumbs(self):
         self.thumb_strip.populate()
+        self.thumb_strip.highlight(self.idx)
 
     def _check_kw_file(self):
         try:
@@ -591,6 +689,10 @@ class MainWindow(QMainWindow):
             all_known_keywords.update(existing)
             self.kw_panel.ensure_widgets()
             self.kw_panel.set_keywords(existing)
+            if existing:
+                self.thumb_strip.clear_no_keywords(self.idx)
+            if not (existing - set(KEYWORDS)):
+                self.thumb_strip.clear_unknown_keywords(self.idx)
             self._pending_keywords = None
 
         self.thumb_strip.highlight(self.idx)
@@ -628,6 +730,9 @@ class MainWindow(QMainWindow):
     def save_current(self):
         chosen = self.kw_panel.get_selected()
         dbg(f"Saving {len(chosen)} keywords to {os.path.basename(self.current_img_path)}: {chosen}")
+        if chosen:
+            self.thumb_strip.clear_no_keywords(self.idx)
+            self.thumb_strip.clear_unknown_keywords(self.idx)
         if STRIP_EXIF:
             subprocess.run(
                 ["exiftool", "-all=", "-overwrite_original", self.current_img_path],
