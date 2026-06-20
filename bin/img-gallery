@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """img-gallery: Browse images with EXIF keyword badges."""
-import sys, os, io, argparse, signal, subprocess
+import sys, os, io, argparse, signal, subprocess, glob
 from PIL import Image
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                               QHBoxLayout, QLabel, QScrollArea, QFrame,
@@ -154,10 +154,27 @@ class KwTreeWidget(QTreeWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, directory):
+    def __init__(self, path_or_pattern_or_list):
         super().__init__()
-        self.directory = directory
-        self.images = collect_images(directory)
+        if isinstance(path_or_pattern_or_list, list):
+            self.directory = "<stdin>"
+            self.images = sorted(set(p.strip() for p in path_or_pattern_or_list if p.strip() and os.path.splitext(p.lower())[1] in IMAGE_EXTS))
+            title = "stdin"
+        elif any(c in path_or_pattern_or_list for c in "*?["):
+            self.directory = path_or_pattern_or_list
+            expanded = sorted(glob.glob(os.path.expanduser(path_or_pattern_or_list), recursive=True))
+            self.images = [p for p in expanded if os.path.splitext(p.lower())[1] in IMAGE_EXTS]
+            title = os.path.basename(os.path.dirname(path_or_pattern_or_list)) or path_or_pattern_or_list
+        else:
+            self.directory = path_or_pattern_or_list
+            expanded_path = os.path.expanduser(path_or_pattern_or_list)
+            if os.path.isfile(expanded_path):
+                ext = os.path.splitext(expanded_path.lower())[1]
+                self.images = [expanded_path] if ext in IMAGE_EXTS else []
+                title = os.path.basename(expanded_path)
+            else:
+                self.images = collect_images(expanded_path)
+                title = os.path.basename(os.path.abspath(expanded_path))
         self.thumbs = {}
         self.originals = {}
         self.loaded_count = 0
@@ -170,8 +187,8 @@ class MainWindow(QMainWindow):
         self.active_filters = set()
         self.filtered_images = None
 
-        dbg(f"Found {len(self.images)} images in {directory}")
-        self.setWindowTitle(f"img-gallery — {os.path.basename(os.path.abspath(directory))}")
+        dbg(f"Found {len(self.images)} images")
+        self.setWindowTitle(f"img-gallery — {title}")
         self.setStyleSheet(STYLESHEET_MAIN)
 
         central = QWidget()
@@ -622,7 +639,13 @@ class MainWindow(QMainWindow):
         suffix = f" (filtered: {len(self.filtered_images)})" if self.filtered_images is not None else ""
         if self.filtered_images is not None and len(self.filtered_images) == 0:
             suffix = " (no matches)"
-        self.setWindowTitle(f"img-gallery — {os.path.basename(os.path.abspath(self.directory))}{suffix}")
+        if self.directory == "<stdin>":
+            base = "stdin"
+        elif any(c in self.directory for c in "*?["):
+            base = os.path.basename(os.path.dirname(self.directory)) or self.directory
+        else:
+            base = os.path.basename(os.path.abspath(self.directory))
+        self.setWindowTitle(f"img-gallery — {base}{suffix}")
 
     def get_visible_images(self):
         return self.filtered_images if self.filtered_images is not None else self.images
@@ -827,19 +850,27 @@ class KwargsWorker(QThread):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="img-gallery: Browse images with EXIF keyword badges.")
-    parser.add_argument("directory", nargs="?", default=".", help="Directory to scan (default: current)")
+    parser.add_argument("path", nargs="?", default=".", help="Directory, single file, or glob pattern (e.g. ~/photos/2024/*.jpg). Shell-expanded wildcards are also accepted.")
     parser.add_argument("-d", "--debug", action="store_true", help="Enable debug output")
+    parser.add_argument("--stdin", action="store_true", help="Read newline-separated list of image paths from stdin (ignores path argument)")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
     DEBUG = args.debug
-    if not os.path.isdir(args.directory):
-        print(f"Not a directory: {args.directory}")
+    if args.stdin:
+        paths = [line.strip() for line in sys.stdin if line.strip()]
+        if not paths:
+            print("No paths received on stdin", file=sys.stderr)
+            sys.exit(1)
+    elif "*" not in args.path and "?" not in args.path and "[" not in args.path and not os.path.isdir(args.path):
+        print(f"Not a directory: {args.path}")
         sys.exit(1)
+    else:
+        paths = args.path
     signal.signal(signal.SIGINT, lambda s, f: sys.exit(0))
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
-    win = MainWindow(args.directory)
+    win = MainWindow(paths)
     sys.exit(app.exec())
