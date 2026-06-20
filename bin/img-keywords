@@ -16,15 +16,17 @@ def dbg(msg):
     if DEBUG:
         print(f"[DEBUG] {msg}", flush=True)
 
-def load_keywords(path="keywords.txt"):
+def load_keywords(path="keywords.txt", exit_on_missing=True):
     try:
         with open(path) as f:
             kws = [l for l in (line.strip() for line in f) if l and not l.startswith("#")]
             dbg(f"Loaded {len(kws)} keywords from {path}")
             return kws
     except FileNotFoundError:
-        print(f"No {path} found. Create one with a keyword per line.")
-        sys.exit(1)
+        if exit_on_missing:
+            print(f"No {path} found. Create one with a keyword per line.")
+            sys.exit(1)
+        return None
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -39,13 +41,15 @@ examples:
 keyboard shortcuts:
   Right / Space   Save keywords and move to next image
   Left            Save keywords and go back to previous image
-  Escape          Quit application
+  F               Toggle fullscreen
+  Ctrl+Q          Quit application
 
 keywords file format:
   One keyword per line. Lines starting with '#' are comments.
   Use 'Category/Item' syntax to group keywords into expandable categories.
 """
     )
+    parser.add_argument("images", nargs="?", default=".", help="Path to directory containing images (default: current directory)")
     parser.add_argument("-d", "--debug", action="store_true", help="Enable debug output to stdout")
     parser.add_argument("-k", "--keywords", default="keywords.txt", help="Path to keywords text file (default: keywords.txt)")
     parser.add_argument("--keep-exif", action="store_true", help="Preserve existing EXIF metadata; only Keywords are modified (default: strip all EXIF)")
@@ -58,7 +62,12 @@ STRIP_EXIF = not args.keep_exif
 KEYWORDS = load_keywords(args.keywords)
 dbg(f"Keywords: {KEYWORDS}")
 
-images = sorted(glob.glob("*.jpg") + glob.glob("*.jpeg") + glob.glob("*.png"))
+img_dir = args.images
+images = sorted(
+    glob.glob(os.path.join(img_dir, "*.jpg"))
+    + glob.glob(os.path.join(img_dir, "*.jpeg"))
+    + glob.glob(os.path.join(img_dir, "*.png"))
+)
 
 if not images:
     print("No images found in current directory.")
@@ -162,6 +171,7 @@ class KeywordPanel(QFrame):
         self.tree.setAnimated(True)
         self.tree.setIndentation(16)
         self.tree.itemChanged.connect(self._on_item_changed)
+        self.tree.viewport().installEventFilter(self)
         layout.addWidget(self.tree)
 
         self.back_btn = QPushButton("Back")
@@ -193,11 +203,25 @@ class KeywordPanel(QFrame):
         )
         self.cat_items[cat_name].setText(0, f"{cat_name} ({checked}/{total})")
 
+    def eventFilter(self, obj, event):
+        if obj is self.tree.viewport() and event.type() == event.Type.MouseButtonPress:
+            item = self.tree.itemAt(event.position().toPoint())
+            if item and item.childCount() == 0:
+                new_state = (
+                    Qt.CheckState.Unchecked
+                    if item.checkState(0) == Qt.CheckState.Checked
+                    else Qt.CheckState.Checked
+                )
+                item.setCheckState(0, new_state)
+                return True
+        return super().eventFilter(obj, event)
+
     def _on_item_changed(self, item, column):
         parent = item.parent()
-        if parent and parent.text(0) in self.cat_items:
+        if parent:
             cat_name = parent.text(0).partition(" (")[0]
-            self._update_cat_label(cat_name)
+            if cat_name in self.cat_items:
+                self._update_cat_label(cat_name)
 
     def rebuild_tree(self):
         old_states = {}
@@ -434,6 +458,8 @@ class MainWindow(QMainWindow):
         self._pending_exif = None
         self._pending_keywords = None
 
+        self._kw_file_mtime = os.path.getmtime(args.keywords)
+
         title = "Keyword Tagger" + (" [KEEP EXIF]" if not STRIP_EXIF else "")
         self.setWindowTitle(title)
         self.resize(1100, 750)
@@ -491,6 +517,12 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(50, self._load_first_image)
         QTimer.singleShot(500, self._init_thumbs)
 
+        # Monitor keywords file for changes
+        self._kw_timer = QTimer(self)
+        self._kw_timer.setInterval(1000)
+        self._kw_timer.timeout.connect(self._check_kw_file)
+        self._kw_timer.start()
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._display_scaled_pixmap()
@@ -500,6 +532,27 @@ class MainWindow(QMainWindow):
 
     def _init_thumbs(self):
         self.thumb_strip.populate()
+
+    def _check_kw_file(self):
+        try:
+            mtime = os.path.getmtime(args.keywords)
+        except OSError:
+            return
+        if mtime == self._kw_file_mtime:
+            return
+        self._kw_file_mtime = mtime
+        new_kws = load_keywords(args.keywords, exit_on_missing=False)
+        if new_kws is None:
+            return
+        selected = self.kw_panel.get_selected()
+        global KEYWORDS, file_keywords, all_known_keywords
+        KEYWORDS = new_kws
+        file_keywords = set(KEYWORDS)
+        all_known_keywords.update(file_keywords)
+        all_known_keywords.update(selected)
+        self.kw_panel.rebuild_tree()
+        self.kw_panel.set_keywords(selected)
+        dbg(f"Keywords file reloaded ({len(KEYWORDS)} keywords)")
 
     def jump_to_thumb(self, n):
         self.save_current()
@@ -511,8 +564,13 @@ class MainWindow(QMainWindow):
             self.save_and_next()
         elif event.key() == Qt.Key.Key_Left:
             self.go_back()
-        elif event.key() == Qt.Key.Key_Escape:
+        elif event.key() == Qt.Key.Key_Q and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             self.close()
+        elif event.key() == Qt.Key.Key_F:
+            if self.isFullScreen():
+                self.showNormal()
+            else:
+                self.showFullScreen()
         else:
             super().keyPressEvent(event)
 
