@@ -132,10 +132,12 @@ class KwTreeWidget(QTreeWidget):
         return QIcon(pm)
 
     def _keyword_from_item(self, item):
+        name = item.text(0).rsplit("  [", 1)[0]
         parent = item.parent()
         if parent is not None:
-            return f"{parent.text(0).partition(' ')[0]}/{item.text(0)}"
-        return item.text(0)
+            pname = parent.text(0).partition(" ")[0]
+            return f"{pname}/{name}"
+        return name
 
     def mousePressEvent(self, event):
         item = self.itemAt(event.position().toPoint())
@@ -186,6 +188,7 @@ class MainWindow(QMainWindow):
         self.fullscreen_mode = False
         self.active_filters = set()
         self.filtered_images = None
+        self.global_kw_counts = {}
 
         dbg(f"Found {len(self.images)} images")
         self.setWindowTitle(f"img-gallery — {title}")
@@ -360,6 +363,7 @@ class MainWindow(QMainWindow):
         self.keywords_cache = {}
         self.kw_thread = KwargsWorker(self.images)
         self.kw_thread.ready.connect(self._on_keywords_ready)
+        self.kw_thread.done.connect(self._build_global_kw_index)
         self.kw_thread.start()
 
         for path in self.images:
@@ -382,6 +386,12 @@ class MainWindow(QMainWindow):
         if lbl:
             lbl.set_keyword_count(len(keywords))
             self._update_thumb_badge(path)
+
+    def _build_global_kw_index(self):
+        for kws in self.keywords_cache.values():
+            for kw in kws:
+                self.global_kw_counts[kw] = self.global_kw_counts.get(kw, 0) + 1
+        dbg(f"_build_global_kw_index: {len(self.global_kw_counts)} unique keywords")
 
     def _on_thumb_ready(self, path, pixmap):
         self.originals[path] = pixmap
@@ -561,19 +571,13 @@ class MainWindow(QMainWindow):
         self.overlay_widget.move(cx, cy)
 
     def _show_keywords_overlay(self):
-        if self.selected_idx < 0:
-            return
-        visible = self.get_visible_images()
-        path = visible[self.selected_idx]
-        self.card_title.setText(os.path.basename(path))
+        self.card_title.setText(f"Keywords ({len(self.global_kw_counts)})")
         self.card_sep.hide()
         self.kw_tree_widget.hide()
         self.kw_tree_widget.clear()
 
-        cached_kws = self.keywords_cache.get(path, [])
-        dbg(f"_show_keywords_overlay cache lookup: {path!r} -> {cached_kws}")
-        if cached_kws:
-            self._populate_kw_list(cached_kws)
+        if self.global_kw_counts:
+            self._populate_kw_list(self.global_kw_counts)
             self.card_sep.show()
             self.kw_tree_widget.show()
 
@@ -587,8 +591,8 @@ class MainWindow(QMainWindow):
         self.overlay_widget.raise_()
         QTimer.singleShot(10, self._center_overlay)
 
-    def _populate_kw_list(self, keywords):
-        parents, orphans = group_keywords(keywords)
+    def _populate_kw_list(self, kw_counts):
+        parents, orphans = group_keywords_with_counts(kw_counts)
         tree = self.kw_tree_widget
         try:
             tree.toggled.disconnect()
@@ -596,21 +600,28 @@ class MainWindow(QMainWindow):
             pass
         tree.toggled.connect(self._on_keyword_toggled)
         unchecked_icon = tree._icon_unchecked
-        for cat in sorted(parents):
-            parent = QTreeWidgetItem([f"{cat} ({len(parents[cat])})"])
+        checked_icon = tree._icon_checked
+        for cat, children in sorted(parents.items()):
+            total = sum(children.values())
+            parent = QTreeWidgetItem([f"{cat} ({total})"])
             parent.setFont(0, QFont("Arial", 13, QFont.Weight.Bold))
             parent.setForeground(0, QColor("#999"))
-            for child_name in sorted(parents[cat]):
-                child = QTreeWidgetItem([child_name])
+            for child_name, child_count in sorted(children.items()):
+                full_kw = f"{cat}/{child_name}"
+                child = QTreeWidgetItem([f"{child_name}  [{child_count}]"])
                 child.setFont(0, QFont("Arial", 14))
-                child.setIcon(0, unchecked_icon)
+                is_active = full_kw in self.active_filters
+                child.setIcon(0, checked_icon if is_active else unchecked_icon)
+                child.setData(0, Qt.ItemDataRole.UserRole, is_active)
                 parent.addChild(child)
             tree.addTopLevelItem(parent)
             parent.setExpanded(True)
-        for kw in sorted(orphans):
-            item = QTreeWidgetItem([kw])
+        for kw, count in sorted(orphans.items()):
+            item = QTreeWidgetItem([f"{kw}  [{count}]"])
             item.setFont(0, QFont("Arial", 14))
-            item.setIcon(0, unchecked_icon)
+            is_active = kw in self.active_filters
+            item.setIcon(0, checked_icon if is_active else unchecked_icon)
+            item.setData(0, Qt.ItemDataRole.UserRole, is_active)
             tree.addTopLevelItem(item)
         tree.expandAll()
         tree.resizeColumnToContents(0)
@@ -646,6 +657,14 @@ class MainWindow(QMainWindow):
         else:
             base = os.path.basename(os.path.abspath(self.directory))
         self.setWindowTitle(f"img-gallery — {base}{suffix}")
+
+    def _save_filtered_list(self):
+        visible = self.get_visible_images()
+        out_path = os.path.join(os.getcwd(), "images.md")
+        with open(out_path, "w") as f:
+            for path in visible:
+                f.write(f"{path}\n")
+        print(f"Saved {len(visible)} images to {out_path}", flush=True)
 
     def get_visible_images(self):
         return self.filtered_images if self.filtered_images is not None else self.images
@@ -729,6 +748,9 @@ class MainWindow(QMainWindow):
         if event.key() == Qt.Key.Key_Up:
             self._navigate_up()
             return
+        if event.key() == Qt.Key.Key_S and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self._save_filtered_list()
+            return
         if event.key() == Qt.Key.Key_K:
             if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
                 if self.active_filters:
@@ -795,8 +817,21 @@ def group_keywords(keywords):
     return parents, orphans
 
 
+def group_keywords_with_counts(kw_counts):
+    parents = {}
+    orphans = {}
+    for kw, count in kw_counts.items():
+        if "/" in kw:
+            p, _, c = kw.partition("/")
+            parents.setdefault(p, {})[c] = count
+        else:
+            orphans[kw] = count
+    return parents, orphans
+
+
 class KwargsWorker(QThread):
     ready = pyqtSignal(str, list)
+    done = pyqtSignal()
 
     def __init__(self, paths):
         super().__init__()
@@ -846,10 +881,26 @@ class KwargsWorker(QThread):
         if current_path is not None and kw_buffer:
             dbg(f"KwargsWorker emit: {current_path!r} -> {kw_buffer}")
             self.ready.emit(current_path, kw_buffer)
-
+        self.done.emit()
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="img-gallery: Browse images with EXIF keyword badges.")
+    parser = argparse.ArgumentParser(
+        description="img-gallery: Browse images with EXIF keyword badges.",
+        epilog=(
+            "Keybindings:\n"
+            "  Ctrl+Q       Quit\n"
+            "  F            Toggle fullscreen\n"
+            "  Escape       Exit detail / close overlay / exit fullscreen\n"
+            "  Enter        Enter/exit detail view\n"
+            "  Right/Space  Next image\n"
+            "  Left         Previous image\n"
+            "  Up/Down      Navigate grid\n"
+            "  K            Show/hide keywords filter\n"
+            "  Shift+K      Clear all filters\n"
+            "  Ctrl+S       Save filtered image list to images.md\n"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("path", nargs="?", default=".", help="Directory, single file, or glob pattern (e.g. ~/photos/2024/*.jpg). Shell-expanded wildcards are also accepted.")
     parser.add_argument("-d", "--debug", action="store_true", help="Enable debug output")
     parser.add_argument("--stdin", action="store_true", help="Read newline-separated list of image paths from stdin (ignores path argument)")
