@@ -42,9 +42,14 @@ whitelist ${HOME}/.agents                 # Agent skill definitions and scripts
 ###############################################################################
 # Shell config for terminal operations:
 # opencode spawns shell subprocesses for commands like git, npm, etc.
+
 # These rc files provide aliases, functions, and environment setup.
 whitelist ${HOME}/.bashrc                 # Bash startup config (aliases, functions)
 whitelist ${HOME}/.bashrc.d/*.sh          # Modular bash snippets (glob pattern)
+
+# Allow acces to the GitLab access token (access privileges are configured on
+# the server)
+whitelist ${HOME}/.config/glab-cli/*.yml
 
 # Package manager caches and global installs:
 whitelist ${HOME}/.npm*                   # npm cache, global packages, config
