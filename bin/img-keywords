@@ -42,6 +42,7 @@ keyboard shortcuts:
   Right / Space   Save keywords and move to next image
   Left            Save keywords and go back to previous image
   F               Toggle fullscreen
+  i               Toggle EXIF panel
   Ctrl+Q          Quit application
 
 keywords file format:
@@ -541,6 +542,8 @@ class MainWindow(QMainWindow):
         self._loader = None
         self._pending_exif = None
         self._pending_keywords = None
+        self._exif_collapsed = False
+        self._saved_exif_size = 140
 
         self._kw_file_mtime = os.path.getmtime(args.keywords)
 
@@ -566,27 +569,27 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self.header)
 
         # Splitter for main content
-        splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.splitter = QSplitter(Qt.Orientation.Horizontal)
 
         # Left: EXIF
         self.exif_panel = ExifPanel()
-        splitter.addWidget(self.exif_panel)
+        self.splitter.addWidget(self.exif_panel)
 
         # Center: Image canvas
         self.image_label = QLabel("Loading...")
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_label.setStyleSheet("background-color: #111; color: #666; font-size: 16px;")
-        splitter.addWidget(self.image_label)
+        self.splitter.addWidget(self.image_label)
 
         # Right: Keywords
         self.kw_panel = KeywordPanel()
         self.kw_panel.back_btn.clicked.connect(self.go_back)
         self.kw_panel.next_btn.clicked.connect(self.save_and_next)
-        splitter.addWidget(self.kw_panel)
+        self.splitter.addWidget(self.kw_panel)
 
-        splitter.setSizes([140, 700, 140])
+        self.splitter.setSizes([140, 700, 140])
 
-        main_layout.addWidget(splitter, 1)
+        main_layout.addWidget(self.splitter, 1)
 
         # Bottom: Thumbnails
         self.thumb_strip = ThumbStrip(images, height=108)
@@ -614,6 +617,9 @@ class MainWindow(QMainWindow):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        if self._exif_collapsed:
+            self.exif_panel.setMinimumWidth(0)
+            self.exif_panel.setMaximumWidth(0)
         self._display_scaled_pixmap()
 
     def _on_scan_done(self, no_kw_indices, unknown_kw_indices):
@@ -664,6 +670,16 @@ class MainWindow(QMainWindow):
             self.go_back()
         elif event.key() == Qt.Key.Key_Q and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             self.close()
+        elif event.key() == Qt.Key.Key_I:
+            self._exif_collapsed = not self._exif_collapsed
+            if self._exif_collapsed:
+                self._saved_exif_size = self.exif_panel.width()
+                self.exif_panel.setMinimumWidth(0)
+                self.exif_panel.setMaximumWidth(0)
+            else:
+                self.exif_panel.setMinimumWidth(120)
+                self.exif_panel.setMaximumWidth(500)
+            QTimer.singleShot(10, self._display_scaled_pixmap)
         elif event.key() == Qt.Key.Key_F:
             if self.isFullScreen():
                 self.showNormal()
@@ -683,6 +699,12 @@ class MainWindow(QMainWindow):
         if self._pending_exif is not None:
             self.exif_panel.set_exif(self._pending_exif)
             self._pending_exif = None
+            if self._exif_collapsed:
+                self.exif_panel.setMinimumWidth(0)
+                self.exif_panel.setMaximumWidth(0)
+            else:
+                self.exif_panel.setMinimumWidth(120)
+                self.exif_panel.setMaximumWidth(500)
 
         if self._pending_keywords is not None:
             existing = self._pending_keywords
