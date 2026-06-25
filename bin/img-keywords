@@ -711,6 +711,8 @@ class MainWindow(QMainWindow):
             all_known_keywords.update(existing)
             self.kw_panel.ensure_widgets()
             self.kw_panel.set_keywords(existing)
+            self.kw_panel.tree.scrollToTop()
+            self.kw_panel.tree.expandAll()
             if existing:
                 self.thumb_strip.clear_no_keywords(self.idx)
             if not (existing - set(KEYWORDS)):
