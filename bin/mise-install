@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+#
+# Copyright 2026 Victor Penso
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# script exits on the first unset variable encountered
+set -u    # nounset
+# script stops on first command failure
+set -e    # errexit
+# ensures that if any command in a set of piped commands failed, the overall
+# exit status is the status of the failed command
+set -o pipefail
+
+VERSION=0.1
+
+# Filename of this script
+SCRIPT=${0##*/}
+
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [-dh] [--version]
+
+Download mise binary release from...
+
+https://github.com/jdx/mise
+
+...to a ~/bin directory in the user home-directory
+
+optional arguments:
+  -d, --debug          enable verbose output
+  -h, --help           show this help message
+  --version            program version number "
+
+_DEBUG=${_DEBUG:-false}
+_debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+_error() {
+        echo 1>&2 "Error: $@"
+        exit 1
+}
+
+# Parse the command line options
+ARGS=$(getopt -o dh -l "debug,help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break
+                ;;
+        *)
+                break
+                ;;
+        esac
+done
+
+# check dependencies...
+for cmd in \
+        curl \
+        jq \
+        sha256sum
+do
+        command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
+done
+
+# determine architecture
+arch=$(uname -m)
+case "$arch" in
+        x86_64)
+                platform="x64"
+                ;;
+        aarch64|arm64)
+                platform="arm64"
+                ;;
+        *)
+                _error "Unsupported architecture: $arch"
+                ;;
+esac
+
+# fetch the latest release info (tag + asset digest) in one API call
+api_response=$(curl -s https://api.github.com/repos/jdx/mise/releases/latest)
+tag=$(echo "$api_response" | jq -r '.tag_name')
+version=${tag#v}
+echo -n "mise $version ($platform): "
+
+# extract the sha256 digest for our platform binary from the API response
+checksum=$(
+        echo "$api_response" \
+                | jq -r ".assets[] | select(.name == \"mise-v${version}-linux-${platform}\") | .digest" \
+                | sed 's/^sha256://'
+)
+test -n "$checksum" || _error "could not retrieve checksum from API"
+
+# download binary to /tmp
+cd /tmp
+
+binary_file="mise-v${version}-linux-${platform}"
+curl -s -L "https://github.com/jdx/mise/releases/download/${tag}/${binary_file}" \
+        -o "$binary_file"
+test -f "$binary_file" || _error "download of binary unsuccessful"
+
+# verify the checksum of the binary
+if echo "$checksum  $binary_file" | sha256sum --status --check
+then
+        chmod +x "$binary_file"
+        # install the binary to the user home-directory
+        test -d ~/bin || mkdir ~/bin
+        cp "$binary_file" ~/bin/mise
+        chmod +x ~/bin/mise
+        echo "installed to ~/bin/mise"
+else
+        _error "checksum verification unsuccessful"
+fi
+
+# clean up
+rm -f "$binary_file"
+
+exit 0
