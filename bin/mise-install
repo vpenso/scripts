@@ -137,6 +137,8 @@ then
         cp "$binary_file" ~/bin/mise
         chmod +x ~/bin/mise
         echo "installed to ~/bin/mise"
+        ~/bin/mise use -g usage || _error "failed to install usage shim globally"
+        echo "global usage shim installed"
 else
         _error "checksum verification unsuccessful"
 fi

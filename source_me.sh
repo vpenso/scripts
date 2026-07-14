@@ -45,6 +45,7 @@ for file in \
   $SCRIPTS/var/aliases/fzf.sh \
   $SCRIPTS/var/aliases/git.sh \
   $SCRIPTS/var/aliases/ls.sh \
+  $SCRIPTS/var/aliases/mise.sh \
   $SCRIPTS/var/aliases/nix.sh \
   $SCRIPTS/var/aliases/npm.sh \
   $SCRIPTS/var/aliases/password.sh \
