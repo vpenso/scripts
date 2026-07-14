@@ -3,8 +3,9 @@
 import sys, os, io, argparse, signal, subprocess, glob
 from PIL import Image
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
-                              QHBoxLayout, QLabel, QScrollArea, QFrame,
-                              QScrollBar, QTreeWidget, QTreeWidgetItem)
+                               QHBoxLayout, QLabel, QScrollArea, QFrame,
+                               QScrollBar, QTreeWidget, QTreeWidgetItem,
+                               QFileDialog)
 from PyQt6.QtCore import Qt, QTimer, QThread, pyqtSignal, QEvent, QSize
 from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter, QImageReader, QIcon
 
@@ -29,6 +30,14 @@ STYLESHEET_SCROLL = f"""
     }}
     QScrollBar::handle:vertical, QScrollBar::handle:horizontal {{
         background-color: #333; min-height: 20px; min-width: 20px;
+    }}
+"""
+STYLESHEET_TOOLTIP = f"""
+    QToolTip {{
+        background-color: #2a2a2a;
+        color: #eee;
+        border: 1px solid #555;
+        padding: 4px;
     }}
 """
 
@@ -142,16 +151,27 @@ class KwTreeWidget(QTreeWidget):
     def mousePressEvent(self, event):
         item = self.itemAt(event.position().toPoint())
         if item and item.icon(0) is not None:
-            checked = item.data(0, Qt.ItemDataRole.UserRole)
-            new_state = not checked
-            if new_state:
-                item.setIcon(0, self._icon_checked)
-                item.setData(0, Qt.ItemDataRole.UserRole, True)
+            role = item.data(0, Qt.ItemDataRole.UserRole)
+            if role == "category":
+                cat = item.text(0).partition(" ")[0]
+                for i in range(item.childCount()):
+                    child = item.child(i)
+                    child_kw = f"{cat}/{child.text(0).partition('  [' )[0]}"
+                    child_role = child.data(0, Qt.ItemDataRole.UserRole)
+                    if child_role is not True:
+                        child.setIcon(0, self._icon_checked)
+                        child.setData(0, Qt.ItemDataRole.UserRole, True)
+                        self.toggled.emit(child_kw, True)
             else:
-                item.setIcon(0, self._icon_unchecked)
-                item.setData(0, Qt.ItemDataRole.UserRole, False)
-            kw = self._keyword_from_item(item)
-            self.toggled.emit(kw, new_state)
+                new_state = not role
+                if new_state:
+                    item.setIcon(0, self._icon_checked)
+                    item.setData(0, Qt.ItemDataRole.UserRole, True)
+                else:
+                    item.setIcon(0, self._icon_unchecked)
+                    item.setData(0, Qt.ItemDataRole.UserRole, False)
+                kw = self._keyword_from_item(item)
+                self.toggled.emit(kw, new_state)
         super().mousePressEvent(event)
 
 
@@ -186,7 +206,7 @@ class MainWindow(QMainWindow):
         self.current_size = 150
         self.target_cols = 8
         self.fullscreen_mode = False
-        self.active_filters = set()
+        self.active_filters = {}
         self.filtered_images = None
         self.global_kw_counts = {}
 
@@ -603,14 +623,18 @@ class MainWindow(QMainWindow):
         checked_icon = tree._icon_checked
         for cat, children in sorted(parents.items()):
             total = sum(children.values())
+            bucket = self.active_filters.get(cat, set())
+            all_active = all(f"{cat}/{cn}" in bucket for cn in children)
             parent = QTreeWidgetItem([f"{cat} ({total})"])
             parent.setFont(0, QFont("Arial", 13, QFont.Weight.Bold))
             parent.setForeground(0, QColor("#999"))
+            parent.setIcon(0, checked_icon if all_active else unchecked_icon)
+            parent.setData(0, Qt.ItemDataRole.UserRole, "category")
             for child_name, child_count in sorted(children.items()):
                 full_kw = f"{cat}/{child_name}"
                 child = QTreeWidgetItem([f"{child_name}  [{child_count}]"])
                 child.setFont(0, QFont("Arial", 14))
-                is_active = full_kw in self.active_filters
+                is_active = full_kw in bucket
                 child.setIcon(0, checked_icon if is_active else unchecked_icon)
                 child.setData(0, Qt.ItemDataRole.UserRole, is_active)
                 parent.addChild(child)
@@ -619,7 +643,7 @@ class MainWindow(QMainWindow):
         for kw, count in sorted(orphans.items()):
             item = QTreeWidgetItem([f"{kw}  [{count}]"])
             item.setFont(0, QFont("Arial", 14))
-            is_active = kw in self.active_filters
+            is_active = kw in self.active_filters.get("", set())
             item.setIcon(0, checked_icon if is_active else unchecked_icon)
             item.setData(0, Qt.ItemDataRole.UserRole, is_active)
             tree.addTopLevelItem(item)
@@ -631,11 +655,33 @@ class MainWindow(QMainWindow):
         self.backdrop.hide()
 
     def _on_keyword_toggled(self, keyword, checked):
+        cat = keyword.partition("/")[0] if "/" in keyword else ""
+        bucket = self.active_filters.setdefault(cat, set())
         if checked:
-            self.active_filters.add(keyword)
+            bucket.add(keyword)
         else:
-            self.active_filters.discard(keyword)
+            bucket.discard(keyword)
+            if not bucket:
+                del self.active_filters[cat]
+        self._update_parent_icons()
         self._apply_filter()
+
+    def _update_parent_icons(self):
+        tree = self.kw_tree_widget
+        for i in range(tree.topLevelItemCount()):
+            item = tree.topLevelItem(i)
+            if item.childCount() == 0:
+                continue
+            cat = item.text(0).partition(" ")[0]
+            all_active = (
+                cat in self.active_filters
+                and all(
+                    f"{cat}/{child.text(0).partition('  [' )[0]}" in self.active_filters[cat]
+                    for child_idx in range(item.childCount())
+                    for child in [item.child(child_idx)]
+                )
+            )
+            item.setIcon(0, tree._icon_checked if all_active else tree._icon_unchecked)
 
     def _apply_filter(self):
         if not self.active_filters:
@@ -643,7 +689,10 @@ class MainWindow(QMainWindow):
         else:
             self.filtered_images = [
                 path for path in self.images
-                if all(f in self.keywords_cache.get(path, []) for f in self.active_filters)
+                if all(
+                    any(kw in self.keywords_cache.get(path, []) for kw in children)
+                    for children in self.active_filters.values()
+                )
             ]
         self.selected_idx = -1
         self._build_grid()
@@ -660,7 +709,13 @@ class MainWindow(QMainWindow):
 
     def _save_filtered_list(self):
         visible = self.get_visible_images()
-        out_path = os.path.join(os.getcwd(), "images.md")
+        out_path, _ = QFileDialog.getSaveFileName(
+            self, "Save Image List",
+            os.path.join(os.getcwd(), "images.md"),
+            "Markdown Files (*.md);;Text Files (*.txt);;All Files (*)",
+        )
+        if not out_path:
+            return
         with open(out_path, "w") as f:
             for path in visible:
                 f.write(f"{path}\n")
@@ -755,6 +810,7 @@ class MainWindow(QMainWindow):
             if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
                 if self.active_filters:
                     self.active_filters.clear()
+                    self._update_parent_icons()
                     self._apply_filter()
             elif self.overlay_widget.isVisible():
                 self._hide_keywords_overlay()
@@ -923,5 +979,6 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, lambda s, f: sys.exit(0))
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
+    app.setStyleSheet(STYLESHEET_TOOLTIP)
     win = MainWindow(paths)
     sys.exit(app.exec())

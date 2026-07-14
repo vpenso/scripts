@@ -1,0 +1,680 @@
+#!/usr/bin/env python3
+"""img-order: Sort images by dragging thumbnails."""
+import sys, os, io, argparse, signal
+from PIL import Image
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
+                              QHBoxLayout, QLabel, QScrollArea, QFileDialog,
+                              QSizePolicy)
+from PyQt6.QtCore import (Qt, QTimer, QThread, pyqtSignal, QMimeData,
+                           QEvent, QPoint)
+from PyQt6.QtGui import QPixmap, QColor, QPainter, QDrag
+
+Image.MAX_IMAGE_PIXELS = None
+
+IMAGE_EXTS = {".jpg", ".jpeg", ".png"}
+
+BG = "#111"
+TXT = "#eee"
+
+STYLESHEET_MAIN = f"background-color: {BG};"
+STYLESHEET_SCROLL = f"""
+    QScrollArea {{ background-color: {BG}; border: none; }}
+    QScrollBar:vertical, QScrollBar:horizontal {{
+        background-color: {BG}; width: 10px; height: 10px;
+    }}
+    QScrollBar::handle:vertical, QScrollBar::handle:horizontal {{
+        background-color: #333; min-height: 20px; min-width: 20px;
+    }}
+"""
+
+
+def collect_images(path):
+    results = []
+    for root, _dirs, files in os.walk(path):
+        for f in files:
+            if os.path.splitext(f.lower())[1] in IMAGE_EXTS:
+                results.append(os.path.join(root, f))
+    return sorted(results)
+
+
+def read_image_list(source):
+    lines = source.read().splitlines()
+    result = []
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith("#"):
+            result.append(line)
+    return result
+
+
+class ThumbWorker(QThread):
+    ready = pyqtSignal(str, QPixmap)
+    done = pyqtSignal()
+
+    def __init__(self, paths, size=400):
+        super().__init__()
+        self.paths = paths
+        self.size = size
+        self._cancelled = False
+
+    def run(self):
+        for path in self.paths:
+            if self._cancelled:
+                break
+            try:
+                img = Image.open(path)
+                img.thumbnail((self.size, self.size), Image.LANCZOS)
+                buf = io.BytesIO()
+                img.save(buf, format="JPEG", quality=75)
+                buf.seek(0)
+                pix = QPixmap()
+                pix.loadFromData(buf.getvalue())
+                self.ready.emit(path, pix)
+            except Exception:
+                pass
+        self.done.emit()
+
+    def cancel(self):
+        self._cancelled = True
+
+
+class ThumbLabel(QLabel):
+    """A single thumbnail cell. Emits clicked(item_id) on click, starts drag on move."""
+    clicked = pyqtSignal(str)
+
+    STYLE_NORMAL = """
+        ThumbLabel { background-color: #111; border: 2px solid transparent; }
+        ThumbLabel:hover { border: 2px solid #666; }
+    """
+    STYLE_SELECTED = """
+        ThumbLabel { background-color: #111; border: 2px solid #ff0; }
+        ThumbLabel:hover { border: 2px solid #ff0; }
+    """
+    STYLE_DRAG_OVER = """
+        ThumbLabel { background-color: #111; border: 2px solid #4a90d9; }
+    """
+    STYLE_BLANK = """
+        ThumbLabel {
+            background-color: #333;
+            border: none;
+        }
+        ThumbLabel:hover {
+            background-color: #555;
+        }
+    """
+
+    def __init__(self, item_id, path=None, parent=None):
+        super().__init__(parent)
+        self.item_id = item_id
+        self.path = path
+        self.is_blank = path is None
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.setAcceptDrops(False)
+        self._dragging = False
+        self._press_pos = None
+        self._selected = False
+        self._drag_over = False
+
+        if self.is_blank:
+            self.setToolTip("(blank separator)")
+            self.setFixedHeight(1)
+            self._apply_style()
+        else:
+            self.setMinimumSize(80, 80)
+            self.setToolTip(path)
+            self._apply_style()
+
+    def _apply_style(self):
+        base = (self.STYLE_BLANK if self.is_blank
+                else self.STYLE_SELECTED if self._selected
+                else self.STYLE_NORMAL)
+        self.setStyleSheet(self.STYLE_DRAG_OVER if self._drag_over else base)
+
+    def highlight_selected(self, on):
+        self._selected = on
+        if not self._drag_over:
+            self._apply_style()
+
+    def highlight_drag_over(self, on):
+        self._drag_over = on
+        self._apply_style()
+
+    def mouseMoveEvent(self, event):
+        if not (event.buttons() & Qt.MouseButton.LeftButton):
+            return
+        if self._press_pos is None:
+            return
+        if (event.position().toPoint() - self._press_pos).manhattanLength() < 8:
+            return
+        self._start_drag()
+
+    def _start_drag(self):
+        drag = QDrag(self)
+        mime = QMimeData()
+        mime.setData("application/x-imgorder-item", self.item_id.encode())
+        drag.setMimeData(mime)
+        pixmap = self.pixmap()
+        if not pixmap.isNull():
+            drag.setPixmap(pixmap.scaled(120, 120, Qt.AspectRatioMode.KeepAspectRatio,
+                                          Qt.TransformationMode.SmoothTransformation))
+        self._dragging = True
+        drag.exec(Qt.DropAction.MoveAction)
+        self._dragging = False
+
+    def mousePressEvent(self, event):
+        self._press_pos = event.position().toPoint()
+        super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if self._press_pos is not None and not self._dragging:
+            self.clicked.emit(self.item_id)
+        self._press_pos = None
+        super().mouseReleaseEvent(event)
+
+
+class GridWidget(QWidget):
+    """Drop-target widget that holds the thumbnail grid."""
+    sort_requested = pyqtSignal(str, str)
+
+    def __init__(self, parent=None):
+        super().__init__()
+        self.setAcceptDrops(True)
+        self._thumbs = {}
+        self._drop_target_id = None
+
+    def register(self, item_id, label):
+        self._thumbs[item_id] = label
+
+    def clear_registry(self):
+        self._thumbs.clear()
+        self._drop_target_id = None
+
+    def unhighlight_all(self):
+        for lbl in self._thumbs.values():
+            lbl.highlight_drag_over(False)
+
+    def _nearest_at(self, pos):
+        best, best_dist = None, float("inf")
+        gp = self.mapToGlobal(pos)
+        for item_id, lbl in self._thumbs.items():
+            lp = lbl.mapToGlobal(QPoint(0, 0))
+            dist = abs(lp.x() - gp.x()) + abs(lp.y() - gp.y())
+            if dist < best_dist:
+                best_dist = dist
+                best = item_id
+        return best
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat("application/x-imgorder-item"):
+            event.acceptProposedAction()
+
+    def dragMoveEvent(self, event):
+        self.unhighlight_all()
+        tid = self._nearest_at(event.position().toPoint())
+        if tid:
+            self._thumbs[tid].highlight_drag_over(True)
+            self._drop_target_id = tid
+        event.acceptProposedAction()
+
+    def dragLeaveEvent(self, event):
+        self.unhighlight_all()
+        self._drop_target_id = None
+
+    def dropEvent(self, event):
+        self.unhighlight_all()
+        raw = event.mimeData().data("application/x-imgorder-item")
+        source_id = raw.data().decode()
+        target_id = self._drop_target_id
+        self._drop_target_id = None
+        if source_id and target_id and source_id != target_id:
+            event.acceptProposedAction()
+            self.sort_requested.emit(source_id, target_id)
+
+
+class MainWindow(QMainWindow):
+    BLANK_COUNTER = 0
+
+    def __init__(self, directory=None, image_paths=None):
+        super().__init__()
+        if image_paths is not None:
+            self.source_title = "list"
+        else:
+            image_paths = collect_images(os.path.expanduser(directory))
+            self.source_title = os.path.basename(os.path.abspath(directory))
+        title = self.source_title
+
+        self.order = list(image_paths)
+        self.item_map = {p: p for p in image_paths}
+        self.thumbs = {}
+        self.originals = {}
+        self.current_size = 150
+        self.target_cols = 8
+        self.worker = None
+        self.selected_idx = -1
+        self.fullscreen_mode = False
+
+        self.setWindowTitle(f"img-order — {title}")
+        self.setStyleSheet(STYLESHEET_MAIN)
+
+        central = QWidget()
+        central.setStyleSheet(STYLESHEET_MAIN)
+        self.setCentralWidget(central)
+        main_layout = QVBoxLayout(central)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll.viewport().setStyleSheet(STYLESHEET_MAIN)
+        self.scroll.viewport().setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.scroll.setStyleSheet(STYLESHEET_SCROLL)
+
+        self.grid_widget = GridWidget()
+        self.grid_widget.setStyleSheet(STYLESHEET_MAIN)
+        self.grid_widget.sort_requested.connect(self._on_sort)
+        self.grid = QVBoxLayout(self.grid_widget)
+        self.grid.setContentsMargins(4, 4, 4, 4)
+        self.grid.setSpacing(2)
+        self.scroll.setWidget(self.grid_widget)
+        main_layout.addWidget(self.scroll, 1)
+
+        self.status = QLabel()
+        self.status.setStyleSheet(f"color: #888; padding: 4px 8px; font-size: 12px;")
+        self.status.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        main_layout.addWidget(self.status)
+
+        self.installEventFilter(self)
+        central.installEventFilter(self)
+        self.scroll.viewport().installEventFilter(self)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self._resize_timer = QTimer(self, singleShot=True, timeout=self._resize_thumbs)
+
+        self.resize(1200, 800)
+        self.show()
+        self._start_loading()
+        QTimer.singleShot(200, self._resize_thumbs)
+
+    # -- grid helpers --------------------------------------------------------
+
+    def _clear_grid(self):
+        while self.grid.count():
+            item = self.grid.takeAt(0)
+            if item.layout():
+                self._clear_sub_layout(item.layout())
+            elif item.widget():
+                item.widget().setParent(None)
+
+    @staticmethod
+    def _clear_sub_layout(layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            if item.widget():
+                item.widget().setParent(None)
+
+    def _build_grid(self):
+        self._clear_grid()
+        self.grid_widget.clear_registry()
+        cols = self.target_cols
+        row = None
+        row_count = 0
+        for i, item_id in enumerate(self.order):
+            path = self.item_map[item_id]
+            if path is None:
+                if row is not None:
+                    row.addStretch()
+                lbl = self.thumbs[item_id]
+                lbl.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+                self.grid_widget.register(item_id, lbl)
+                self.grid.addWidget(lbl)
+                row = None
+                row_count = 0
+                continue
+            if row_count % cols == 0:
+                if row is not None:
+                    row.addStretch()
+                row = QHBoxLayout()
+                row.setContentsMargins(0, 0, 0, 0)
+                row.setSpacing(2)
+                self.grid.addLayout(row)
+            lbl = self.thumbs[item_id]
+            self.grid_widget.register(item_id, lbl)
+            row.addWidget(lbl)
+            row_count += 1
+
+        if row is not None:
+            row.addStretch()
+
+    def _compute_size(self, cols):
+        margin = self.grid.contentsMargins().left() + self.grid.contentsMargins().right()
+        spacing = self.grid.spacing() * (cols - 1)
+        avail = self.scroll.viewport().width() - margin - spacing
+        return max(80, avail // cols)
+
+    # -- loading -------------------------------------------------------------
+
+    def _start_loading(self):
+        image_paths = [id_ for id_ in self.order if self.item_map[id_] is not None]
+        if not image_paths:
+            self.status.setText("No images found.")
+            self._build_grid()
+            return
+
+        n_imgs = len(image_paths)
+        n_blanks = len(self.order) - n_imgs
+        status_str = f"Loading {n_imgs} images..."
+        if n_blanks:
+            status_str += f" ({n_blanks} blanks)"
+        self.status.setText(status_str)
+
+        for path in image_paths:
+            lbl = ThumbLabel(path, path=path)
+            lbl.clicked.connect(self._on_item_clicked)
+            self.thumbs[path] = lbl
+
+        self._build_grid()
+
+        self.worker = ThumbWorker(image_paths, 400)
+        self.worker.ready.connect(self._on_thumb_ready)
+        self.worker.done.connect(self._on_all_loaded)
+        self.worker.start()
+
+    def _on_thumb_ready(self, path, pixmap):
+        self.originals[path] = pixmap
+        self._update_thumb(path)
+
+    def _on_all_loaded(self):
+        self._resize_thumbs()
+        self._update_status()
+        if self.selected_idx < 0 and self.order:
+            self._select(0)
+
+    # -- thumb rendering -----------------------------------------------------
+
+    def _update_thumb(self, path):
+        orig = self.originals.get(path)
+        lbl = self.thumbs.get(path)
+        if not orig or not lbl:
+            return
+        size = self.current_size
+        canvas = QPixmap(size, size)
+        canvas.fill(QColor(BG))
+        painter = QPainter(canvas)
+        scaled = orig.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatio,
+                             Qt.TransformationMode.SmoothTransformation)
+        painter.drawPixmap((size - scaled.width()) // 2,
+                           (size - scaled.height()) // 2, scaled)
+        painter.end()
+        lbl.setPixmap(canvas)
+        lbl.setFixedSize(size, size)
+
+    def _update_all_thumbs(self):
+        for item_id in self.order:
+            lbl = self.thumbs[item_id]
+            if not lbl.is_blank:
+                lbl.setFixedSize(self.current_size, self.current_size)
+            path = self.item_map[item_id]
+            if path is not None:
+                self._update_thumb(path)
+
+    # -- resize --------------------------------------------------------------
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._resize_timer.stop()
+        self._resize_timer.start(400)
+
+    def _resize_thumbs(self):
+        vp = self.scroll.viewport()
+        if not vp.width():
+            return
+        ideal = max(80, min(400, (vp.width() - 10) // 8))
+        new_cols = max(4, min(20, round((vp.width() - 10) / ideal)))
+        new_size = self._compute_size(new_cols)
+        if new_size == self.current_size and new_cols == self.target_cols:
+            return
+        if new_cols != self.target_cols:
+            self.target_cols = new_cols
+            self._build_grid()
+        self.current_size = new_size
+        self._update_all_thumbs()
+
+    # -- selection -----------------------------------------------------------
+
+    def _on_item_clicked(self, item_id):
+        idx = self.order.index(item_id)
+        self._select(idx)
+
+    def _select(self, idx):
+        if self.selected_idx >= 0:
+            old_id = self.order[self.selected_idx]
+            if old_id in self.thumbs:
+                self.thumbs[old_id].highlight_selected(False)
+        self.selected_idx = idx
+        if idx < 0 or idx >= len(self.order):
+            self.selected_idx = -1
+            return
+        item_id = self.order[idx]
+        if item_id in self.thumbs:
+            self.thumbs[item_id].highlight_selected(True)
+            self.scroll.ensureWidgetVisible(self.thumbs[item_id], 0, 40)
+
+    # -- drag-drop reorder ---------------------------------------------------
+
+    def _next_blank_id(self):
+        MainWindow.BLANK_COUNTER += 1
+        return f"__blank_{MainWindow.BLANK_COUNTER}__"
+
+    def _on_sort(self, source_id, target_id):
+        src_idx = self.order.index(source_id)
+        tgt_idx = self.order.index(target_id)
+        self.order.pop(src_idx)
+        if src_idx < tgt_idx:
+            tgt_idx -= 1
+        self.order.insert(tgt_idx, source_id)
+
+        self._build_grid()
+        self._update_all_thumbs()
+        if 0 <= self.selected_idx < len(self.order):
+            sel_id = self.order[self.selected_idx]
+            if sel_id in self.thumbs:
+                self.thumbs[sel_id].highlight_selected(True)
+        self._update_status()
+
+    # -- insert blank --------------------------------------------------------
+
+    def _insert_blank_after_selection(self):
+        if self.selected_idx < 0:
+            insert_at = len(self.order)
+        else:
+            insert_at = self.selected_idx + 1
+
+        new_id = self._next_blank_id()
+        self.item_map[new_id] = None
+        lbl = ThumbLabel(new_id, path=None)
+        lbl.clicked.connect(self._on_item_clicked)
+        self.thumbs[new_id] = lbl
+        self.order.insert(insert_at, new_id)
+        self._build_grid()
+        self._update_all_thumbs()
+        self._update_status()
+        self.status.setText(f"{self.status.text()} — blank inserted")
+
+    # -- status --------------------------------------------------------------
+
+    def _update_status(self):
+        n_imgs = sum(1 for id_ in self.order if self.item_map[id_] is not None)
+        n_blanks = len(self.order) - n_imgs
+        parts = [f"{n_imgs} images"]
+        if n_blanks:
+            parts.append(f"{n_blanks} blanks")
+        self.status.setText(" — ".join(parts) + " — drag to reorder, Ctrl+S to save, N after selection for blank")
+
+    # -- save ----------------------------------------------------------------
+
+    def _save_order(self):
+        out_path, _ = QFileDialog.getSaveFileName(
+            self, "Save Order", os.path.join(os.getcwd(), "image-order.txt"),
+            "Text Files (*.txt);;Markdown (*.md);;All Files (*)"
+        )
+        if not out_path:
+            return
+        with open(out_path, "w") as f:
+            for item_id in self.order:
+                path = self.item_map[item_id]
+                f.write(f"{path}\n" if path is not None else "\n")
+        self.status.setText(f"Saved {len(self.order)} lines to {out_path}")
+
+    # -- window events -------------------------------------------------------
+
+    def closeEvent(self, event):
+        if self.worker and self.worker.isRunning():
+            self.worker.cancel()
+            self.worker.wait(2000)
+        event.accept()
+
+    def focusEvent(self, event):
+        super().focusEvent(event)
+        if event.type() == QEvent.Type.FocusIn:
+            return
+        if self.isVisible():
+            self.setFocus()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Type.KeyPress:
+            self.setFocus()
+            self.keyPressEvent(event)
+            return True
+        return super().eventFilter(obj, event)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Q and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self.close()
+            return
+        if event.key() == Qt.Key.Key_F:
+            self._toggle_fullscreen()
+            return
+        if event.key() == Qt.Key.Key_Escape:
+            if self.fullscreen_mode:
+                self._toggle_fullscreen()
+            return
+        if event.key() == Qt.Key.Key_S and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self._save_order()
+            return
+        if event.key() == Qt.Key.Key_N:
+            self._insert_blank_after_selection()
+            return
+        if event.key() in (Qt.Key.Key_Right, Qt.Key.Key_Space):
+            self._navigate_next()
+            return
+        if event.key() == Qt.Key.Key_Left:
+            self._navigate_prev()
+            return
+        if event.key() == Qt.Key.Key_Down:
+            self._navigate_down()
+            return
+        if event.key() == Qt.Key.Key_Up:
+            self._navigate_up()
+            return
+        super().keyPressEvent(event)
+
+    # -- keyboard nav --------------------------------------------------------
+
+    def _row_col(self, idx):
+        return divmod(idx, self.target_cols)
+
+    def _idx(self, row, col):
+        return row * self.target_cols + col
+
+    def _navigate_next(self):
+        if not self.order:
+            return
+        self._select((self.selected_idx + 1) % len(self.order))
+
+    def _navigate_prev(self):
+        if not self.order:
+            return
+        self._select((self.selected_idx - 1) % len(self.order))
+
+    def _navigate_down(self):
+        if not self.order:
+            return
+        row, col = self._row_col(self.selected_idx)
+        row += 1
+        n_rows = (len(self.order) + self.target_cols - 1) // self.target_cols
+        if row >= n_rows:
+            return
+        idx = self._idx(row, col)
+        if idx < len(self.order):
+            self._select(idx)
+
+    def _navigate_up(self):
+        if not self.order:
+            return
+        row, col = self._row_col(self.selected_idx)
+        row -= 1
+        if row < 0:
+            return
+        self._select(self._idx(row, col))
+
+    def _toggle_fullscreen(self):
+        if self.fullscreen_mode:
+            self.setWindowFlag(Qt.WindowType.FramelessWindowHint, False)
+            self.showNormal()
+            self.fullscreen_mode = False
+            self.setFocus()
+        else:
+            self.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
+            self.showFullScreen()
+            self.fullscreen_mode = True
+            self.setFocus()
+        self._resize_thumbs()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="img-order: Sort images by dragging thumbnails.",
+        epilog=(
+            "Input:\n"
+            "  If the first argument is a file, read image paths from it.\n"
+            "  If no argument and stdin is not a terminal, read image paths from stdin.\n"
+            "  Otherwise, collect images from the given directory (default: .).\n\n"
+            "Keybindings:\n"
+            "  Ctrl+Q       Quit\n"
+            "  F            Toggle fullscreen\n"
+            "  Escape       Exit fullscreen\n"
+            "  Ctrl+S       Save current order to file\n"
+            "  N            Insert blank line after selection\n"
+            "  Left/Right   Navigate horizontally\n"
+            "  Up/Down      Navigate vertically\n"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("path", nargs="?", default=None, help="Directory or file with image paths")
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    signal.signal(signal.SIGINT, lambda s, f: sys.exit(0))
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+
+    image_paths = None
+    directory = None
+
+    if args.path is not None and os.path.isfile(args.path):
+        with open(args.path) as f:
+            image_paths = read_image_list(f)
+    elif args.path is None and not sys.stdin.isatty():
+        image_paths = read_image_list(sys.stdin)
+    else:
+        directory = args.path or "."
+        if not os.path.isdir(directory):
+            print(f"Not a directory: {directory}")
+            sys.exit(1)
+
+    win = MainWindow(directory=directory, image_paths=image_paths)
+    sys.exit(app.exec())

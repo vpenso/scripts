@@ -348,18 +348,25 @@ class ThumbStrip(QScrollArea):
 
     def _get_thumb(self, path):
         if path not in self.thumb_cache:
-            img = Image.open(path)
-            img.thumbnail((100, 100), Image.LANCZOS)
-            buf = io.BytesIO()
-            img.save(buf, format="JPEG", quality=70)
-            buf.seek(0)
-            src = QPixmap()
-            src.loadFromData(buf.getvalue())
             canvas = QPixmap(100, 100)
             canvas.fill(QColor("#000"))
-            painter = QPainter(canvas)
-            painter.drawPixmap((100 - src.width()) // 2, (100 - src.height()) // 2, src)
-            painter.end()
+            try:
+                img = Image.open(path)
+                img.thumbnail((100, 100), Image.LANCZOS)
+                buf = io.BytesIO()
+                img.save(buf, format="JPEG", quality=70)
+                buf.seek(0)
+                src = QPixmap()
+                src.loadFromData(buf.getvalue())
+                painter = QPainter(canvas)
+                painter.drawPixmap((100 - src.width()) // 2, (100 - src.height()) // 2, src)
+                painter.end()
+            except Exception:
+                painter = QPainter(canvas)
+                painter.setPen(QColor("#f44"))
+                painter.setFont(QFont("Arial", 8))
+                painter.drawText(canvas.rect(), Qt.AlignmentFlag.AlignCenter, "ERR")
+                painter.end()
             self.thumb_cache[path] = canvas
         return self.thumb_cache[path]
 
@@ -520,16 +527,25 @@ class ImageLoaderThread(QThread):
         self.exif_done.emit(info, existing_kws)
 
         # Resize image
-        img = Image.open(self.path)
-        if self.max_w > 0 and self.max_h > 0:
-            if img.width > self.max_w or img.height > self.max_h:
-                ratio = min(self.max_w / img.width, self.max_h / img.height)
-                img = img.resize((int(img.width * ratio), int(img.height * ratio)), Image.LANCZOS)
-        buf = io.BytesIO()
-        img.save(buf, format="JPEG", quality=85)
-        buf.seek(0)
-        pix = QPixmap()
-        pix.loadFromData(buf.getvalue())
+        try:
+            img = Image.open(self.path)
+            if self.max_w > 0 and self.max_h > 0:
+                if img.width > self.max_w or img.height > self.max_h:
+                    ratio = min(self.max_w / img.width, self.max_h / img.height)
+                    img = img.resize((int(img.width * ratio), int(img.height * ratio)), Image.LANCZOS)
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=85)
+            buf.seek(0)
+            pix = QPixmap()
+            pix.loadFromData(buf.getvalue())
+        except Exception:
+            pix = QPixmap(200, 100)
+            pix.fill(QColor("#111"))
+            painter = QPainter(pix)
+            painter.setPen(QColor("#f44"))
+            painter.setFont(QFont("Arial", 12))
+            painter.drawText(pix.rect(), Qt.AlignmentFlag.AlignCenter, "Cannot load image")
+            painter.end()
         self.finished.emit(pix)
 
 
