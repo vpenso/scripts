@@ -142,9 +142,6 @@ git config --global apply.whitespace nowarn
 # Files generally to ignore
 git config --global core.excludesfile ~/.gitignore_global
 
-# use SSH key for signing
-git config --global gpg.format ssh
-
 _gitignore_global="
 # Other VCS #
 #############
