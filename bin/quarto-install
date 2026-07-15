@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2020-2025 Victor Penso
+# Copyright 2020-2026 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,19 +16,138 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# work in a disposable directory
-pushd $(mktemp -d /tmp/quarto-install-XXXXX) 
+# script exits on the first unset variable encountered
+set -u    # nounset
+# script stops on first command failure
+set -e    # errexit
+# ensures that if any command in a set of piped commands failed, the overall
+# exit status is the status of the failed command
+set -o pipefail
 
-# required version can be passed as first argument
-version=${1:-1.8.26}
-wget https://github.com/quarto-dev/quarto-cli/releases/download/v${version}/quarto-${version}-linux-amd64.tar.gz
+VERSION=0.1
 
-# install quarto
-mkdir ~/opt ~/bin
-tar -C ~/opt -xvzf quarto-${version}-linux-amd64.tar.gz
-ln -s ~/opt/quarto-${version}/bin/quarto ~/bin/quarto
+# Filename of this script
+SCRIPT=${0##*/}
 
-popd
-rm -rf /tmp/quarto-install*
+# Help text for this script
+HELP=\
+"usage: $SCRIPT [-dh] [--version]
+
+Download Quarto binary release from...
+
+https://github.com/quarto-dev/quarto-cli
+
+...to a ~/opt directory in the user home-directory with a symlink
+in ~/bin.
+
+If no version is specified, the latest release is downloaded.
+
+optional arguments:
+  -d, --debug          enable verbose output
+  -h, --help           show this help message
+  --version            program version number "
+
+_DEBUG=${_DEBUG:-false}
+_debug() {
+        if [ "$_DEBUG" = "true" ]; then
+                echo 1>&2 "Debug: $@"
+        fi
+}
+
+_error() {
+        echo 1>&2 "Error: $@"
+        exit 1
+}
+
+# Parse the command line options
+ARGS=$(getopt -o dh -l "debug,help,version" -- "$@")
+eval set -- "$ARGS"
+while true; do
+        case "$1" in
+        -d|--debug)
+                _DEBUG=true
+                shift
+                ;;
+        -h|--help)
+                echo "$HELP"
+                exit 0
+                ;;
+        --version)
+                echo $VERSION
+                exit 0
+                ;;
+        --)
+                shift
+                break
+                ;;
+        *)
+                break
+                ;;
+        esac
+done
+
+# check dependencies...
+for cmd in \
+        curl \
+        jq \
+        sha256sum \
+        tar
+do
+        command -v $cmd &>/dev/null || _error "$cmd command not in \$PATH"
+done
+
+# determine architecture
+arch=$(uname -m)
+case "$arch" in
+        x86_64)
+                platform="amd64"
+                ;;
+        aarch64|arm64)
+                platform="arm64"
+                ;;
+        *)
+                _error "Unsupported architecture: $arch"
+                ;;
+esac
+
+# fetch the latest release info (tag + asset digest) in one API call
+api_response=$(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/releases/latest)
+tag=$(echo "$api_response" | jq -r '.tag_name')
+version=${tag#v}
+echo -n "quarto $version (linux-${platform}): "
+
+# extract the sha256 digest for our platform tarball from the API response
+checksum=$(
+        echo "$api_response" \
+                | jq -r ".assets[] | select(.name == \"quarto-${version}-linux-${platform}.tar.gz\") | .digest" \
+                | sed 's/^sha256://'
+)
+test -n "$checksum" || _error "could not retrieve checksum from API"
+
+# download tarball and checksums file to /tmp
+cd /tmp
+
+tarball="quarto-${version}-linux-${platform}.tar.gz"
+curl -s -L "https://github.com/quarto-dev/quarto-cli/releases/download/${tag}/${tarball}" \
+        -o "$tarball"
+test -f "$tarball" || _error "download of tarball unsuccessful"
+
+# verify the checksum of the tarball
+if echo "$checksum  $tarball" | sha256sum --status --check
+then
+        # install quarto
+        test -d ~/opt || mkdir ~/opt
+        test -d ~/bin || mkdir ~/bin
+        tar -C ~/opt -xvzf "$tarball"
+        ln -sf ~/opt/quarto-${version}/bin/quarto ~/bin/quarto
+        echo "installed to ~/opt/quarto-${version}"
+else
+        _error "checksum verification unsuccessful"
+fi
+
+# clean up
+rm -f "$tarball"
 
 quarto check
+
+exit 0
