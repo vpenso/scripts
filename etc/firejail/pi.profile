@@ -15,15 +15,15 @@ include opencode.local
 include globals.local
 
 ###############################################################################
-# NOBLACKLIST — Prevent disable-programs.inc from blocking opencode dirs
+# NOBLACKLIST — Prevent disable-programs.inc from blocking pi dirs
 ###############################################################################
 # These directories are listed in disable-programs.inc by default. The
 # noblacklist directives override that blacklist so they remain accessible
 # when combined with the whitelist section below.
-noblacklist ${HOME}/.cache/opencode       # Token caches, API response cache
-noblacklist ${HOME}/.config/opencode      # Main config (opencode.json, agents)
-noblacklist ${HOME}/.local/share/opencode # Shared data (skills, plugins)
-noblacklist ${HOME}/.local/state/opencode # Session state, conversation history
+
+noblacklist ${HOME}/bin            # Pi Executable linked to ~/opt
+noblacklist ${HOME}/opt            # Pi installation path, sub-directories pi-${version}
+noblacklist ${HOME}/.pi/agent      # Pi configuration files
 
 ###############################################################################
 # SECCOMP — Block dangerous system calls at kernel level
@@ -90,17 +90,15 @@ private-etc ssl                    # SSL certificate configs and cipher defaults
 # tmpfs-backed home. Without mkdir, the directory would be ephemeral and
 # deleted when the sandbox closes.
 
-mkdir ${HOME}/.cache/opencode
-whitelist ${HOME}/.cache/opencode         # Persist API response and token caches
+mkdir ${HOME}/bin
+whitelist ${HOME}/bin
 
-mkdir ${HOME}/.config/opencode
-whitelist ${HOME}/.config/opencode        # Persist main config, agent rules, keybindings
+mkdir ${HOME}/opt
+whitelist ${HOME}/opt
 
-mkdir ${HOME}/.local/share/opencode
-whitelist ${HOME}/.local/share/opencode   # Persist installed skills and plugin data
+mkdir ${HOME}/.pi/agent
+whitelist ${HOME}/.pi/agent
 
-mkdir ${HOME}/.local/state/opencode
-whitelist ${HOME}/.local/state/opencode   # Persist conversation history and session state
 
 # How whitelist works: A tmpfs is mounted on $HOME. Only the explicitly
 # whitelisted directories are bind-mounted back inside. Everything else
