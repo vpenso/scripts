@@ -23,7 +23,7 @@ include globals.local
 
 noblacklist ${HOME}/bin            # Pi Executable linked to ~/opt
 noblacklist ${HOME}/opt            # Pi installation path, sub-directories pi-${version}
-noblacklist ${HOME}/.pi/agent      # Pi configuration files
+noblacklist ${HOME}/.pi            # Pi configuration files
 
 ###############################################################################
 # SECCOMP — Block dangerous system calls at kernel level
@@ -96,8 +96,8 @@ whitelist ${HOME}/bin
 mkdir ${HOME}/opt
 whitelist ${HOME}/opt
 
-mkdir ${HOME}/.pi/agent
-whitelist ${HOME}/.pi/agent
+mkdir ${HOME}/.pi
+whitelist ${HOME}/.pi
 
 
 # How whitelist works: A tmpfs is mounted on $HOME. Only the explicitly
