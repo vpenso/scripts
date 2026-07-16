@@ -15,4 +15,9 @@ then
                 firejail --profile=opencode --whitelist=$(pwd) opencode
         }
         alias opencode=opencode-firejail
+
+        function pi-firejail() {
+                firejail --profile=pi --whitelist=$(pwd) ~/bin/pi
+        }
+        alias pi=pi-firejail
 fi

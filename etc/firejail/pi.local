@@ -1,0 +1,59 @@
+# vi: nospell
+
+# By default the sandbox only sees the four opencode-specific directories
+# under ~/.cache, ~/.config, ~/.local/share, and ~/.local/state. To let
+# opencode read or write files in your actual projects, whitelist them here.
+
+###############################################################################
+# GIT CONFIG — Needed for git operations inside the sandbox
+###############################################################################
+# opencode runs git commands (status, diff, log, commit) against your
+# repositories. Without .gitconfig, git won't know your user.name,
+# user.email, or any aliases and core settings.
+whitelist ${HOME}/.gitconfig              # Git identity, aliases, core settings
+
+# If you use includeIf, credential helpers, or other git config files:
+#whitelist ${HOME}/.config/git            # Additional git config directory
+
+###############################################################################
+# SKILLS — Opencode agent skills directory
+###############################################################################
+# Opencode loads agent skills from ~/.agents/. Each skill contains a
+# SKILL.md and optional scripts that opencode reads at runtime.
+whitelist ${HOME}/.agents                 # Agent skill definitions and scripts
+
+###############################################################################
+# SSH — Uncomment if you need git over SSH (reduces security significantly)
+###############################################################################
+# WARNING: Whitelisting SSH keys exposes private keys to the sandboxed
+# process. Only enable this if you must push/pull from SSH-only remotes.
+# Prefer HTTPS with a credential helper when possible.
+#
+# Note: The main profile blacklists ${HOME}/.ssh as a failsafe. Adding a
+# whitelist here overrides that blacklist for the specified files only.
+# Always whitelist the minimal set of keys needed — never the whole .ssh dir.
+#
+# whitelist ${HOME}/.ssh/config           # SSH host aliases and settings
+# whitelist ${HOME}/.ssh/id_ed25519       # Ed25519 private key
+# whitelist ${HOME}/.ssh/id_ed25519.pub   # Ed25519 public key
+
+###############################################################################
+# ADDITIONAL TOOLS — Uncomment as needed
+###############################################################################
+# Shell config for terminal operations:
+# opencode spawns shell subprocesses for commands like git, npm, etc.
+
+# These rc files provide aliases, functions, and environment setup.
+whitelist ${HOME}/.bashrc                 # Bash startup config (aliases, functions)
+whitelist ${HOME}/.bashrc.d/*.sh          # Modular bash snippets (glob pattern)
+
+# Allow acces to the GitLab access token (access privileges are configured on
+# the server)
+whitelist ${HOME}/.config/glab-cli/*.yml
+
+# Package manager caches and global installs:
+whitelist ${HOME}/.npm*                   # npm cache, global packages, config
+
+# User-local binaries and project workspace:
+whitelist ${HOME}/bin                     # User-installed scripts and binaries
+whitelist ${HOME}/projects                # Default project workspace directory

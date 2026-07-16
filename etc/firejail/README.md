@@ -10,9 +10,11 @@ Existing profiles are stored in `/etc/firejail`
 
 The alias script [`var/aliases/firejail.sh`](../../var/aliases/firejail.sh) install custom profiles to `~/.config/firejail`
 
- File              | Purpose 
--------------------|-------------------
+ File              | Purpose
+-------------------|----------------------------------------------
 `opencode.profile` | No official Opencode profile yet, set the baseline
-`opencode.local`   | White list Opencode for user requirements
+`opencode.local`   | Whitelist Opencode for user requirements
+`pi.profile`       | No official PI profile yet, set the baseline
+`pi.local`         | Whitelist PI agent for user requirements
 
 
