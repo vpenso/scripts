@@ -83,6 +83,7 @@ style = '210 bold'
 symbol = " "
 
 [kubernetes]
+symbol = '󰠳 '
 disabled = false
 style = '21'
 
