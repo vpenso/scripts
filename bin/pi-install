@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2020-2026 Victor Penso
+# Copyright 2026 Victor Penso
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ set -e    # errexit
 # exit status is the status of the failed command
 set -o pipefail
 
-VERSION=0.1
+VERSION=0.2
 
 # Filename of this script
 SCRIPT=${0##*/}
@@ -141,6 +141,10 @@ then
 	tar -C ~/opt -xvzf "$tarball" --transform "s|^pi/|pi-${version}/|"
         ln -sf ~/opt/pi-${version}/pi ~/bin/pi
         echo "installed to ~/opt/pi-${version}"
+
+        test -d ~/.pi/agent/extensions || mkdir -p ~/.pi/agent/extensions
+        cp -r ~/opt/pi-${version}/examples/extensions/plan-mode ~/.pi/agent/extensions/
+        echo "installed to extension plan-mode to ~/.pi/agent/extensions"
 else
         _error "checksum verification unsuccessful"
 fi
