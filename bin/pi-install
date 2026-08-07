@@ -111,7 +111,10 @@ case "$arch" in
 esac
 
 # fetch the latest release info (tag + asset digest) in one API call
-api_response=$(curl -s https://api.github.com/repos/earendil-works/pi/releases/latest)
+api_response=$(curl -sf https://api.github.com/repos/earendil-works/pi/releases/latest) || \
+        _error "failed to fetch latest release from GitHub API"
+echo "$api_response" | jq empty 2>/dev/null || \
+        _error "GitHub API did not return valid JSON (rate limited? Check your connection.)"
 tag=$(echo "$api_response" | jq -r '.tag_name')
 version=${tag#v}
 echo -n "pi $version (linux-${platform}): "
@@ -128,9 +131,8 @@ test -n "$checksum" || _error "could not retrieve checksum from API"
 cd /tmp
 
 tarball="pi-linux-${platform}.tar.gz"
-curl -s -L "https://github.com/earendil-works/pi/releases/download/${tag}/${tarball}" \
-        -o "$tarball"
-test -f "$tarball" || _error "download of tarball unsuccessful"
+curl -sfL "https://github.com/earendil-works/pi/releases/download/${tag}/${tarball}" \
+        -o "$tarball" || _error "download of ${tarball} failed"
 
 # verify the checksum of the tarball
 if echo "$checksum  $tarball" | sha256sum --status --check
