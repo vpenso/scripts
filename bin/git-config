@@ -112,6 +112,9 @@ git config --global alias.what whatchanged
 git config --global alias.who "shortlog -s --"
 git config --global alias.ls-ignored "ls-files --exclude-standard --ignored --others"
 
+# Automatically remove stale remote-tracking refs on every fetch
+git config --global fetch.prune true
+
 # enable colorization 
 git config --global color.branch auto
 git config --global color.interactive auto
