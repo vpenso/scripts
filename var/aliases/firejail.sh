@@ -12,12 +12,12 @@ then
         # Which applications to launch with firejail
 
         function opencode-firejail() {
-                firejail --profile=opencode --whitelist=$(pwd) opencode
+                firejail --profile=opencode --whitelist="$(pwd)" opencode
         }
         alias opencode=opencode-firejail
 
         function pi-firejail() {
-                firejail --profile=pi --whitelist=$(pwd) ~/bin/pi $@
+                firejail --profile=pi --whitelist="$(pwd)" ~/bin/pi $@
         }
         alias pi=pi-firejail
 fi
