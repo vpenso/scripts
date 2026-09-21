@@ -1,0 +1,262 @@
+#!/usr/bin/env python3
+"""Search images by EXIF Keywords.
+
+Finds images whose 'Keywords' EXIF tag (written by img-keywords) contains
+any (or all) of the given keywords and prints their paths.
+"""
+import argparse
+import html
+import os
+import shutil
+import subprocess
+import sys
+import webbrowser
+from collections import defaultdict, deque
+
+
+def collect_files(paths, recursive, extensions):
+    """Expand directories/files into a sorted list of image file paths."""
+    exts = {"." + e.lower() for e in extensions}
+    files = []
+    for p in paths:
+        if os.path.isdir(p):
+            if recursive:
+                for root, _, names in os.walk(p):
+                    files.extend(
+                        os.path.join(root, n) for n in names
+                        if os.path.splitext(n)[1].lower() in exts
+                    )
+            else:
+                files.extend(
+                    os.path.join(p, n) for n in os.listdir(p)
+                    if os.path.isfile(os.path.join(p, n))
+                    and os.path.splitext(n)[1].lower() in exts
+                )
+        elif os.path.isfile(p):
+            files.append(p)
+    seen = set()
+    unique = []
+    for f in files:
+        real = os.path.realpath(f)
+        if real not in seen:
+            seen.add(real)
+            unique.append(f)
+    return sorted(unique)
+
+
+def read_keywords(files):
+    """One exiftool pass; return list of (path, [keywords]) in file order."""
+    if not files:
+        return []
+    cmd = ["exiftool", "-T", "-FileName", "-Keywords"]
+    cmd.extend(files)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"exiftool failed: {result.stderr.strip()}", file=sys.stderr)
+        sys.exit(1)
+
+    # exiftool prints only basenames and skips unreadable files, so
+    # align lines to files by basename + order.
+    by_name = defaultdict(deque)
+    for f in files:
+        by_name[os.path.basename(f)].append(f)
+
+    out = []
+    for line in result.stdout.splitlines():
+        if not line.strip():
+            continue
+        name, _, kws = line.partition("\t")
+        queue = by_name.get(os.path.basename(name))
+        if not queue:
+            continue
+        path = queue.popleft()
+        kws = kws.strip()
+        kw_list = (
+            [] if kws in ("", "-")
+            else [k.strip() for k in kws.split(",") if k.strip() and k.strip() != "-"]
+        )
+        out.append((path, kw_list))
+    return out
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="List images whose EXIF keywords match the given keywords.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""\
+examples:
+  %(prog)s Nature                  Images in current directory tagged 'Nature'
+  %(prog)s /photos/trip Nature     Search a directory (wildcards work)
+  %(prog)s /photos/202*/ Nature    Search several directories
+  %(prog)s Nature People           Images tagged with either keyword
+  %(prog)s -a Nature People        Images tagged with both keywords
+  %(prog)s -s sea                  Images with a keyword containing 'sea'
+  %(prog)s /photos -e jpg Nature
+  %(prog)s --copy /backup Nature    Copy matched images to /backup
+  %(prog)s --html Nature            Write gallery.html and open it in a browser
+  %(prog)s --html -o my.html Nature Write the gallery to my.html
+
+  With --copy, files whose name already exists in the target are skipped
+  (with a warning) unless --force is given.
+
+arguments:
+  Existing paths (directories or image files) are treated as search roots;
+  everything else is a keyword. Use '--' to force keywords that collide
+  with existing paths:  %(prog)s . -- "my photos"
+
+exit status: 0 if at least one image matched, 1 if none, 2 on error.
+""",
+    )
+    parser.add_argument("args", nargs="*",
+                        help="Directories/files to search and keywords to match (see above)")
+    parser.add_argument("-a", "--all", action="store_true",
+                        help="Require ALL keywords instead of any")
+    parser.add_argument("-s", "--substring", action="store_true",
+                        help="Match keywords containing the given text (case-insensitive)")
+    parser.add_argument("-r", "--recursive", action="store_true", default=True,
+                        help="Recurse into subdirectories (default)")
+    parser.add_argument("--no-recursive", dest="recursive", action="store_false",
+                        help="Do not recurse into subdirectories")
+    parser.add_argument("-e", "--extension", action="append", default=None,
+                        help="File extension to include (repeatable; default: jpg jpeg png)")
+    parser.add_argument("-c", "--copy", metavar="DIR",
+                        help="Copy matched images into DIR (created if missing)")
+    parser.add_argument("-f", "--force", action="store_true",
+                        help="With --copy: overwrite files that already exist in the target")
+    parser.add_argument("--html", action="store_true",
+                        help="Write a simple HTML gallery of the matches and open it in the default browser")
+    parser.add_argument("-o", "--output", default="gallery.html",
+                        help="Output file for the --html gallery (default: gallery.html)")
+
+    # Allow options after positional args (e.g. 'a b c -a Nature'): the
+    # first pass stops at the first stray token; merge it back into args
+    # (reparsing from scratch would drop the options already parsed).
+    parsed, extra = parser.parse_known_args()
+    if extra:
+        for t in extra:
+            if t.startswith("-") and t != "-":
+                parser.error(f"unrecognized arguments: {t}")
+        parsed.args = parsed.args + extra
+    return parsed
+
+
+def main():
+    args = parse_args()
+
+    forced = set()
+    if "--" in sys.argv:
+        forced = set(sys.argv[sys.argv.index("--") + 1:])
+
+    paths, keywords = [], []
+    for a in args.args:
+        if a in forced or not os.path.exists(a):
+            keywords.append(a)
+        else:
+            paths.append(a)
+    if not keywords:
+        print("No keywords given.", file=sys.stderr)
+        sys.exit(2)
+    if not paths:
+        paths = ["."]
+
+    for p in paths:
+        if not os.path.exists(p):
+            print(f"No such file or directory: {p}", file=sys.stderr)
+            sys.exit(2)
+
+    extensions = args.extension or ["jpg", "jpeg", "png"]
+    files = collect_files(paths, args.recursive, extensions)
+    if not files:
+        print(f"No images found in: {', '.join(paths)}", file=sys.stderr)
+        sys.exit(1)
+
+    images = read_keywords(files)
+
+    needles = [k.lower() for k in keywords]
+    matches = 0
+    matched = []  # list of (path, [keywords])
+    for path, kws in images:
+        if args.substring:
+            low = [k.lower() for k in kws]
+            hit = (
+                all(any(n in k for k in low) for n in needles)
+                if args.all else any(any(n in k for k in low) for n in needles)
+            )
+        else:
+            kset = {k.lower() for k in kws}
+            hit = all(n in kset for n in needles) if args.all \
+                else any(n in kset for n in needles)
+        if hit:
+            print(path)
+            matches += 1
+            matched.append((path, kws))
+
+    if args.html:
+        if matched:
+            write_gallery(matched, args.output)
+        else:
+            print("No matches; gallery not written.", file=sys.stderr)
+
+    if args.copy:
+        if not os.path.isdir(args.copy):
+            os.makedirs(args.copy)
+        copied = 0
+        for src, _ in matched:
+            dest = os.path.join(args.copy, os.path.basename(src))
+            if os.path.exists(dest) and not args.force:
+                print(f"skipped (exists): {dest}", file=sys.stderr)
+                continue
+            shutil.copy2(src, dest)
+            copied += 1
+        print(f"Copied {copied} of {len(matched)} matched file(s) to {args.copy}",
+              file=sys.stderr)
+
+    sys.exit(0 if matches else 1)
+
+
+def write_gallery(items, out_path):
+    """Write a simple image grid gallery and try to open it in a browser."""
+    cards = []
+    for path, kws in items:
+        abs_path = os.path.abspath(path)
+        url = "file://" + abs_path
+        name = html.escape(abs_path)
+        kws_html = " ".join(f'<span class="kw">{html.escape(k)}</span>' for k in sorted(kws))
+        cards.append(f'''<a class="card" href="{url}" target="_blank">
+  <img src="{url}" loading="lazy" alt="{name}">
+  <div class="meta"><div class="name">{name}</div><div>{kws_html}</div></div>
+</a>''')
+
+    page = f'''<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>img-keywords-search — {len(items)} image(s)</title>
+<style>
+  body {{ background: #111; color: #eee; font-family: sans-serif; margin: 20px; }}
+  h1 {{ font-size: 18px; font-weight: normal; color: #999; }}
+  .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }}
+  .card {{ background: #1a1a1a; border-radius: 8px; overflow: hidden; display: block; text-decoration: none; }}
+  .card img {{ width: 100%; height: 180px; object-fit: contain; display: block; }}
+  .meta {{ padding: 8px 10px; }}
+  .name {{ font-size: 13px; color: #eee; word-break: break-all; }}
+  .kw {{ display: inline-block; background: #263; color: #9f9; font-size: 11px; padding: 1px 6px; margin: 2px 2px 0 0; border-radius: 8px; }}
+  .card:hover {{ outline: 2px solid #445; }}
+</style></head>
+<body>
+<h1>{len(items)} matched image(s)</h1>
+<div class="grid">
+{chr(10).join(cards)}
+</div>
+</body></html>
+'''
+    with open(out_path, "w") as f:
+        f.write(page)
+    print(f"Gallery written to {os.path.abspath(out_path)}", file=sys.stderr)
+    try:
+        if not webbrowser.open("file://" + os.path.abspath(out_path)):
+            print("Could not open a browser; open the file manually.", file=sys.stderr)
+    except Exception:
+        print("Could not open a browser; open the file manually.", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

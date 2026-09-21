@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""List and summarize keywords stored in image EXIF metadata.
+
+Reads the 'Keywords' EXIF tag (written by img-keywords) from all images
+in a directory tree and prints a summary: per-image keyword counts,
+keyword frequency, and (optionally) unknown/unused keywords against
+a keywords file.
+"""
+import argparse
+import os
+import subprocess
+import sys
+from collections import Counter
+
+
+def load_keywords(path):
+    try:
+        with open(path) as f:
+            return [l for l in (line.strip() for line in f) if l and not l.startswith("#")]
+    except FileNotFoundError:
+        print(f"No {path} found.", file=sys.stderr)
+        sys.exit(1)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Read EXIF Keywords from images and print a summary.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""\
+examples:
+  %(prog)s                  Scan current directory
+  %(prog)s /photos/trip     Scan a directory tree
+  %(prog)s dir1 dir2/*.jpg  Scan several directories/files (wildcards work)
+  %(prog)s -k my_tags.txt   Also report unknown/unused keywords
+  %(prog)s --list           Show keywords for each image
+  %(prog)s --no-recursive   Only scan the top-level directories
+""",
+    )
+    parser.add_argument("images", nargs="*", default=["."],
+                        help="Directories and/or image files to scan (default: current directory)")
+    parser.add_argument("-k", "--keywords",
+                        help="Keywords text file; report unknown and unused keywords")
+    parser.add_argument("-r", "--recursive", action="store_true", default=True,
+                        help="Recurse into subdirectories (default)")
+    parser.add_argument("--no-recursive", dest="recursive", action="store_false",
+                        help="Do not recurse into subdirectories")
+    parser.add_argument("-e", "--extension", action="append", default=None,
+                        help="File extension to include (repeatable; default: jpg jpeg png)")
+    parser.add_argument("--list", action="store_true",
+                        help="List keywords for each image")
+    return parser.parse_args()
+
+
+def scan(paths, recursive, extensions):
+    """Run one exiftool pass and return list of (filename, [keywords])."""
+    cmd = ["exiftool", "-T", "-FileName", "-Keywords"]
+    if recursive:
+        cmd.append("-r")
+    for ext in extensions:
+        cmd += ["-ext", ext.lower()]
+    cmd.extend(paths)
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"exiftool failed: {result.stderr.strip()}", file=sys.stderr)
+        sys.exit(1)
+
+    images = []
+    for line in result.stdout.splitlines():
+        if not line.strip():
+            continue
+        name, _, kws = line.partition("\t")
+        kws = kws.strip()
+        if not kws or kws == "-":
+            images.append((name, []))
+            continue
+        kw_list = [k.strip() for k in kws.split(",") if k.strip() and k.strip() != "-"]
+        images.append((name, kw_list))
+    return images
+
+
+def main():
+    args = parse_args()
+
+    for p in args.images:
+        if not os.path.exists(p):
+            print(f"No such file or directory: {p}", file=sys.stderr)
+            sys.exit(1)
+
+    extensions = args.extension or ["jpg", "jpeg", "png"]
+    images = scan(args.images, args.recursive, extensions)
+
+    if not images:
+        print(f"No images found in: {', '.join(args.images)}")
+        return
+
+    kw_counter = Counter()
+    no_kw = []
+    total_tags = 0
+    for name, kws in images:
+        if kws:
+            kw_counter.update(kws)
+            total_tags += len(kws)
+        else:
+            no_kw.append(name)
+
+    width = max(len(name) for name, _ in images)
+
+    print(f"Scanned:          {', '.join(args.images)}")
+    print(f"Images scanned:   {len(images)}")
+    print(f"With keywords:    {len(images) - len(no_kw)}")
+    print(f"Without keywords: {len(no_kw)}")
+    print(f"Unique keywords:  {len(kw_counter)}")
+    print(f"Total tags:       {total_tags}")
+    print()
+
+    if args.list:
+        print("Per-image keywords:")
+        for name, kws in images:
+            shown = ", ".join(sorted(kws)) if kws else "(none)"
+            print(f"  {name.ljust(width)}  {shown}")
+        print()
+
+    if kw_counter:
+        print("Keyword frequency:")
+        for kw, count in kw_counter.most_common():
+            print(f"  {count:4d}  {kw}")
+        print()
+
+    if args.keywords:
+        known = set(load_keywords(args.keywords))
+        unknown = sorted(kw for kw in kw_counter if kw not in known)
+        unused = sorted(kw for kw in known if kw not in kw_counter)
+
+        if unknown:
+            print(f"Unknown keywords (not in {args.keywords}):")
+            for kw in unknown:
+                print(f"  {kw}  ({kw_counter[kw]} image(s))")
+            print()
+        if unused:
+            print(f"Unused keywords (in {args.keywords}, not in any image):")
+            for kw in unused:
+                print(f"  {kw}")
+            print()
+
+    if no_kw and args.list:
+        print("Images without keywords:")
+        for name in no_kw:
+            print(f"  {name}")
+
+
+if __name__ == "__main__":
+    main()

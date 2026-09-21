@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+"""Create a simple HTML gallery from a list of images with descriptions.
+
+Reads a text file with one image per line and writes an HTML gallery grid,
+then opens it in the default browser.
+
+Line format:
+    path [description]
+The first column is the image path (recognized by its file extension);
+everything after the first whitespace is the description shown under the
+image. Lines whose first word does not look like an image path are treated
+as paragraph text; consecutive paragraph lines form one paragraph.
+Lines starting with '#', '##' or '###' (followed by a space) are section
+headers; other lines starting with '#' are ignored.
+"""
+import argparse
+import html
+import os
+import re
+import sys
+import webbrowser
+
+IMAGE_EXTENSIONS = {
+    ".avif", ".bmp", ".gif", ".heic", ".jpeg", ".jpg", ".png", ".svg",
+    ".tif", ".tiff", ".webp",
+}
+
+
+def is_image_path(token):
+    """Return True if the token looks like an image path by extension."""
+    return os.path.splitext(token)[1].lower() in IMAGE_EXTENSIONS
+
+
+def load_images(path):
+    """Return a list of entries from the file.
+
+    Each entry is ('image', image_path, description),
+    ('header', level, text) or ('para', text).
+    """
+    try:
+        with open(path) as f:
+            lines = (line.strip() for line in f)
+            entries = []
+            for line in lines:
+                if not line:
+                    continue
+                if line.startswith("#"):
+                    m = re.match(r"^(#{1,3})\s+(.+)$", line)
+                    if m:
+                        entries.append(("header", len(m.group(1)), m.group(2)))
+                    continue
+                parts = line.split(None, 1)
+                if is_image_path(parts[0]):
+                    entries.append(("image", parts[0], parts[1] if len(parts) > 1 else ""))
+                else:
+                    entries.append(("para", line))
+            return entries
+    except FileNotFoundError:
+        print(f"No such file: {path}", file=sys.stderr)
+        sys.exit(2)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Write a simple HTML gallery from a text file listing images.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""\
+examples:
+  %(prog)s images.txt              Gallery of all images in images.txt
+  %(prog)s images.txt -o out.html  Write the gallery to out.html
+  %(prog)s images.txt --no-open    Only write the file, do not open a browser
+
+image list format:
+  One image per line: the first column is the image path (absolute or
+  relative to the current directory), the rest of the line is the
+  description (a line is an image line if its first word has an image
+  extension). Other non-'#' lines are paragraph text; consecutive
+  paragraph lines form one paragraph. Lines starting with '#', '##' or
+  '###' (followed by a space) are section headers.
+
+    # Cats
+    All cats below were found on the sofa.
+    /tmp/cat.jpg A tabby cat on a sofa
+    ## Dogs
+    /tmp/dog.png
+""",
+    )
+    parser.add_argument("images", help="Text file with one image per line")
+    parser.add_argument("-o", "--output", default="gallery.html",
+                        help="Output HTML file (default: gallery.html)")
+    parser.add_argument("--no-open", action="store_true",
+                        help="Do not open the gallery in a browser")
+    return parser.parse_args()
+
+
+def write_gallery(images, out_path, open_browser=True):
+    """Write a simple image grid gallery and try to open it in a browser.
+
+    images is a list of entries: ('image', path, desc),
+    ('header', level, text) or ('para', text). Non-image entries close and
+    reopen the grid so each section is a separate group. Consecutive
+    paragraph entries are merged into one <p>.
+    """
+    n_images = sum(1 for e in images if e[0] == "image")
+    cards = []
+    grid_open = False
+    para_lines = []
+
+    def flush_para():
+        if para_lines:
+            cards.append(f"<p>{html.escape(' '.join(para_lines))}</p>")
+            del para_lines[:]
+
+    for entry in images:
+        if entry[0] == "para":
+            if grid_open:
+                cards.append("</div>")
+                grid_open = False
+            para_lines.append(entry[1])
+        else:
+            flush_para()
+            if entry[0] == "header":
+                _, level, text = entry
+                if grid_open:
+                    cards.append("</div>")
+                    grid_open = False
+                cls = ' class="sec"' if level == 1 else ""
+                cards.append(f'<h{level}{cls}>{html.escape(text)}</h{level}>')
+            else:
+                if not grid_open:
+                    cards.append('<div class="grid">')
+                    grid_open = True
+                path, desc = entry[1], entry[2]
+                abs_path = os.path.abspath(path)
+                url = "file://" + abs_path
+                text = f'<div class="desc">{html.escape(desc)}</div>' if desc else ""
+                cards.append(f'''<a class="card" href="{url}" target="_blank">
+  <img src="{url}" loading="lazy" alt="{html.escape(abs_path)}">
+  {text}
+</a>''')
+    flush_para()
+    if grid_open:
+        cards.append("</div>")
+
+    page = f'''<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>img-html-gallery — {n_images} image(s)</title>
+<style>
+  body {{ background: #111; color: #eee; font-family: sans-serif; margin: 20px; }}
+  .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0; }}
+  .card {{ background: #1a1a1a; overflow: hidden; display: block; text-decoration: none; }}
+  .card img {{ width: 100%; height: 180px; object-fit: contain; display: block; }}
+  h1.sec, h2, h3 {{ font-weight: normal; color: #aaa; }}
+  body > :first-child {{ margin-top: 0; }}
+  h1.sec {{ font-size: 20px; margin-top: 28px; }}
+  h2 {{ font-size: 17px; margin-top: 22px; }}
+  h3 {{ font-size: 15px; margin-top: 16px; color: #888; }}
+  .desc {{ padding: 6px 8px; font-size: 13px; color: #ccc; }}
+  p {{ font-size: 14px; color: #ccc; margin: 10px 0; }}
+  .card:hover {{ outline: 2px solid #445; }}
+</style></head>
+<body>
+{chr(10).join(cards)}
+</body></html>
+'''
+    with open(out_path, "w") as f:
+        f.write(page)
+    print(f"Gallery written to {os.path.abspath(out_path)}", file=sys.stderr)
+    if open_browser:
+        try:
+            if not webbrowser.open("file://" + os.path.abspath(out_path)):
+                print("Could not open a browser; open the file manually.",
+                      file=sys.stderr)
+        except Exception:
+            print("Could not open a browser; open the file manually.",
+                  file=sys.stderr)
+
+
+def main():
+    args = parse_args()
+    entries = load_images(args.images)
+    if not any(e[0] == "image" for e in entries):
+        print(f"No image paths found in {args.images}", file=sys.stderr)
+        sys.exit(1)
+
+    missing = [e[1] for e in entries if e[0] == "image" and not os.path.isfile(e[1])]
+    for p in missing:
+        print(f"warning: skipping missing file: {p}", file=sys.stderr)
+    entries = [e for e in entries
+               if e[0] in ("header", "para") or os.path.isfile(e[1])]
+    if not any(e[0] == "image" for e in entries):
+        print("No existing images found.", file=sys.stderr)
+        sys.exit(1)
+
+    write_gallery(entries, args.output, open_browser=not args.no_open)
+
+
+if __name__ == "__main__":
+    main()
