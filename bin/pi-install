@@ -155,5 +155,6 @@ fi
 rm -f "$tarball"
 
 ~/bin/pi --version
+~/bin/pi update --extensions
 
 exit 0
