@@ -144,9 +144,15 @@ then
         ln -sf ~/opt/pi-${version}/pi ~/bin/pi
         echo "installed to ~/opt/pi-${version}"
 
+        # create sub-directories
         test -d ~/.pi/agent/extensions || mkdir -p ~/.pi/agent/extensions
+        test -d ~/.pi/agent/prompts || mkdir -p ~/.pi/agent/prompts
         cp -r ~/opt/pi-${version}/examples/extensions/plan-mode ~/.pi/agent/extensions/
         echo "installed to extension plan-mode to ~/.pi/agent/extensions"
+
+        cp -r ~/opt/pi-${version}/examples/extensions/subagent ~/.pi/agent/extensions/
+        cp ~/opt/pi-${version}/examples/extensions/subagent/prompts/*.md ~/.pi/agent/prompts/
+        echo "installed extension subagent to ~/.pi/agent/extensions"
 else
         _error "checksum verification unsuccessful"
 fi
