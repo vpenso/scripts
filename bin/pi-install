@@ -24,7 +24,7 @@ set -e    # errexit
 # exit status is the status of the failed command
 set -o pipefail
 
-VERSION=0.2
+VERSION=0.3
 
 # Filename of this script
 SCRIPT=${0##*/}
@@ -117,50 +117,57 @@ echo "$api_response" | jq empty 2>/dev/null || \
         _error "GitHub API did not return valid JSON (rate limited? Check your connection.)"
 tag=$(echo "$api_response" | jq -r '.tag_name')
 version=${tag#v}
-echo -n "pi $version (linux-${platform}): "
 
-# extract the sha256 digest for our platform tarball from the API response
-checksum=$(
-        echo "$api_response" \
-                | jq -r ".assets[] | select(.name == \"pi-linux-${platform}.tar.gz\") | .digest" \
-                | sed 's/^sha256://'
-)
-test -n "$checksum" || _error "could not retrieve checksum from API"
-
-# download tarball and checksums file to /tmp
-cd /tmp
-
-tarball="pi-linux-${platform}.tar.gz"
-curl -sfL "https://github.com/earendil-works/pi/releases/download/${tag}/${tarball}" \
-        -o "$tarball" || _error "download of ${tarball} failed"
-
-# verify the checksum of the tarball
-if echo "$checksum  $tarball" | sha256sum --status --check
-then
-        # install pi
-        test -d ~/opt || mkdir ~/opt
-        test -d ~/bin || mkdir ~/bin
-	tar -C ~/opt -xvzf "$tarball" --transform "s|^pi/|pi-${version}/|"
-        ln -sf ~/opt/pi-${version}/pi ~/bin/pi
-        echo "installed to ~/opt/pi-${version}"
-
-        # create sub-directories
-        test -d ~/.pi/agent/extensions || mkdir -p ~/.pi/agent/extensions
-        test -d ~/.pi/agent/prompts || mkdir -p ~/.pi/agent/prompts
-        cp -r ~/opt/pi-${version}/examples/extensions/plan-mode ~/.pi/agent/extensions/
-        echo "installed to extension plan-mode to ~/.pi/agent/extensions"
-
-        cp -r ~/opt/pi-${version}/examples/extensions/subagent ~/.pi/agent/extensions/
-        cp ~/opt/pi-${version}/examples/extensions/subagent/prompts/*.md ~/.pi/agent/prompts/
-        echo "installed extension subagent to ~/.pi/agent/extensions"
+# don't overwrite an existing installation of this version
+if [ -d ~/opt/pi-${version} ]; then
+        echo "pi $version already installed, skipping download"
 else
-        _error "checksum verification unsuccessful"
+        echo -n "pi $version (linux-${platform}): "
+
+        # extract the sha256 digest for our platform tarball from the API response
+        checksum=$(
+                echo "$api_response" \
+                        | jq -r ".assets[] | select(.name == \"pi-linux-${platform}.tar.gz\") | .digest" \
+                        | sed 's/^sha256://'
+        )
+        test -n "$checksum" || _error "could not retrieve checksum from API"
+
+        # download tarball and checksums file to /tmp
+        cd /tmp
+
+        tarball="pi-linux-${platform}.tar.gz"
+        curl -sfL "https://github.com/earendil-works/pi/releases/download/${tag}/${tarball}" \
+                -o "$tarball" || _error "download of ${tarball} failed"
+
+        # verify the checksum of the tarball
+        if echo "$checksum  $tarball" | sha256sum --status --check
+        then
+                # install pi
+                test -d ~/opt || mkdir ~/opt
+                test -d ~/bin || mkdir ~/bin
+                tar -C ~/opt -xvzf "$tarball" --transform "s|^pi/|pi-${version}/|"
+                ln -sf ~/opt/pi-${version}/pi ~/bin/pi
+                echo "installed to ~/opt/pi-${version}"
+        else
+                _error "checksum verification unsuccessful"
+        fi
+
+        # clean up
+        rm -f "$tarball"
 fi
 
-# clean up
-rm -f "$tarball"
+# install extensions if they are missing
+EXT_DIR=~/.pi/agent/extensions
+test -d "$EXT_DIR" || mkdir -p "$EXT_DIR"
+if [ ! -d "$EXT_DIR/plan-mode" ]; then
+        cp -r ~/opt/pi-${version}/examples/extensions/plan-mode "$EXT_DIR/"
+        echo "installed extension plan-mode to $EXT_DIR"
+fi
+if [ ! -d "$EXT_DIR/subagent" ]; then
+        cp -r ~/opt/pi-${version}/examples/extensions/subagent "$EXT_DIR/"
+        echo "installed extension subagent to $EXT_DIR"
+fi
 
-~/bin/pi --version
 ~/bin/pi update --extensions
 
 exit 0
