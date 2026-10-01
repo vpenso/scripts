@@ -100,7 +100,7 @@ unhealthy_symbol = "󰅙 "
 style = '186 bold'
 
 [golang]
-symbol = '󰟓  '
+symbol = 'go:'
 
 [ruby]
 symbol = ' '
