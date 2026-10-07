@@ -128,6 +128,13 @@ nmap <silent> <leader>/ :nohlsearch<CR>
 "   (prefer this over 'pastetoggle' to echo current state)
 nmap <leader>p :setlocal paste! paste?<cr>
 
+" in ~/.vimrc (Vim 8.1+) or ~/.config/nvim/init.vim (Neovim)
+function! TrimPastedWhitespace() abort
+  exe line("'[") . ',' . line("']") . 's/\s\+$//e'
+endfunction
+autocmd TextYankPost * call TrimPastedWhitespace()
+
+
 " switch between German and English spelling
 nnoremap <leader>d :setlocal spell! spelllang=de<CR>
 nnoremap <leader>e :setlocal spell! spelllang=en<CR>
