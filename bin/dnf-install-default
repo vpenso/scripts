@@ -9,12 +9,17 @@ then
                 bat \
                 bc \
                 btop \
+                clustershell \
                 curl \
                 dnsutils \
                 fd-find \
+                freeipmi \
                 fzf \
+                genders \
                 git \
                 git-delta \
+                java-latest-openjdk
+                ipmitool \
                 jpegoptim \
                 lsd \
                 make \
