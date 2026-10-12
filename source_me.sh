@@ -31,7 +31,6 @@ for file in \
   $SCRIPTS/var/aliases/bookmarks.sh \
   $SCRIPTS/var/aliases/firejail.sh \
   $SCRIPTS/var/aliases/mise.sh \
-  $SCRIPTS/var/aliases/starship.sh \
   $SCRIPTS/var/aliases/sind.sh \
   $SCRIPTS/var/aliases/tmux.sh
 do
