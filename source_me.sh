@@ -29,8 +29,7 @@ export PATH=$SCRIPTS/bin:$PATH
 
 for file in \
   $SCRIPTS/var/aliases/firejail.sh \
-  $SCRIPTS/var/aliases/mise.sh \
-  $SCRIPTS/var/aliases/tmux.sh
+  $SCRIPTS/var/aliases/mise.sh
 do
   _debug source $file
   source $file
