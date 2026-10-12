@@ -38,12 +38,10 @@ for file in \
   $SCRIPTS/var/aliases/bookmarks.sh \
   $SCRIPTS/var/aliases/browser.sh \
   $SCRIPTS/var/aliases/btop.sh \
-  $SCRIPTS/var/aliases/cd.sh \
   $SCRIPTS/var/aliases/cliamp.sh \
   $SCRIPTS/var/aliases/common.sh \
   $SCRIPTS/var/aliases/firejail.sh \
   $SCRIPTS/var/aliases/fzf.sh \
-  $SCRIPTS/var/aliases/git.sh \
   $SCRIPTS/var/aliases/ls.sh \
   $SCRIPTS/var/aliases/mise.sh \
   $SCRIPTS/var/aliases/nix.sh \
