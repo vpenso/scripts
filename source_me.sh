@@ -27,31 +27,14 @@ export SCRIPTS=~/projects/scripts
 _debug SCRIPTS=$SCRIPTS
 export PATH=$SCRIPTS/bin:$PATH
 
-# add executables in home-directory if present
-test -d ~/bin &&
-  export PATH=~/bin:$PATH
-test -d ~/.local/bin &&
-  export PATH=~/.local/bin:$PATH
-
 for file in \
-  $SCRIPTS/var/aliases/bat.sh \
   $SCRIPTS/var/aliases/bookmarks.sh \
-  $SCRIPTS/var/aliases/browser.sh \
-  $SCRIPTS/var/aliases/btop.sh \
-  $SCRIPTS/var/aliases/cliamp.sh \
-  $SCRIPTS/var/aliases/common.sh \
   $SCRIPTS/var/aliases/firejail.sh \
-  $SCRIPTS/var/aliases/fzf.sh \
-  $SCRIPTS/var/aliases/ls.sh \
   $SCRIPTS/var/aliases/mise.sh \
-  $SCRIPTS/var/aliases/nix.sh \
-  $SCRIPTS/var/aliases/npm.sh \
-  $SCRIPTS/var/aliases/quarto.sh \
   $SCRIPTS/var/aliases/starship.sh \
   $SCRIPTS/var/aliases/sind.sh \
-  $SCRIPTS/var/aliases/ssh.sh \
-  $SCRIPTS/var/aliases/tmux.sh \
-  $SCRIPTS/var/aliases/vim.sh; do
+  $SCRIPTS/var/aliases/tmux.sh
+do
   _debug source $file
   source $file
 done
