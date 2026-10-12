@@ -28,10 +28,8 @@ _debug SCRIPTS=$SCRIPTS
 export PATH=$SCRIPTS/bin:$PATH
 
 for file in \
-  $SCRIPTS/var/aliases/bookmarks.sh \
   $SCRIPTS/var/aliases/firejail.sh \
   $SCRIPTS/var/aliases/mise.sh \
-  $SCRIPTS/var/aliases/sind.sh \
   $SCRIPTS/var/aliases/tmux.sh
 do
   _debug source $file
