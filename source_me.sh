@@ -27,10 +27,3 @@ export SCRIPTS=~/projects/scripts
 _debug SCRIPTS=$SCRIPTS
 export PATH=$SCRIPTS/bin:$PATH
 
-for file in \
-  $SCRIPTS/var/aliases/firejail.sh \
-  $SCRIPTS/var/aliases/mise.sh
-do
-  _debug source $file
-  source $file
-done
